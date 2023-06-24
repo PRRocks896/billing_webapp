@@ -1,5 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
-import React from 'react'
+import React, { useState } from 'react'
 import { FiChevronRight, FiFileText, FiLogOut, FiGrid, FiSquare } from 'react-icons/fi';
 import {GoHome} from 'react-icons/go'
 import { IoReceiptOutline } from "react-icons/io5";
@@ -8,12 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 
 const Sidebar = () => {
+    const navigate = useNavigate();
 
-    const navigate=useNavigate()
-  
     // sidebar menu accordion
-    const [expanded, setExpanded] = React.useState(false);
-      
+    const [expanded, setExpanded] = useState(false);
     const handleChange = (panel) => (event, isExpanded) => {
       setExpanded(isExpanded ? panel : false);
     };
@@ -44,24 +42,24 @@ const Sidebar = () => {
                   </Typography>                            
               </AccordionSummary>
               <AccordionDetails className='sub-menu-list'>
-                  <Box className='sub-menu-link'>
+                  <Box className='sub-menu-link' onClick={()=>navigate("/customer")}>
                       <Typography>Customer</Typography>
                   </Box>
-                  <Box className='sub-menu-link active'>
+                  <Box className='sub-menu-link active' onClick={()=>navigate("/staff")}>
                       <Typography>Staff</Typography>
                   </Box>
-                  <Box className='sub-menu-link'>
+                  <Box className='sub-menu-link' onClick={()=>navigate("/service-category")}>
                       <Typography>Service Category</Typography>
                   </Box>
-                  <Box className='sub-menu-link'>
+                  <Box className='sub-menu-link' onClick={()=>navigate("/service")}>
                       <Typography>Service</Typography>
                   </Box>
-                  <Box className='sub-menu-link'>
+                  <Box className='sub-menu-link' onClick={()=>navigate("/payment-type")}>
                       <Typography>Payment Type</Typography>
                   </Box>
               </AccordionDetails>
           </Accordion>
-          <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} className='menu-list'>
+          <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} className='menu-list' onClick={()=>navigate("/create-bill")}>
               <AccordionSummary className='menu-title'
               aria-controls="panel3bh-content"
               id="panel3bh-header">
@@ -80,7 +78,7 @@ const Sidebar = () => {
                   </Typography>
               </AccordionSummary>
           </Accordion>
-          <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')} className='menu-list'>
+          <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')} className='menu-list' onClick={()=>navigate("/user")}>
               <AccordionSummary className='menu-title'
               aria-controls="panel5bh-content"
               id="panel5bh-header"

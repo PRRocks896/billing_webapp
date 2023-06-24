@@ -1,20 +1,16 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LayoutProvider from "./layout";
+import { RouterProvider } from "react-router-dom";
 
 // css imports
 import './assets/styles/global.scss';
 import './assets/styles/sidebar.scss';
 import './assets/styles/header.scss';
+import routes from "./routes";
 
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LayoutProvider/>} />
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={routes}/>
     </>
   );
 }
