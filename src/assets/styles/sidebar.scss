@@ -1,0 +1,273 @@
+// header
+.header{
+  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.1) !important;
+  .toolbar{
+    min-height: 80px;
+    background: #fff;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    @media(max-width:1560.98px){
+        min-height: 70px;
+    }
+    .page-title{
+      font-weight: 500;
+      font-size: 30px;
+      line-height: 45px;
+      color: var(--color-black);      
+      font-family: 'Poppins', sans-serif;
+
+      @media(max-width:1560.98px){
+          font-size: 25px;
+          line-height: 40px;
+      }
+    }
+    .drawer-open-icon{
+      width: 30px;
+      height: 30px;
+      background-color: var(--color-green);
+      border: 1px solid var(--color-green);
+      padding: 0 0 0 2px;
+      font-size: 25px;
+      color: var(--color-white);
+      margin-left: 0;
+    }
+    .account-dropdown{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      border-radius: 100%;
+      background: var(--color-black);
+      margin-left: auto;
+      
+      @media(max-width:1560.98px){
+          width: 40px;
+          height: 40px;
+      }
+      button{
+        border: 2px solid var(--color-green);
+        padding: 0;
+        background-color: var(--color-black);
+        .avatar{
+          background-color: var(--color-black);
+          padding: 8px;
+          width: 50px;
+          height: 50px;
+          @media(max-width:1560.98px){
+              width: 40px;
+              height: 40px;
+          }
+          img{
+            width: 100%;
+            border-radius: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+// account dropdown menu
+.account-dropdown-menu{
+  .MuiMenu-paper{
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.05);
+    padding: 10px 16px;
+    border-radius: 10px;
+    .user-details{
+
+      .user-img{
+        width: 70px;
+        height: 70px;
+        background-color: var(--color-black);
+        padding: 11px;
+        border-radius: 100px;
+        border: 2px solid var(--color-green);
+        margin: 0 auto;
+        margin-bottom: 5px;
+        @media(max-width:1560.98px){
+            width: 50px;
+            height: 50px;
+        }
+        img{
+          width: 100%;
+          border-radius: 100%;
+        }
+      }
+      .user-name{
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+      }
+      .user-position{
+        text-align: center;
+        display: block;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+    .organization-details{
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      gap: 10px;
+      .org-img{
+        width: 30px;
+        height: 30px;
+        background-color: var(--color-black);
+        padding: 2px;
+        border-radius: 100px;
+        border: 2px solid var(--color-green);
+        margin-bottom: 5px;
+        img{
+          width: 100%;
+          border-radius: 100%;
+        }
+      }
+      .org-text{
+        h5{
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 18px;
+          white-space: nowrap;
+        }
+        span{
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 15px;
+          position: relative;
+          top: -6px;
+        }
+      }
+    }
+    .links{
+      gap: 15px;
+      display: flex;
+      flex-direction: column;
+      .menu-link{
+        padding: 0;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 18px;
+        &:hover,&:focus{
+          background-color: transparent;
+        }
+        .link-icon{
+          min-width: 22px;
+        }
+      }
+    }
+  }
+}
+
+// Sidebar
+.sidebar{
+  .MuiDrawer-paper{
+    background-color: var(--color-black);
+    .site-logo{
+      min-height: 80px;
+      position: relative;
+      @media(max-width:1560.98px){
+        min-height: 70px;
+      }
+      img{
+        margin: 0 auto;
+        width: 50px;
+        height: auto;
+      }
+      button{
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-color: var(--color-green);
+        border: 1px solid var(--color-green);
+        padding: 0 2px 0 0;
+        font-size: 25px;
+        color: var(--color-white);
+      }
+    }
+    .sidebar-menu{
+      margin-top: 30px;
+      padding-left: 20px;
+      padding-right: 20px;
+      .menu-list{
+        background-color: transparent;
+        box-shadow: none;
+        margin: 0;
+        margin-bottom: 15px;
+        &:before{
+          display: none;
+        }
+        .menu-title{
+          border-radius: 10px;
+          min-height: 45px !important;
+          max-height: 45px !important;
+          padding-right: 10px;
+          &.Mui-expanded,&:hover{
+            background-color: var(--color-green);
+          }
+          svg{
+            font-size: 20px;
+            color: #fff;
+          }
+          .Mui-expanded{
+            svg{
+              transform: rotate(-90deg);
+            }
+          }
+          p{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 30px;
+            color: var(--color-white);
+            svg{
+              width: 20px;
+              height: 20px;
+              transform: rotate(0deg) !important;
+            }
+          }
+
+        }
+        .sub-menu-list{
+          padding-bottom: 0;
+          .sub-menu-link{
+            cursor: pointer;
+            p{
+              display: flex;
+              align-items: center;
+              gap: 18px;
+              font-weight: 400;
+              font-size: 15px;
+              line-height: 27px;
+              color: var(--color-white);
+              margin-top: 10px;
+              svg{
+                fill: var(--color-white);
+              }
+            }
+            &.active{
+              p{
+                svg{
+                  fill:var(--color-green);
+                  color:var(--color-green);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.page-wrapper{
+  padding: 36px 30px 30px 30px !important;
+}
