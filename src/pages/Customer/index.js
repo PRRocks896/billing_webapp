@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Button, Grid, IconButton, InputAdornment, InputBase, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material'
 import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from 'react-icons/fi'
+import { useNavigate } from 'react-router-dom'
 
 const projects = [
   {id:1,name:"Krushang rathod",number:9879854706,gender:"Male"},
@@ -17,7 +18,7 @@ const projects = [
 ]
 
 const Customer = () => {
-
+  const navigate = useNavigate();
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -66,7 +67,7 @@ const Customer = () => {
           </Grid>
           
           <Grid item>
-            <Button component={'button'} className='btn btn-tertiary'>
+            <Button component={'button'} className='btn btn-tertiary' onClick={()=>navigate('/addCustomer')}>
               <FiPlus /> &nbsp; Add Customer
             </Button>
           </Grid>        

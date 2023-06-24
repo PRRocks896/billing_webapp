@@ -164,11 +164,11 @@ span {
       margin-bottom: 5px;
     }
 
-    .input-field {
+    .input-field {     
       input {
         background: var(--color-white);
         border: 1px solid var(--color-grey);
-        border-radius: 10px;
+        border-radius: 6px;
         padding: 13px;
 
         &::placeholder {
@@ -213,7 +213,6 @@ span {
         border-radius: 10px;
         padding: 13px;
       }
-
     }
 
     .end-input-icon {
@@ -226,6 +225,9 @@ span {
       font-size: 25px;
     }
 
+    .radio-field{
+      color: var(--color-black);
+    }
     .checkbox-field {
       margin-left: -5px;
       width: fit-content;
