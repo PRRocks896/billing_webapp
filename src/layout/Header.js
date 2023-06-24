@@ -6,6 +6,7 @@ import { IconButton, Box, Drawer, Typography, Divider, Toolbar, Tooltip, Avatar,
 import { FiChevronRight, FiChevronLeft, FiUser, FiLogOut} from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import SiteLogo from '../assets/images/logo.png';
+import ProfileImage from '../assets/images/avatar2.jpg';
 import Sidebar from './Sidebar';
 
 const drawerWidth = 300;
@@ -56,7 +57,7 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
         <>
             <AppBar position="fixed" open={open} className='header'>
                 <Toolbar className='toolbar'>
-                    <IconButton className=''
+                    <IconButton className='arrow-btn'
                         aria-label="open drawer"
                         onClick={open ? handleDrawerClose : handleDrawerOpen}
                         edge="start"
@@ -69,7 +70,7 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                     </Typography>
 
                     <Box className='account-dropdown'>
-                        <Tooltip title="">
+                        <Tooltip title="Profile Setting">
                         <IconButton
                             onClick={handleClick}
                             aria-controls={openAccount ? "account-menu" : undefined}
@@ -77,7 +78,7 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                             aria-expanded={openAccount ? "true" : undefined}
                         >
                             <Avatar className='avatar'>
-                                <img src={SiteLogo} alt='account img'/>
+                                <img src={ProfileImage} alt='account img'/>
                             </Avatar>
                         </IconButton>
                         </Tooltip>
@@ -124,16 +125,16 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                         
                         <Box className='user-details'>
                             <Box className='user-img'>
-                                <img src={SiteLogo} alt='account img'/>
+                                <img src={ProfileImage} alt='account img'/>
                             </Box>
-                            <Typography variant="h5" component="h5" className='text-green user-name' align='center'>
-                                Krushang Rathod
-                            </Typography>
                             <Typography variant="span" component="span" className='text-grey user-position' align='center'>
                                 Admin
                             </Typography>
+                            <Typography variant="h5" component="h5" className='text-green user-name' align='center'>
+                                Mr. Nick Johnson
+                            </Typography>
                         </Box>
-                        <Box className='organization-details'>
+                        {/* <Box className='organization-details'>
                             <Box className='org-img'>
                                 <img src={SiteLogo} alt='account img'/>
                             </Box>
@@ -145,17 +146,15 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                                     Organization
                                 </Typography>
                             </Box>
-                        </Box>
+                        </Box> */}
                         <Box className='links'>
-                            <MenuItem className='menu-link' 
-                                onClick={()=>navigate("/my-account")}>
+                            <Divider/>
+                            <MenuItem className='menu-link'>
                                 <ListItemIcon className='link-icon'>
                                     <FiUser/>
                                 </ListItemIcon>
-                                My Account
+                                Profile
                             </MenuItem>
-                            
-                            
                             <MenuItem className='menu-link'>
                                 <ListItemIcon className='link-icon'>
                                     <FiLogOut/>
