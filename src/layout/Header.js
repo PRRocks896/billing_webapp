@@ -3,8 +3,7 @@ import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
 import { IconButton, Box, Drawer, Typography, Divider, Toolbar, Tooltip, Avatar, Menu, MenuItem, ListItemIcon} from '@mui/material';
-import { FiChevronRight, FiChevronLeft, FiUser, FiLogOut} from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiChevronRight, FiChevronLeft, FiUser, FiLogOut, FiAlignJustify} from "react-icons/fi";
 import SiteLogo from '../assets/images/logo.png';
 import ProfileImage from '../assets/images/avatar2.jpg';
 import Sidebar from './Sidebar';
@@ -49,7 +48,7 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
      };
      
     // sidebar
-    const theme = useTheme();
+    // const theme = useTheme();
 
     return (
         <>
@@ -61,7 +60,7 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                         edge="start"
                         sx={{ mr: 2 }}
                     >
-                        {open ? <FiChevronLeft /> : <FiChevronRight />}
+                        {open ? <FiAlignJustify /> : <FiAlignJustify />}
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" className='page-title'>
                         Page Title
@@ -156,12 +155,8 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                     {/* <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <FiChevronLeft /> : <FiChevronRight />}
                     </IconButton> */}
-                </DrawerHeader>
-                {/* <Divider /> */}
-                    
-                <Sidebar/>
-                
-                
+                </DrawerHeader>                    
+                <Sidebar/>                
             </Drawer>
         </>
     );

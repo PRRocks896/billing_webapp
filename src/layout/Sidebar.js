@@ -44,20 +44,20 @@ const Sidebar = () => {
                   </Typography>                            
               </AccordionSummary>
               <AccordionDetails className='sub-menu-list'>
+                  <Box className='sub-menu-link'>
+                      <Typography>Customer</Typography>
+                  </Box>
                   <Box className='sub-menu-link active'>
-                      <Typography><FiSquare/> Customer</Typography>
+                      <Typography>Staff</Typography>
                   </Box>
                   <Box className='sub-menu-link'>
-                      <Typography><FiSquare/> Staff</Typography>
+                      <Typography>Service Category</Typography>
                   </Box>
                   <Box className='sub-menu-link'>
-                      <Typography><FiSquare/> Service Category</Typography>
+                      <Typography>Service</Typography>
                   </Box>
                   <Box className='sub-menu-link'>
-                      <Typography><FiSquare/> Service</Typography>
-                  </Box>
-                  <Box className='sub-menu-link'>
-                      <Typography><FiSquare/> Payment Type</Typography>
+                      <Typography>Payment Type</Typography>
                   </Box>
               </AccordionDetails>
           </Accordion>
@@ -93,7 +93,7 @@ const Sidebar = () => {
         </div> 
         <div>
           <Accordion expanded={expanded === 'panel6'} onChange={handleChange('panel6')} className='menu-list'>
-              <AccordionSummary className='menu-title logout-title'
+              <AccordionSummary className='menu-title'
               aria-controls="panel5bh-content"
               id="panel5bh-header"
               >

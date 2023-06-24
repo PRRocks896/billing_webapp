@@ -10,6 +10,11 @@
   --color-black: #364865;
   --color-grey: #777777;
   --color-white: #ffffff;
+}
+
+* {
+  outline: none !important;
+  box-sizing: border-box;
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -23,11 +28,6 @@
     background-color: var(--color-green);
     border-radius: 50px;
   }
-}
-
-* {
-  outline: none !important;
-  box-sizing: border-box;
 }
 
 body {

@@ -54,7 +54,13 @@
           max-height: 45px !important;
           padding-right: 10px;
           &.Mui-expanded,&:hover{
-            background-color: var(--color-green);
+            background-color: var(--color-white);
+            p{
+              color: var(--color-black);
+            }
+            svg{
+              color: var(--color-black);
+            }
           }
           svg{
             font-size: 20px;
@@ -84,6 +90,7 @@
         }
         .sub-menu-list{
           padding-bottom: 0;
+          margin-left: 24px;
           .sub-menu-link{
             cursor: pointer;
             p{
