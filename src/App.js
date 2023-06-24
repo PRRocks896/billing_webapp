@@ -5,6 +5,7 @@ import LayoutProvider from "./layout";
 // css imports
 import './assets/styles/global.scss';
 import './assets/styles/sidebar.scss';
+import './assets/styles/header.scss';
 
 function App() {
   return (

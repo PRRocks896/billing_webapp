@@ -38,8 +38,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
-    const navigate = useNavigate();
-
      // account dropdown
      const [anchorEl, setAnchorEl] = React.useState(null);
      const openAccount = Boolean(anchorEl);
@@ -134,19 +132,6 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                                 Mr. Nick Johnson
                             </Typography>
                         </Box>
-                        {/* <Box className='organization-details'>
-                            <Box className='org-img'>
-                                <img src={SiteLogo} alt='account img'/>
-                            </Box>
-                            <Box className='org-text'>
-                                <Typography variant="h5" component="h5" className='text-green user-name' align='center'>
-                                    Crest Infosystems Pvt. Ltd.
-                                </Typography>
-                                <Typography variant="span" component="span" className='text-grey user-position' align='center'>
-                                    Organization
-                                </Typography>
-                            </Box>
-                        </Box> */}
                         <Box className='links'>
                             <Divider/>
                             <MenuItem className='menu-link'>
@@ -161,7 +146,6 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                                 </ListItemIcon>
                                 Logout
                             </MenuItem>
-                        
                         </Box>
                     </Menu>
                 </Toolbar>
@@ -176,6 +160,7 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
                 {/* <Divider /> */}
                     
                 <Sidebar/>
+                
                 
             </Drawer>
         </>

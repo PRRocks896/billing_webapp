@@ -10,6 +10,19 @@
   --color-black: #364865;
   --color-grey: #777777;
   --color-white: #ffffff;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    box-shadow: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-green);
+    border-radius: 50px;
+  }
 }
 
 * {
@@ -25,19 +38,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   background-color: #F9F9F9;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: none;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--color-green);
-    border-radius: 50px;
-  }
 }
 
 a {
