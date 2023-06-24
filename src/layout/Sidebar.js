@@ -1,6 +1,9 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Typography } from '@mui/material';
 import React from 'react'
-import { FiChevronRight, FiClock, FiFileText, FiFolderPlus, FiGrid, FiSquare, FiUser } from 'react-icons/fi';
+import { FiChevronRight, FiFileText, FiFolderPlus, FiGrid, FiSquare } from 'react-icons/fi';
+import {GoHome} from 'react-icons/go'
+import { IoReceiptOutline } from "react-icons/io5";
+import { FaRegUser } from 'react-icons/fa'
 import { useNavigate } from "react-router-dom";
 
 
@@ -25,7 +28,7 @@ const Sidebar = () => {
               id="panel1bh-header"
               >
                   <Typography>
-                      <FiGrid/>  Dashboard
+                      <GoHome/>  Home
                   </Typography>
               </AccordionSummary>
           </Accordion>
@@ -36,46 +39,37 @@ const Sidebar = () => {
               id="panel2bh-header"
               >
                   <Typography>
-                    <FiClock/>  Timesheets
+                    <FiGrid/>  Master
                   </Typography>                            
               </AccordionSummary>
               <AccordionDetails className='sub-menu-list'>
-                  <Box className='sub-menu-link active' onClick={()=>navigate("/screenshots")}>
-                      <Typography>
-                          <FiSquare/> Screenshots
-                      </Typography>
+                  <Box className='sub-menu-link active'>
+                      <Typography><FiSquare/> Customer</Typography>
                   </Box>
-                  <Box className='sub-menu-link' onClick={()=>navigate("/timesheet-view-edit")}>
-                      <Typography>
-                          <FiSquare/> View & Edit
-                      </Typography>
+                  <Box className='sub-menu-link'>
+                      <Typography><FiSquare/> Staff</Typography>
+                  </Box>
+                  <Box className='sub-menu-link'>
+                      <Typography><FiSquare/> Service Category</Typography>
+                  </Box>
+                  <Box className='sub-menu-link'>
+                      <Typography><FiSquare/> Service</Typography>
+                  </Box>
+                  <Box className='sub-menu-link'>
+                      <Typography><FiSquare/> Payment Type</Typography>
                   </Box>
               </AccordionDetails>
           </Accordion>
           <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} className='menu-list'>
               <AccordionSummary className='menu-title'
-              expandIcon={<FiChevronRight />}
               aria-controls="panel3bh-content"
-              id="panel3bh-header"
-              >
+              id="panel3bh-header">
                   <Typography>
-                      <FiFolderPlus/>   Project Managements
+                      <IoReceiptOutline/>  Bill
                   </Typography>                            
               </AccordionSummary>
-              <AccordionDetails className='sub-menu-list'>
-                  <Box className='sub-menu-link active' onClick={()=>navigate("/projects")}>
-                      <Typography>
-                          <FiSquare/> Projects
-                      </Typography>
-                  </Box>
-                  <Box className='sub-menu-link'  onClick={()=>navigate("/to-dos")}>
-                      <Typography>
-                          <FiSquare/> To Dos
-                      </Typography>
-                  </Box>
-              </AccordionDetails>
           </Accordion>
-          <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} className='menu-list'  onClick={()=>navigate("/reports")}>
+          <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} className='menu-list'>
               <AccordionSummary className='menu-title'
               aria-controls="panel4bh-content"
               id="panel4bh-header"
@@ -85,13 +79,13 @@ const Sidebar = () => {
                   </Typography>
               </AccordionSummary>
           </Accordion>
-          <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')} className='menu-list'  onClick={()=>navigate("/employees")}>
+          <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')} className='menu-list'>
               <AccordionSummary className='menu-title'
               aria-controls="panel5bh-content"
               id="panel5bh-header"
               >
                   <Typography>
-                      <FiUser/> Employees
+                      <FaRegUser/> User
                   </Typography>
               </AccordionSummary>
           </Accordion>

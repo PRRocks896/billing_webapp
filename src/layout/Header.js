@@ -56,13 +56,13 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
         <>
             <AppBar position="fixed" open={open} className='header'>
                 <Toolbar className='toolbar'>
-                    <IconButton className='drawer-open-icon'
+                    <IconButton className=''
                         aria-label="open drawer"
-                        onClick={handleDrawerOpen}
+                        onClick={open ? handleDrawerClose : handleDrawerOpen}
                         edge="start"
-                        sx={{ mr: 2, ...(open && { display: 'none' }) }}
+                        sx={{ mr: 2 }}
                     >
-                        <FiChevronRight />
+                        {open ? <FiChevronLeft /> : <FiChevronRight />}
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" className='page-title'>
                         Page Title
@@ -169,12 +169,12 @@ const Header = ({handleDrawerOpen,handleDrawerClose,open}) => {
             </AppBar>
             <Drawer className='sidebar' sx={{ width: drawerWidth, flexShrink: 0, '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box', }, }} variant="persistent" anchor="left" open={open} >
                 <DrawerHeader className='site-logo'>
-                    <img src={SiteLogo} alt='Sitelogo'/>
-                    <IconButton onClick={handleDrawerClose}>
+                    <img src={SiteLogo} alt='Sitelogo' width={218} height={140}/>
+                    {/* <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <FiChevronLeft /> : <FiChevronRight />}
-                    </IconButton>
+                    </IconButton> */}
                 </DrawerHeader>
-                <Divider />
+                {/* <Divider /> */}
                     
                 <Sidebar/>
                 

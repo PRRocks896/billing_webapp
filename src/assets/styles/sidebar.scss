@@ -168,16 +168,19 @@
 .sidebar{
   .MuiDrawer-paper{
     background-color: var(--color-black);
+
     .site-logo{
-      min-height: 80px;
+      min-height: 170px;
       position: relative;
+      margin-bottom: 0px;
+
       @media(max-width:1560.98px){
-        min-height: 70px;
+        min-height: 170px;
       }
       img{
         margin: 0 auto;
-        width: 50px;
-        height: auto;
+        // width: 50%;
+        // height: auto;
       }
       button{
         position: absolute;
@@ -191,7 +194,7 @@
       }
     }
     .sidebar-menu{
-      margin-top: 30px;
+      margin-top: 20px;
       padding-left: 20px;
       padding-right: 20px;
       .menu-list{
