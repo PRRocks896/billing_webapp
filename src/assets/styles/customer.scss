@@ -1,0 +1,47 @@
+.page-wrapper {
+    .top-bar{
+      .search-box{
+        border: 1px solid var(--color-grey);
+        padding: 7px 10px;
+        input{
+          padding: 0;
+        }
+        button{
+            font-size: 16px;
+        }
+        &:focus{
+          border: 1px solid var(--color-green);
+        }
+      }
+      .btn{
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1) !important;
+      }
+    }
+  }
+  
+  .mask-box {
+    border-radius: 20px;
+    position: relative;
+    background: #777777;
+  }
+  .mask-box .mask {
+    width: 100px;
+    height: 30px;
+    font-size: 14px;
+    border-radius: 20px;
+    background: #8CC714;
+    position: absolute;
+    transition: all 0.5s ease;
+  }
+  .mask-box .MuiButton-root {
+    border-radius: 20px;
+    width: 100px;
+    height: 30px;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.2s 0.1s ease;
+    text-transform: capitalize;
+  }
+  .mask-box .MuiButton-root:hover {
+    opacity: 0.8;
+  }
