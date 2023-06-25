@@ -23,7 +23,7 @@ const AddCustomer = () => {
             <Grid item xs={12}>
             <FormControl variant="standard" className='form-control'>
                 <Typography variant="body2" component="span" className='text-black input-label'>
-                Phone
+                Phone *
                 </Typography>
                 <InputBase 
                     name="phone"
