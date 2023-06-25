@@ -1,6 +1,8 @@
 import React from 'react'
-import { Button, FormControl, FormGroup, Grid, InputBase, Typography } from '@mui/material'
+import { Box, Button, FormControl, FormGroup, Grid, InputBase, Typography } from '@mui/material'
 import Select from 'react-select';
+import { FiX } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 // select option
 const options = [
@@ -20,64 +22,78 @@ const customStyles = {
 
 
 const AddService = () => {
+  const navigate = useNavigate();
+
   return (
     <>
-      <FormGroup className='form-field'>
-        <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <FormControl variant="standard" className='form-control'>
-                  <Typography variant="body2" component="span"
-                      className='text-black input-label'>
-                      Service Name *
-                  </Typography>
-                  <InputBase 
-                      name="service-name"
-                      placeholder="Enter service name"
-                      className={'input-field'}
-                  />
-              </FormControl>
+    <Box className="card">
+        {/* top page action with text */}
+        <Box className="top-bar">
+          <Grid container justifyContent={'end'}>
+            <Grid item md={0.7}>
+              <Button className='btn-close' onClick={() => navigate(-1)}>
+                <FiX size={25} color='var(--color-grey)'/>
+              </Button>
             </Grid>
-            {/*  */}
-            <Grid item xs={6}>
-              <FormControl variant="standard" className='form-control'>
+          </Grid>
+        </Box>
+        <FormGroup className='form-field'>
+          <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <FormControl variant="standard" className='form-control'>
+                    <Typography variant="body2" component="span"
+                        className='text-black input-label'>
+                        Service Name *
+                    </Typography>
+                    <InputBase 
+                        name="service-name"
+                        placeholder="Enter service name"
+                        className={'input-field'}
+                    />
+                </FormControl>
+              </Grid>
+              {/*  */}
+              <Grid item xs={6}>
+                <FormControl variant="standard" className='form-control'>
+                    <Typography variant="body2" component="span" className='text-black input-label'>
+                    Amount *
+                    </Typography>
+                    <InputBase 
+                        name="amount"
+                        placeholder="Amount"
+                        className={'input-field'}
+                    />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl variant="standard" className='form-control'>
                   <Typography variant="body2" component="span" className='text-black input-label'>
-                  Amount *
+                      Select Category *
                   </Typography>
-                  <InputBase 
-                      name="amount"
-                      placeholder="Amount"
-                      className={'input-field'}
+                  <Select
+                    placeholder="Select category" 
+                    options={options}
+                    styles={customStyles}
+                    theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: '#364865',
+                        },
+                      })
+                    }
                   />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl variant="standard" className='form-control'>
-                <Typography variant="body2" component="span" className='text-black input-label'>
-                    Select Category *
-                </Typography>
-                <Select
-                  placeholder="Select category" 
-                  options={options}
-                  styles={customStyles}
-                  theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary: '#364865',
-                      },
-                    })
-                  }
-                />
-            </FormControl>  
-            </Grid>
-        </Grid>
-      </FormGroup>
+              </FormControl>  
+              </Grid>
+          </Grid>
+        </FormGroup>
+      </Box>
       <Grid container spacing={3} sx={{marginTop:'6px'}}>
           <Grid item md={1.5}>
               <Button className='btn btn-tertiary'>Save</Button>
           </Grid>
           <Grid item md={1.5}>
-              <Button className='btn btn-secondary'>Cancel</Button>
+              <Button className='btn btn-cancel'>Cancel</Button>
           </Grid>
       </Grid>
     </>
