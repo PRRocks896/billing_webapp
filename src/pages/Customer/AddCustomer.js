@@ -1,4 +1,4 @@
-import { Button, FormControl, FormGroup, Grid, InputBase, Radio, TextField, Typography } from '@mui/material'
+import { Button, FormControl, FormGroup, Grid, InputBase, Radio, Typography } from '@mui/material'
 import React from 'react'
 
 const AddCustomer = () => {
@@ -6,31 +6,31 @@ const AddCustomer = () => {
     <>
       <FormGroup className='form-field'>
         <Grid container spacing={2}>
-            <Grid item xs={12}>
-            <FormControl variant="standard" className='form-control'>
-                <Typography variant="body2" component="span"
-                    className='text-black input-label'>
-                    Customer Name *
-                </Typography>
-                <InputBase 
-                    name="name"
-                    placeholder="Enter customer name"
-                    className={'input-field'}
-                />
-            </FormControl>
+            <Grid item xs={6}>
+              <FormControl variant="standard" className='form-control'>
+                  <Typography variant="body2" component="span"
+                      className='text-black input-label'>
+                      Customer Name *
+                  </Typography>
+                  <InputBase 
+                      name="name"
+                      placeholder="Enter customer name"
+                      className={'input-field'}
+                  />
+              </FormControl>
             </Grid>
             {/*  */}
-            <Grid item xs={12}>
-            <FormControl variant="standard" className='form-control'>
-                <Typography variant="body2" component="span" className='text-black input-label'>
-                Phone *
-                </Typography>
-                <InputBase 
-                    name="phone"
-                    placeholder="Phone"
-                    className={'input-field'}
-                />
-            </FormControl>
+            <Grid item xs={6}>
+              <FormControl variant="standard" className='form-control'>
+                  <Typography variant="body2" component="span" className='text-black input-label'>
+                  Phone *
+                  </Typography>
+                  <InputBase 
+                      name="phone"
+                      placeholder="Phone"
+                      className={'input-field'}
+                  />
+              </FormControl>
             </Grid>
             {/*  */}
             <Grid item xs={12}>

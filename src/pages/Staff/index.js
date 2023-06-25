@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const staff = [
   { id: 1, name: "Krushang rathod" },
@@ -31,6 +32,8 @@ const staff = [
 ];
 
 const Staff = () => {
+  const navigate = useNavigate();
+
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -47,7 +50,7 @@ const Staff = () => {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - staff.length) : 0;
 
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () => staff.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [page, rowsPerPage]
   );
@@ -81,7 +84,7 @@ const Staff = () => {
           </Grid>
 
           <Grid item>
-            <Button component={"button"} className="btn btn-tertiary">
+            <Button component={"button"} className="btn btn-tertiary" onClick={() => navigate('/add-staff')}>
               <FiPlus /> &nbsp; <p>Add Staff</p>
             </Button>
           </Grid>

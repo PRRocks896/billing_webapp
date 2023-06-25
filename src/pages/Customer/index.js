@@ -116,7 +116,7 @@ const Customer = () => {
                   })
                 ) : (
                   <TableRow>
-                    <TableCell sx={{ textAlign: "center" }} colSpan={7}>
+                    <TableCell sx={{ textAlign: "center" }} colSpan={5}>
                       No customers Found
                     </TableCell>
                   </TableRow>

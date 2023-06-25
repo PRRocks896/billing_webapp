@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const service = [
   { id: 1, category: "Category", name: "service-name", amount: "300" },
@@ -31,6 +32,8 @@ const service = [
 ];
 
 const Service = () => {
+  const navigate = useNavigate();
+
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -81,7 +84,7 @@ const Service = () => {
           </Grid>
 
           <Grid item>
-            <Button component={"button"} className="btn btn-tertiary">
+            <Button component={"button"} className="btn btn-tertiary" onClick={() => navigate('/add-service')}>
               <FiPlus /> &nbsp; <p>Add Service</p>
             </Button>
           </Grid>
