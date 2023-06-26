@@ -24,14 +24,15 @@
   .mask-box {
     border-radius: 20px;
     position: relative;
-    background: #777777;
+    background: var(--color-white);
+    border: 1px solid  var(--color-black);
   }
   .mask-box .mask {
     width: 100px;
     height: 30px;
     font-size: 14px;
     border-radius: 20px;
-    background: #8CC714;
+    background: var(--color-black);
     position: absolute;
     transition: all 0.5s ease;
   }

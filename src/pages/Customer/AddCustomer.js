@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, FormControl, FormGroup, Grid, InputBase, Radio, Typography } from '@mui/material'
 import { FiX } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
@@ -14,6 +14,11 @@ import { useNavigate } from 'react-router-dom'
 
 const AddCustomer = () => {
   const navigate = useNavigate();
+  const [status, setStatus] = useState("active");
+
+  const changeStatusHandler = (status) => {
+    setStatus(status);
+  }
 
   return (
     <>
@@ -59,7 +64,7 @@ const AddCustomer = () => {
                 </FormControl>
               </Grid>
               {/*  */}
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <FormControl variant="standard" className='form-control'>
                     <Typography variant="body2" component="span" className='text-black input-label'>
                     Gender *
@@ -84,6 +89,40 @@ const AddCustomer = () => {
                         /> Female
                       </span>
                     </Grid>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={6}>
+                <FormControl variant="standard" className='form-control'>
+                  <Typography variant="body2" component="span" className='text-black input-label'>
+                    Status *
+                  </Typography>
+                  <Box sx={{ display: "flex" }}>
+                    <Box className="mask-box">
+                        <Box
+                          className="mask"
+                          style={{
+                            transform: `translateX(${status === "active" ? 0 : "100px"})`
+                          }}
+                        />
+                        <Button
+                          disableRipple
+                          variant="text"
+                          onClick={() => changeStatusHandler('active')}
+                          sx={{ color:status === "active" ? "#ffffff" : "var(--color-black)"  }}
+                        >
+                          Active
+                        </Button>
+                        <Button
+                          disableRipple
+                          variant="text"
+                          onClick={() => changeStatusHandler('inactive')}
+                          sx={{ color: status === "inactive" ? "#ffffff" : "var(--color-black)" }}
+                        >
+                          Inactive
+                        </Button>
+                    </Box>
+                  </Box>
                 </FormControl>
               </Grid>
           </Grid>
