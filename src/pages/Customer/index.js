@@ -32,7 +32,7 @@ const customers = [
 const Customer = () => {
   const switchStyles = {
     color: "var(--color-black)",
-    "&.Mui-checked": {
+    "&.MuiChecked": {
       color: "green",
     },
     "&.Mui-checked + .MuiSwitch-track": {
