@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputBase,
   Table,
   TableBody,
   TableCell,
@@ -14,8 +10,8 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import TopBar from "../../components/TopBar";
 
 const service = [
   { id: 1, category: "Category", name: "service-name", amount: "300" },
@@ -32,8 +28,6 @@ const service = [
 ];
 
 const Service = () => {
-  const navigate = useNavigate();
-
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -58,38 +52,11 @@ const Service = () => {
 
   return (
     <>
-      {/* top page action with text */}
-      <Box className="top-bar">
-        <Grid container justifyContent={"space-between"} alignItems={"center"}>
-          <Grid item>
-            <Box className="search-box">
-              <InputBase
-                name="service-search"
-                placeholder="Search Service"
-                endAdornment={
-                  <InputAdornment
-                    position="end"
-                    className="end-input-icon text-grey"
-                  >
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
-                    >
-                      <FiSearch />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </Box>
-          </Grid>
-
-          <Grid item>
-            <Button component={"button"} className="btn btn-tertiary" onClick={() => navigate('/add-service')}>
-              <FiPlus /> &nbsp; <p>Add Service</p>
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+      <TopBar
+        btnTitle="Add Service"
+        inputName="service"
+        navigatePath="/add-service"
+      />
 
       {/* service listing */}
       <Box className="card">

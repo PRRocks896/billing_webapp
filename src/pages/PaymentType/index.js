@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputBase,
   Table,
   TableBody,
   TableCell,
@@ -14,8 +10,8 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import TopBar from "../../components/TopBar";
 
 const paymentType = [
   { id: 1, pType: "payment type" },
@@ -32,8 +28,6 @@ const paymentType = [
 ];
 
 const PaymentType = () => {
-  const navigate = useNavigate();
-
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -59,38 +53,11 @@ const PaymentType = () => {
 
   return (
     <>
-      {/* top page action with text */}
-      <Box className="top-bar">
-        <Grid container justifyContent={"space-between"} alignItems={"center"}>
-          <Grid item>
-            <Box className="search-box">
-              <InputBase
-                name="paymentType-search"
-                placeholder="Search Payment Type"
-                endAdornment={
-                  <InputAdornment
-                    position="end"
-                    className="end-input-icon text-grey"
-                  >
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
-                    >
-                      <FiSearch />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </Box>
-          </Grid>
-
-          <Grid item>
-            <Button component={"button"} className="btn btn-tertiary" onClick={() => navigate('/add-payment-type')}>
-              <FiPlus /> &nbsp; <p>Add Payment Type</p>
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+      <TopBar
+        btnTitle="Add Payment Type"
+        inputName="payment-type"
+        navigatePath="/add-payment-type"
+      />
 
       {/* payment type listing */}
       <Box className="card">
