@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
+// import { styled } from "@mui/material/styles";
 
 const customers = [
   { id: 1, name: "Krushang rathod", number: 9879854706, gender: "Male" },
@@ -29,6 +30,16 @@ const customers = [
 ];
 
 const Customer = () => {
+  const switchStyles = {
+    color: "var(--color-black)",
+    "&.Mui-checked": {
+      color: "green",
+    },
+    "&.Mui-checked + .MuiSwitch-track": {
+      backgroundColor: "lightgreen", // Customize the track color when checked
+    },
+  };
+
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -50,12 +61,6 @@ const Customer = () => {
     [page, rowsPerPage]
   );
   // pagination code end
-
-  // const [status, setStatus] = useState("active");
-
-  // const changeStatusHandler = (status) => {
-  //   setStatus(status);
-  // };
 
   return (
     <>
@@ -90,50 +95,10 @@ const Customer = () => {
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.number}</TableCell>
                           <TableCell align="left">{row.gender}</TableCell>
-                          <TableCell>
-                            {/* <Box sx={{ display: "flex" }}>
-                              <Box className="mask-box">
-                                <Box
-                                  className="mask"
-                                  style={{
-                                    transform: `translateX(${
-                                      status === "active" ? 0 : "100px"
-                                    })`,
-                                  }}
-                                />
-                                <Button
-                                  disableRipple
-                                  variant="text"
-                                  onClick={() => changeStatusHandler("active")}
-                                  sx={{
-                                    color:
-                                      status === "active"
-                                        ? "#ffffff"
-                                        : "var(--color-black)",
-                                  }}
-                                >
-                                  Active
-                                </Button>
-                                <Button
-                                  disableRipple
-                                  variant="text"
-                                  onClick={() =>
-                                    changeStatusHandler("inactive")
-                                  }
-                                  sx={{
-                                    color:
-                                      status === "inactive"
-                                        ? "#ffffff"
-                                        : "var(--color-black)",
-                                  }}
-                                >
-                                  Inactive
-                                </Button>
-                              </Box>
-                            </Box> */}
-                            <Switch />
+                          <TableCell align="left">
+                            <Switch style={switchStyles} />
                           </TableCell>
-                          <TableCell>
+                          <TableCell align="left">
                             <Box className="table-action-btn">
                               <Button className="btn btn-primary">
                                 <FiEdit3 />
