@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
+import ConfirmationModal from "../../components/ConfirmationModal";
 // import { styled } from "@mui/material/styles";
 
 const customers = [
@@ -62,6 +63,10 @@ const Customer = () => {
   );
   // pagination code end
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  const deleteModalClose = () => setIsDeleteModalOpen(false);
+
   return (
     <>
       <TopBar
@@ -101,10 +106,13 @@ const Customer = () => {
                           <TableCell align="left">
                             <Box className="table-action-btn">
                               <Button className="btn btn-primary">
-                                <FiEdit3 />
+                                <FiEdit3 size={15} />
                               </Button>
-                              <Button className="btn btn-primary">
-                                <FiTrash2 />
+                              <Button
+                                className="btn btn-primary"
+                                onClick={deleteModalOpen}
+                              >
+                                <FiTrash2 size={15} />
                               </Button>
                             </Box>
                           </TableCell>
@@ -142,6 +150,14 @@ const Customer = () => {
           />
         </Box>
       </Box>
+
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          isDeleteModalOpen={isDeleteModalOpen}
+          deleteModalClose={deleteModalClose}
+          title="customer"
+        />
+      )}
     </>
   );
 };

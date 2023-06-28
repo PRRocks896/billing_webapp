@@ -48,7 +48,6 @@ const LayoutProvider = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      // setScreenSize({ width: window.innerWidth, height: window.innerHeight });
       console.log(window.innerWidth);
       if (window.innerWidth < 768) {
         handleDrawerClose();
