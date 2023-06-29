@@ -19,6 +19,7 @@ import { FiUser, FiLogOut, FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
+import { useLocation } from "react-router-dom";
 
 const drawerWidth = 300;
 
@@ -49,6 +50,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
+  let location = useLocation();
+  console.log("location", location.pathname.slice(1).toUpperCase());
+  const pageTitle = location.pathname.slice(1).toUpperCase();
   // account dropdown
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openAccount = Boolean(anchorEl);
@@ -81,7 +85,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             component="div"
             className="page-title"
           >
-            Page Title
+            {pageTitle}
           </Typography>
 
           <Box className="account-dropdown">
