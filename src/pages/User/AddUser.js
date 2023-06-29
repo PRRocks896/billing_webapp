@@ -5,12 +5,32 @@ import {
   FormControl,
   FormGroup,
   Grid,
-  InputBase,
   Typography,
 } from "@mui/material";
 import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import Select from "react-select";
+
+// select option
+const options = [
+  { value: "Admin", label: "Admin" },
+  { value: "User", label: "User" },
+  { value: "Manager", label: "Manager" },
+];
+
+const customStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    border: `1px solid ${
+      state.isFocused || state.hover
+        ? "var(--color-black)"
+        : "var(--color-grey)"
+    }`,
+    borderRadius: 6,
+    padding: "7px 0px",
+  }),
+};
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -24,90 +44,294 @@ const AddUser = () => {
 
   return (
     <>
-      {/* <Box className="card">
-        <Box className="top-bar">
-          <Grid container justifyContent={"end"}>
-            <Grid item md={0.7}>
-              <Button className="btn-close" onClick={() => navigate(-1)}>
-                <FiX size={25} color="var(--color-grey)" />
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-        <FormGroup className="form-field">
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormControl variant="standard" className="form-control">
-                <Typography
-                  variant="body2"
-                  component="span"
-                  className="text-black input-label"
-                >
-                  Staff Name *
-                </Typography>
-                <InputBase
-                  name="staff-name"
-                  placeholder="Enter staff name"
-                  className={"input-field"}
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-        </FormGroup>
-      </Box>
-      <Grid container spacing={3} sx={{ marginTop: "6px" }}>
-        <Grid item md={1.5}>
-          <Button className="btn btn-tertiary">Save</Button>
-        </Grid>
-        <Grid item md={1.5}>
-          <Button className="btn btn-cancel">Cancel</Button>
-        </Grid>
-      </Grid> */}
-
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          type="text"
-          placeholder="Last name"
-          {...register("Last name", { required: true, maxLength: 100 })}
-        />
-        {/* <input
-          type="text"
-          placeholder="First name"
-          {...register("First name", { required: true, maxLength: 80 })}
-        />
-        <input
-          type="text"
-          placeholder="Email"
-          {...register("Email", { required: true, pattern: /^\S+@\S+$/i })}
-        />
-        <input
-          type="tel"
-          placeholder="Mobile number"
-          {...register("Mobile number", {
-            required: true,
-            minLength: 6,
-            maxLength: 12,
-          })}
-        />
-        <select {...register("Title", { required: true })}>
-          <option value="Mr">Mr</option>
-          <option value="Mrs">Mrs</option>
-          <option value="Miss">Miss</option>
-          <option value="Dr">Dr</option>
-        </select>
+        <Box
+          className="card"
+          sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
+        >
+          <Box className="top-bar">
+            <Grid container justifyContent={"end"}>
+              <Grid item md={0.7}>
+                <Button className="btn-close" onClick={() => navigate(-1)}>
+                  <FiX size={25} color="var(--color-grey)" />
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
 
-        <input
-          {...register("Developer", { required: true })}
-          type="radio"
-          value="Yes"
-        />
-        <input
-          {...register("Developer", { required: true })}
-          type="radio"
-          value="No"
-        /> */}
+          <FormGroup className="form-field">
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={
+                      !errors.first_name ? "input-field" : "border-error"
+                    }
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      First name *
+                    </Typography>
+                    <input
+                      type="text"
+                      placeholder="First name"
+                      {...register("first_name", {
+                        required: "First name is required",
+                        maxLength: 100,
+                      })}
+                    />
+                  </div>
+                  {errors.first_name && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.first_name.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={
+                      !errors.last_name ? "input-field" : "border-error"
+                    }
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Last name *
+                    </Typography>
+                    <input
+                      type="text"
+                      placeholder="Last name"
+                      {...register("last_name", {
+                        required: "Last name is required",
+                        maxLength: 100,
+                      })}
+                    />
+                  </div>
+                  {errors.last_name && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.last_name.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={
+                      !errors.username ? "input-field" : "border-error"
+                    }
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Username *
+                    </Typography>
+                    <input
+                      type="text"
+                      placeholder="Username"
+                      {...register("username", {
+                        required: "Username is required",
+                        maxLength: 100,
+                      })}
+                    />
+                  </div>
+                  {errors.username && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.username.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={!errors.role ? "input-field" : "border-error"}
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Role *
+                    </Typography>
+                    <Select
+                      placeholder="Select role"
+                      options={options}
+                      styles={customStyles}
+                      name="role"
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: "#364865",
+                        },
+                      })}
+                    />
+                  </div>
+                  {errors.role && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      This field is required
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={!errors.branch ? "input-field" : "border-error"}
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Branch name *
+                    </Typography>
+                    <input
+                      type="text"
+                      placeholder="Branch name"
+                      {...register("branch", {
+                        required: "Branch name is required",
+                        maxLength: 100,
+                      })}
+                    />
+                  </div>
+                  {errors.branch && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.branch.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={!errors.email ? "input-field" : "border-error"}
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Email *
+                    </Typography>
+                    <input
+                      type="text"
+                      placeholder="Email address"
+                      {...register("email", {
+                        required: "Email is required",
+                        maxLength: 100,
+                        pattern: {
+                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                          message: "Invalid email address",
+                        },
+                      })}
+                    />
+                  </div>
+                  {errors.email && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.email.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={!errors.phone ? "input-field" : "border-error"}
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Phone *
+                    </Typography>
+                    <input
+                      type="number"
+                      placeholder="+91"
+                      {...register("phone", {
+                        required: "Phone number is required",
+                        maxLength: {
+                          value: 10,
+                          message: "Phone number must be 10 digit",
+                        },
+                        minLength: {
+                          value: 10,
+                          message: "Phone number must be 10 digit",
+                        },
+                      })}
+                    />
+                  </div>
+                  {errors.phone && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.phone.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <FormControl variant="standard" className="form-control">
+                  <div
+                    className={!errors.address ? "input-field" : "border-error"}
+                  >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Address *
+                    </Typography>
+                    <textarea
+                      type="text"
+                      rows={3}
+                      placeholder="Address"
+                      {...register("address", {
+                        required: "Address is required",
+                        maxLength: {
+                          value: 250,
+                          message: "250 character limit",
+                        },
+                      })}
+                    />
+                  </div>
+                  {errors.address && (
+                    <span style={{ fontSize: "14px", color: "red" }}>
+                      {errors.address.message}
+                    </span>
+                  )}
+                </FormControl>
+              </Grid>
+            </Grid>
+          </FormGroup>
+        </Box>
 
-        <input type="submit" />
+        <Grid container spacing={3} sx={{ marginTop: "6px" }}>
+          <Grid item md={1.5}>
+            <Button type="submit" className="btn btn-tertiary">
+              Save
+            </Button>
+            {/* <input type="submit" value={"Save"} className="btn btn-tertiary" /> */}
+          </Grid>
+          <Grid item md={1.5}>
+            <Button className="btn btn-cancel">Cancel</Button>
+          </Grid>
+        </Grid>
       </form>
     </>
   );
