@@ -108,7 +108,7 @@ const AddUser = () => {
                     }
                   >
                     <input
-                      type="text"
+                      type="date"
                       placeholder="Last name"
                       {...register("last_name", {
                         required: true,
