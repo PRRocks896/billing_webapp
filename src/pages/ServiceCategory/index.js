@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputBase,
   Table,
   TableBody,
   TableCell,
@@ -14,8 +10,9 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import TopBar from "../../components/TopBar";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 const service = [
   { id: 1, name: "service" },
@@ -32,8 +29,6 @@ const service = [
 ];
 
 const AddServiceCategory = () => {
-  const navigate = useNavigate();
-
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -56,40 +51,17 @@ const AddServiceCategory = () => {
   );
   // pagination code end
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  const deleteModalClose = () => setIsDeleteModalOpen(false);
+
   return (
     <>
-      {/* top page action with text */}
-      <Box className="top-bar">
-        <Grid container justifyContent={"space-between"} alignItems={"center"}>
-          <Grid item>
-            <Box className="search-box">
-              <InputBase
-                name="serviceCategory-search"
-                placeholder="Search Service Category"
-                endAdornment={
-                  <InputAdornment
-                    position="end"
-                    className="end-input-icon text-grey"
-                  >
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
-                    >
-                      <FiSearch />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </Box>
-          </Grid>
-
-          <Grid item>
-            <Button component={"button"} className="btn btn-tertiary" onClick={() => navigate('/add-service-category')}>
-              <FiPlus /> &nbsp; <p>Add Service Category</p>
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+      <TopBar
+        btnTitle="Add Service Category"
+        inputName="service-category"
+        navigatePath="/add-service-category"
+      />
 
       {/* service category listing */}
       <Box className="card">
@@ -116,7 +88,10 @@ const AddServiceCategory = () => {
                               <Button className="btn btn-primary">
                                 <FiEdit3 size={15} />
                               </Button>
-                              <Button className="btn btn-primary">
+                              <Button
+                                className="btn btn-primary"
+                                onClick={deleteModalOpen}
+                              >
                                 <FiTrash2 size={15} />
                               </Button>
                             </Box>
@@ -155,6 +130,14 @@ const AddServiceCategory = () => {
           />
         </Box>
       </Box>
+
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          isDeleteModalOpen={isDeleteModalOpen}
+          deleteModalClose={deleteModalClose}
+          title="service category"
+        />
+      )}
     </>
   );
 };

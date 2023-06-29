@@ -6,7 +6,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { FiChevronRight, FiFileText, FiLogOut, FiGrid } from "react-icons/fi";
+import {
+  FiChevronRight,
+  FiFileText,
+  FiLogOut,
+  FiGrid,
+  FiSquare,
+} from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { IoReceiptOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
@@ -20,6 +26,8 @@ const Sidebar = () => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  const [activeTab, setActiveTab] = useState("");
 
   return (
     <>
@@ -59,34 +67,72 @@ const Sidebar = () => {
             </AccordionSummary>
             <AccordionDetails className="sub-menu-list">
               <Box
-                className="sub-menu-link"
-                onClick={() => navigate("/customer")}
+                className={`sub-menu-link ${
+                  activeTab === "customer" && "active"
+                }`}
+                onClick={() => {
+                  setActiveTab("customer");
+                  navigate("/customer");
+                }}
               >
-                <Typography>Customer</Typography>
+                <Typography>
+                  <FiSquare />
+                  Customer
+                </Typography>
               </Box>
               <Box
-                className="sub-menu-link active"
-                onClick={() => navigate("/staff")}
+                className={`sub-menu-link ${activeTab === "staff" && "active"}`}
+                onClick={() => {
+                  setActiveTab("staff");
+                  navigate("/staff");
+                }}
               >
-                <Typography>Staff</Typography>
+                <Typography>
+                  <FiSquare />
+                  Staff
+                </Typography>
               </Box>
               <Box
-                className="sub-menu-link"
-                onClick={() => navigate("/service-category")}
+                className={`sub-menu-link ${
+                  activeTab === "service-category" && "active"
+                }`}
+                onClick={() => {
+                  setActiveTab("service-category");
+                  navigate("/service-category");
+                }}
               >
-                <Typography>Service Category</Typography>
+                <Typography>
+                  <FiSquare />
+                  Service Category
+                </Typography>
               </Box>
               <Box
-                className="sub-menu-link"
-                onClick={() => navigate("/service")}
+                className={`sub-menu-link ${
+                  activeTab === "service" && "active"
+                }`}
+                onClick={() => {
+                  setActiveTab("service");
+                  navigate("/service");
+                }}
               >
-                <Typography>Service</Typography>
+                <Typography>
+                  <FiSquare />
+                  Service
+                </Typography>
               </Box>
               <Box
-                className="sub-menu-link"
-                onClick={() => navigate("/payment-type")}
+                className={`sub-menu-link ${
+                  activeTab === "payment-type" && "active"
+                }`}
+                onClick={() => {
+                  setActiveTab("payment-type");
+                  navigate("/payment-type");
+                }}
               >
-                <Typography>Payment Type</Typography>
+                <Typography>
+                  <FiSquare />
+                  Payment Type
+                </Typography>
               </Box>
             </AccordionDetails>
           </Accordion>

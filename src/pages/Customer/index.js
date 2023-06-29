@@ -1,7 +1,20 @@
-import React, { useState } from 'react'
-import { Box, Button, Grid, IconButton, InputAdornment, InputBase, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material'
-import { FiEdit3, FiPlus, FiSearch, FiTrash2 } from 'react-icons/fi'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Switch,
+} from "@mui/material";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import TopBar from "../../components/TopBar";
+import ConfirmationModal from "../../components/ConfirmationModal";
+// import { styled } from "@mui/material/styles";
 
 const customers = [
   { id: 1, name: "Krushang rathod", number: 9879854706, gender: "Male" },
@@ -18,7 +31,16 @@ const customers = [
 ];
 
 const Customer = () => {
-  const navigate = useNavigate();
+  const switchStyles = {
+    color: "var(--color-black)",
+    "&.MuiChecked": {
+      color: "green",
+    },
+    "&.Mui-checked + .MuiSwitch-track": {
+      backgroundColor: "lightgreen", // Customize the track color when checked
+    },
+  };
+
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -41,46 +63,17 @@ const Customer = () => {
   );
   // pagination code end
 
-  const [status, setStatus] = useState("active");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  const deleteModalClose = () => setIsDeleteModalOpen(false);
 
-  const changeStatusHandler = (status) => {
-    setStatus(status);
-  }
-  
   return (
     <>
-      {/* top page action with text */}
-      <Box className="top-bar">
-        <Grid container justifyContent={"space-between"} alignItems={"center"}>
-          <Grid item>
-            <Box className="search-box">
-              <InputBase
-                name="customer-search"
-                placeholder="Search customer"
-                endAdornment={
-                  <InputAdornment
-                    position="end"
-                    className="end-input-icon text-grey"
-                  >
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
-                    >
-                      <FiSearch />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </Box>
-          </Grid>
-
-          <Grid item>
-            <Button component={'button'} className='btn btn-tertiary' onClick={()=>navigate('/addCustomer')}>
-              <FiPlus /> &nbsp; Add Customer
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+      <TopBar
+        btnTitle="Add Customer"
+        inputName="customer"
+        navigatePath="/addCustomer"
+      />
 
       {/* customer listing */}
       <Box className="card">
@@ -107,41 +100,19 @@ const Customer = () => {
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.number}</TableCell>
                           <TableCell align="left">{row.gender}</TableCell>
-                          <TableCell>
-                            <Box sx={{ display: "flex" }}>
-                              <Box className="mask-box">
-                                  <Box
-                                    className="mask"
-                                    style={{
-                                      transform: `translateX(${status === "active" ? 0 : "100px"})`
-                                    }}
-                                  />
-                                  <Button
-                                    disableRipple
-                                    variant="text"
-                                    onClick={() => changeStatusHandler('active')}
-                                    sx={{ color:status === "active" ? "#ffffff" : "var(--color-black)"  }}
-                                  >
-                                    Active
-                                  </Button>
-                                  <Button
-                                    disableRipple
-                                    variant="text"
-                                    onClick={() => changeStatusHandler('inactive')}
-                                    sx={{ color: status === "inactive" ? "#ffffff" : "var(--color-black)" }}
-                                  >
-                                    Inactive
-                                  </Button>
-                              </Box>
-                            </Box>
+                          <TableCell align="left">
+                            <Switch style={switchStyles} />
                           </TableCell>
-                          <TableCell>
+                          <TableCell align="left">
                             <Box className="table-action-btn">
                               <Button className="btn btn-primary">
-                                <FiEdit3 />
+                                <FiEdit3 size={15} />
                               </Button>
-                              <Button className="btn btn-primary">
-                                <FiTrash2 />
+                              <Button
+                                className="btn btn-primary"
+                                onClick={deleteModalOpen}
+                              >
+                                <FiTrash2 size={15} />
                               </Button>
                             </Box>
                           </TableCell>
@@ -179,6 +150,14 @@ const Customer = () => {
           />
         </Box>
       </Box>
+
+      {isDeleteModalOpen && (
+        <ConfirmationModal
+          isDeleteModalOpen={isDeleteModalOpen}
+          deleteModalClose={deleteModalClose}
+          title="customer"
+        />
+      )}
     </>
   );
 };
