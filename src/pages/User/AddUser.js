@@ -5,12 +5,32 @@ import {
   FormControl,
   FormGroup,
   Grid,
-  InputBase,
   Typography,
 } from "@mui/material";
 import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import Select from "react-select";
+
+// select option
+const options = [
+  { value: "Admin", label: "Admin" },
+  { value: "User", label: "User" },
+  { value: "Manager", label: "Manager" },
+];
+
+const customStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    border: `1px solid ${
+      state.isFocused || state.hover
+        ? "var(--color-black)"
+        : "var(--color-grey)"
+    }`,
+    borderRadius: 6,
+    padding: "7px 0px",
+  }),
+};
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -24,47 +44,11 @@ const AddUser = () => {
 
   return (
     <>
-      {/* <Box className="card">
-        <Box className="top-bar">
-          <Grid container justifyContent={"end"}>
-            <Grid item md={0.7}>
-              <Button className="btn-close" onClick={() => navigate(-1)}>
-                <FiX size={25} color="var(--color-grey)" />
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
-        <FormGroup className="form-field">
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormControl variant="standard" className="form-control">
-                <Typography
-                  variant="body2"
-                  component="span"
-                  className="text-black input-label"
-                >
-                  Staff Name *
-                </Typography>
-                <InputBase
-                  name="staff-name"
-                  placeholder="Enter staff name"
-                  className={"input-field"}
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-        </FormGroup>
-      </Box>
-      <Grid container spacing={3} sx={{ marginTop: "6px" }}>
-        <Grid item md={1.5}>
-          <Button className="btn btn-tertiary">Save</Button>
-        </Grid>
-        <Grid item md={1.5}>
-          <Button className="btn btn-cancel">Cancel</Button>
-        </Grid>
-      </Grid> */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box className="card">
+        <Box
+          className="card"
+          sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
+        >
           <Box className="top-bar">
             <Grid container justifyContent={"end"}>
               <Grid item md={0.7}>
@@ -84,18 +68,25 @@ const AddUser = () => {
                       !errors.first_name ? "input-field" : "border-error"
                     }
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      First name *
+                    </Typography>
                     <input
                       type="text"
                       placeholder="First name"
                       {...register("first_name", {
-                        required: true,
+                        required: "First name is required",
                         maxLength: 100,
                       })}
                     />
                   </div>
                   {errors.first_name && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.first_name.message}
                     </span>
                   )}
                 </FormControl>
@@ -107,18 +98,25 @@ const AddUser = () => {
                       !errors.last_name ? "input-field" : "border-error"
                     }
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Last name *
+                    </Typography>
                     <input
                       type="date"
                       placeholder="Last name"
                       {...register("last_name", {
-                        required: true,
+                        required: "Last name is required",
                         maxLength: 100,
                       })}
                     />
                   </div>
                   {errors.last_name && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.last_name.message}
                     </span>
                   )}
                 </FormControl>
@@ -130,18 +128,25 @@ const AddUser = () => {
                       !errors.username ? "input-field" : "border-error"
                     }
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Username *
+                    </Typography>
                     <input
                       type="text"
                       placeholder="Username"
                       {...register("username", {
-                        required: true,
+                        required: "Username is required",
                         maxLength: 100,
                       })}
                     />
                   </div>
                   {errors.username && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.username.message}
                     </span>
                   )}
                 </FormControl>
@@ -153,17 +158,26 @@ const AddUser = () => {
                   <div
                     className={!errors.role ? "input-field" : "border-error"}
                   >
-                    <select
-                      {...register("role", {
-                        required: true,
-                        maxLength: 100,
-                      })}
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
                     >
-                      <option value="">Select Role</option>
-                      <option value="1">Role 1</option>
-                      <option value="2">Role 2</option>
-                      <option value="3">Role 3</option>
-                    </select>
+                      Role *
+                    </Typography>
+                    <Select
+                      placeholder="Select role"
+                      options={options}
+                      styles={customStyles}
+                      name="role"
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: "#364865",
+                        },
+                      })}
+                    />
                   </div>
                   {errors.role && (
                     <span style={{ fontSize: "14px", color: "red" }}>
@@ -177,18 +191,25 @@ const AddUser = () => {
                   <div
                     className={!errors.branch ? "input-field" : "border-error"}
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Branch name *
+                    </Typography>
                     <input
                       type="text"
                       placeholder="Branch name"
                       {...register("branch", {
-                        required: true,
+                        required: "Branch name is required",
                         maxLength: 100,
                       })}
                     />
                   </div>
                   {errors.branch && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.branch.message}
                     </span>
                   )}
                 </FormControl>
@@ -200,19 +221,29 @@ const AddUser = () => {
                   <div
                     className={!errors.email ? "input-field" : "border-error"}
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Email *
+                    </Typography>
                     <input
                       type="text"
                       placeholder="Email address"
                       {...register("email", {
-                        required: true,
+                        required: "Email is required",
                         maxLength: 100,
-                        pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                        pattern: {
+                          value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                          message: "Invalid email address",
+                        },
                       })}
                     />
                   </div>
                   {errors.email && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.email.message}
                     </span>
                   )}
                 </FormControl>
@@ -222,19 +253,32 @@ const AddUser = () => {
                   <div
                     className={!errors.phone ? "input-field" : "border-error"}
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Phone *
+                    </Typography>
                     <input
                       type="number"
                       placeholder="+91"
                       {...register("phone", {
-                        required: true,
-                        maxLength: 10,
-                        minLength: 10,
+                        required: "Phone number is required",
+                        maxLength: {
+                          value: 10,
+                          message: "Phone number must be 10 digit",
+                        },
+                        minLength: {
+                          value: 10,
+                          message: "Phone number must be 10 digit",
+                        },
                       })}
                     />
                   </div>
                   {errors.phone && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.phone.message}
                     </span>
                   )}
                 </FormControl>
@@ -246,19 +290,29 @@ const AddUser = () => {
                   <div
                     className={!errors.address ? "input-field" : "border-error"}
                   >
+                    <Typography
+                      variant="body2"
+                      component="span"
+                      className="text-black input-label"
+                    >
+                      Address *
+                    </Typography>
                     <textarea
                       type="text"
                       rows={3}
                       placeholder="Address"
                       {...register("address", {
-                        required: true,
-                        maxLength: 250,
+                        required: "Address is required",
+                        maxLength: {
+                          value: 250,
+                          message: "250 character limit",
+                        },
                       })}
                     />
                   </div>
                   {errors.address && (
                     <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
+                      {errors.address.message}
                     </span>
                   )}
                 </FormControl>
