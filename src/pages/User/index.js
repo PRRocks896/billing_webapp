@@ -132,7 +132,7 @@ const User = () => {
                           <TableCell align="left">{row.branch}</TableCell>
                           <TableCell align="left">{row.email}</TableCell>
                           <TableCell align="left">{row.phone}</TableCell>
-                          <TableCell align="left" width={400}>
+                          <TableCell align="left" className="exclude-wrap">
                             {row.address}
                           </TableCell>
 

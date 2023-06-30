@@ -234,68 +234,92 @@
 
   // table
   .table-wrapper {
-      table {
-          thead {
-              background-color: var(--color-black);
-              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-              border-radius: 0px;
-              tr {
-                  th {
-                      font-family: 'Poppins', sans-serif;
-                      color: var(--color-white);
-                      font-weight: 500;
-                      font-size: 15px;
-                      line-height: 30px;
-                      padding: 10px 20px;
-                      &:first-child {
-                          border-top-left-radius: 5px;
-                          border-bottom-left-radius: 5px;
-                      }
-          
-                      &:last-child {
-                          border-top-right-radius: 5px;
-                          border-bottom-right-radius: 5px;
-                      }
-                  }
-              }
+    width: 100%;
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      thead {
+        background-color: var(--color-black);
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 0px;
+        tr {
+          th {
+            font-family: 'Poppins', sans-serif;
+            color: var(--color-white);
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 30px;
+            padding: 10px 20px;
+            &:first-child {
+              border-top-left-radius: 5px;
+              border-bottom-left-radius: 5px;
+            }
+
+            &:last-child {
+              border-top-right-radius: 5px;
+              border-bottom-right-radius: 5px;
+            }
           }
-  
-          tbody {
-              tr {
-                  td {
-                      font-weight: 400;
-                      font-family: 'Poppins', sans-serif;
-                      font-size: 15px;
-                      line-height: 27px;
-                      color: var(--color-grey);
-                      padding: 10px 20px;
-                      border-bottom: 1px solid rgba(119, 119, 119, 0.2);
-                  }
-              }
-          }
+        }
       }
+
       tbody {
-          tr {
-              &.Mui-selected,
-              &:hover {
-                  background-color: #f5f5f5 !important;
-              }
+        tr {
+          td {
+            font-weight: 400;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            line-height: 27px;
+            color: var(--color-grey);
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(119, 119, 119, 0.2);
+            white-space: nowrap; /* Prevent line breaks */
           }
+          &:not(.exclude-wrap) {
+            white-space: wrap !important;
+          }
+        }
       }
-      .table-action-btn {
-          display: flex;
-          gap: 10px;
-          svg {
-              font-size: 18px;
-              overflow: inherit;
-          }
-          button {
-              width: 30px;
-              max-width: 30px;
-              min-width: 30px;
-              height: 30px;
-          }
+    }
+    tbody {
+      tr {
+        &.Mui-selected,
+        &:hover {
+            background-color: #f5f5f5 !important;
+        }
       }
+    }
+    .table-action-btn {
+      display: flex;
+      gap: 10px;
+      svg {
+        font-size: 18px;
+        overflow: inherit;
+      }
+      button {
+        width: 30px;
+        max-width: 30px;
+        min-width: 30px;
+        height: 30px;
+      }
+    }
+  }
+
+  .table-wrapper::-webkit-scrollbar {
+    height: 5px;
+    &.hover{
+      cursor: pointer;
+    }
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    box-shadow: none;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--color-green);
+    border-radius: 6px;
   }
 
   // activity chart
