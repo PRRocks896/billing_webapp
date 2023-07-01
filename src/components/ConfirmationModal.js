@@ -1,6 +1,5 @@
 import { Box, Button, Fade, Grid, Modal, Typography } from "@mui/material";
 import React from "react";
-import { FiPlus } from "react-icons/fi";
 
 const ConfirmationModal = ({ isDeleteModalOpen, deleteModalClose, title }) => {
   return (
