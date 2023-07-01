@@ -18,7 +18,7 @@ import { useStaff } from "./useStaff";
 import { useSelector } from "react-redux";
 
 const Staff = () => {
-  useStaff();
+  const { deleteStaff, setDeleteIdHandler } = useStaff();
   const navigate = useNavigate();
   const staff = useSelector((state) => state.staff.data);
   console.log(staff);
@@ -46,7 +46,10 @@ const Staff = () => {
   // pagination code end
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  const deleteModalOpen = (id) => {
+    setDeleteIdHandler(id);
+    setIsDeleteModalOpen(true);
+  };
   const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   return (
@@ -89,7 +92,7 @@ const Staff = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen}
+                                onClick={deleteModalOpen.bind(null, row.id)}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -135,6 +138,7 @@ const Staff = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="staff"
+          deleteStaff={deleteStaff}
         />
       )}
     </>

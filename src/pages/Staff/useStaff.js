@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { showToast } from "../../utils/helper";
 import { getStaffList } from "../../service/staff";
 import { staffAction } from "../../redux/staff";
@@ -6,7 +6,9 @@ import { useDispatch } from "react-redux";
 
 export const useStaff = () => {
   const dispatch = useDispatch();
+  const [deleteId, setDeleteId] = useState("");
 
+  //  fetch staff logic
   const fetchStaffData = useCallback(async () => {
     try {
       const body = {
@@ -34,4 +36,17 @@ export const useStaff = () => {
   useEffect(() => {
     fetchStaffData();
   }, [fetchStaffData]);
+
+  // delete logic
+  const setDeleteIdHandler = (id) => {
+    setDeleteId(id);
+  };
+  const deleteStaff = () => {
+    console.log(deleteId);
+  };
+
+  return {
+    deleteStaff,
+    setDeleteIdHandler,
+  };
 };
