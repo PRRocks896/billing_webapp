@@ -17,20 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { useStaff } from "./useStaff";
 import { useSelector } from "react-redux";
 
-// const staff = [
-//   { id: 1, name: "Krushang rathod" },
-//   { id: 2, name: "Krushang rathod" },
-//   { id: 3, name: "Krushang rathod" },
-//   { id: 4, name: "Krushang rathod" },
-//   { id: 5, name: "Krushang rathod" },
-//   { id: 6, name: "Krushang rathod" },
-//   { id: 7, name: "Krushang rathod" },
-//   { id: 8, name: "Krushang rathod" },
-//   { id: 9, name: "Krushang rathod" },
-//   { id: 10, name: "Krushang rathod" },
-//   { id: 11, name: "Krushang rathod" },
-// ];
-
 const Staff = () => {
   useStaff();
   const navigate = useNavigate();

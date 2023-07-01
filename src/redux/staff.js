@@ -8,7 +8,7 @@ const staffSlice = createSlice({
   name: "staff",
   initialState,
   reducers: {
-    addStaff(state, action) {
+    storeStaff(state, action) {
       return { data: action.payload };
     },
   },

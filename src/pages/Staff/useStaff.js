@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { showToast } from "../../utils/helper";
 import { getStaffList } from "../../service/staff";
 import { staffAction } from "../../redux/staff";
@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 export const useStaff = () => {
   const dispatch = useDispatch();
 
-  const fetchStaffData = async () => {
+  const fetchStaffData = useCallback(async () => {
     try {
       const body = {
         where: {
@@ -24,14 +24,14 @@ export const useStaff = () => {
       const response = await getStaffList(body);
       if (response.statusCode === 200) {
         const payload = response.data.rows;
-        dispatch(staffAction.addStaff(payload));
+        dispatch(staffAction.storeStaff(payload));
       }
     } catch (error) {
       showToast(error.message, false);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchStaffData();
-  }, []);
+  }, [fetchStaffData]);
 };

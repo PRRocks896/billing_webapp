@@ -124,6 +124,14 @@ span {
   background-color: rgba(25, 118, 210, 0.04) !important;
 }
 
+.custom-toast {
+  background-color: var(--color-black); 
+  color: var(--color-white);
+}
+// .Toastify__close-button {
+//   color: #fff /* Replace with your desired color */
+// }
+
 .btn {
   font-style: normal;
   font-weight: 500;
