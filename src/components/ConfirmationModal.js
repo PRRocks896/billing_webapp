@@ -7,6 +7,7 @@ const ConfirmationModal = ({ isDeleteModalOpen, deleteModalClose, title }) => {
     <>
       {/* delete confirmation modal start */}
       <Modal
+        disableEscapeKeyDown
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={isDeleteModalOpen}
@@ -27,9 +28,9 @@ const ConfirmationModal = ({ isDeleteModalOpen, deleteModalClose, title }) => {
             >
               Delete {title}
             </Typography>
-            <Box className="modal-close" onClick={deleteModalClose}>
+            {/* <Box className="modal-close" onClick={deleteModalClose}>
               <FiPlus />
-            </Box>
+            </Box> */}
             <Box className="modal-body">
               <Box className="confirmation-text">
                 <Typography paragraph>

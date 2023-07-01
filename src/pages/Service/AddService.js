@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import Select from "react-select";
-import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 // select option
@@ -39,7 +38,7 @@ const AddService = ({ tag }) => {
     <>
       <Box className="card">
         {/* top page action with text */}
-        <Box className="top-bar">
+        {/* <Box className="top-bar">
           <Grid container justifyContent={"end"}>
             <Grid item md={0.7}>
               <Button className="btn-close" onClick={() => navigate(-1)}>
@@ -47,7 +46,7 @@ const AddService = ({ tag }) => {
               </Button>
             </Grid>
           </Grid>
-        </Box>
+        </Box> */}
         <FormGroup className="form-field">
           <Grid container spacing={2}>
             <Grid item xs={6}>
@@ -116,7 +115,9 @@ const AddService = ({ tag }) => {
           </Button>
         </Grid>
         <Grid item md={1.5}>
-          <Button className="btn btn-cancel">Cancel</Button>
+          <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+            Cancel
+          </Button>
         </Grid>
       </Grid>
     </>

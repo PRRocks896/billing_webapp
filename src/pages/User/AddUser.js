@@ -7,7 +7,6 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
@@ -60,7 +59,7 @@ const AddUser = ({ tag }) => {
           className="card"
           sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
         >
-          <Box className="top-bar">
+          {/* <Box className="top-bar">
             <Grid container justifyContent={"end"}>
               <Grid item md={0.7}>
                 <Button className="btn-close" onClick={() => navigate(-1)}>
@@ -68,7 +67,7 @@ const AddUser = ({ tag }) => {
                 </Button>
               </Grid>
             </Grid>
-          </Box>
+          </Box> */}
 
           <FormGroup className="form-field">
             <Grid container spacing={2}>
@@ -335,7 +334,9 @@ const AddUser = ({ tag }) => {
             {/* <input type="submit" value={"Save"} className="btn btn-tertiary" /> */}
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel">Cancel</Button>
+            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+              Cancel
+            </Button>
           </Grid>
         </Grid>
       </form>
