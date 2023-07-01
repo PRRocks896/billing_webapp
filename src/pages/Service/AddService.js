@@ -28,7 +28,7 @@ const customStyles = {
         : "var(--color-grey)"
     }`,
     borderRadius: 6,
-    padding: "7px 0px",
+    // padding: "7px 0px",
   }),
 };
 
