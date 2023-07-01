@@ -22,18 +22,36 @@ const routes = createBrowserRouter([
     element: <LayoutProvider />,
     children: [
       { index: true, element: <Home /> },
+
       { path: "customer", element: <Customer /> },
-      { path: "addCustomer", element: <AddCustomer /> },
+      { path: "add-customer", element: <AddCustomer tag="add" /> },
+      { path: "edit-customer", element: <AddCustomer tag="edit" /> },
+
       { path: "staff", element: <Staff /> },
-      { path: "add-staff", element: <AddStaff /> },
+      { path: "add-staff", element: <AddStaff tag="add" /> },
+      { path: "edit-staff", element: <AddStaff tag="edit" /> },
+
       { path: "service-category", element: <ServiceCategory /> },
-      { path: "add-service-category", element: <AddServiceCategory /> },
+      {
+        path: "add-service-category",
+        element: <AddServiceCategory tag="add" />,
+      },
+      {
+        path: "edit-service-category",
+        element: <AddServiceCategory tag="edit" />,
+      },
+
       { path: "service", element: <Service /> },
-      { path: "add-service", element: <AddService /> },
+      { path: "add-service", element: <AddService tag="add" /> },
+      { path: "edit-service", element: <AddService tag="edit" /> },
+
       { path: "payment-type", element: <PaymentType /> },
-      { path: "add-payment-type", element: <AddPaymentType /> },
+      { path: "add-payment-type", element: <AddPaymentType tag="add" /> },
+      { path: "edit-payment-type", element: <AddPaymentType tag="edit" /> },
+
       { path: "user", element: <User /> },
-      { path: "add-user", element: <AddUser /> },
+      { path: "add-user", element: <AddUser tag="add" /> },
+      { path: "edit-user", element: <AddUser tag="edit" /> },
     ],
   },
   { path: "create-bill", element: <CreateBill /> },

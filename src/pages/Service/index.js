@@ -13,6 +13,7 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { useNavigate } from "react-router-dom";
 
 const service = [
   { id: 1, category: "Category", name: "service-name", amount: "300" },
@@ -29,6 +30,7 @@ const service = [
 ];
 
 const Service = () => {
+  const navigate = useNavigate();
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -89,7 +91,10 @@ const Service = () => {
                           <TableCell align="left">{row.amount}</TableCell>
                           <TableCell>
                             <Box className="table-action-btn">
-                              <Button className="btn btn-primary">
+                              <Button
+                                className="btn btn-primary"
+                                onClick={() => navigate("/edit-service")}
+                              >
                                 <FiEdit3 size={15} />
                               </Button>
                               <Button

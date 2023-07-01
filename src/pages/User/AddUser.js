@@ -32,7 +32,7 @@ const customStyles = {
   }),
 };
 
-const AddUser = () => {
+const AddUser = ({ tag }) => {
   const navigate = useNavigate();
 
   const [role, setRole] = useState(null);
@@ -330,7 +330,7 @@ const AddUser = () => {
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item md={1.5}>
             <Button type="submit" className="btn btn-tertiary">
-              Save
+              {tag === "add" ? "Save" : "Update"}
             </Button>
             {/* <input type="submit" value={"Save"} className="btn btn-tertiary" /> */}
           </Grid>

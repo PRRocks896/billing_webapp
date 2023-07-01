@@ -13,6 +13,7 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { useNavigate } from "react-router-dom";
 
 const users = [
   {
@@ -73,6 +74,7 @@ const users = [
 ];
 
 const User = () => {
+  const navigate = useNavigate();
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -138,7 +140,10 @@ const User = () => {
 
                           <TableCell align="left">
                             <Box className="table-action-btn">
-                              <Button className="btn btn-primary">
+                              <Button
+                                className="btn btn-primary"
+                                onClick={() => navigate("/edit-user")}
+                              >
                                 <FiEdit3 size={15} />
                               </Button>
                               <Button

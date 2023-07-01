@@ -14,6 +14,7 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { useNavigate } from "react-router-dom";
 // import { styled } from "@mui/material/styles";
 
 const customers = [
@@ -30,17 +31,18 @@ const customers = [
   { id: 11, name: "Krushang rathod", number: 9879854706, gender: "Male" },
 ];
 
-const Customer = () => {
-  const switchStyles = {
-    color: "var(--color-black)",
-    "&.MuiChecked": {
-      color: "green",
-    },
-    "&.Mui-checked + .MuiSwitch-track": {
-      backgroundColor: "lightgreen", // Customize the track color when checked
-    },
-  };
+const switchStyles = {
+  color: "var(--color-black)",
+  "&.MuiChecked": {
+    color: "green",
+  },
+  "&.Mui-checked + .MuiSwitch-track": {
+    backgroundColor: "lightgreen", // Customize the track color when checked
+  },
+};
 
+const Customer = () => {
+  const navigate = useNavigate();
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -67,12 +69,16 @@ const Customer = () => {
   const deleteModalOpen = () => setIsDeleteModalOpen(true);
   const deleteModalClose = () => setIsDeleteModalOpen(false);
 
+  const editHandler = () => {
+    navigate("/edit-customer");
+  };
+
   return (
     <>
       <TopBar
         btnTitle="Add Customer"
         inputName="customer"
-        navigatePath="/addCustomer"
+        navigatePath="/add-customer"
       />
 
       {/* customer listing */}
@@ -105,7 +111,10 @@ const Customer = () => {
                           </TableCell>
                           <TableCell align="left">
                             <Box className="table-action-btn">
-                              <Button className="btn btn-primary">
+                              <Button
+                                className="btn btn-primary"
+                                onClick={editHandler}
+                              >
                                 <FiEdit3 size={15} />
                               </Button>
                               <Button
