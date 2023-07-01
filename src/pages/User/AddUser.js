@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -32,15 +32,26 @@ const customStyles = {
   }),
 };
 
-const AddUser = () => {
+const AddUser = ({ tag }) => {
   const navigate = useNavigate();
+
+  const [role, setRole] = useState(null);
+  const changeRoleHandler = (selectedOption) => {
+    console.log(selectedOption);
+    setRole(selectedOption);
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+
+  const onSubmit = (data) => {
+    console.log(data);
+    console.log(errors);
+    console.log(role);
+  };
 
   return (
     <>
@@ -106,7 +117,7 @@ const AddUser = () => {
                       Last name *
                     </Typography>
                     <input
-                      type="date"
+                      type="text"
                       placeholder="Last name"
                       {...register("last_name", {
                         required: "Last name is required",
@@ -155,9 +166,7 @@ const AddUser = () => {
             <Grid container spacing={2}>
               <Grid item xs={4}>
                 <FormControl variant="standard" className="form-control">
-                  <div
-                    className={!errors.role ? "input-field" : "border-error"}
-                  >
+                  <div className={"input-field"}>
                     <Typography
                       variant="body2"
                       component="span"
@@ -170,6 +179,8 @@ const AddUser = () => {
                       options={options}
                       styles={customStyles}
                       name="role"
+                      value={role}
+                      onChange={changeRoleHandler}
                       theme={(theme) => ({
                         ...theme,
                         colors: {
@@ -179,11 +190,6 @@ const AddUser = () => {
                       })}
                     />
                   </div>
-                  {errors.role && (
-                    <span style={{ fontSize: "14px", color: "red" }}>
-                      This field is required
-                    </span>
-                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={8}>
@@ -324,7 +330,7 @@ const AddUser = () => {
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item md={1.5}>
             <Button type="submit" className="btn btn-tertiary">
-              Save
+              {tag === "add" ? "Save" : "Update"}
             </Button>
             {/* <input type="submit" value={"Save"} className="btn btn-tertiary" /> */}
           </Grid>

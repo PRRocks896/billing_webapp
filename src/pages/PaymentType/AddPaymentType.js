@@ -11,7 +11,7 @@ import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
-const AddPaymentType = () => {
+const AddPaymentType = ({ tag }) => {
   const navigate = useNavigate();
 
   const {
@@ -74,7 +74,7 @@ const AddPaymentType = () => {
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item md={1.5}>
             <Button type="submit" className="btn btn-tertiary">
-              Save
+              {tag === "add" ? "Save" : "Update"}
             </Button>
           </Grid>
           <Grid item md={1.5}>

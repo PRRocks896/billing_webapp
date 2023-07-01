@@ -32,7 +32,7 @@ const customStyles = {
   }),
 };
 
-const AddService = () => {
+const AddService = ({ tag }) => {
   const navigate = useNavigate();
 
   return (
@@ -111,7 +111,9 @@ const AddService = () => {
       </Box>
       <Grid container spacing={3} sx={{ marginTop: "6px" }}>
         <Grid item md={1.5}>
-          <Button className="btn btn-tertiary">Save</Button>
+          <Button className="btn btn-tertiary">
+            {tag === "add" ? "Save" : "Update"}
+          </Button>
         </Grid>
         <Grid item md={1.5}>
           <Button className="btn btn-cancel">Cancel</Button>
