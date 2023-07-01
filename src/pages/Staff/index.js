@@ -14,23 +14,15 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-
-const staff = [
-  { id: 1, name: "Krushang rathod" },
-  { id: 2, name: "Krushang rathod" },
-  { id: 3, name: "Krushang rathod" },
-  { id: 4, name: "Krushang rathod" },
-  { id: 5, name: "Krushang rathod" },
-  { id: 6, name: "Krushang rathod" },
-  { id: 7, name: "Krushang rathod" },
-  { id: 8, name: "Krushang rathod" },
-  { id: 9, name: "Krushang rathod" },
-  { id: 10, name: "Krushang rathod" },
-  { id: 11, name: "Krushang rathod" },
-];
+import { useStaff } from "./useStaff";
+import { useSelector } from "react-redux";
 
 const Staff = () => {
+  useStaff();
   const navigate = useNavigate();
+  const staff = useSelector((state) => state.staff.data);
+  console.log(staff);
+
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -48,8 +40,8 @@ const Staff = () => {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - staff.length) : 0;
 
   const visibleRows = useMemo(
-    () => staff.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
+    () => staff?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [page, rowsPerPage, staff]
   );
   // pagination code end
 

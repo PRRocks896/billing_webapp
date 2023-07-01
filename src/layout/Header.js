@@ -51,7 +51,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   let location = useLocation();
-  console.log("location", location.pathname.slice(1).toUpperCase());
   const pageTitle = location.pathname.slice(1).toUpperCase();
   // account dropdown
   const [anchorEl, setAnchorEl] = React.useState(null);
