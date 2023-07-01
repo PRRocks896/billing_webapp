@@ -16,6 +16,7 @@ export const authHeader = () => {
 };
 
 export const get = async (url) => {
+  console.log(`${baseUrl}${url}`);
   const response = await axios
     .get(`${baseUrl}${url}`, authHeader())
     .then((res) => {

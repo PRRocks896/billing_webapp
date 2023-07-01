@@ -9,7 +9,7 @@ const customerSlice = createSlice({
   initialState: initialState,
   reducers: {
     addCustomer(state, action) {
-      console.log(action);
+      console.warn(action);
       return { data: action.payload };
     },
   },
