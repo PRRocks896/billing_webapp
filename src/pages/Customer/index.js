@@ -15,9 +15,6 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-import { customerActions } from "../../redux/customer";
-import { useDispatch } from "react-redux";
-// import { styled } from "@mui/material/styles";
 
 const customers = [
   { id: 1, name: "Krushang rathod", number: 9879854706, gender: "Male" },
@@ -44,7 +41,6 @@ const switchStyles = {
 };
 
 const Customer = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   // pagination code start
   const [page, setPage] = useState(0);
@@ -75,10 +71,6 @@ const Customer = () => {
   const editHandler = () => {
     navigate("/edit-customer");
   };
-
-  useEffect(() => {
-    dispatch(customerActions.addCustomer([{ name: "rk" }]));
-  }, [dispatch]);
 
   return (
     <>

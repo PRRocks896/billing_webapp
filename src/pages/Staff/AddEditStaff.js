@@ -8,18 +8,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useAddEditStaff } from "./useAddEditStaff";
 
-const AddStaff = ({ tag }) => {
+const AddEditStaff = ({ tag }) => {
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const { register, handleSubmit, errors, onSubmit } = useAddEditStaff();
 
   return (
     <>
@@ -87,4 +80,4 @@ const AddStaff = ({ tag }) => {
   );
 };
 
-export default AddStaff;
+export default AddEditStaff;
