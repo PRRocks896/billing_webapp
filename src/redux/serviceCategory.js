@@ -9,8 +9,10 @@ const serviceCategorySlice = createSlice({
   initialState,
   reducers: {
     storeServiceCategories(state, action) {
-      console.log(action);
       return { data: action.payload };
+    },
+    removeServiceCategory(state, action) {
+      return { data: state.data.filter((row) => row.id !== action.payload.id) };
     },
   },
 });

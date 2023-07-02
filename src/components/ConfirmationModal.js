@@ -1,12 +1,33 @@
 import { Box, Button, Fade, Grid, Modal, Typography } from "@mui/material";
 import React from "react";
+import { showToast } from "../utils/helper";
+import { useDispatch } from "react-redux";
 
 const ConfirmationModal = ({
   isDeleteModalOpen,
   deleteModalClose,
   title,
-  deleteStaff,
+  deleteService,
+  recordId,
+  removeRecordFromState,
 }) => {
+  const dispatch = useDispatch();
+  const deleteRecordHandler = async () => {
+    try {
+      const response = await deleteService(recordId);
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        dispatch(removeRecordFromState({ id: recordId }));
+        deleteModalClose();
+      } else {
+        showToast(response.messageCode, false);
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+
   return (
     <>
       {/* delete confirmation modal start */}
@@ -45,7 +66,10 @@ const ConfirmationModal = ({
             <Box className="modal-footer">
               <Grid container spacing={3}>
                 <Grid item md={6} xs={12}>
-                  <Button className="btn btn-tertiary" onClick={deleteStaff}>
+                  <Button
+                    className="btn btn-tertiary"
+                    onClick={deleteRecordHandler}
+                  >
                     Yes
                   </Button>
                 </Grid>

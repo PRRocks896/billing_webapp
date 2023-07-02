@@ -39,11 +39,11 @@ export const get = async (url) => {
   return response;
 };
 
-export const remove = async (url, data) => {
+export const remove = async (url, data = null) => {
   const response = await axios
-    .delete(`${baseUrl}${url}`, data, authHeader())
+    .delete(`${baseUrl}${url}`, authHeader())
     .then((res) => {
-      return res;
+      return res.data;
     })
     .catch((err) => {
       console.error(err);

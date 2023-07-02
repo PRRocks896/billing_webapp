@@ -16,11 +16,13 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { useServiceCategory } from "./hook/useServicecategory";
 import { useSelector } from "react-redux";
+import { deleteServiceCategory } from "../../service/serviceCategory";
+import { serviceCategoryAction } from "../../redux/serviceCategory";
 
 const ServiceCategory = () => {
-  useServiceCategory();
+  const { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId } =
+    useServiceCategory();
   const serviceSategories = useSelector((state) => state.serviceCategory.data);
-  console.log("service category page", serviceSategories);
 
   const navigate = useNavigate();
   // pagination code start
@@ -50,10 +52,6 @@ const ServiceCategory = () => {
     [page, rowsPerPage, serviceSategories]
   );
   // pagination code end
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   return (
     <>
@@ -95,7 +93,7 @@ const ServiceCategory = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen}
+                                onClick={deleteHandler.bind(null, row.id)}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -108,7 +106,7 @@ const ServiceCategory = () => {
                 ) : (
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No service Found
+                      No service category found
                     </TableCell>
                   </TableRow>
                 )}
@@ -141,6 +139,9 @@ const ServiceCategory = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="service category"
+          deleteService={deleteServiceCategory}
+          recordId={deleteId}
+          removeRecordFromState={serviceCategoryAction.removeServiceCategory}
         />
       )}
     </>

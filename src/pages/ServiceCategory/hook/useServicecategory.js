@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { serviceCategoryAction } from "../../../redux/serviceCategory";
 import { showToast } from "../../../utils/helper";
@@ -6,6 +6,15 @@ import { getServiceCategoryList } from "../../../service/serviceCategory";
 
 export const useServiceCategory = () => {
   const dispatch = useDispatch();
+
+  const [deleteId, setDeleteId] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  const deleteModalClose = () => setIsDeleteModalOpen(false);
+  const deleteHandler = (id) => {
+    deleteModalOpen();
+    setDeleteId(id);
+  };
 
   //  fetch staff logic
   const fetchServiceCategoryData = useCallback(async () => {
@@ -23,9 +32,12 @@ export const useServiceCategory = () => {
         },
       };
       const response = await getServiceCategoryList(body);
-      console.log(response);
+      //   console.log(response);
       if (response.statusCode === 200) {
         const payload = response.data.rows;
+        dispatch(serviceCategoryAction.storeServiceCategories(payload));
+      } else if (response.statusCode === 404) {
+        const payload = [];
         dispatch(serviceCategoryAction.storeServiceCategories(payload));
       }
     } catch (error) {
@@ -37,5 +49,5 @@ export const useServiceCategory = () => {
     fetchServiceCategoryData();
   }, [fetchServiceCategoryData]);
 
-  return {};
+  return { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId };
 };
