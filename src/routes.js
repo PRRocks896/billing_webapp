@@ -52,9 +52,9 @@ const routes = createBrowserRouter([
       { path: "user", element: <User /> },
       { path: "add-user", element: <AddUser tag="add" /> },
       { path: "edit-user", element: <AddUser tag="edit" /> },
+      { path: "create-bill", element: <CreateBill /> },
     ],
-  },
-  { path: "create-bill", element: <CreateBill /> },
+  }
 ]);
 
 export default routes;
