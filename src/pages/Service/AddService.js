@@ -5,52 +5,45 @@ import {
   FormControl,
   FormGroup,
   Grid,
-  InputBase,
-  Typography,
+  TextField,
+  Autocomplete,
 } from "@mui/material";
-import Select from "react-select";
-import { useNavigate } from "react-router-dom";
+import { Controller } from "react-hook-form";
+import { useAddEditService } from "./hook/useAddEditService";
 
-// select option
-const options = [
-  { value: "Category1", label: "Category 1" },
-  { value: "Category2", label: "Category 2" },
-  { value: "Category3", label: "Category 3" },
+const categoryOptions = [
+  { label: "Category 1" },
+  { label: "Category 2" },
+  { label: "Category 3" },
+  { label: "Category 4" },
+  { label: "Category 5" },
+  { label: "Category 6" },
+  { label: "Category 7" },
 ];
-
-const customStyles = {
-  control: (provided, state) => ({
-    ...provided,
-    border: `1px solid ${
-      state.isFocused || state.hover
-        ? "var(--color-black)"
-        : "var(--color-grey)"
-    }`,
-    borderRadius: 6,
-    // padding: "7px 0px",
-  }),
-};
+// const customStyles = {
+//   control: (provided, state) => ({
+//     ...provided,
+//     border: `1px solid ${
+//       state.isFocused || state.hover
+//         ? "var(--color-black)"
+//         : "var(--color-grey)"
+//     }`,
+//     borderRadius: 6,
+//     // padding: "7px 0px",
+//   }),
+// };
 
 const AddService = ({ tag }) => {
-  const navigate = useNavigate();
-
+  const { control, handleSubmit, onSubmit, cancelHandler } =
+    useAddEditService();
   return (
     <>
-      <Box className="card">
-        {/* top page action with text */}
-        {/* <Box className="top-bar">
-          <Grid container justifyContent={"end"}>
-            <Grid item md={0.7}>
-              <Button className="btn-close" onClick={() => navigate(-1)}>
-                <FiX size={25} color="var(--color-grey)" />
-              </Button>
-            </Grid>
-          </Grid>
-        </Box> */}
-        <FormGroup className="form-field">
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <FormControl variant="standard" className="form-control">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box className="card">
+          <FormGroup className="form-field">
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                {/* <FormControl variant="standard" className="form-control">
                 <Typography
                   variant="body2"
                   component="span"
@@ -63,63 +56,152 @@ const AddService = ({ tag }) => {
                   placeholder="Enter service name"
                   className={"input-field"}
                 />
-              </FormControl>
-            </Grid>
-            {/*  */}
-            <Grid item xs={6}>
-              <FormControl variant="standard" className="form-control">
-                <Typography
-                  variant="body2"
-                  component="span"
-                  className="text-black input-label"
-                >
-                  Amount *
-                </Typography>
-                <InputBase
+                </FormControl> */}
+                <Controller
+                  name="service_name"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Service name*"
+                        size="small"
+                        name="service_name"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Service name field required.",
+                  }}
+                />
+              </Grid>
+              {/*  */}
+              <Grid item xs={6}>
+                {/* <FormControl variant="standard" className="form-control">
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    className="text-black input-label"
+                  >
+                    Amount *
+                  </Typography>
+                  <InputBase
+                    name="amount"
+                    placeholder="Amount"
+                    className={"input-field"}
+                  />
+                </FormControl> */}
+                <Controller
                   name="amount"
-                  placeholder="Amount"
-                  className={"input-field"}
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        type="number"
+                        label="Amount"
+                        size="small"
+                        name="amount"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Amount field required.",
+                  }}
                 />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl variant="standard" className="form-control">
-                <Typography
-                  variant="body2"
-                  component="span"
-                  className="text-black input-label"
-                >
-                  Select Category *
-                </Typography>
-                <Select
-                  placeholder="Select category"
-                  options={options}
-                  styles={customStyles}
-                  theme={(theme) => ({
-                    ...theme,
-                    colors: {
-                      ...theme.colors,
-                      primary: "#364865",
-                    },
-                  })}
+              </Grid>
+              <Grid item xs={12}>
+                {/* <FormControl variant="standard" className="form-control">
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    className="text-black input-label"
+                  >
+                    Select Category *
+                  </Typography>
+                  <Select
+                    placeholder="Select category"
+                    options={options}
+                    styles={customStyles}
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary: "#364865",
+                      },
+                    })}
+                  />
+                </FormControl> */}
+                <Controller
+                  name="category"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl size="small" fullWidth>
+                      <Autocomplete
+                        size="small"
+                        options={categoryOptions}
+                        id="category"
+                        value={value}
+                        onChange={(event, newValue) => onChange(newValue.label)}
+                        onBlur={onBlur}
+                        label="category"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select category"
+                            error={!!error}
+                            helperText={error?.message ? error.message : ""}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please select service category",
+                  }}
                 />
-              </FormControl>
+              </Grid>
             </Grid>
+          </FormGroup>
+        </Box>
+        <Grid container spacing={3} sx={{ marginTop: "6px" }}>
+          <Grid item md={1.5}>
+            <Button type="submit" className="btn btn-tertiary">
+              {tag === "add" ? "Save" : "Update"}
+            </Button>
           </Grid>
-        </FormGroup>
-      </Box>
-      <Grid container spacing={3} sx={{ marginTop: "6px" }}>
-        <Grid item md={1.5}>
-          <Button className="btn btn-tertiary">
-            {tag === "add" ? "Save" : "Update"}
-          </Button>
+          <Grid item md={1.5}>
+            <Button className="btn btn-cancel" onClick={cancelHandler}>
+              Cancel
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item md={1.5}>
-          <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
-            Cancel
-          </Button>
-        </Grid>
-      </Grid>
+      </form>
     </>
   );
 };

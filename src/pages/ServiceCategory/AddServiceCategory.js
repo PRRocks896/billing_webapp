@@ -1,53 +1,25 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormGroup,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import { Controller } from "react-hook-form";
+import { useAddEditServiceCategory } from "./hook/useAddEditServiceCategory";
 
 const AddServiceCategory = ({ tag }) => {
-  const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const { control, handleSubmit, onSubmit, cancelHandler } =
+    useAddEditServiceCategory();
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className="card">
-          {/* top page action with text */}
-          {/* <Box className="top-bar">
-            <Grid container justifyContent={"end"}>
-              <Grid item md={0.7}>
-                <Button className="btn-close" onClick={() => navigate(-1)}>
-                  <FiX size={25} color="var(--color-grey)" />
-                </Button>
-              </Grid>
-            </Grid>
-          </Box> */}
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <FormControl variant="standard" className="form-control">
-                  {/* <Typography variant="body2" component="span"
-                        className='text-black input-label'>
-                        Service Category Name *
-                    </Typography>
-                    <InputBase 
-                        name="staff-name"
-                        placeholder="Enter service category name"
-                        className={'input-field'}
-                    /> */}
+                {/* <FormControl variant="standard" className="form-control">
                   <div
                     className={
                       !errors.service_category ? "input-field" : "border-error"
@@ -74,7 +46,36 @@ const AddServiceCategory = ({ tag }) => {
                       {errors.service_category.message}
                     </span>
                   )}
-                </FormControl>
+                </FormControl> */}
+                {/*  */}
+                <Controller
+                  name="service_category"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Service Category*"
+                        size="small"
+                        name="service_category"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Service category field required",
+                  }}
+                />
               </Grid>
             </Grid>
           </FormGroup>
@@ -86,7 +87,7 @@ const AddServiceCategory = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+            <Button className="btn btn-cancel" onClick={cancelHandler}>
               Cancel
             </Button>
           </Grid>
