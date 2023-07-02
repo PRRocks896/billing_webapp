@@ -30,14 +30,14 @@ import {
 } from "react-icons/fi";
 import { useCreateBill } from "./CreateBill.hooks";
 
-
 const customStyles = {
   control: (provided, state) => ({
     ...provided,
-    border: `1px solid ${state.isFocused || state.hover
+    border: `1px solid ${
+      state.isFocused || state.hover
         ? "var(--color-black)"
         : "var(--color-grey)"
-      }`,
+    }`,
     borderRadius: 6,
     // padding: "2px 0px",
   }),
@@ -47,13 +47,12 @@ const CreateBill = () => {
   const {
     fields,
     control,
-    options,
     addRow,
     onSubmit,
     navigate,
     removeRow,
     handleSubmit,
-    calculateTotal
+    calculateTotal,
   } = useCreateBill();
   return (
     <>
@@ -66,8 +65,15 @@ const CreateBill = () => {
                   <Controller
                     name="billNo"
                     control={control}
-                    render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
-                      <FormControl size="small" variant="standard" className="form-control">
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
                         <TextField
                           label="Bill No*"
                           size="small"
@@ -90,7 +96,10 @@ const CreateBill = () => {
                   <Controller
                     name="billNo"
                     control={control}
-                    render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
                       <FormControl size="small" fullWidth>
                         <InputLabel id="paymentType">Payment Type</InputLabel>
                         <Select
@@ -108,7 +117,7 @@ const CreateBill = () => {
                       </FormControl>
                     )}
                     rules={{
-                      required: 'Please Select Payment Type'
+                      required: "Please Select Payment Type",
                     }}
                   />
                 </Grid>
@@ -381,25 +390,28 @@ const CreateBill = () => {
                   {fields?.map((field, index) => (
                     <TableRow key={field.id} id={field.id}>
                       <TableCell>
-                        {fields.length === (index + 1) &&
+                        {fields.length === index + 1 && (
                           <Button type="button" onClick={addRow}>
                             <FiPlusCircle /> &nbsp;
                           </Button>
-                        }
+                        )}
                       </TableCell>
                       <TableCell align="left">{index + 1}</TableCell>
                       <TableCell align="left">
                         <Controller
                           control={control}
                           name={`detail.${index}.serviceID`}
-                          render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
                             <Autocomplete
                               size="small"
                               disablePortal
                               id="serivce"
-                              options={['spa', 'foot spa']}
+                              options={["spa", "foot spa"]}
                               sx={{ width: 300 }}
-                              renderInput={(params) =>
+                              renderInput={(params) => (
                                 <TextField
                                   {...params}
                                   label="Service"
@@ -409,11 +421,11 @@ const CreateBill = () => {
                                   // error={!!error}
                                   // helperText={error?.message ? error.message : ""}
                                 />
-                              }
+                              )}
                             />
                           )}
                           rules={{
-                            required: 'Please Enter Service'
+                            required: "Please Enter Service",
                           }}
                         />
                       </TableCell>
@@ -421,13 +433,23 @@ const CreateBill = () => {
                         <Controller
                           name={`detail.${index}.quantity`}
                           control={control}
-                          render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
-                            <FormControl style={{ width: '60px'}} size="small" variant="standard">
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <FormControl
+                              style={{ width: "60px" }}
+                              size="small"
+                              variant="standard"
+                            >
                               <TextField
                                 size="small"
                                 name="quantity"
                                 value={value}
-                                onChange={(e) => [onChange(e), calculateTotal(index)]}
+                                onChange={(e) => [
+                                  onChange(e),
+                                  calculateTotal(index),
+                                ]}
                                 onBlur={onBlur}
                                 error={!!error}
                                 helperText={error?.message ? error.message : ""}
@@ -443,14 +465,24 @@ const CreateBill = () => {
                         <Controller
                           name={`detail.${index}.rate`}
                           control={control}
-                          render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
-                            <FormControl style={{ width: '60px'}} size="small" variant="standard">
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <FormControl
+                              style={{ width: "60px" }}
+                              size="small"
+                              variant="standard"
+                            >
                               <TextField
                                 size="small"
                                 name="rate"
                                 value={value}
                                 // onChange={onChange}
-                                onChange={(e) => [onChange(e), calculateTotal(index)]}
+                                onChange={(e) => [
+                                  onChange(e),
+                                  calculateTotal(index),
+                                ]}
                                 onBlur={onBlur}
                                 error={!!error}
                                 helperText={error?.message ? error.message : ""}
@@ -466,14 +498,24 @@ const CreateBill = () => {
                         <Controller
                           name={`detail.${index}.discount`}
                           control={control}
-                          render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
-                            <FormControl style={{ width: '60px'}} size="small" variant="standard">
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <FormControl
+                              style={{ width: "60px" }}
+                              size="small"
+                              variant="standard"
+                            >
                               <TextField
                                 size="small"
                                 name="discount"
                                 value={value}
                                 // onChange={onChange}
-                                onChange={(e) => [onChange(e), calculateTotal(index)]}
+                                onChange={(e) => [
+                                  onChange(e),
+                                  calculateTotal(index),
+                                ]}
                                 onBlur={onBlur}
                                 error={!!error}
                                 helperText={error?.message ? error.message : ""}
@@ -484,11 +526,11 @@ const CreateBill = () => {
                             required: "Please enter Discount",
                             min: {
                               value: 0,
-                              message: ''
+                              message: "",
                             },
                             max: {
                               value: 100,
-                              message: ''
+                              message: "",
                             },
                             pattern: {
                               value: /^[0-9]/,
@@ -501,8 +543,15 @@ const CreateBill = () => {
                         <Controller
                           name={`detail.${index}.total`}
                           control={control}
-                          render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
-                            <FormControl style={{ width: '80px'}} size="small" variant="standard">
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <FormControl
+                              style={{ width: "80px" }}
+                              size="small"
+                              variant="standard"
+                            >
                               <TextField
                                 size="small"
                                 name="total"
@@ -514,11 +563,14 @@ const CreateBill = () => {
                         />
                       </TableCell>
                       <TableCell>
-                        {fields.length !== 1 &&
-                          <Button type="button" onClick={() => removeRow(index)}>
+                        {fields.length !== 1 && (
+                          <Button
+                            type="button"
+                            onClick={() => removeRow(index)}
+                          >
                             <FiMinusCircle /> &nbsp;
                           </Button>
-                        }
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

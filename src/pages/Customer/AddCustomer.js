@@ -1,45 +1,28 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormGroup,
-  Grid,
-  Radio,
-  Typography,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Radio from "@mui/material/Radio";
+
+import { useAddEditCustomer } from "./hook/useAddEditCustomer";
+import { Typography } from "@mui/material";
+import { Controller } from "react-hook-form";
 
 const AddCustomer = ({ tag }) => {
-  const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const { control, handleSubmit, onSubmit, cancelHandler } =
+    useAddEditCustomer();
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className="card">
-          {/* <Box className="top-bar">
-            <Grid container justifyContent={"end"}>
-              <Grid item md={0.7}>
-                <Button className="btn-close" onClick={() => navigate(-1)}>
-                  <FiX size={25} color="var(--color-grey)" />
-                </Button>
-              </Grid>
-            </Grid>
-          </Box> */}
-
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <FormControl variant="standard" className="form-control">
+                {/* <FormControl variant="standard" className="form-control">
                   <div
                     className={
                       !errors.customer_name ? "input-field" : "border-error"
@@ -66,11 +49,39 @@ const AddCustomer = ({ tag }) => {
                       {errors.customer_name.message}
                     </span>
                   )}
-                </FormControl>
+                </FormControl> */}
+                <Controller
+                  name="customer_name"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Customer name"
+                        size="small"
+                        name="customer_name"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Customer name field required",
+                  }}
+                />
               </Grid>
               {/*  */}
               <Grid item xs={6}>
-                <FormControl variant="standard" className="form-control">
+                {/* <FormControl variant="standard" className="form-control">
                   <div
                     className={!errors.phone ? "input-field" : "border-error"}
                   >
@@ -102,7 +113,44 @@ const AddCustomer = ({ tag }) => {
                       {errors.phone.message}
                     </span>
                   )}
-                </FormControl>
+                </FormControl> */}
+                <Controller
+                  name="phone"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        type="number"
+                        label="Phone"
+                        size="small"
+                        name="phone"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Phone number is required",
+                    maxLength: {
+                      value: 10,
+                      message: "Phone number must be 10 digit",
+                    },
+                    minLength: {
+                      value: 10,
+                      message: "Phone number must be 10 digit",
+                    },
+                  }}
+                />
               </Grid>
               {/*  */}
               <Grid item xs={6}>
@@ -115,63 +163,47 @@ const AddCustomer = ({ tag }) => {
                     Gender *
                   </Typography>
                   <Grid container alignItems={"center"} gap={5}>
-                    <span>
-                      <Radio
-                        checked={true}
-                        value="male"
-                        name="radio-buttons"
-                        className="radio-field"
-                        slotProps={{ input: { "aria-label": "A" } }}
-                      />{" "}
-                      Male
-                    </span>
-                    <span>
-                      <Radio
-                        checked={false}
-                        value="male"
-                        name="radio-buttons"
-                        className="radio-field"
-                        slotProps={{ input: { "aria-label": "A" } }}
-                      />{" "}
-                      Female
-                    </span>
+                    <Controller
+                      name="gender"
+                      control={control}
+                      defaultValue="male"
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          <span>
+                            <Radio
+                              value="male"
+                              checked={value === "male"}
+                              className="radio-field"
+                              inputProps={{ "aria-label": "Male" }}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={!!error}
+                            />
+                            Male
+                          </span>
+                          <span>
+                            <Radio
+                              value="female"
+                              checked={value === "female"}
+                              className="radio-field"
+                              inputProps={{ "aria-label": "Female" }}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={!!error}
+                            />
+                            Female
+                          </span>
+                          {error?.message ? error.message : ""}
+                        </>
+                      )}
+                      rules={{ required: "Please select a gender" }}
+                    />
                   </Grid>
                 </FormControl>
               </Grid>
-
-              {/* <Grid item xs={6}>
-                <FormControl variant="standard" className='form-control'>
-                  <Typography variant="body2" component="span" className='text-black input-label'>
-                    Status *
-                  </Typography>
-                  <Box sx={{ display: "flex" }}>
-                    <Box className="mask-box">
-                        <Box
-                          className="mask"
-                          style={{
-                            transform: `translateX(${status === "active" ? 0 : "100px"})`
-                          }}
-                        />
-                        <Button
-                          disableRipple
-                          variant="text"
-                          onClick={() => changeStatusHandler('active')}
-                          sx={{ color:status === "active" ? "#ffffff" : "var(--color-black)"  }}
-                        >
-                          Active
-                        </Button>
-                        <Button
-                          disableRipple
-                          variant="text"
-                          onClick={() => changeStatusHandler('inactive')}
-                          sx={{ color: status === "inactive" ? "#ffffff" : "var(--color-black)" }}
-                        >
-                          Inactive
-                        </Button>
-                    </Box>
-                  </Box>
-                </FormControl>
-              </Grid> */}
             </Grid>
           </FormGroup>
         </Box>
@@ -183,7 +215,7 @@ const AddCustomer = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+            <Button className="btn btn-cancel" onClick={cancelHandler}>
               Cancel
             </Button>
           </Grid>

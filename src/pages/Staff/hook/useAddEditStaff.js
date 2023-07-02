@@ -10,7 +10,7 @@ export const useAddEditStaff = (tag) => {
   const { id } = useParams();
 
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -18,7 +18,10 @@ export const useAddEditStaff = (tag) => {
     defaultValues: {
       staff_name: "",
     },
+    mode: "onBlur",
   });
+
+  console.log(errors);
 
   const onSubmit = async (data) => {
     try {
@@ -74,9 +77,8 @@ export const useAddEditStaff = (tag) => {
   }, [id, setValue]);
 
   return {
-    register,
+    control,
     handleSubmit,
-    errors,
     onSubmit,
   };
 };
