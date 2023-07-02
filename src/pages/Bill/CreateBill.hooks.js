@@ -20,15 +20,15 @@ export const useCreateBill = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      billNo: "",
+      billNo: uuidv4(),
       paymentID: "",
-      date: new Date(),
+      date: new Date().toISOString().split("T")[0],
       customerID: "",
       staffID: "",
-      discount: "",
-      discountAmount: "",
-      exchange: "",
-      grandTotal: "",
+      discount: 0,
+      discountAmount: 0,
+      exchange: 0,
+      grandTotal: 0,
       detail: [
         {
           id: uuidv4(),
@@ -49,7 +49,7 @@ export const useCreateBill = () => {
     control: control,
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => console.log("data", data);
   console.log(errors);
 
   const addRow = () => {
@@ -63,22 +63,10 @@ export const useCreateBill = () => {
       discount: "",
       total: "",
     });
-    // const newRow = {
-    //     id: uuidv4(),
-    //     itemId: "",
-    //     itemName: "",
-    //     discount: "",
-    //     tax: "",
-    //     quantity: "",
-    //     rate: "",
-    //     value: "",
-    // };
-    // setRows((prevRows) => [...prevRows, newRow]);
   };
 
   const removeRow = (index) => {
     remove(index);
-    // setRows((prevRows) => prevRows.filter((row) => row.id !== id));
   };
 
   const calculateTotal = (index) => {
@@ -90,18 +78,32 @@ export const useCreateBill = () => {
       total = total - (total * discount) / 100;
     }
     setValue(`detail.${index}.total`, total);
+    calculateGrandTotal();
+  };
+
+  const calculateGrandTotal = () => {
+    const discount = getValues(`discount`) || 0;
+    const discountAmount = getValues(`discountAmount`) || 0;
+    const exchange = getValues(`exchange`) || 0;
+
+    const totalBill = fields?.reduce((total, item) => total + item.total, 0);
+    const grandTotal =
+      totalBill - (totalBill * discount) / 100 - discountAmount - exchange;
+
+    setValue(`grandTotal`, grandTotal);
   };
 
   return {
     control,
     fields,
     options,
+    reset,
     addRow,
     onSubmit,
     navigate,
     removeRow,
     handleSubmit,
     calculateTotal,
-    reset,
+    calculateGrandTotal,
   };
 };
