@@ -10,7 +10,7 @@ import { useAddEditServiceCategory } from "./hook/useAddEditServiceCategory";
 
 const AddServiceCategory = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler } =
-    useAddEditServiceCategory();
+    useAddEditServiceCategory(tag);
 
   return (
     <>
