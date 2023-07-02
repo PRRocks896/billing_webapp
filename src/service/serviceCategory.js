@@ -1,4 +1,3 @@
-import { get } from "http";
 import {
   CREATE_SERVICE_CATEGORY_API,
   DELETE_SERVICE_CATEGORY_API,
@@ -6,7 +5,7 @@ import {
   SERVICE_CATEGORY_LIST_API,
   UPDATE_SERVICE_CATEGORY_API,
 } from "../utils/constant";
-import { attachId, post, put, remove } from "./webRequest";
+import { attachId, post, put, remove, get } from "./webRequest";
 
 export const getServiceCategoryList = async (body) => {
   const response = await post(SERVICE_CATEGORY_LIST_API, body);

@@ -14,22 +14,14 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
+import { useServiceCategory } from "./hook/useServicecategory";
+import { useSelector } from "react-redux";
 
-const service = [
-  { id: 1, name: "service" },
-  { id: 2, name: "service" },
-  { id: 3, name: "service" },
-  { id: 4, name: "service" },
-  { id: 5, name: "service" },
-  { id: 6, name: "service" },
-  { id: 7, name: "service" },
-  { id: 8, name: "service" },
-  { id: 9, name: "service" },
-  { id: 10, name: "service" },
-  { id: 11, name: "service" },
-];
+const ServiceCategory = () => {
+  useServiceCategory();
+  const serviceSategories = useSelector((state) => state.serviceCategory.data);
+  console.log("service category page", serviceSategories);
 
-const AddServiceCategory = () => {
   const navigate = useNavigate();
   // pagination code start
   const [page, setPage] = useState(0);
@@ -45,11 +37,17 @@ const AddServiceCategory = () => {
   };
 
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - service.length) : 0;
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - serviceSategories.length)
+      : 0;
 
   const visibleRows = React.useMemo(
-    () => service.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
+    () =>
+      serviceSategories.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [page, rowsPerPage, serviceSategories]
   );
   // pagination code end
 
@@ -129,7 +127,7 @@ const AddServiceCategory = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={service.length}
+            count={serviceSategories.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -149,4 +147,4 @@ const AddServiceCategory = () => {
   );
 };
 
-export default AddServiceCategory;
+export default ServiceCategory;

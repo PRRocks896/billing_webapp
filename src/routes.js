@@ -4,7 +4,6 @@ import LayoutProvider from "./layout/index";
 import Home from "./pages/Home";
 import Customer from "./pages/Customer";
 import AddCustomer from "./pages/Customer/AddCustomer";
-import ServiceCategory from "./pages/ServiceCategory";
 import AddServiceCategory from "./pages/ServiceCategory/AddServiceCategory";
 import Staff from "./pages/Staff";
 import AddEditStaff from "./pages/Staff/AddEditStaff";
@@ -15,6 +14,7 @@ import AddPaymentType from "./pages/PaymentType/AddPaymentType";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
 import AddUser from "./pages/User/AddUser";
+import ServiceCategory from "./pages/ServiceCategory";
 
 const routes = createBrowserRouter([
   {
@@ -54,7 +54,7 @@ const routes = createBrowserRouter([
       { path: "edit-user", element: <AddUser tag="edit" /> },
       { path: "create-bill", element: <CreateBill /> },
     ],
-  }
+  },
 ]);
 
 export default routes;
