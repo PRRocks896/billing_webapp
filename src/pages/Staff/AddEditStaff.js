@@ -12,22 +12,12 @@ import { useAddEditStaff } from "./hook/useAddEditStaff";
 
 const AddEditStaff = ({ tag }) => {
   const navigate = useNavigate();
-  const { register, handleSubmit, errors, onSubmit } = useAddEditStaff();
+  const { register, handleSubmit, errors, onSubmit } = useAddEditStaff(tag);
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className="card">
-          {/* top page action with text */}
-          {/* <Box className="top-bar">
-            <Grid container justifyContent={"end"}>
-              <Grid item md={0.7}>
-                <Button className="btn-close" onClick={() => navigate(-1)}>
-                  <FiX size={25} color="var(--color-grey)" />
-                </Button>
-              </Grid>
-            </Grid>
-          </Box> */}
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={12}>

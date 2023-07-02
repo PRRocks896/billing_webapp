@@ -15,8 +15,15 @@ export const authHeader = () => {
   return { headers: { "x-api-key": "05646635804321276" } };
 };
 
+export const attachId = (url, id) => {
+  if (id) {
+    return `${url}${id}`;
+  } else {
+    return url;
+  }
+};
+
 export const get = async (url) => {
-  console.log(`${baseUrl}${url}`);
   const response = await axios
     .get(`${baseUrl}${url}`, authHeader())
     .then((res) => {
@@ -85,7 +92,7 @@ export const put = async (url, data) => {
     .put(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
       if (res.status === 200) {
-        return res;
+        return res.data;
         // if (res.data.success) {
         //   return res.data.data.list ? res.data.data.list : res.data;
         // } else {
