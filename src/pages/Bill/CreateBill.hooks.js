@@ -104,5 +104,6 @@ export const useCreateBill = () => {
     removeRow,
     handleSubmit,
     calculateTotal,
+    calculateGrandTotal,
   };
 };

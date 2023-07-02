@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -15,7 +15,6 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-// import { styled } from "@mui/material/styles";
 
 const customers = [
   { id: 1, name: "Krushang rathod", number: 9879854706, gender: "Male" },

@@ -7,35 +7,17 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useAddEditStaff } from "./hook/useAddEditStaff";
 
-const AddStaff = ({ tag }) => {
+const AddEditStaff = ({ tag }) => {
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const { register, handleSubmit, errors, onSubmit } = useAddEditStaff(tag);
 
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className="card">
-          {/* top page action with text */}
-          <Box className="top-bar">
-            <Grid container justifyContent={"end"}>
-              <Grid item md={0.7}>
-                <Button className="btn-close" onClick={() => navigate(-1)}>
-                  <FiX size={25} color="var(--color-grey)" />
-                </Button>
-              </Grid>
-            </Grid>
-          </Box>
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -78,7 +60,9 @@ const AddStaff = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel">Cancel</Button>
+            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+              Cancel
+            </Button>
           </Grid>
         </Grid>
       </form>
@@ -86,4 +70,4 @@ const AddStaff = ({ tag }) => {
   );
 };
 
-export default AddStaff;
+export default AddEditStaff;

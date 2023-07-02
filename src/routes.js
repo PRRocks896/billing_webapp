@@ -7,7 +7,7 @@ import AddCustomer from "./pages/Customer/AddCustomer";
 import ServiceCategory from "./pages/ServiceCategory";
 import AddServiceCategory from "./pages/ServiceCategory/AddServiceCategory";
 import Staff from "./pages/Staff";
-import AddStaff from "./pages/Staff/AddStaff";
+import AddEditStaff from "./pages/Staff/AddEditStaff";
 import Service from "./pages/Service";
 import AddService from "./pages/Service/AddService";
 import PaymentType from "./pages/PaymentType";
@@ -28,8 +28,8 @@ const routes = createBrowserRouter([
       { path: "edit-customer", element: <AddCustomer tag="edit" /> },
 
       { path: "staff", element: <Staff /> },
-      { path: "add-staff", element: <AddStaff tag="add" /> },
-      { path: "edit-staff", element: <AddStaff tag="edit" /> },
+      { path: "add-staff", element: <AddEditStaff tag="add" /> },
+      { path: "edit-staff/:id", element: <AddEditStaff tag="edit" /> },
 
       { path: "service-category", element: <ServiceCategory /> },
       {

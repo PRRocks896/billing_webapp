@@ -37,7 +37,6 @@ const CreateBill = () => {
     handleSubmit,
     calculateTotal,
   } = useCreateBill();
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -280,10 +279,10 @@ const CreateBill = () => {
                                 size="small"
                                 name="quantity"
                                 value={value}
-                                onChange={(e) => {
-                                  onChange(e);
-                                  calculateTotal(index);
-                                }}
+                                onChange={(e) => [
+                                  onChange(e),
+                                  calculateTotal(index),
+                                ]}
                                 onBlur={onBlur}
                                 error={!!error}
                                 helperText={error?.message ? error.message : ""}
@@ -312,6 +311,7 @@ const CreateBill = () => {
                                 size="small"
                                 name="rate"
                                 value={value}
+                                // onChange={onChange}
                                 onChange={(e) => [
                                   onChange(e),
                                   calculateTotal(index),

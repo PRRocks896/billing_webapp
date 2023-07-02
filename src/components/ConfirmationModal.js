@@ -1,12 +1,17 @@
 import { Box, Button, Fade, Grid, Modal, Typography } from "@mui/material";
 import React from "react";
-import { FiPlus } from "react-icons/fi";
 
-const ConfirmationModal = ({ isDeleteModalOpen, deleteModalClose, title }) => {
+const ConfirmationModal = ({
+  isDeleteModalOpen,
+  deleteModalClose,
+  title,
+  deleteStaff,
+}) => {
   return (
     <>
       {/* delete confirmation modal start */}
       <Modal
+        disableEscapeKeyDown
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={isDeleteModalOpen}
@@ -27,9 +32,9 @@ const ConfirmationModal = ({ isDeleteModalOpen, deleteModalClose, title }) => {
             >
               Delete {title}
             </Typography>
-            <Box className="modal-close" onClick={deleteModalClose}>
+            {/* <Box className="modal-close" onClick={deleteModalClose}>
               <FiPlus />
-            </Box>
+            </Box> */}
             <Box className="modal-body">
               <Box className="confirmation-text">
                 <Typography paragraph>
@@ -40,7 +45,9 @@ const ConfirmationModal = ({ isDeleteModalOpen, deleteModalClose, title }) => {
             <Box className="modal-footer">
               <Grid container spacing={3}>
                 <Grid item md={6} xs={12}>
-                  <Button className="btn btn-tertiary">Yes</Button>
+                  <Button className="btn btn-tertiary" onClick={deleteStaff}>
+                    Yes
+                  </Button>
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <Button className="btn btn-cancel" onClick={deleteModalClose}>
