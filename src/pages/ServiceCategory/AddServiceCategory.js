@@ -62,7 +62,7 @@ const AddServiceCategory = ({ tag }) => {
                     </Typography>
                     <input
                       type="text"
-                      placeholder="Enyter Service category"
+                      placeholder="Enter Service category"
                       {...register("service_category", {
                         required: "Service category is required",
                         maxLength: 100,
