@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { showToast } from "../../utils/helper";
-import { createStaff } from "../../service/staff";
+import { showToast } from "../../../utils/helper";
+import { createStaff } from "../../../service/staff";
 import { useNavigate } from "react-router";
 
 export const useAddEditStaff = () => {

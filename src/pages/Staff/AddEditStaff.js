@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAddEditStaff } from "./useAddEditStaff";
+import { useAddEditStaff } from "./hook/useAddEditStaff";
 
 const AddEditStaff = ({ tag }) => {
   const navigate = useNavigate();

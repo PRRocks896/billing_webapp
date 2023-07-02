@@ -14,11 +14,11 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-import { useStaff } from "./useStaff";
+import { useStaff } from "./hook/useStaff";
 import { useSelector } from "react-redux";
 
 const Staff = () => {
-  const { deleteStaff, setDeleteIdHandler } = useStaff();
+  useStaff();
   const navigate = useNavigate();
   const staff = useSelector((state) => state.staff.data);
   console.log(staff);
@@ -47,7 +47,6 @@ const Staff = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const deleteModalOpen = (id) => {
-    setDeleteIdHandler(id);
     setIsDeleteModalOpen(true);
   };
   const deleteModalClose = () => setIsDeleteModalOpen(false);
@@ -92,7 +91,7 @@ const Staff = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen.bind(null, row.id)}
+                                onClick={deleteModalOpen}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -138,7 +137,6 @@ const Staff = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="staff"
-          deleteStaff={deleteStaff}
         />
       )}
     </>
