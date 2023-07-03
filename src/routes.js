@@ -37,7 +37,7 @@ const routes = createBrowserRouter([
         element: <AddServiceCategory tag="add" />,
       },
       {
-        path: "edit-service-category",
+        path: "edit-service-category/:id",
         element: <AddServiceCategory tag="edit" />,
       },
 
