@@ -80,7 +80,9 @@ const State = () => {
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={() => navigate(`/edit-state`)}
+                                onClick={() =>
+                                  navigate(`/edit-state/${row.id}`)
+                                }
                               >
                                 <FiEdit3 size={15} />
                               </Button>

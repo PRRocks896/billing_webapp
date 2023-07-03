@@ -55,11 +55,11 @@ const routes = createBrowserRouter([
 
       { path: "cities", element: <City /> },
       { path: "add-city", element: <AddEditCity tag="add" /> },
-      { path: "edit-city", element: <AddEditCity tag="edit" /> },
+      { path: "edit-city/:id", element: <AddEditCity tag="edit" /> },
 
       { path: "states", element: <State /> },
       { path: "add-state", element: <AddEditStates tag="add" /> },
-      { path: "edit-state", element: <AddEditStates tag="edit" /> },
+      { path: "edit-state/:id", element: <AddEditStates tag="edit" /> },
 
       { path: "user", element: <User /> },
       { path: "add-user", element: <AddUser tag="add" /> },
