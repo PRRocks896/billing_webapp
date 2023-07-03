@@ -9,9 +9,18 @@ export const STATES_LIST_API = "api/state/list";
 export const CREATE_STATES_API = "api/state";
 export const GET_SINGLE_STATES_API = "api/state/";
 export const UPDATE_STATES_API = "api/state/";
+export const DELETE_STATES_API = "api/state/";
 
 // city apis
 export const CITY_LIST_API = "api/city/list";
 export const CREATE_CITY_API = "api/city";
 export const GET_SINGLE_CITY_API = "api/city/";
 export const UPDATE_CITY_API = "api/city/";
+export const DELETE_CITY_API = "api/city/";
+
+// service category apis
+export const SERVICE_CATEGORY_LIST_API = "api/service-category/list";
+export const CREATE_SERVICE_CATEGORY_API = "api/service-category";
+export const DELETE_SERVICE_CATEGORY_API = "api/service-category/";
+export const GET_SINGLE_SERVICE_CATEGORY_API = "api/service-category/";
+export const UPDATE_SERVICE_CATEGORY_API = "api/service-category/";

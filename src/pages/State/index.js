@@ -17,12 +17,14 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import { useStates } from "./hook/useStates";
 
+import { deleteState } from "../../service/states";
+import { statesAction } from "../../redux/states";
+
 const State = () => {
-  useStates();
+  const { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId } =
+    useStates();
   const navigate = useNavigate();
   const state = useSelector((state) => state.states.data);
-  // const state = [];
-  console.log(state);
 
   // pagination code start
   const [page, setPage] = useState(0);
@@ -45,13 +47,6 @@ const State = () => {
     [page, rowsPerPage, state]
   );
   // pagination code end
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = (id) => {
-    setIsDeleteModalOpen(true);
-  };
-
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   return (
     <>
@@ -91,7 +86,7 @@ const State = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen}
+                                onClick={deleteHandler.bind(null, row.id)}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -137,6 +132,9 @@ const State = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="state"
+          deleteService={deleteState}
+          recordId={deleteId}
+          removeRecordFromState={statesAction.removeStates}
         />
       )}
     </>

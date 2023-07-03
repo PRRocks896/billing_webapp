@@ -7,13 +7,11 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useAddEditStates } from "./hook/useAddEditStates";
 import { Controller } from "react-hook-form";
 
 const AddEditStates = ({ tag }) => {
-  const navigate = useNavigate();
-  const { control, onBlur, onChange, handleSubmit, onSubmit } =
+  const { control, handleSubmit, onSubmit, cancelHandler } =
     useAddEditStates(tag);
   return (
     <>
@@ -38,9 +36,9 @@ const AddEditStates = ({ tag }) => {
                         label="State Name*"
                         size="small"
                         name="stateName"
-                        // value={value}
-                        // onChange={onChange}
-                        // onBlur={onBlur}
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message ? error.message : ""}
                       />
@@ -61,7 +59,7 @@ const AddEditStates = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+            <Button className="btn btn-cancel" onClick={cancelHandler}>
               Cancel
             </Button>
           </Grid>

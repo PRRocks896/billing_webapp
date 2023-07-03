@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { showToast } from "../../../utils/helper";
-import { getCityList } from "../../../service/city";
-import { cityAction } from "../../../redux/city";
 import { useDispatch } from "react-redux";
+import { serviceCategoryAction } from "../../../redux/serviceCategory";
+import { showToast } from "../../../utils/helper";
+import { getServiceCategoryList } from "../../../service/serviceCategory";
 
-export const useCity = () => {
+export const useServiceCategory = () => {
   const dispatch = useDispatch();
 
   const [deleteId, setDeleteId] = useState("");
@@ -16,8 +16,8 @@ export const useCity = () => {
     setDeleteId(id);
   };
 
-  //  fetch city logic
-  const fetchCityData = useCallback(async () => {
+  //  fetch staff logic
+  const fetchServiceCategoryData = useCallback(async () => {
     try {
       const body = {
         where: {
@@ -31,10 +31,14 @@ export const useCity = () => {
           page: 1,
         },
       };
-      const response = await getCityList(body);
+      const response = await getServiceCategoryList(body);
+      //   console.log(response);
       if (response.statusCode === 200) {
         const payload = response.data.rows;
-        dispatch(cityAction.storeCity(payload));
+        dispatch(serviceCategoryAction.storeServiceCategories(payload));
+      } else if (response.statusCode === 404) {
+        const payload = [];
+        dispatch(serviceCategoryAction.storeServiceCategories(payload));
       }
     } catch (error) {
       showToast(error.message, false);
@@ -42,8 +46,8 @@ export const useCity = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    fetchCityData();
-  }, [fetchCityData]);
+    fetchServiceCategoryData();
+  }, [fetchServiceCategoryData]);
 
   return { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId };
 };

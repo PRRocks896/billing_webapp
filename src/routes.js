@@ -4,7 +4,6 @@ import LayoutProvider from "./layout/index";
 import Home from "./pages/Home";
 import Customer from "./pages/Customer";
 import AddCustomer from "./pages/Customer/AddCustomer";
-import ServiceCategory from "./pages/ServiceCategory";
 import AddServiceCategory from "./pages/ServiceCategory/AddServiceCategory";
 import Staff from "./pages/Staff";
 import AddEditStaff from "./pages/Staff/AddEditStaff";
@@ -19,6 +18,7 @@ import City from "./pages/City";
 import State from "./pages/State";
 import AddEditStates from "./pages/State/AddEditStates";
 import AddEditCity from "./pages/City/AddEditCity";
+import ServiceCategory from "./pages/ServiceCategory";
 
 const routes = createBrowserRouter([
   {

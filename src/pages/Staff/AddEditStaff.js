@@ -1,18 +1,18 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormGroup,
-  Grid,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+
 import { useNavigate } from "react-router-dom";
 import { useAddEditStaff } from "./hook/useAddEditStaff";
+import { Controller } from "react-hook-form";
 
 const AddEditStaff = ({ tag }) => {
   const navigate = useNavigate();
-  const { register, handleSubmit, errors, onSubmit } = useAddEditStaff(tag);
+  const { control, handleSubmit, onSubmit } = useAddEditStaff(tag);
 
   return (
     <>
@@ -21,7 +21,7 @@ const AddEditStaff = ({ tag }) => {
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <FormControl variant="standard" className="form-control">
+                {/* <FormControl variant="standard" className="form-control">
                   <div
                     className={
                       !errors.staff_name ? "input-field" : "border-error"
@@ -48,7 +48,35 @@ const AddEditStaff = ({ tag }) => {
                       {errors.staff_name.message}
                     </span>
                   )}
-                </FormControl>
+                </FormControl> */}
+                <Controller
+                  name="staff_name"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Staff name"
+                        size="small"
+                        name="staff_name"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Staff name field required",
+                  }}
+                />
               </Grid>
             </Grid>
           </FormGroup>

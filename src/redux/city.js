@@ -12,6 +12,9 @@ const citySlice = createSlice({
       console.log(action);
       return { data: action.payload };
     },
+    removeCity(state, action) {
+      return { data: state.data.filter((row) => row.id !== action.payload.id) };
+    },
   },
 });
 

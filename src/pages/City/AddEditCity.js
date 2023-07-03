@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Autocomplete,
   Box,
   Button,
   FormControl,
@@ -7,13 +8,11 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { useAddEditCity } from "./hook/useAddEditCity";
 import { Controller } from "react-hook-form";
 
 const AddEditCity = ({ tag }) => {
-  const navigate = useNavigate();
-  const { control, onBlur, onChange, handleSubmit, onSubmit } =
+  const { control, options, handleSubmit, onSubmit, cancelHandler } =
     useAddEditCity(tag);
   return (
     <>
@@ -21,7 +20,7 @@ const AddEditCity = ({ tag }) => {
         <Box className="card">
           <FormGroup className="form-field">
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Controller
                   name="cityName"
                   control={control}
@@ -38,9 +37,9 @@ const AddEditCity = ({ tag }) => {
                         label="City Name*"
                         size="small"
                         name="cityName"
-                        // value={value}
-                        // onChange={onChange}
-                        // onBlur={onBlur}
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message ? error.message : ""}
                       />
@@ -48,6 +47,37 @@ const AddEditCity = ({ tag }) => {
                   )}
                   rules={{
                     required: "Please Enter State Name",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Controller
+                  control={control}
+                  name={`stateId`}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      id="stateId"
+                      options={options}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={(event, newValue) => onChange(newValue)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="State"
+                          error={!!error}
+                          helperText={error?.message ? error.message : ""}
+                        />
+                      )}
+                    />
+                  )}
+                  rules={{
+                    required: "Please Select State",
                   }}
                 />
               </Grid>
@@ -61,7 +91,7 @@ const AddEditCity = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+            <Button className="btn btn-cancel" onClick={cancelHandler}>
               Cancel
             </Button>
           </Grid>
