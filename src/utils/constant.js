@@ -10,3 +10,4 @@ export const CREATE_SERVICE_CATEGORY_API = "api/service-category";
 export const DELETE_SERVICE_CATEGORY_API = "api/service-category/";
 export const GET_SINGLE_SERVICE_CATEGORY_API = "api/service-category/";
 export const UPDATE_SERVICE_CATEGORY_API = "api/service-category/";
+export const SEARCH_SERVICE_CATEGORY_API = "api/service-category/get";
