@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -9,9 +9,29 @@ import {
 } from "@mui/material";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import debounce from "lodash.debounce";
+import { showToast } from "../utils/helper";
 
-const TopBar = ({ btnTitle, inputName, navigatePath }) => {
+const TopBar = ({ btnTitle, inputName, navigatePath, callAPI }) => {
   const navigate = useNavigate();
+  // const [searchvalue, setSearchvalue] = useState("");
+
+  const debouncedSearch = debounce(async (payload) => {
+    try {
+      callAPI(payload);
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  }, 500);
+
+  const searchValueHandler = (e) => {
+    // setSearchvalue(e.target.value);
+    if (e.target.value.length === 0 || e.target.value.length > 3) {
+      const payload = { searchValue: e.target.value };
+      debouncedSearch(payload);
+    }
+  };
 
   return (
     <>
@@ -23,6 +43,7 @@ const TopBar = ({ btnTitle, inputName, navigatePath }) => {
               <InputBase
                 name={`${inputName}`}
                 placeholder={`Search ${inputName}`}
+                onChange={searchValueHandler}
                 endAdornment={
                   <InputAdornment
                     position="end"

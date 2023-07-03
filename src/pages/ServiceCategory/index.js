@@ -16,12 +16,17 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { useServiceCategory } from "./hook/useServicecategory";
 import { useSelector } from "react-redux";
-import { deleteServiceCategory } from "../../service/serviceCategory";
 import { serviceCategoryAction } from "../../redux/serviceCategory";
 
 const ServiceCategory = () => {
-  const { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId } =
-    useServiceCategory();
+  const {
+    isDeleteModalOpen,
+    deleteHandler,
+    deleteModalClose,
+    deleteId,
+    deleteServiceCategory,
+    searchServiceCategoryHandler,
+  } = useServiceCategory();
   const serviceSategories = useSelector((state) => state.serviceCategory.data);
 
   const navigate = useNavigate();
@@ -59,6 +64,7 @@ const ServiceCategory = () => {
         btnTitle="Add Service Category"
         inputName="service-category"
         navigatePath="/add-service-category"
+        callAPI={searchServiceCategoryHandler}
       />
 
       {/* service category listing */}
