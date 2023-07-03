@@ -86,7 +86,7 @@ const ServiceCategory = () => {
                               <Button
                                 className="btn btn-primary"
                                 onClick={() =>
-                                  navigate("/edit-service-category")
+                                  navigate(`/edit-service-category/${row.id}`)
                                 }
                               >
                                 <FiEdit3 size={15} />

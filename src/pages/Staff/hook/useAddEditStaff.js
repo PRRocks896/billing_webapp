@@ -59,7 +59,7 @@ export const useAddEditStaff = (tag) => {
       const fetchEditStaffData = async () => {
         if (id) {
           console.log("Fetched");
-          const response = await getStaffById(1);
+          const response = await getStaffById(id);
           console.warn(response);
           if (response.statusCode === 200) {
             console.log(response.data.name);
