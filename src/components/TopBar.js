@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { showToast } from "../utils/helper";
 
-const TopBar = ({ btnTitle, inputName, navigatePath, callAPI }) => {
+const TopBar = ({ btnTitle, inputName, navigatePath, callAPI = () => {} }) => {
   const navigate = useNavigate();
   // const [searchvalue, setSearchvalue] = useState("");
 

@@ -135,7 +135,9 @@ const Sidebar = () => {
                 </Typography>
               </Box>
               <Box
-                className={`sub-menu-link ${activeTab === "stats" && "active"}`}
+                className={`sub-menu-link ${
+                  activeTab === "states" && "active"
+                }`}
                 onClick={() => {
                   setActiveTab("states");
                   navigate("/states");
