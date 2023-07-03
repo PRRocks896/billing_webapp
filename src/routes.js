@@ -14,6 +14,10 @@ import AddPaymentType from "./pages/PaymentType/AddPaymentType";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
 import AddUser from "./pages/User/AddUser";
+import City from "./pages/City";
+import State from "./pages/State";
+import AddEditStates from "./pages/State/AddEditStates";
+import AddEditCity from "./pages/City/AddEditCity";
 import ServiceCategory from "./pages/ServiceCategory";
 
 const routes = createBrowserRouter([
@@ -48,6 +52,14 @@ const routes = createBrowserRouter([
       { path: "payment-type", element: <PaymentType /> },
       { path: "add-payment-type", element: <AddPaymentType tag="add" /> },
       { path: "edit-payment-type", element: <AddPaymentType tag="edit" /> },
+
+      { path: "cities", element: <City /> },
+      { path: "add-city", element: <AddEditCity tag="add" /> },
+      { path: "edit-city/:id", element: <AddEditCity tag="edit" /> },
+
+      { path: "states", element: <State /> },
+      { path: "add-state", element: <AddEditStates tag="add" /> },
+      { path: "edit-state/:id", element: <AddEditStates tag="edit" /> },
 
       { path: "user", element: <User /> },
       { path: "add-user", element: <AddUser tag="add" /> },

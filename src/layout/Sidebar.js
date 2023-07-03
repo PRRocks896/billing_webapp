@@ -134,6 +134,32 @@ const Sidebar = () => {
                   Payment Type
                 </Typography>
               </Box>
+              <Box
+                className={`sub-menu-link ${activeTab === "stats" && "active"}`}
+                onClick={() => {
+                  setActiveTab("states");
+                  navigate("/states");
+                }}
+              >
+                <Typography>
+                  <FiSquare />
+                  States
+                </Typography>
+              </Box>
+              <Box
+                className={`sub-menu-link ${
+                  activeTab === "cities" && "active"
+                }`}
+                onClick={() => {
+                  setActiveTab("cities");
+                  navigate("/cities");
+                }}
+              >
+                <Typography>
+                  <FiSquare />
+                  Cities
+                </Typography>
+              </Box>
             </AccordionDetails>
           </Accordion>
           <Accordion
