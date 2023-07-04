@@ -12,7 +12,16 @@ export const authHeader = () => {
   //   } else {
   //     return {};
   //   }
-  return { headers: { "x-api-key": "05646635804321276" } };
+  // return { headers: { "x-api-key": "05646635804321276" } };
+
+  if (localStorage.getItem("token")) {
+    return {
+      headers: {
+        "x-api-key": "05646635804321276",
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+  }
 };
 
 export const attachId = (url, id) => {

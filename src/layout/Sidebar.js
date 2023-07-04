@@ -16,10 +16,11 @@ import {
 import { GoHome } from "react-icons/go";
 import { IoReceiptOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // sidebar menu accordion
   const [expanded, setExpanded] = useState(false);
@@ -27,7 +28,7 @@ const Sidebar = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState(location.pathname.substring(1));
 
   return (
     <>
