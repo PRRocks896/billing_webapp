@@ -3,13 +3,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { createCity, getCityById, updateCity } from "../../../service/city";
 import { showToast } from "../../../utils/helper";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 export const useAddEditCity = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [options, setOptions] = useState([]);
+  const [options] = useState([]);
 
   // const statesData = useSelector((state) => state.states.data);
   // const statesList = statesData.map((item) => {
@@ -24,8 +23,7 @@ export const useAddEditCity = (tag) => {
   const {
     setValue,
     handleSubmit,
-    control,
-    formState: { errors },
+    control
   } = useForm({
     defaultValues: {
       cityName: "",
