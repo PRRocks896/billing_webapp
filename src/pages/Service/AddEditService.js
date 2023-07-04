@@ -15,6 +15,17 @@ const AddEditService = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler, categoryOptions } =
     useAddEditService(tag);
 
+  const [selectedCategory] = categoryOptions.filter((item) => {
+    return item.value === 23 ? { value: item.value, label: item.label } : null;
+  });
+  console.log(
+    categoryOptions.filter((item) => {
+      return item.value === 23
+        ? { value: item.value, label: item.label }
+        : null;
+    })[0]
+  );
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -96,6 +107,7 @@ const AddEditService = ({ tag }) => {
                         size="small"
                         options={categoryOptions}
                         id="category"
+                        // value={value}
                         value={value}
                         onChange={(event, newValue) => onChange(newValue)}
                         onBlur={onBlur}

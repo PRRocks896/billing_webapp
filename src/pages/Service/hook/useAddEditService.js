@@ -5,18 +5,19 @@ import { useNavigate } from "react-router";
 import { getServiceCategoryList } from "../../../service/serviceCategory";
 import { serviceCategoryAction } from "../../../redux/serviceCategory";
 import { showToast } from "../../../utils/helper";
-import { createService } from "../../../service/service";
+import { createService, getServiceById } from "../../../service/service";
+import { useParams } from "react-router-dom";
 
 export const useAddEditService = (tag) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [categoryOptions, setCategoryOptions] = useState([]);
-
+  const { id } = useParams();
   const serviceSategories = useSelector((state) => state.serviceCategory.data);
-  console.log("serviceSategories", serviceSategories);
 
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -48,7 +49,7 @@ export const useAddEditService = (tag) => {
           showToast(response.messageCode, false);
         }
       } else if (tag === "edit") {
-        console.log("else for update");
+        console.log("else for update", data);
       }
     } catch (error) {
       console.log(error);
@@ -60,6 +61,30 @@ export const useAddEditService = (tag) => {
   const cancelHandler = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    try {
+      const fetchEditServiceData = async () => {
+        if (id) {
+          console.log("Fetched");
+          const response = await getServiceById(id);
+          console.warn(response);
+          if (response.statusCode === 200) {
+            console.log(response.data);
+            setValue("service_name", response.data.name);
+            setValue("amount", response.data.amount);
+            setValue("category", response.data.service_category_id);
+          } else {
+            showToast(response.message, false);
+          }
+        }
+      };
+      fetchEditServiceData();
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  }, [id, setValue]);
 
   // gemrate service category options for drop down
   const makeServiceCaytegoryOption = useCallback(() => {
