@@ -17,22 +17,13 @@ import { useNavigate } from "react-router-dom";
 import { useService } from "./hook/useService";
 import { useSelector } from "react-redux";
 
-// const service = [
-//   { id: 1, category: "Category", name: "service-name", amount: "300" },
-//   { id: 2, category: "Category", name: "service-name", amount: "300" },
-//   { id: 3, category: "Category", name: "service-name", amount: "300" },
-//   { id: 4, category: "Category", name: "service-name", amount: "300" },
-//   { id: 5, category: "Category", name: "service-name", amount: "300" },
-//   { id: 6, category: "Category", name: "service-name", amount: "300" },
-//   { id: 7, category: "Category", name: "service-name", amount: "300" },
-//   { id: 8, category: "Category", name: "service-name", amount: "300" },
-//   { id: 9, category: "Category", name: "service-name", amount: "300" },
-//   { id: 10, category: "Category", name: "service-name", amount: "300" },
-//   { id: 11, category: "Category", name: "service-name", amount: "300" },
-// ];
-
 const Service = () => {
-  useService();
+  const {
+    isDeleteModalOpen,
+    deleteModalClose,
+    deleteHandler,
+    deleteBtnClickHandler,
+  } = useService();
   const navigate = useNavigate();
   const service = useSelector((state) => state.service.data);
   console.log(service);
@@ -59,10 +50,6 @@ const Service = () => {
   );
   console.log(visibleRows);
   // pagination code end
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   return (
     <>
@@ -108,7 +95,10 @@ const Service = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -154,6 +144,7 @@ const Service = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="service"
+          deleteHandler={deleteHandler}
         />
       )}
     </>
