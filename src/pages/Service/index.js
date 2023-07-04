@@ -14,23 +14,29 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
+import { useService } from "./hook/useService";
+import { useSelector } from "react-redux";
 
-const service = [
-  { id: 1, category: "Category", name: "service-name", amount: "300" },
-  { id: 2, category: "Category", name: "service-name", amount: "300" },
-  { id: 3, category: "Category", name: "service-name", amount: "300" },
-  { id: 4, category: "Category", name: "service-name", amount: "300" },
-  { id: 5, category: "Category", name: "service-name", amount: "300" },
-  { id: 6, category: "Category", name: "service-name", amount: "300" },
-  { id: 7, category: "Category", name: "service-name", amount: "300" },
-  { id: 8, category: "Category", name: "service-name", amount: "300" },
-  { id: 9, category: "Category", name: "service-name", amount: "300" },
-  { id: 10, category: "Category", name: "service-name", amount: "300" },
-  { id: 11, category: "Category", name: "service-name", amount: "300" },
-];
+// const service = [
+//   { id: 1, category: "Category", name: "service-name", amount: "300" },
+//   { id: 2, category: "Category", name: "service-name", amount: "300" },
+//   { id: 3, category: "Category", name: "service-name", amount: "300" },
+//   { id: 4, category: "Category", name: "service-name", amount: "300" },
+//   { id: 5, category: "Category", name: "service-name", amount: "300" },
+//   { id: 6, category: "Category", name: "service-name", amount: "300" },
+//   { id: 7, category: "Category", name: "service-name", amount: "300" },
+//   { id: 8, category: "Category", name: "service-name", amount: "300" },
+//   { id: 9, category: "Category", name: "service-name", amount: "300" },
+//   { id: 10, category: "Category", name: "service-name", amount: "300" },
+//   { id: 11, category: "Category", name: "service-name", amount: "300" },
+// ];
 
 const Service = () => {
+  useService();
   const navigate = useNavigate();
+  const service = useSelector((state) => state.service.data);
+  console.log(service);
+
   // pagination code start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -49,8 +55,9 @@ const Service = () => {
 
   const visibleRows = React.useMemo(
     () => service.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
+    [page, rowsPerPage, service]
   );
+  console.log(visibleRows);
   // pagination code end
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -86,7 +93,9 @@ const Service = () => {
                       <>
                         <TableRow key={row.id}>
                           <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left">{row.category}</TableCell>
+                          <TableCell align="left">
+                            {row.px_service_category.name}
+                          </TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.amount}</TableCell>
                           <TableCell>

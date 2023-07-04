@@ -4,6 +4,7 @@ import StaffReducer from "./staff";
 import StateReducer from "./states";
 import CityReducer from "./city";
 import ServiceCategoryReducer from "./serviceCategory";
+import ServiceReducer from "./service";
 
 const rootReducer = combineReducers({
   customer: CustomerReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   states: StateReducer,
   city: CityReducer,
   serviceCategory: ServiceCategoryReducer,
+  service: ServiceReducer,
 });
 
 export default rootReducer;
