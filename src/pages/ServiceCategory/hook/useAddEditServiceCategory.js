@@ -40,7 +40,7 @@ export const useAddEditServiceCategory = (tag) => {
         } else {
           showToast(response.messageCode, false);
         }
-      } else {
+      } else if (tag === "edit") {
         console.log("update call");
         console.log("update call");
         const payload = { name: data.service_category };

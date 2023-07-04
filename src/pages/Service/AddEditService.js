@@ -11,19 +11,10 @@ import {
 import { Controller } from "react-hook-form";
 import { useAddEditService } from "./hook/useAddEditService";
 
-const categoryOptions = [
-  { label: "Category 1" },
-  { label: "Category 2" },
-  { label: "Category 3" },
-  { label: "Category 4" },
-  { label: "Category 5" },
-  { label: "Category 6" },
-  { label: "Category 7" },
-];
-
 const AddEditService = ({ tag }) => {
-  const { control, handleSubmit, onSubmit, cancelHandler } =
-    useAddEditService();
+  const { control, handleSubmit, onSubmit, cancelHandler, categoryOptions } =
+    useAddEditService(tag);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
