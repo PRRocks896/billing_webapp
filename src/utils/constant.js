@@ -25,3 +25,11 @@ export const DELETE_SERVICE_CATEGORY_API = "api/service-category/";
 export const GET_SINGLE_SERVICE_CATEGORY_API = "api/service-category/";
 export const UPDATE_SERVICE_CATEGORY_API = "api/service-category/";
 export const SEARCH_SERVICE_CATEGORY_API = "api/service-category/get";
+
+// service apis
+export const SERVICE_LIST_API = "api/service/list";
+export const CREATE_SERVICE_API = "api/service";
+export const DELETE_SERVICE_API = "api/service/";
+export const GET_SINGLE_SERVICE_API = "api/service/";
+export const UPDATE_SERVICE_API = "api/service/";
+export const SEARCH_SERVICE_API = "api/service/get";

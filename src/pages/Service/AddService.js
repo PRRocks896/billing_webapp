@@ -167,7 +167,7 @@ const AddService = ({ tag }) => {
                         options={categoryOptions}
                         id="category"
                         value={value}
-                        onChange={(event, newValue) => onChange(newValue.label)}
+                        onChange={(event, newValue) => onChange(newValue)}
                         onBlur={onBlur}
                         label="category"
                         renderInput={(params) => (
