@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteService, getServiceList } from "../../../service/service";
+import {
+  deleteService,
+  getServiceList,
+  searchService,
+} from "../../../service/service";
 import { showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
 
@@ -66,10 +70,35 @@ export const useService = () => {
     }
   };
 
+  const searchServiceHandler = async (payload) => {
+    try {
+      console.log(payload);
+      if (payload.searchValue === "") {
+        fetchServiceData();
+      } else {
+        const body = { name: payload.searchValue };
+        console.log(body);
+        const response = await searchService(body);
+        console.log(response);
+        if (response.statusCode === 200) {
+          const payload = response.data;
+          dispatch(serviceAction.storeServices([payload]));
+        } else if (response.statusCode === 404) {
+          const payload = [];
+          dispatch(serviceAction.storeServices(payload));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+
   return {
     isDeleteModalOpen,
     deleteModalClose,
     deleteHandler,
     deleteBtnClickHandler,
+    searchServiceHandler,
   };
 };
