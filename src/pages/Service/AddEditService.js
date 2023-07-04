@@ -20,20 +20,8 @@ const categoryOptions = [
   { label: "Category 6" },
   { label: "Category 7" },
 ];
-// const customStyles = {
-//   control: (provided, state) => ({
-//     ...provided,
-//     border: `1px solid ${
-//       state.isFocused || state.hover
-//         ? "var(--color-black)"
-//         : "var(--color-grey)"
-//     }`,
-//     borderRadius: 6,
-//     // padding: "7px 0px",
-//   }),
-// };
 
-const AddService = ({ tag }) => {
+const AddEditService = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler } =
     useAddEditService();
   return (
@@ -43,20 +31,6 @@ const AddService = ({ tag }) => {
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                {/* <FormControl variant="standard" className="form-control">
-                <Typography
-                  variant="body2"
-                  component="span"
-                  className="text-black input-label"
-                >
-                  Service Name *
-                </Typography>
-                <InputBase
-                  name="service-name"
-                  placeholder="Enter service name"
-                  className={"input-field"}
-                />
-                </FormControl> */}
                 <Controller
                   name="service_name"
                   control={control}
@@ -88,20 +62,6 @@ const AddService = ({ tag }) => {
               </Grid>
               {/*  */}
               <Grid item xs={6}>
-                {/* <FormControl variant="standard" className="form-control">
-                  <Typography
-                    variant="body2"
-                    component="span"
-                    className="text-black input-label"
-                  >
-                    Amount *
-                  </Typography>
-                  <InputBase
-                    name="amount"
-                    placeholder="Amount"
-                    className={"input-field"}
-                  />
-                </FormControl> */}
                 <Controller
                   name="amount"
                   control={control}
@@ -133,27 +93,6 @@ const AddService = ({ tag }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                {/* <FormControl variant="standard" className="form-control">
-                  <Typography
-                    variant="body2"
-                    component="span"
-                    className="text-black input-label"
-                  >
-                    Select Category *
-                  </Typography>
-                  <Select
-                    placeholder="Select category"
-                    options={options}
-                    styles={customStyles}
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary: "#364865",
-                      },
-                    })}
-                  />
-                </FormControl> */}
                 <Controller
                   name="category"
                   control={control}
@@ -206,4 +145,4 @@ const AddService = ({ tag }) => {
   );
 };
 
-export default AddService;
+export default AddEditService;

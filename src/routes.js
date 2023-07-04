@@ -4,11 +4,10 @@ import LayoutProvider from "./layout/index";
 import Home from "./pages/Home";
 import Customer from "./pages/Customer";
 import AddCustomer from "./pages/Customer/AddCustomer";
-import AddServiceCategory from "./pages/ServiceCategory/AddServiceCategory";
 import Staff from "./pages/Staff";
 import AddEditStaff from "./pages/Staff/AddEditStaff";
 import Service from "./pages/Service";
-import AddService from "./pages/Service/AddService";
+import AddEditService from "./pages/Service/AddEditService";
 import PaymentType from "./pages/PaymentType";
 import AddPaymentType from "./pages/PaymentType/AddPaymentType";
 import CreateBill from "./pages/Bill/CreateBill";
@@ -19,6 +18,7 @@ import State from "./pages/State";
 import AddEditStates from "./pages/State/AddEditStates";
 import AddEditCity from "./pages/City/AddEditCity";
 import ServiceCategory from "./pages/ServiceCategory";
+import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCategory";
 
 const routes = createBrowserRouter([
   {
@@ -38,16 +38,16 @@ const routes = createBrowserRouter([
       { path: "service-category", element: <ServiceCategory /> },
       {
         path: "add-service-category",
-        element: <AddServiceCategory tag="add" />,
+        element: <AddEditServiceCategory tag="add" />,
       },
       {
         path: "edit-service-category/:id",
-        element: <AddServiceCategory tag="edit" />,
+        element: <AddEditServiceCategory tag="edit" />,
       },
 
       { path: "service", element: <Service /> },
-      { path: "add-service", element: <AddService tag="add" /> },
-      { path: "edit-service", element: <AddService tag="edit" /> },
+      { path: "add-service", element: <AddEditService tag="add" /> },
+      { path: "edit-service", element: <AddEditService tag="edit" /> },
 
       { path: "payment-type", element: <PaymentType /> },
       { path: "add-payment-type", element: <AddPaymentType tag="add" /> },

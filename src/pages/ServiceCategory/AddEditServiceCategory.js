@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 import { Controller } from "react-hook-form";
 import { useAddEditServiceCategory } from "./hook/useAddEditServiceCategory";
 
-const AddServiceCategory = ({ tag }) => {
+const AddEditServiceCategory = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler } =
     useAddEditServiceCategory(tag);
 
@@ -97,4 +97,4 @@ const AddServiceCategory = ({ tag }) => {
   );
 };
 
-export default AddServiceCategory;
+export default AddEditServiceCategory;
