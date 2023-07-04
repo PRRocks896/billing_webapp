@@ -16,15 +16,13 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { useServiceCategory } from "./hook/useServicecategory";
 import { useSelector } from "react-redux";
-import { serviceCategoryAction } from "../../redux/serviceCategory";
 
 const ServiceCategory = () => {
   const {
     isDeleteModalOpen,
-    deleteHandler,
     deleteModalClose,
-    deleteId,
-    deleteServiceCategory,
+    deleteHandler,
+    deleteBtnClickHandler,
     searchServiceCategoryHandler,
   } = useServiceCategory();
   const serviceSategories = useSelector((state) => state.serviceCategory.data);
@@ -99,7 +97,10 @@ const ServiceCategory = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteHandler.bind(null, row.id)}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -145,9 +146,7 @@ const ServiceCategory = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="service category"
-          deleteService={deleteServiceCategory}
-          recordId={deleteId}
-          removeRecordFromState={serviceCategoryAction.removeServiceCategory}
+          deleteHandler={deleteHandler}
         />
       )}
     </>

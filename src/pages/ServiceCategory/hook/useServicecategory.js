@@ -15,10 +15,6 @@ export const useServiceCategory = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const deleteModalOpen = () => setIsDeleteModalOpen(true);
   const deleteModalClose = () => setIsDeleteModalOpen(false);
-  const deleteHandler = (id) => {
-    deleteModalOpen();
-    setDeleteId(id);
-  };
 
   //  fetch staff logic
   const fetchServiceCategoryData = useCallback(async () => {
@@ -76,12 +72,32 @@ export const useServiceCategory = () => {
     }
   };
 
+  const deleteBtnClickHandler = (id) => {
+    setDeleteId(id);
+    deleteModalOpen();
+  };
+  const deleteHandler = async () => {
+    try {
+      console.log(deleteId);
+      const response = await deleteServiceCategory(deleteId);
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        dispatch(serviceCategoryAction.removeServiceCategory({ id: deleteId }));
+        deleteModalClose();
+      } else {
+        showToast(response.messageCode, false);
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+
   return {
     isDeleteModalOpen,
-    deleteHandler,
     deleteModalClose,
-    deleteId,
-    deleteServiceCategory,
+    deleteHandler,
+    deleteBtnClickHandler,
     searchServiceCategoryHandler,
   };
 };
