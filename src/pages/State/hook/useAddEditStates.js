@@ -16,8 +16,7 @@ export const useAddEditStates = (tag) => {
   const {
     setValue,
     handleSubmit,
-    control,
-    formState: { errors },
+    control
   } = useForm({
     defaultValues: {
       stateName: "",
