@@ -42,7 +42,6 @@ export const useAddEditServiceCategory = (tag) => {
         }
       } else if (tag === "edit") {
         console.log("update call");
-        console.log("update call");
         const payload = { name: data.service_category };
         const response = await updateServiceCategory(payload, id);
         console.log(response);
