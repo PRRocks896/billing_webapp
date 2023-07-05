@@ -49,6 +49,15 @@ export const useService = () => {
     fetchServiceData();
   }, [fetchServiceData]);
 
+  const searchServiceHandler = async (payload) => {
+    try {
+      fetchServiceData(payload.searchValue);
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     deleteModalOpen();
@@ -65,15 +74,6 @@ export const useService = () => {
       } else {
         showToast(response.messageCode, false);
       }
-    } catch (error) {
-      console.log(error);
-      showToast(error.message, false);
-    }
-  };
-
-  const searchServiceHandler = async (payload) => {
-    try {
-      fetchServiceData(payload.searchValue);
     } catch (error) {
       console.log(error);
       showToast(error.message, false);

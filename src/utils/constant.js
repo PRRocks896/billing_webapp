@@ -10,6 +10,7 @@ export const CREATE_STATES_API = "api/state";
 export const GET_SINGLE_STATES_API = "api/state/";
 export const UPDATE_STATES_API = "api/state/";
 export const DELETE_STATES_API = "api/state/";
+export const SEARCH_STATES_API = "api/state/get";
 
 // city apis
 export const CITY_LIST_API = "api/city/list";

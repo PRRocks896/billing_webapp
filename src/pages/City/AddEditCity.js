@@ -12,8 +12,9 @@ import { useAddEditCity } from "./hook/useAddEditCity";
 import { Controller } from "react-hook-form";
 
 const AddEditCity = ({ tag }) => {
-  const { control, options, handleSubmit, onSubmit, cancelHandler } =
+  const { control, handleSubmit, onSubmit, cancelHandler, statesOptions } =
     useAddEditCity(tag);
+  console.log("*************", statesOptions);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -60,9 +61,8 @@ const AddEditCity = ({ tag }) => {
                   }) => (
                     <Autocomplete
                       size="small"
-                      disablePortal
                       id="stateId"
-                      options={options}
+                      options={statesOptions}
                       value={value}
                       onBlur={onBlur}
                       onChange={(event, newValue) => onChange(newValue)}
