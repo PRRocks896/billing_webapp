@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { serviceCategoryAction } from "../../../redux/serviceCategory";
+import { deleteService, getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
-import {
-  deleteServiceCategory,
-  getServiceCategoryList,
-  searchServiceCategory,
-} from "../../../service/serviceCategory";
+import { serviceAction } from "../../../redux/service";
 
-export const useServiceCategory = () => {
+export const useService = () => {
   const dispatch = useDispatch();
 
   const [deleteId, setDeleteId] = useState("");
@@ -17,7 +13,7 @@ export const useServiceCategory = () => {
   const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch staff logic
-  const fetchServiceCategoryData = useCallback(async () => {
+  const fetchServiceData = useCallback(async () => {
     try {
       const body = {
         where: {
@@ -31,14 +27,14 @@ export const useServiceCategory = () => {
           page: 1,
         },
       };
-      const response = await getServiceCategoryList(body);
+      const response = await getServiceList(body);
       //   console.log(response);
       if (response.statusCode === 200) {
         const payload = response.data.rows;
-        dispatch(serviceCategoryAction.storeServiceCategories(payload));
+        dispatch(serviceAction.storeServices(payload));
       } else if (response.statusCode === 404) {
         const payload = [];
-        dispatch(serviceCategoryAction.storeServiceCategories(payload));
+        dispatch(serviceAction.storeServices(payload));
       }
     } catch (error) {
       showToast(error.message, false);
@@ -46,31 +42,8 @@ export const useServiceCategory = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    fetchServiceCategoryData();
-  }, [fetchServiceCategoryData]);
-
-  const searchServiceCategoryHandler = async (payload) => {
-    try {
-      if (payload.searchValue === "") {
-        fetchServiceCategoryData();
-      } else {
-        const body = { name: payload.searchValue };
-        console.log(body);
-        const response = await searchServiceCategory(body);
-        // console.log(response);
-        if (response.statusCode === 200) {
-          const payload = response.data;
-          dispatch(serviceCategoryAction.storeServiceCategories([payload]));
-        } else if (response.statusCode === 404) {
-          const payload = [];
-          dispatch(serviceCategoryAction.storeServiceCategories(payload));
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      showToast(error.message, false);
-    }
-  };
+    fetchServiceData();
+  }, [fetchServiceData]);
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
@@ -79,10 +52,10 @@ export const useServiceCategory = () => {
   const deleteHandler = async () => {
     try {
       console.log(deleteId);
-      const response = await deleteServiceCategory(deleteId);
+      const response = await deleteService(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
-        dispatch(serviceCategoryAction.removeServiceCategory({ id: deleteId }));
+        dispatch(serviceAction.removeService({ id: deleteId }));
         deleteModalClose();
       } else {
         showToast(response.messageCode, false);
@@ -98,6 +71,5 @@ export const useServiceCategory = () => {
     deleteModalClose,
     deleteHandler,
     deleteBtnClickHandler,
-    searchServiceCategoryHandler,
   };
 };
