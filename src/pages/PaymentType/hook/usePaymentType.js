@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { showToast } from "../../../utils/helper";
-import { statesAction } from "../../../redux/states";
-import { useDispatch } from "react-redux";
 import {
-  getStatesList,
-  searchStates,
-  deleteState,
-} from "../../../service/states";
+  getPaymentTypeList,
+  searchPaymentType,
+} from "../../../service/paymentType";
+import { paymentTypeAction } from "../../../redux/paymentType";
+import { useDispatch } from "react-redux";
+import { deletePaymentType } from "../../../service/paymentType";
 
-export const useStates = () => {
+export const usePaymentType = () => {
   const dispatch = useDispatch();
 
   const [deleteId, setDeleteId] = useState("");
@@ -20,8 +20,8 @@ export const useStates = () => {
     setDeleteId(id);
   };
 
-  //  fetch states logic
-  const fetchStatesData = useCallback(async () => {
+  //  fetch payment type logic
+  const fetchPaymentTypeData = useCallback(async () => {
     try {
       const body = {
         where: {
@@ -35,35 +35,31 @@ export const useStates = () => {
           page: 1,
         },
       };
-      const response = await getStatesList(body);
+      const response = await getPaymentTypeList(body);
 
       if (response.statusCode === 200) {
         const payload = response.data.rows;
-        dispatch(statesAction.storeStates(payload));
+        dispatch(paymentTypeAction.storePaymentType(payload));
       }
     } catch (error) {
       showToast(error.message, false);
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    fetchStatesData();
-  }, [fetchStatesData]);
-
-  const searchStatesandler = async (payload) => {
+  const searchPaymentTypeHandler = async (payload) => {
     try {
       if (payload.searchValue === "") {
-        fetchStatesData();
+        fetchPaymentTypeData();
       } else {
         const body = { name: payload.searchValue };
         console.log(body);
-        const response = await searchStates(body);
+        const response = await searchPaymentType(body);
         if (response.statusCode === 200) {
           const payload = response.data;
-          dispatch(statesAction.storeStates([payload]));
+          dispatch(paymentTypeAction.storePaymentType([payload]));
         } else if (response.statusCode === 404) {
           const payload = [];
-          dispatch(statesAction.storeStates(payload));
+          dispatch(paymentTypeAction.storePaymentType(payload));
         }
       }
     } catch (error) {
@@ -72,12 +68,16 @@ export const useStates = () => {
     }
   };
 
+  useEffect(() => {
+    fetchPaymentTypeData();
+  }, [fetchPaymentTypeData]);
+
   return {
     isDeleteModalOpen,
     deleteHandler,
     deleteModalClose,
     deleteId,
-    deleteState,
-    searchStatesandler,
+    deletePaymentType,
+    searchPaymentTypeHandler,
   };
 };

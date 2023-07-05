@@ -10,6 +10,7 @@ export const CREATE_STATES_API = "api/state";
 export const GET_SINGLE_STATES_API = "api/state/";
 export const UPDATE_STATES_API = "api/state/";
 export const DELETE_STATES_API = "api/state/";
+export const SEARCH_STATES_API = "api/state/get";
 
 // city apis
 export const CITY_LIST_API = "api/city/list";
@@ -25,3 +26,11 @@ export const DELETE_SERVICE_CATEGORY_API = "api/service-category/";
 export const GET_SINGLE_SERVICE_CATEGORY_API = "api/service-category/";
 export const UPDATE_SERVICE_CATEGORY_API = "api/service-category/";
 export const SEARCH_SERVICE_CATEGORY_API = "api/service-category/get";
+
+// payment type apis
+export const PAYMENT_TYPE_LIST_API = "api/payment-type/list";
+export const CREATE_PAYMENT_TYPE_API = "api/payment-type";
+export const DELETE_PAYMENT_TYPE_API = "api/payment-type/";
+export const GET_SINGLE_PAYMENT_TYPE_API = "api/payment-type/";
+export const UPDATE_PAYMENT_TYPE_API = "api/payment-type/";
+export const SEARCH_PAYMENT_TYPE_API = "api/payment-type/get";

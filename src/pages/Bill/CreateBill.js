@@ -124,6 +124,7 @@ const CreateBill = () => {
                         label="Date"
                         size="small"
                         name="date"
+                        pattern="dd-mm-yyyy"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
