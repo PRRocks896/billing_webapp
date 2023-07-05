@@ -62,7 +62,6 @@ export const useAddEditServiceCategory = (tag) => {
     try {
       const fetchEditServiceCategoryData = async () => {
         if (id) {
-          console.log("Fetched");
           const response = await getServiceCategoryById(id);
           console.warn(response);
           if (response.statusCode === 200) {

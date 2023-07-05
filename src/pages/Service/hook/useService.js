@@ -53,6 +53,7 @@ export const useService = () => {
     setDeleteId(id);
     deleteModalOpen();
   };
+
   const deleteHandler = async () => {
     try {
       console.log(deleteId);
@@ -72,7 +73,6 @@ export const useService = () => {
 
   const searchServiceHandler = async (payload) => {
     try {
-      console.log(payload);
       fetchServiceData(payload.searchValue);
     } catch (error) {
       console.log(error);
