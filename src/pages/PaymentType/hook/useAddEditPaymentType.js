@@ -1,10 +1,20 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
+import {
+  createPaymentType,
+  getPaymentTypeById,
+  updatePaymentType,
+} from "../../../service/paymentType";
+import { showToast } from "../../../utils/helper";
+import { useEffect } from "react";
 
-export const useAddEditPaymentType = () => {
+export const useAddEditPaymentType = (tag) => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const {
+    setValue,
     control,
     handleSubmit,
     formState: { errors },
@@ -15,8 +25,53 @@ export const useAddEditPaymentType = () => {
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const onSubmit = async (data) => {
+    try {
+      if (tag === "add") {
+        const payload = { name: data.payment_type, createdBy: 1 };
+        const response = await createPaymentType(payload);
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          navigate(-1);
+        } else {
+          showToast(response.messageCode, false);
+        }
+      } else {
+        const payload = { name: data.payment_type };
+        const response = await updatePaymentType(payload, id);
+
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          navigate(-1);
+        } else {
+          showToast(response.message, false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+
+  useEffect(() => {
+    try {
+      const fetchEditPaymentTypeData = async () => {
+        if (id) {
+          const response = await getPaymentTypeById(id);
+          if (response.statusCode === 200) {
+            console.log(response.data.name);
+            setValue("payment_type", response.data.name);
+          } else {
+            showToast(response.message, false);
+          }
+        }
+      };
+      fetchEditPaymentTypeData();
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  }, [id, setValue]);
 
   const cancelHandler = () => {
     navigate(-1);

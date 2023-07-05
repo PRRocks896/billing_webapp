@@ -4,6 +4,7 @@ import {
   STATES_LIST_API,
   UPDATE_STATES_API,
   DELETE_STATES_API,
+  SEARCH_STATES_API,
 } from "../utils/constant";
 import { attachId, get, post, remove, put } from "./webRequest";
 
@@ -32,5 +33,10 @@ export const updateStates = async (payload, id) => {
 export const deleteState = async (id) => {
   const newUrl = await attachId(DELETE_STATES_API, id);
   const response = await remove(newUrl);
+  return response;
+};
+
+export const searchStates = async (body) => {
+  const response = await post(SEARCH_STATES_API, body);
   return response;
 };

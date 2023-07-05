@@ -33,3 +33,11 @@ export const DELETE_SERVICE_API = "api/service/";
 export const GET_SINGLE_SERVICE_API = "api/service/";
 export const UPDATE_SERVICE_API = "api/service/";
 export const SEARCH_SERVICE_API = "api/service/get";
+
+// payment type apis
+export const PAYMENT_TYPE_LIST_API = "api/payment-type/list";
+export const CREATE_PAYMENT_TYPE_API = "api/payment-type";
+export const DELETE_PAYMENT_TYPE_API = "api/payment-type/";
+export const GET_SINGLE_PAYMENT_TYPE_API = "api/payment-type/";
+export const UPDATE_PAYMENT_TYPE_API = "api/payment-type/";
+export const SEARCH_PAYMENT_TYPE_API = "api/payment-type/get";

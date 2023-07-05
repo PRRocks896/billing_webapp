@@ -16,13 +16,17 @@ import {
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import { useStates } from "./hook/useStates";
-
-import { deleteState } from "../../service/states";
 import { statesAction } from "../../redux/states";
 
 const State = () => {
-  const { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId } =
-    useStates();
+  const {
+    isDeleteModalOpen,
+    deleteHandler,
+    deleteModalClose,
+    deleteId,
+    deleteState,
+    searchStatesandler,
+  } = useStates();
   const navigate = useNavigate();
   const state = useSelector((state) => state.states.data);
 
@@ -54,6 +58,7 @@ const State = () => {
         btnTitle={"Add State"}
         inputName="state"
         navigatePath="/add-state"
+        callAPI={searchStatesandler}
       />
 
       {/* state listing */}

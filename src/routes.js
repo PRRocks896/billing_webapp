@@ -9,7 +9,7 @@ import AddEditStaff from "./pages/Staff/AddEditStaff";
 import Service from "./pages/Service";
 import AddEditService from "./pages/Service/AddEditService";
 import PaymentType from "./pages/PaymentType";
-import AddPaymentType from "./pages/PaymentType/AddPaymentType";
+import AddEditPaymentType from "./pages/PaymentType/AddEditPaymentType";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
 import AddUser from "./pages/User/AddUser";
@@ -50,8 +50,11 @@ const routes = createBrowserRouter([
       { path: "edit-service/:id", element: <AddEditService tag="edit" /> },
 
       { path: "payment-type", element: <PaymentType /> },
-      { path: "add-payment-type", element: <AddPaymentType tag="add" /> },
-      { path: "edit-payment-type", element: <AddPaymentType tag="edit" /> },
+      { path: "add-payment-type", element: <AddEditPaymentType tag="add" /> },
+      {
+        path: "edit-payment-type/:id",
+        element: <AddEditPaymentType tag="edit" />,
+      },
 
       { path: "cities", element: <City /> },
       { path: "add-city", element: <AddEditCity tag="add" /> },
