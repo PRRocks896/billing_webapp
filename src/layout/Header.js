@@ -20,6 +20,7 @@ import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
+import { logoutHandler } from "../utils/helper";
 
 const drawerWidth = 300;
 
@@ -171,7 +172,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 </ListItemIcon>
                 Profile
               </MenuItem>
-              <MenuItem className="menu-link">
+              <MenuItem className="menu-link" onClick={logoutHandler}>
                 <ListItemIcon className="link-icon">
                   <FiLogOut />
                 </ListItemIcon>

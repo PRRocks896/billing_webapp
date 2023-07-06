@@ -45,10 +45,19 @@ export const getAuthToken = () => {
   }
 };
 
+export const removeStorageToken = () => {
+  localStorage.clear();
+};
+
 export const checkIsAuthenticated = () => {
   const value = getAuthToken();
   if (!value) {
     return <Navigate to={"/login"} replace={true} />;
   }
   return null;
+};
+
+export const logoutHandler = () => {
+  removeStorageToken();
+  window.location.href = "/login";
 };
