@@ -16,8 +16,6 @@ import {
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import { useCity } from "./hook/useCity";
-import { deleteCity } from "../../service/city";
-import { cityAction } from "../../redux/city";
 
 const City = () => {
   const {

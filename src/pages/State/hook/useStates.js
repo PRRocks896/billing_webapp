@@ -1,11 +1,43 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { statesAction } from "../../../redux/states";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getStatesList, deleteState } from "../../../service/states";
 
 export const useStates = () => {
   const dispatch = useDispatch();
+  const state = useSelector((state) => state.states.data);
+
+  // pagination code start
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [count, setCount] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - state.length) : 0;
+
+  const emptyRows = rowsPerPage - state.length;
+
+  // const visibleRows = useMemo(() => {
+  //   console.log(state);
+  //   return state?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // }, [page, rowsPerPage, state]);
+
+  const visibleRows = useMemo(() => {
+    console.log(state);
+    return state;
+  }, [state]);
+
+  // pagination code end
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -25,14 +57,16 @@ export const useStates = () => {
           pagination: {
             sortBy: "createdAt",
             descending: true,
-            rows: 5,
-            page: 1,
+            rows: rowsPerPage,
+            page: page + 1,
           },
         };
+        console.log(body);
         const response = await getStatesList(body);
-
+        console.log("RK", response);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
+          setCount(response.data.count);
           dispatch(statesAction.storeStates(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
@@ -42,7 +76,7 @@ export const useStates = () => {
         showToast(error.message, false);
       }
     },
-    [dispatch]
+    [dispatch, page, rowsPerPage]
   );
 
   useEffect(() => {
@@ -86,5 +120,14 @@ export const useStates = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchStatesandler,
+
+    // ----
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    emptyRows,
+    visibleRows,
+    count,
   };
 };
