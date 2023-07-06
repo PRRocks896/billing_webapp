@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -24,31 +23,19 @@ const State = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchStatesandler,
+    // ----
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    emptyRows,
+    visibleRows,
+    count,
   } = useStates();
   const navigate = useNavigate();
-  const state = useSelector((state) => state.states.data);
 
-  // pagination code start
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - state.length) : 0;
-
-  const visibleRows = useMemo(
-    () => state?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage, state]
-  );
-  // pagination code end
+  let index = rowsPerPage * page;
+  console.log(index);
 
   return (
     <>
@@ -73,11 +60,11 @@ const State = () => {
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row, index) => {
+                  visibleRows.map((row) => {
                     return (
                       <>
                         <TableRow key={row.id}>
-                          <TableCell align="left">{index + 1}</TableCell>
+                          <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell>
                             <Box className="table-action-btn">
@@ -126,7 +113,7 @@ const State = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={state.length}
+            count={count}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

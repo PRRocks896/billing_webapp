@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -24,32 +23,16 @@ const City = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchCityHandler,
+    // ----
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    emptyRows,
+    visibleRows,
+    count,
   } = useCity();
   const navigate = useNavigate();
-  const cities = useSelector((state) => state.city.data);
-  console.log(cities);
-
-  // pagination code start
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - cities.length) : 0;
-
-  const visibleRows = useMemo(
-    () => cities?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage, cities]
-  );
-  // pagination code end
 
   return (
     <>
@@ -129,7 +112,7 @@ const City = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={cities.length}
+            count={count}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
