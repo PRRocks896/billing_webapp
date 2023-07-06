@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -16,6 +17,16 @@ import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { useService } from "./hook/useService";
 import { useSelector } from "react-redux";
+
+const switchStyles = {
+  color: "var(--color-black)",
+  "&.MuiChecked": {
+    color: "green",
+  },
+  "&.Mui-checked + .MuiSwitch-track": {
+    backgroundColor: "lightgreen", // Customize the track color when checked
+  },
+};
 
 const Service = () => {
   const {
@@ -72,6 +83,7 @@ const Service = () => {
                   <TableCell>Category</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Amount</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -87,6 +99,9 @@ const Service = () => {
                           </TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.amount}</TableCell>
+                          <TableCell>
+                            <Switch style={switchStyles} />
+                          </TableCell>
                           <TableCell>
                             <Box className="table-action-btn">
                               <Button
