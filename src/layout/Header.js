@@ -52,12 +52,16 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   let location = useLocation();
-  let pageTitle;
-  if (location.pathname === "/") {
+  let pageTitle = location.pathname.slice(1).toUpperCase();
+
+  if (pageTitle === "/") {
     pageTitle = "Home";
-  } else {
-    pageTitle = location.pathname.slice(1).toUpperCase();
   }
+  if (pageTitle.includes("/")) {
+    pageTitle = location.pathname.split("/")[1];
+    console.log(pageTitle);
+  }
+  pageTitle = pageTitle.toUpperCase();
 
   // account dropdown
   const [anchorEl, setAnchorEl] = React.useState(null);
