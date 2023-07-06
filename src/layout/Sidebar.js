@@ -17,6 +17,7 @@ import { GoHome } from "react-icons/go";
 import { IoReceiptOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import { logoutHandler } from "../utils/helper";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -213,7 +214,7 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion>
         </div>
-        <div>
+        <div onClick={logoutHandler}>
           <Accordion
             expanded={expanded === "panel6"}
             onChange={handleChange("panel6")}

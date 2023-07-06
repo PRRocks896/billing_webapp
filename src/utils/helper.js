@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -51,8 +51,8 @@ export const removeStorageToken = () => {
 
 export const checkIsAuthenticated = () => {
   const value = getAuthToken();
-  if (!value) {
-    return <Navigate to={"/login"} replace={true} />;
+  if (value === null) {
+    return redirect("/login");
   }
   return null;
 };
