@@ -23,6 +23,7 @@ const Service = () => {
     deleteModalClose,
     deleteHandler,
     deleteBtnClickHandler,
+    searchServiceHandler,
   } = useService();
   const navigate = useNavigate();
   const service = useSelector((state) => state.service.data);
@@ -57,6 +58,7 @@ const Service = () => {
         btnTitle="Add Service"
         inputName="service"
         navigatePath="/add-service"
+        callAPI={searchServiceHandler}
       />
 
       {/* service listing */}
@@ -81,7 +83,7 @@ const Service = () => {
                         <TableRow key={row.id}>
                           <TableCell align="left">{index + 1}</TableCell>
                           <TableCell align="left">
-                            {row.px_service_category.name}
+                            {row.px_service_category?.name}
                           </TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.amount}</TableCell>
@@ -89,7 +91,9 @@ const Service = () => {
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={() => navigate("/edit-service")}
+                                onClick={() =>
+                                  navigate(`/edit-service/${row.id}`)
+                                }
                               >
                                 <FiEdit3 size={15} />
                               </Button>

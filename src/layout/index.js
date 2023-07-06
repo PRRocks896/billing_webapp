@@ -48,7 +48,7 @@ const LayoutProvider = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      console.log(window.innerWidth);
+      // console.log(window.innerWidth);
       if (window.innerWidth < 768) {
         handleDrawerClose();
       }

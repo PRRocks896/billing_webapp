@@ -16,15 +16,13 @@ import {
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import { useStates } from "./hook/useStates";
-import { statesAction } from "../../redux/states";
 
 const State = () => {
   const {
     isDeleteModalOpen,
-    deleteHandler,
     deleteModalClose,
-    deleteId,
-    deleteState,
+    deleteHandler,
+    deleteBtnClickHandler,
     searchStatesandler,
   } = useStates();
   const navigate = useNavigate();
@@ -93,7 +91,10 @@ const State = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteHandler.bind(null, row.id)}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -139,9 +140,7 @@ const State = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="state"
-          deleteService={deleteState}
-          recordId={deleteId}
-          removeRecordFromState={statesAction.removeStates}
+          deleteHandler={deleteHandler}
         />
       )}
     </>

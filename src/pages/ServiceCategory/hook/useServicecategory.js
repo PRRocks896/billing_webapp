@@ -5,7 +5,6 @@ import { showToast } from "../../../utils/helper";
 import {
   deleteServiceCategory,
   getServiceCategoryList,
-  searchServiceCategory,
 } from "../../../service/serviceCategory";
 
 export const useServiceCategory = () => {
@@ -17,33 +16,37 @@ export const useServiceCategory = () => {
   const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch staff logic
-  const fetchServiceCategoryData = useCallback(async () => {
-    try {
-      const body = {
-        where: {
-          isActive: true,
-          isDeleted: false,
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 5,
-          page: 1,
-        },
-      };
-      const response = await getServiceCategoryList(body);
-      //   console.log(response);
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
-        dispatch(serviceCategoryAction.storeServiceCategories(payload));
-      } else if (response.statusCode === 404) {
-        const payload = [];
-        dispatch(serviceCategoryAction.storeServiceCategories(payload));
+  const fetchServiceCategoryData = useCallback(
+    async (searchValue = "") => {
+      try {
+        const body = {
+          where: {
+            isActive: true,
+            isDeleted: false,
+            searchText: searchValue,
+          },
+          pagination: {
+            sortBy: "createdAt",
+            descending: true,
+            rows: 5,
+            page: 1,
+          },
+        };
+        const response = await getServiceCategoryList(body);
+        //   console.log(response);
+        if (response.statusCode === 200) {
+          const payload = response.data.rows;
+          dispatch(serviceCategoryAction.storeServiceCategories(payload));
+        } else if (response.statusCode === 404) {
+          const payload = [];
+          dispatch(serviceCategoryAction.storeServiceCategories(payload));
+        }
+      } catch (error) {
+        showToast(error.message, false);
       }
-    } catch (error) {
-      showToast(error.message, false);
-    }
-  }, [dispatch]);
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     fetchServiceCategoryData();
@@ -51,21 +54,8 @@ export const useServiceCategory = () => {
 
   const searchServiceCategoryHandler = async (payload) => {
     try {
-      if (payload.searchValue === "") {
-        fetchServiceCategoryData();
-      } else {
-        const body = { name: payload.searchValue };
-        console.log(body);
-        const response = await searchServiceCategory(body);
-        // console.log(response);
-        if (response.statusCode === 200) {
-          const payload = response.data;
-          dispatch(serviceCategoryAction.storeServiceCategories([payload]));
-        } else if (response.statusCode === 404) {
-          const payload = [];
-          dispatch(serviceCategoryAction.storeServiceCategories(payload));
-        }
-      }
+      console.log(payload);
+      fetchServiceCategoryData(payload.searchValue);
     } catch (error) {
       console.log(error);
       showToast(error.message, false);
@@ -76,6 +66,7 @@ export const useServiceCategory = () => {
     setDeleteId(id);
     deleteModalOpen();
   };
+
   const deleteHandler = async () => {
     try {
       console.log(deleteId);

@@ -96,6 +96,7 @@ const AddEditService = ({ tag }) => {
                         size="small"
                         options={categoryOptions}
                         id="category"
+                        // value={value}
                         value={value}
                         onChange={(event, newValue) => onChange(newValue)}
                         onBlur={onBlur}

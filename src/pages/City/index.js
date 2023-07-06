@@ -20,8 +20,13 @@ import { deleteCity } from "../../service/city";
 import { cityAction } from "../../redux/city";
 
 const City = () => {
-  const { isDeleteModalOpen, deleteHandler, deleteModalClose, deleteId } =
-    useCity();
+  const {
+    isDeleteModalOpen,
+    deleteModalClose,
+    deleteHandler,
+    deleteBtnClickHandler,
+    searchCityHandler,
+  } = useCity();
   const navigate = useNavigate();
   const cities = useSelector((state) => state.city.data);
   console.log(cities);
@@ -50,7 +55,12 @@ const City = () => {
 
   return (
     <>
-      <TopBar btnTitle={"Add City"} inputName="city" navigatePath="/add-city" />
+      <TopBar
+        btnTitle={"Add City"}
+        inputName="city"
+        navigatePath="/add-city"
+        callAPI={searchCityHandler}
+      />
 
       {/* state listing */}
       <Box className="card">
@@ -73,7 +83,9 @@ const City = () => {
                         <TableRow key={row.id}>
                           <TableCell align="left">{index + 1}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
+                          <TableCell align="left">
+                            {row.px_state.name}
+                          </TableCell>
                           <TableCell>
                             <Box className="table-action-btn">
                               <Button
@@ -84,7 +96,10 @@ const City = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteHandler.bind(null, row.id)}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -130,9 +145,7 @@ const City = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="city"
-          deleteService={deleteCity}
-          recordId={deleteId}
-          removeRecordFromState={cityAction.removeCity}
+          deleteHandler={deleteHandler}
         />
       )}
     </>

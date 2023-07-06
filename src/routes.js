@@ -48,7 +48,7 @@ const routes = createBrowserRouter([
 
       { path: "service", element: <Service /> },
       { path: "add-service", element: <AddEditService tag="add" /> },
-      { path: "edit-service", element: <AddEditService tag="edit" /> },
+      { path: "edit-service/:id", element: <AddEditService tag="edit" /> },
 
       { path: "payment-type", element: <PaymentType /> },
       { path: "add-payment-type", element: <AddEditPaymentType tag="add" /> },

@@ -13,42 +13,56 @@ export const useService = () => {
   const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch staff logic
-  const fetchServiceData = useCallback(async () => {
-    try {
-      const body = {
-        where: {
-          isActive: true,
-          isDeleted: false,
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 5,
-          page: 1,
-        },
-      };
-      const response = await getServiceList(body);
-      //   console.log(response);
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
-        dispatch(serviceAction.storeServices(payload));
-      } else if (response.statusCode === 404) {
-        const payload = [];
-        dispatch(serviceAction.storeServices(payload));
+  const fetchServiceData = useCallback(
+    async (searchValue = "") => {
+      try {
+        const body = {
+          where: {
+            isActive: true,
+            isDeleted: false,
+            searchText: searchValue,
+          },
+          pagination: {
+            sortBy: "createdAt",
+            descending: true,
+            rows: 5,
+            page: 1,
+          },
+        };
+        const response = await getServiceList(body);
+        //   console.log(response);
+        if (response.statusCode === 200) {
+          const payload = response.data.rows;
+          dispatch(serviceAction.storeServices(payload));
+        } else if (response.statusCode === 404) {
+          const payload = [];
+          dispatch(serviceAction.storeServices(payload));
+        }
+      } catch (error) {
+        showToast(error.message, false);
       }
-    } catch (error) {
-      showToast(error.message, false);
-    }
-  }, [dispatch]);
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     fetchServiceData();
   }, [fetchServiceData]);
 
+  const searchServiceHandler = async (payload) => {
+    try {
+      fetchServiceData(payload.searchValue);
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     deleteModalOpen();
   };
+
   const deleteHandler = async () => {
     try {
       console.log(deleteId);
@@ -71,5 +85,6 @@ export const useService = () => {
     deleteModalClose,
     deleteHandler,
     deleteBtnClickHandler,
+    searchServiceHandler,
   };
 };

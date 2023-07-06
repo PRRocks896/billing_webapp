@@ -16,15 +16,13 @@ import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { paymentTypeAction } from "../../redux/paymentType";
 
 const PaymentType = () => {
   const {
     isDeleteModalOpen,
-    deleteHandler,
     deleteModalClose,
-    deleteId,
-    deletePaymentType,
+    deleteHandler,
+    deleteBtnClickHandler,
     searchPaymentTypeHandler,
   } = usePaymentType();
   const navigate = useNavigate();
@@ -99,7 +97,10 @@ const PaymentType = () => {
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteHandler.bind(null, row.id)}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -145,9 +146,7 @@ const PaymentType = () => {
           isDeleteModalOpen={isDeleteModalOpen}
           deleteModalClose={deleteModalClose}
           title="payment type"
-          deleteService={deletePaymentType}
-          recordId={deleteId}
-          removeRecordFromState={paymentTypeAction.removePaymentType}
+          deleteHandler={deleteHandler}
         />
       )}
     </>
