@@ -39,7 +39,7 @@ const City = () => {
     rowsPerPage,
     handleChangePage,
     handleChangeRowsPerPage,
-    emptyRows,
+    // emptyRows,
     visibleRows,
     count,
   } = useCity();
@@ -112,7 +112,7 @@ const City = () => {
                     </TableCell>
                   </TableRow>
                 )}
-                {emptyRows > 0 && (
+                {/* {emptyRows > 0 && (
                   <Box
                     style={{
                       height: 53 * emptyRows,
@@ -120,7 +120,7 @@ const City = () => {
                   >
                     <TableCell colSpan={6} />
                   </Box>
-                )}
+                )} */}
               </TableBody>
             </Table>
           </TableContainer>

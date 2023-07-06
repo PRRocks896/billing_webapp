@@ -10,7 +10,7 @@ export const useStates = () => {
 
   // pagination code start
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
 
   const handleChangePage = (event, newPage) => {
@@ -63,7 +63,6 @@ export const useStates = () => {
         };
         console.log(body);
         const response = await getStatesList(body);
-
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);

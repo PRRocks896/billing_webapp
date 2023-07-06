@@ -39,7 +39,7 @@ const State = () => {
     rowsPerPage,
     handleChangePage,
     handleChangeRowsPerPage,
-    emptyRows,
+    // emptyRows,
     visibleRows,
     count,
   } = useStates();
@@ -113,7 +113,7 @@ const State = () => {
                     </TableCell>
                   </TableRow>
                 )}
-                {emptyRows > 0 && (
+                {/* {emptyRows > 0 && (
                   <Box
                     style={{
                       height: 53 * emptyRows,
@@ -121,7 +121,7 @@ const State = () => {
                   >
                     <TableCell colSpan={6} />
                   </Box>
-                )}
+                )} */}
               </TableBody>
             </Table>
           </TableContainer>
