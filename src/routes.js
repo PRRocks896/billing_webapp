@@ -19,6 +19,7 @@ import AddEditStates from "./pages/State/AddEditStates";
 import AddEditCity from "./pages/City/AddEditCity";
 import ServiceCategory from "./pages/ServiceCategory";
 import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCategory";
+import Login from "./pages/Login";
 
 const routes = createBrowserRouter([
   {
@@ -70,6 +71,7 @@ const routes = createBrowserRouter([
       { path: "create-bill", element: <CreateBill /> },
     ],
   },
+  { path: "login", element: <Login /> },
 ]);
 
 export default routes;

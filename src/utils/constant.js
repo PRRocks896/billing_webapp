@@ -1,3 +1,6 @@
+// login apis
+export const LOGIN_API = "api/auth/login-via-email";
+
 // staff apis
 export const STAFF_LIST_API = "api/staff/list";
 export const CREATE_STAFF_API = "api/staff";

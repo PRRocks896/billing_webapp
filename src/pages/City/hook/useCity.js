@@ -74,7 +74,7 @@ export const useCity = () => {
         showToast(error.message, false);
       }
     },
-    [dispatch]
+    [dispatch, page, rowsPerPage]
   );
 
   useEffect(() => {
