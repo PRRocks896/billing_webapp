@@ -63,7 +63,7 @@ export const useStates = () => {
         };
         console.log(body);
         const response = await getStatesList(body);
-        console.log("RK", response);
+
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);

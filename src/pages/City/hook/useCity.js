@@ -1,11 +1,43 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { deleteCity, getCityList } from "../../../service/city";
 import { cityAction } from "../../../redux/city";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useCity = () => {
   const dispatch = useDispatch();
+
+  const cities = useSelector((state) => state.city.data);
+  const [count, setCount] = useState(0);
+
+  // pagination code start
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - cities.length) : 0;
+
+  const emptyRows = rowsPerPage - cities.length;
+
+  // const visibleRows = useMemo(
+  //   () => cities?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+  //   [page, rowsPerPage, cities]
+  // );
+  const visibleRows = useMemo(() => {
+    console.log(cities);
+    return cities;
+  }, [cities]);
+
+  // pagination code end
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -25,13 +57,14 @@ export const useCity = () => {
           pagination: {
             sortBy: "createdAt",
             descending: true,
-            rows: 5,
-            page: 1,
+            rows: rowsPerPage,
+            page: page + 1,
           },
         };
         const response = await getCityList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
+          setCount(response.data.count);
           dispatch(cityAction.storeCity(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
@@ -85,5 +118,13 @@ export const useCity = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchCityHandler,
+    // ----
+    page,
+    rowsPerPage,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    emptyRows,
+    visibleRows,
+    count,
   };
 };
