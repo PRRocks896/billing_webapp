@@ -148,7 +148,7 @@ const Customer = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={customers.length}
             rowsPerPage={rowsPerPage}

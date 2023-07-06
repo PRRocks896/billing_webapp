@@ -14,7 +14,7 @@ import { Controller } from "react-hook-form";
 const AddEditCity = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler, statesOptions } =
     useAddEditCity(tag);
-  console.log("*************", statesOptions);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

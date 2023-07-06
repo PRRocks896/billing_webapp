@@ -3,7 +3,7 @@ import React from "react";
 
 const ConfirmationModal = ({
   isDeleteModalOpen,
-  deleteModalClose,
+  setIsDeleteModalOpen,
   title,
   deleteHandler,
 }) => {
@@ -15,7 +15,7 @@ const ConfirmationModal = ({
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={isDeleteModalOpen}
-        onClose={deleteModalClose}
+        onClose={() => setIsDeleteModalOpen(false)}
         closeAfterTransition
         slotProps={{
           backdrop: {
@@ -32,7 +32,7 @@ const ConfirmationModal = ({
             >
               Delete {title}
             </Typography>
-            {/* <Box className="modal-close" onClick={deleteModalClose}>
+            {/* <Box className="modal-close"    onClose={() => setIsDeleteModalOpen(false)}
               <FiPlus />
             </Box> */}
             <Box className="modal-body">
@@ -50,7 +50,10 @@ const ConfirmationModal = ({
                   </Button>
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  <Button className="btn btn-cancel" onClick={deleteModalClose}>
+                  <Button
+                    className="btn btn-cancel"
+                    onClick={() => setIsDeleteModalOpen(false)}
+                  >
                     No
                   </Button>
                 </Grid>

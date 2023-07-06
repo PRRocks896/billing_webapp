@@ -3,8 +3,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const showToast = (Message, status) => {
-  console.log("show toast");
-
   if (status) {
     toast.success(Message, {
       position: "top-right",

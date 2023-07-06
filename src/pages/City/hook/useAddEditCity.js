@@ -14,17 +14,6 @@ export const useAddEditCity = (tag) => {
   const dispatch = useDispatch();
   const [statesOptions, setStatesOptions] = useState([]);
   const states = useSelector((state) => state.states.data);
-  console.log(states);
-
-  // const statesData = useSelector((state) => state.states.data);
-  // const statesList = statesData.map((item) => {
-  //   return {
-  //     id: item.id,
-  //     name: item.name,
-  //   };
-  // });
-
-  // console.log("statesList", statesList);
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
@@ -41,7 +30,7 @@ export const useAddEditCity = (tag) => {
           stateID: data.stateId.value,
           createdBy: 1,
         };
-        console.log(payload);
+
         const response = await createCity(payload);
 
         if (response.statusCode === 200) {
@@ -56,7 +45,7 @@ export const useAddEditCity = (tag) => {
           stateID: data.stateId.value,
           createdBy: 1,
         };
-        console.log(payload);
+
         const response = await updateCity(payload, id);
 
         if (response.statusCode === 200) {
@@ -67,7 +56,6 @@ export const useAddEditCity = (tag) => {
         }
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
@@ -77,7 +65,7 @@ export const useAddEditCity = (tag) => {
       const fetchEditCityData = async () => {
         if (id) {
           const response = await getCityById(id);
-          console.log("edit response", response);
+
           if (response.statusCode === 200) {
             setValue("cityName", response.data.name);
             setValue("stateId", {
@@ -91,7 +79,6 @@ export const useAddEditCity = (tag) => {
       };
       fetchEditCityData();
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   }, [id, setValue]);
@@ -105,13 +92,12 @@ export const useAddEditCity = (tag) => {
     const data = states.map((item) => {
       return { value: item.id, label: item.name };
     });
-    console.log(data);
+
     setStatesOptions([...data]);
   }, [states]);
 
   const fetchStateData = useCallback(async () => {
     try {
-      console.log("fetchStateData");
       const body = {
         where: {
           isActive: true,
@@ -125,7 +111,7 @@ export const useAddEditCity = (tag) => {
         },
       };
       const response = await getStatesList(body);
-      console.log("rk states", response);
+
       if (response.statusCode === 200) {
         const payload = response.data.rows;
         dispatch(statesAction.storeStates(payload));
@@ -140,7 +126,6 @@ export const useAddEditCity = (tag) => {
 
   useEffect(() => {
     if (states.length === 0) {
-      console.log("if");
       fetchStateData();
     }
     makeStatesOption();

@@ -9,7 +9,6 @@ const serviceSlice = createSlice({
   initialState,
   reducers: {
     storeServices(state, action) {
-      console.log(action);
       return { data: action.payload };
     },
     removeService(state, action) {

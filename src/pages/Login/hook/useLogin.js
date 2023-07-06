@@ -17,10 +17,8 @@ export const useLogin = () => {
     },
     mode: "onBlur",
   });
-  console.log(errors);
 
   const onSubmit = async (data) => {
-    console.log("data", data);
     try {
       const payload = { email: data.email, password: data.password };
       const response = await login(payload);
@@ -32,7 +30,6 @@ export const useLogin = () => {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };

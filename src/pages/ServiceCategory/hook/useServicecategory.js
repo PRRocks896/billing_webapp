@@ -12,8 +12,8 @@ export const useServiceCategory = () => {
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
+  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  // const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch staff logic
   const fetchServiceCategoryData = useCallback(
@@ -33,7 +33,7 @@ export const useServiceCategory = () => {
           },
         };
         const response = await getServiceCategoryList(body);
-        //   console.log(response);
+
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           dispatch(serviceCategoryAction.storeServiceCategories(payload));
@@ -54,39 +54,38 @@ export const useServiceCategory = () => {
 
   const searchServiceCategoryHandler = async (payload) => {
     try {
-      console.log(payload);
       fetchServiceCategoryData(payload.searchValue);
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    deleteModalOpen();
+    // deleteModalOpen();
+    setIsDeleteModalOpen(true);
   };
 
   const deleteHandler = async () => {
     try {
-      console.log(deleteId);
       const response = await deleteServiceCategory(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(serviceCategoryAction.removeServiceCategory({ id: deleteId }));
-        deleteModalClose();
+        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
+    } finally {
+      setIsDeleteModalOpen(false);
     }
   };
 
   return {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceCategoryHandler,

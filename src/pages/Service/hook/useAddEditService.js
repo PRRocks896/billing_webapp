@@ -36,16 +36,15 @@ export const useAddEditService = (tag) => {
   const onSubmit = async (data) => {
     try {
       if (tag === "add") {
-        console.log(data);
         const payload = {
           name: data.service_name,
           service_category_id: data.category.value,
           amount: data.amount,
           createdBy: 1,
         };
-        console.log(payload);
+
         const response = await createService(payload);
-        console.log(response);
+
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -53,16 +52,15 @@ export const useAddEditService = (tag) => {
           showToast(response.messageCode, false);
         }
       } else if (tag === "edit") {
-        console.log("else for update", data);
         const payload = {
           name: data.service_name,
           service_category_id: data.category.value,
           amount: data.amount,
           createdBy: 1,
         };
-        console.log(payload);
+
         const response = await updateService(payload, id);
-        console.log(response);
+
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -71,11 +69,9 @@ export const useAddEditService = (tag) => {
         }
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
-  console.log(errors);
 
   const cancelHandler = () => {
     navigate(-1);
@@ -85,11 +81,9 @@ export const useAddEditService = (tag) => {
     try {
       const fetchEditServiceData = async () => {
         if (id) {
-          console.log("Fetched");
           const response = await getServiceById(id);
-          console.warn(response);
+
           if (response.statusCode === 200) {
-            console.log(response.data);
             const category = {
               value: response.data.px_service_category.id,
               label: response.data.px_service_category.name,
@@ -104,7 +98,6 @@ export const useAddEditService = (tag) => {
       };
       fetchEditServiceData();
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   }, [id, setValue]);
@@ -119,7 +112,6 @@ export const useAddEditService = (tag) => {
 
   const fetchServiceCategoryData = useCallback(async () => {
     try {
-      console.log("fetchServiceCategoryData");
       const body = {
         where: {
           isActive: true,
@@ -133,7 +125,7 @@ export const useAddEditService = (tag) => {
         },
       };
       const response = await getServiceCategoryList(body);
-      //   console.log(response);
+
       if (response.statusCode === 200) {
         const payload = response.data.rows;
         dispatch(serviceCategoryAction.storeServiceCategories(payload));

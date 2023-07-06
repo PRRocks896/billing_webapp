@@ -48,7 +48,6 @@ export const useAddEditPaymentType = (tag) => {
         }
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
@@ -59,7 +58,6 @@ export const useAddEditPaymentType = (tag) => {
         if (id) {
           const response = await getPaymentTypeById(id);
           if (response.statusCode === 200) {
-            console.log(response.data.name);
             setValue("payment_type", response.data.name);
           } else {
             showToast(response.message, false);
@@ -68,7 +66,6 @@ export const useAddEditPaymentType = (tag) => {
       };
       fetchEditPaymentTypeData();
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   }, [id, setValue]);

@@ -13,11 +13,7 @@ export const useAddEditStates = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const {
-    setValue,
-    handleSubmit,
-    control
-  } = useForm({
+  const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
       stateName: "",
     },
@@ -27,7 +23,7 @@ export const useAddEditStates = (tag) => {
       if (tag === "add") {
         const payload = { name: data.stateName, createdBy: 1 };
         const response = await createStates(payload);
-        console.log(response);
+
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -46,7 +42,6 @@ export const useAddEditStates = (tag) => {
         }
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
@@ -56,9 +51,8 @@ export const useAddEditStates = (tag) => {
       const fetchEditStateData = async () => {
         if (id) {
           const response = await getStatesById(id);
-          console.warn(response);
+
           if (response.statusCode === 200) {
-            console.log(response.data.name);
             setValue("stateName", response.data.name);
           } else {
             showToast(response.message, false);
@@ -67,7 +61,6 @@ export const useAddEditStates = (tag) => {
       };
       fetchEditStateData();
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   }, [id, setValue]);

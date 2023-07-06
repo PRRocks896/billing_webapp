@@ -19,7 +19,7 @@ import { useCity } from "./hook/useCity";
 const City = () => {
   const {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchCityHandler,
@@ -110,7 +110,7 @@ const City = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={count}
             rowsPerPage={rowsPerPage}
@@ -124,7 +124,7 @@ const City = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="city"
           deleteHandler={deleteHandler}
         />

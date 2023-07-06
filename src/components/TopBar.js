@@ -20,7 +20,6 @@ const TopBar = ({ btnTitle, inputName, navigatePath, callAPI = () => {} }) => {
     try {
       callAPI(payload);
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   }, 500);

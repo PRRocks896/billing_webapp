@@ -21,7 +21,6 @@ const Staff = () => {
   useStaff();
   const navigate = useNavigate();
   const staff = useSelector((state) => state.staff.data);
-  console.log(staff);
 
   // pagination code start
   const [page, setPage] = useState(0);
@@ -121,7 +120,7 @@ const Staff = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={staff.length}
             rowsPerPage={rowsPerPage}
