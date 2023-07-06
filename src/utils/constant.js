@@ -1,3 +1,6 @@
+// login apis
+export const LOGIN_API = "api/auth/login-via-email";
+
 // staff apis
 export const STAFF_LIST_API = "api/staff/list";
 export const CREATE_STAFF_API = "api/staff";
@@ -10,6 +13,7 @@ export const CREATE_STATES_API = "api/state";
 export const GET_SINGLE_STATES_API = "api/state/";
 export const UPDATE_STATES_API = "api/state/";
 export const DELETE_STATES_API = "api/state/";
+export const SEARCH_STATES_API = "api/state/get";
 
 // city apis
 export const CITY_LIST_API = "api/city/list";

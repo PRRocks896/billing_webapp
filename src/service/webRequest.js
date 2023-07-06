@@ -21,6 +21,12 @@ export const authHeader = () => {
         Authorization: localStorage.getItem("token"),
       },
     };
+  } else {
+    return {
+      headers: {
+        "x-api-key": "05646635804321276",
+      },
+    };
   }
 };
 
