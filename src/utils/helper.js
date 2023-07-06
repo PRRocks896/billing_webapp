@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -5,26 +6,6 @@ export const showToast = (Message, status) => {
   console.log("show toast");
 
   if (status) {
-    // toast.success(Message, {
-    //   position: "top-right",
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: false,
-    //   draggable: false,
-    //   progress: undefined,
-    //   className: "custom-toast",
-    // });
-    // toast.error(Message, {
-    //   position: "top-right",
-    //   autoClose: 5000,
-    //   hideProgressBar: false,
-    //   closeOnClick: true,
-    //   pauseOnHover: false,
-    //   draggable: false,
-    //   progress: undefined,
-    //   className: "custom-toast",
-    // });
     toast.success(Message, {
       position: "top-right",
       autoClose: 5000,
@@ -47,4 +28,27 @@ export const showToast = (Message, status) => {
       theme: "light",
     });
   }
+};
+
+export const setAuthToken = (value) => {
+  if (value) {
+    localStorage.setItem("token", value);
+  }
+};
+
+export const getAuthToken = () => {
+  const value = localStorage.getItem("token");
+  if (value) {
+    return value;
+  } else {
+    return null;
+  }
+};
+
+export const checkIsAuthenticated = () => {
+  const value = getAuthToken();
+  if (!value) {
+    return <Navigate to={"/login"} replace={true} />;
+  }
+  return null;
 };

@@ -1,5 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
-
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import LayoutProvider from "./layout/index";
 import Home from "./pages/Home";
 import Customer from "./pages/Customer";
@@ -20,11 +19,15 @@ import AddEditCity from "./pages/City/AddEditCity";
 import ServiceCategory from "./pages/ServiceCategory";
 import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCategory";
 import Login from "./pages/Login";
+import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
+
+const token = getAuthToken();
 
 const routes = createBrowserRouter([
   {
     path: "/",
     element: <LayoutProvider />,
+    loader: checkIsAuthenticated,
     children: [
       { index: true, element: <Home /> },
 
@@ -71,7 +74,7 @@ const routes = createBrowserRouter([
       { path: "create-bill", element: <CreateBill /> },
     ],
   },
-  { path: "login", element: <Login /> },
+  { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },
 ]);
 
 export default routes;

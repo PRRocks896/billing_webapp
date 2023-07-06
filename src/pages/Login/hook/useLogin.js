@@ -1,8 +1,11 @@
 import { useForm } from "react-hook-form";
-import { showToast } from "../../../utils/helper";
+import { setAuthToken, showToast } from "../../../utils/helper";
 import { login } from "../../../service/login";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
+  const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
@@ -14,6 +17,7 @@ export const useLogin = () => {
     },
     mode: "onBlur",
   });
+  console.log(errors);
 
   const onSubmit = async (data) => {
     console.log("data", data);
@@ -21,11 +25,9 @@ export const useLogin = () => {
       const payload = { email: data.email, password: data.password };
       const response = await login(payload);
       if (response.statusCode === 200) {
-        const getToken = response.data.token;
-        localStorage.setItem("token", getToken);
-
-        showToast(response.message, true);
-        // navigate(-1);
+        const authToken = response.data.token;
+        setAuthToken(authToken);
+        navigate("/", { replace: true });
       } else {
         showToast(response.messageCode, false);
       }
