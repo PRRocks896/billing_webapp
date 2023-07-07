@@ -6,34 +6,24 @@ import { getStatesList, deleteState } from "../../../service/states";
 
 export const useStates = () => {
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.states.data);
+  const states = useSelector((state) => state.states.data);
 
   // pagination code start
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows = rowsPerPage - state.length;
-
   const visibleRows = useMemo(() => {
-    return state;
-  }, [state]);
+    return states;
+  }, [states]);
 
   // pagination code end
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  // const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch states logic
   const fetchStatesData = useCallback(
@@ -48,7 +38,7 @@ export const useStates = () => {
           pagination: {
             sortBy: "createdAt",
             descending: true,
-            rows: rowsPerPage,
+            rows: 10,
             page: page + 1,
           },
         };
@@ -66,7 +56,7 @@ export const useStates = () => {
         showToast(error.message, false);
       }
     },
-    [dispatch, page, rowsPerPage]
+    [dispatch, page]
   );
 
   useEffect(() => {
@@ -83,7 +73,6 @@ export const useStates = () => {
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    // deleteModalOpen();
     setIsDeleteModalOpen(true);
   };
 
@@ -93,7 +82,6 @@ export const useStates = () => {
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(statesAction.removeStates({ id: deleteId }));
-        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
@@ -110,13 +98,9 @@ export const useStates = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchStatesandler,
-
     // ----
     page,
-    rowsPerPage,
     handleChangePage,
-    handleChangeRowsPerPage,
-    emptyRows,
     visibleRows,
     count,
   };

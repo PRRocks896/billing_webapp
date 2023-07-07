@@ -17,7 +17,7 @@ export const useAddEditService = (tag) => {
   const navigate = useNavigate();
   const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
-  const serviceSategories = useSelector((state) => state.serviceCategory.data);
+  const serviceCategories = useSelector((state) => state.serviceCategory.data);
 
   const {
     control,
@@ -104,11 +104,11 @@ export const useAddEditService = (tag) => {
 
   // gemrate service category options for drop down
   const makeServiceCaytegoryOption = useCallback(() => {
-    const data = serviceSategories.map((item) => {
+    const data = serviceCategories.map((item) => {
       return { value: item.id, label: item.name };
     });
     setCategoryOptions([...data]);
-  }, [serviceSategories]);
+  }, [serviceCategories]);
 
   const fetchServiceCategoryData = useCallback(async () => {
     try {
@@ -141,7 +141,7 @@ export const useAddEditService = (tag) => {
   useEffect(() => {
     fetchServiceCategoryData();
     makeServiceCaytegoryOption();
-  }, [fetchServiceCategoryData, makeServiceCaytegoryOption, serviceSategories]);
+  }, [fetchServiceCategoryData, makeServiceCaytegoryOption, serviceCategories]);
 
   return {
     control,
