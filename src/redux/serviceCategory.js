@@ -9,7 +9,6 @@ const serviceCategorySlice = createSlice({
   initialState,
   reducers: {
     storeServiceCategories(state, action) {
-      console.log(action);
       return { data: action.payload };
     },
     removeServiceCategory(state, action) {

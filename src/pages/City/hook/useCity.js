@@ -33,7 +33,6 @@ export const useCity = () => {
   //   [page, rowsPerPage, cities]
   // );
   const visibleRows = useMemo(() => {
-    console.log(cities);
     return cities;
   }, [cities]);
 
@@ -41,8 +40,8 @@ export const useCity = () => {
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
+  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  // const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch city logic
   const fetchCityData = useCallback(
@@ -85,36 +84,36 @@ export const useCity = () => {
     try {
       fetchCityData(payload.searchValue);
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    deleteModalOpen();
+    // deleteModalOpen();
+    setIsDeleteModalOpen(true);
   };
 
   const deleteHandler = async () => {
     try {
-      console.log(deleteId);
       const response = await deleteCity(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(cityAction.removeCity({ id: deleteId }));
-        deleteModalClose();
+        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
+    } finally {
+      setIsDeleteModalOpen(false);
     }
   };
 
   return {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchCityHandler,

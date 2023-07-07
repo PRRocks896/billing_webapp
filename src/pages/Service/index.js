@@ -31,14 +31,13 @@ const switchStyles = {
 const Service = () => {
   const {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceHandler,
   } = useService();
   const navigate = useNavigate();
   const service = useSelector((state) => state.service.data);
-  console.log(service);
 
   // pagination code start
   const [page, setPage] = useState(0);
@@ -60,7 +59,7 @@ const Service = () => {
     () => service.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [page, rowsPerPage, service]
   );
-  console.log(visibleRows);
+
   // pagination code end
 
   return (
@@ -147,7 +146,7 @@ const Service = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={service.length}
             rowsPerPage={rowsPerPage}
@@ -161,7 +160,7 @@ const Service = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="service"
           deleteHandler={deleteHandler}
         />

@@ -9,7 +9,6 @@ const customerSlice = createSlice({
   initialState: initialState,
   reducers: {
     storeCustomer(state, action) {
-      console.warn(action);
       return { data: action.payload };
     },
   },

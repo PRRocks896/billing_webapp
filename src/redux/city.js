@@ -9,7 +9,6 @@ const citySlice = createSlice({
   initialState,
   reducers: {
     storeCity(state, action) {
-      console.log(action);
       return { data: action.payload };
     },
     removeCity(state, action) {

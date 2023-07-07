@@ -30,7 +30,7 @@ const switchStyles = {
 const State = () => {
   const {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchStatesandler,
@@ -46,7 +46,6 @@ const State = () => {
   const navigate = useNavigate();
 
   let index = rowsPerPage * page;
-  console.log(index);
 
   return (
     <>
@@ -126,7 +125,7 @@ const State = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={count}
             rowsPerPage={rowsPerPage}
@@ -140,7 +139,7 @@ const State = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="state"
           deleteHandler={deleteHandler}
         />

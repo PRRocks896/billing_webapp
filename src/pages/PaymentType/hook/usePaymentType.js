@@ -10,14 +10,13 @@ export const usePaymentType = () => {
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
+  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  // const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch payment type logic
   const fetchPaymentTypeData = useCallback(
     async (searchValue = "") => {
       try {
-        console.log("fetchPaymentTypeData");
         const body = {
           where: {
             isActive: true,
@@ -32,7 +31,7 @@ export const usePaymentType = () => {
           },
         };
         const response = await getPaymentTypeList(body);
-        console.log("payment type data", response.data);
+
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           dispatch(paymentTypeAction.storePaymentType(payload));
@@ -51,7 +50,6 @@ export const usePaymentType = () => {
     try {
       fetchPaymentTypeData(payload.searchValue);
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
@@ -62,29 +60,30 @@ export const usePaymentType = () => {
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    deleteModalOpen();
+    // deleteModalOpen();
+    setIsDeleteModalOpen(true);
   };
 
   const deleteHandler = async () => {
     try {
-      console.log(deleteId);
       const response = await deletePaymentType(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(paymentTypeAction.removePaymentType({ id: deleteId }));
-        deleteModalClose();
+        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
+    } finally {
+      setIsDeleteModalOpen(false);
     }
   };
 
   return {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchPaymentTypeHandler,

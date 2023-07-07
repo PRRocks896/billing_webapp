@@ -28,12 +28,10 @@ export const useAddEditServiceCategory = (tag) => {
   // add - update logic
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       if (tag === "add") {
-        console.log("add call");
         const payload = { name: data.service_category, createdBy: 1 };
         const response = await createServiceCategory(payload);
-        console.log(response);
+
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -41,10 +39,9 @@ export const useAddEditServiceCategory = (tag) => {
           showToast(response.messageCode, false);
         }
       } else if (tag === "edit") {
-        console.log("update call");
         const payload = { name: data.service_category };
         const response = await updateServiceCategory(payload, id);
-        console.log(response);
+
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -53,7 +50,6 @@ export const useAddEditServiceCategory = (tag) => {
         }
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
@@ -63,9 +59,8 @@ export const useAddEditServiceCategory = (tag) => {
       const fetchEditServiceCategoryData = async () => {
         if (id) {
           const response = await getServiceCategoryById(id);
-          console.warn(response);
+
           if (response.statusCode === 200) {
-            console.log(response.data.name);
             setValue("service_category", response.data.name);
           } else {
             showToast(response.message, false);
@@ -74,13 +69,11 @@ export const useAddEditServiceCategory = (tag) => {
       };
       fetchEditServiceCategoryData();
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   }, [id, setValue]);
 
   // cancel handler and error displaying
-  console.log(errors);
   const cancelHandler = () => {
     navigate(-1);
   };

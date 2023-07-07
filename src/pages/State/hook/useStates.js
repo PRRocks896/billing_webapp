@@ -28,12 +28,11 @@ export const useStates = () => {
   const emptyRows = rowsPerPage - state.length;
 
   // const visibleRows = useMemo(() => {
-  //   console.log(state);
+
   //   return state?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   // }, [page, rowsPerPage, state]);
 
   const visibleRows = useMemo(() => {
-    console.log(state);
     return state;
   }, [state]);
 
@@ -41,8 +40,8 @@ export const useStates = () => {
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
+  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
+  // const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   //  fetch states logic
   const fetchStatesData = useCallback(
@@ -61,7 +60,7 @@ export const useStates = () => {
             page: page + 1,
           },
         };
-        console.log(body);
+
         const response = await getStatesList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
@@ -86,36 +85,36 @@ export const useStates = () => {
     try {
       fetchStatesData(payload.searchValue);
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     }
   };
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    deleteModalOpen();
+    // deleteModalOpen();
+    setIsDeleteModalOpen(true);
   };
 
   const deleteHandler = async () => {
     try {
-      console.log(deleteId);
       const response = await deleteState(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(statesAction.removeStates({ id: deleteId }));
-        deleteModalClose();
+        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
+    } finally {
+      setIsDeleteModalOpen(false);
     }
   };
 
   return {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchStatesandler,

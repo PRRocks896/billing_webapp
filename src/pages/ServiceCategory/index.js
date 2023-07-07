@@ -31,7 +31,7 @@ const switchStyles = {
 const ServiceCategory = () => {
   const {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceCategoryHandler,
@@ -145,7 +145,7 @@ const ServiceCategory = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={serviceSategories.length}
             rowsPerPage={rowsPerPage}
@@ -159,7 +159,7 @@ const ServiceCategory = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="service category"
           deleteHandler={deleteHandler}
         />

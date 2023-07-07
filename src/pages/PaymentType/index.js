@@ -31,7 +31,7 @@ const switchStyles = {
 const PaymentType = () => {
   const {
     isDeleteModalOpen,
-    deleteModalClose,
+    setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchPaymentTypeHandler,
@@ -145,7 +145,7 @@ const PaymentType = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={10}
             component="div"
             count={paymentTypeData.length}
             rowsPerPage={rowsPerPage}
@@ -159,7 +159,7 @@ const PaymentType = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="payment type"
           deleteHandler={deleteHandler}
         />

@@ -4,7 +4,6 @@ const baseUrl = process.env.REACT_APP_BASE_URL;
 export const authHeader = () => {
   // return authorization header with basic auth credentials
   //   const user = localStorage.getItem("dataToken");
-  // console.log("userTOKEnnn", user);
 
   //   if (user) {
   //     return { headers: { Authorization: `Bearer ${user}` } };

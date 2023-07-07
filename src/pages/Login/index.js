@@ -220,6 +220,9 @@ const Login = () => {
                   required: "Password required",
                 }}
               />
+              <Typography className="login-heading" gutterBottom>
+                <a href="/">Forgot Password?</a>
+              </Typography>
               <Box
                 display="flex"
                 justifyContent="center"
