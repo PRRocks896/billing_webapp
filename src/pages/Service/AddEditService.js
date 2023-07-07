@@ -96,7 +96,9 @@ const AddEditService = ({ tag }) => {
                         size="small"
                         options={categoryOptions}
                         id="category"
-                        // value={value}
+                        isOptionEqualToValue={(option, value) =>
+                          option === value
+                        }
                         value={value}
                         onChange={(event, newValue) => onChange(newValue)}
                         onBlur={onBlur}

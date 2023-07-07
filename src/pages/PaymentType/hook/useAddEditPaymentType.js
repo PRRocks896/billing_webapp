@@ -8,10 +8,13 @@ import {
 } from "../../../service/paymentType";
 import { showToast } from "../../../utils/helper";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export const useAddEditPaymentType = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  console.log(loggedInUser);
 
   const {
     setValue,
@@ -28,7 +31,7 @@ export const useAddEditPaymentType = (tag) => {
   const onSubmit = async (data) => {
     try {
       if (tag === "add") {
-        const payload = { name: data.payment_type, createdBy: 1 };
+        const payload = { name: data.payment_type, createdBy: loggedInUser.id };
         const response = await createPaymentType(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
@@ -36,8 +39,8 @@ export const useAddEditPaymentType = (tag) => {
         } else {
           showToast(response.messageCode, false);
         }
-      } else {
-        const payload = { name: data.payment_type };
+      } else if (tag === "edit") {
+        const payload = { name: data.payment_type, updatedBy: loggedInUser.id };
         const response = await updatePaymentType(payload, id);
 
         if (response.statusCode === 200) {

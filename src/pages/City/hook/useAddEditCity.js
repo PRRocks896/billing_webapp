@@ -14,12 +14,15 @@ export const useAddEditCity = (tag) => {
   const dispatch = useDispatch();
   const [statesOptions, setStatesOptions] = useState([]);
   const states = useSelector((state) => state.states.data);
+  // const user = useSelector((state) => state);
+  // console.log(user);
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
       cityName: "",
       stateId: "",
     },
+    mode: "onBlur",
   });
 
   const onSubmit = async (data) => {
@@ -43,7 +46,7 @@ export const useAddEditCity = (tag) => {
         const payload = {
           name: data.cityName,
           stateID: data.stateId.value,
-          createdBy: 1,
+          updatedBy: 1,
         };
 
         const response = await updateCity(payload, id);
@@ -115,6 +118,7 @@ export const useAddEditCity = (tag) => {
       if (response.statusCode === 200) {
         const payload = response.data.rows;
         dispatch(statesAction.storeStates(payload));
+        makeStatesOption();
       } else if (response.statusCode === 404) {
         const payload = [];
         dispatch(statesAction.storeStates(payload));
@@ -122,12 +126,11 @@ export const useAddEditCity = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [dispatch]);
+  }, [dispatch, makeStatesOption]);
 
   useEffect(() => {
     fetchStateData();
-    makeStatesOption();
-  }, [fetchStateData, makeStatesOption, states]);
+  }, [fetchStateData]);
 
   return {
     control,
