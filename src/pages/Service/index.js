@@ -99,7 +99,10 @@ const Service = () => {
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.amount}</TableCell>
                           <TableCell>
-                            <Switch style={switchStyles} />
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                            />
                           </TableCell>
                           <TableCell>
                             <Box className="table-action-btn">

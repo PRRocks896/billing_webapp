@@ -80,7 +80,10 @@ const City = () => {
                             {row.px_state.name}
                           </TableCell>
                           <TableCell>
-                            <Switch style={switchStyles} />
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                            />
                           </TableCell>
                           <TableCell>
                             <Box className="table-action-btn">

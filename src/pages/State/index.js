@@ -78,7 +78,10 @@ const State = () => {
                           <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell>
-                            <Switch style={switchStyles} />
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                            />
                           </TableCell>
                           <TableCell>
                             <Box className="table-action-btn">
