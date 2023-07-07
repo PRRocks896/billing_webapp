@@ -120,7 +120,7 @@ export const useAddEditService = (tag) => {
         pagination: {
           sortBy: "createdAt",
           descending: true,
-          rows: 5,
+          rows: 1000,
           page: 1,
         },
       };
@@ -139,15 +139,9 @@ export const useAddEditService = (tag) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (serviceSategories.length === 0) {
-      fetchServiceCategoryData();
-    }
+    fetchServiceCategoryData();
     makeServiceCaytegoryOption();
-  }, [
-    fetchServiceCategoryData,
-    makeServiceCaytegoryOption,
-    serviceSategories.length,
-  ]);
+  }, [fetchServiceCategoryData, makeServiceCaytegoryOption, serviceSategories]);
 
   return {
     control,

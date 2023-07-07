@@ -106,7 +106,7 @@ export const useAddEditCity = (tag) => {
         pagination: {
           sortBy: "createdAt",
           descending: true,
-          rows: 5,
+          rows: 1000,
           page: 1,
         },
       };
@@ -125,11 +125,9 @@ export const useAddEditCity = (tag) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (states.length === 0) {
-      fetchStateData();
-    }
+    fetchStateData();
     makeStatesOption();
-  }, [fetchStateData, makeStatesOption, states.length]);
+  }, [fetchStateData, makeStatesOption, states]);
 
   return {
     control,
