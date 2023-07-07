@@ -19,7 +19,7 @@ export const usePaymentType = () => {
       try {
         const body = {
           where: {
-            isActive: true,
+            // isActive: true,
             isDeleted: false,
             searchText: searchValue,
           },
