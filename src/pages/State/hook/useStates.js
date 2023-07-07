@@ -22,15 +22,7 @@ export const useStates = () => {
     setPage(0);
   };
 
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - state.length) : 0;
-
   const emptyRows = rowsPerPage - state.length;
-
-  // const visibleRows = useMemo(() => {
-
-  //   return state?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  // }, [page, rowsPerPage, state]);
 
   const visibleRows = useMemo(() => {
     return state;

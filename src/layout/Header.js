@@ -166,7 +166,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 className="text-grey user-position"
                 align="center"
               >
-                {data.px_role.name}
+                {data?.px_role?.name}
               </Typography>
               <Typography
                 variant="h5"
@@ -174,7 +174,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 className="text-green user-name"
                 align="center"
               >
-                {data.firstName + " " + data.lastName}
+                {data?.firstName + " " + data?.lastName}
               </Typography>
             </Box>
             <Box className="links">
