@@ -21,6 +21,7 @@ import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 300;
 
@@ -51,6 +52,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
+  const data = useSelector((state) => state.loggedInUser);
+
   let location = useLocation();
   let pageTitle = location.pathname.slice(1).toUpperCase();
 
@@ -163,7 +166,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 className="text-grey user-position"
                 align="center"
               >
-                Admin
+                {data.px_role.name}
               </Typography>
               <Typography
                 variant="h5"
@@ -171,7 +174,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 className="text-green user-name"
                 align="center"
               >
-                Mr. Nick Johnson
+                {data.firstName + " " + data.lastName}
               </Typography>
             </Box>
             <Box className="links">

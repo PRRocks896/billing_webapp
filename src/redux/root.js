@@ -6,6 +6,7 @@ import CityReducer from "./city";
 import ServiceCategoryReducer from "./serviceCategory";
 import PaymentTypeReducer from "./paymentType";
 import ServiceReducer from "./service";
+import LoggedInUserReducer from "./loggedInUser";
 
 const rootReducer = combineReducers({
   customer: CustomerReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   serviceCategory: ServiceCategoryReducer,
   paymentType: PaymentTypeReducer,
   service: ServiceReducer,
+  loggedInUser: LoggedInUserReducer,
 });
 
 export default rootReducer;
