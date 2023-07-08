@@ -47,7 +47,7 @@ const AddEditCity = ({ tag }) => {
                     </FormControl>
                   )}
                   rules={{
-                    required: "Please Enter State Name",
+                    required: "Please Enter City Name",
                   }}
                 />
               </Grid>
@@ -59,22 +59,25 @@ const AddEditCity = ({ tag }) => {
                     field: { onBlur, onChange, value },
                     fieldState: { error },
                   }) => (
-                    <Autocomplete
-                      size="small"
-                      id="stateId"
-                      options={statesOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="State"
-                          error={!!error}
-                          helperText={error?.message ? error.message : ""}
-                        />
-                      )}
-                    />
+                    <>
+                      <Autocomplete
+                        freeSolo
+                        size="small"
+                        id="stateId"
+                        options={statesOptions}
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={(event, newValue) => onChange(newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select State"
+                            error={!!error}
+                            helperText={error?.message ? error.message : ""}
+                          />
+                        )}
+                      />
+                    </>
                   )}
                   rules={{
                     required: "Please Select State",

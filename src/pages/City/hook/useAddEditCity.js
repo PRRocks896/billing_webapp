@@ -1,19 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { createCity, getCityById, updateCity } from "../../../service/city";
 import { showToast } from "../../../utils/helper";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getStatesList } from "../../../service/states";
-import { statesAction } from "../../../redux/states";
 
 export const useAddEditCity = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const dispatch = useDispatch();
   const [statesOptions, setStatesOptions] = useState([]);
-  // const states = useSelector((state) => state.states.data);
   const [states, setStates] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -91,48 +88,42 @@ export const useAddEditCity = (tag) => {
   };
 
   // gemrate service category options for drop down
-  const makeStatesOption = useCallback(() => {
+  useMemo(() => {
     const data = states.map((item) => {
       return { value: item.id, label: item.name };
     });
-
     setStatesOptions([...data]);
   }, [states]);
 
-  const fetchStateData = useCallback(async () => {
+  useEffect(() => {
     try {
-      console.log("fetchStateData");
-      const body = {
-        where: {
-          isActive: true,
-          isDeleted: false,
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 1000,
-          page: 1,
-        },
-      };
-      const response = await getStatesList(body);
+      const fetchStateData = async () => {
+        const body = {
+          where: {
+            isActive: true,
+            isDeleted: false,
+          },
+          pagination: {
+            sortBy: "createdAt",
+            descending: true,
+            rows: 1000,
+            page: 1,
+          },
+        };
+        const response = await getStatesList(body);
 
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
-        // dispatch(statesAction.storeStates(payload));
-        setStates(payload);
-        makeStatesOption();
-      } else if (response.statusCode === 404) {
-        const payload = [];
-        // dispatch(statesAction.storeStates(payload));
-        setStates(payload);
-      }
+        if (response.statusCode === 200) {
+          const payload = response.data.rows;
+          setStates(payload);
+        } else if (response.statusCode === 404) {
+          const payload = [];
+          setStates(payload);
+        }
+      };
+      fetchStateData();
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [makeStatesOption]);
-
-  useEffect(() => {
-    fetchStateData();
   }, []);
 
   return {
