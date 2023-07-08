@@ -14,6 +14,7 @@ export const STAFF_LIST_API = "api/staff/list";
 export const CREATE_STAFF_API = "api/staff";
 export const GET_SINGLE_STAFF_API = "api/staff/";
 export const UPDATE_STAFF_API = "api/staff/";
+export const DELETE_STAFF_API = "api/staff/";
 
 // states apis
 export const STATES_LIST_API = "api/state/list";

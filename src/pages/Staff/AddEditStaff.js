@@ -6,13 +6,12 @@ import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 
-import { useNavigate } from "react-router-dom";
 import { useAddEditStaff } from "./hook/useAddEditStaff";
 import { Controller } from "react-hook-form";
 
 const AddEditStaff = ({ tag }) => {
-  const navigate = useNavigate();
-  const { control, handleSubmit, onSubmit } = useAddEditStaff(tag);
+  const { control, handleSubmit, onSubmit, cancelHandler } =
+    useAddEditStaff(tag);
 
   return (
     <>
@@ -88,7 +87,7 @@ const AddEditStaff = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item md={1.5}>
-            <Button className="btn btn-cancel" onClick={() => navigate(-1)}>
+            <Button className="btn btn-cancel" onClick={cancelHandler}>
               Cancel
             </Button>
           </Grid>
