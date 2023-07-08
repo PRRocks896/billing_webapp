@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 export const useCity = () => {
   const dispatch = useDispatch();
-
   const cities = useSelector((state) => state.city.data);
+
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 

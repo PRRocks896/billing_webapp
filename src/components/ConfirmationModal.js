@@ -9,13 +9,12 @@ const ConfirmationModal = ({
 }) => {
   return (
     <>
-      {/* delete confirmation modal start */}
       <Modal
         disableEscapeKeyDown
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+        // onClose={() => setIsDeleteModalOpen(false)}
         closeAfterTransition
         slotProps={{
           backdrop: {
@@ -62,7 +61,6 @@ const ConfirmationModal = ({
           </Box>
         </Fade>
       </Modal>
-      {/* delete confirmation modal end */}
     </>
   );
 };

@@ -12,6 +12,7 @@ export const usePaymentType = () => {
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // pagination start
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
 
@@ -22,6 +23,8 @@ export const usePaymentType = () => {
   const visibleRows = useMemo(() => {
     return paymentTypeData;
   }, [paymentTypeData]);
+
+  // pagination end
 
   //  fetch payment type logic
   const fetchPaymentTypeData = useCallback(
