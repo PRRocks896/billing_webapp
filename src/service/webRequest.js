@@ -140,11 +140,6 @@ export const AxiosInterceptor = ({ children }) => {
           theme: "light",
         });
         // localStorage.clear();
-        // const errPayload = {
-        //   code: err.response.data.status,
-        //   status:"fail",
-        //   message:err.response.data.message}
-        // dispatch(setFeedback(errPayload));
       }
       return err.response;
     }

@@ -2,6 +2,7 @@ import React from "react";
 import { RouterProvider } from "react-router-dom";
 import routes from "./routes";
 import { ToastContainer } from "react-toastify";
+import Loader from "./components/Loader";
 
 // css imports
 import "./assets/styles/global.scss";
@@ -16,6 +17,7 @@ function App() {
   return (
     <>
       <ToastContainer />
+      <Loader />
       <RouterProvider router={routes} />
     </>
   );

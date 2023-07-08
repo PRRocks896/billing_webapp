@@ -7,8 +7,10 @@ import ServiceCategoryReducer from "./serviceCategory";
 import PaymentTypeReducer from "./paymentType";
 import ServiceReducer from "./service";
 import LoggedInUserReducer from "./loggedInUser";
+import LoaderReducer from "./loader";
 
 const rootReducer = combineReducers({
+  loader: LoaderReducer,
   customer: CustomerReducer,
   staff: StaffReducer,
   states: StateReducer,

@@ -41,8 +41,6 @@ const PaymentType = () => {
   } = usePaymentType();
   const navigate = useNavigate();
 
-  // pagination code end
-
   return (
     <>
       <TopBar
