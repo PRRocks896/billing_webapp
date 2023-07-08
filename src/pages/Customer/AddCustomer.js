@@ -13,7 +13,7 @@ import { Controller } from "react-hook-form";
 
 const AddCustomer = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler } =
-    useAddEditCustomer();
+    useAddEditCustomer(tag);
 
   return (
     <>

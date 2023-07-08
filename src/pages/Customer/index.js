@@ -1,34 +1,21 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Switch,
-} from "@mui/material";
+import React from "react";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import Switch from "@mui/material/Switch";
+
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
-
-const customers = [
-  { id: 1, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 2, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 3, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 4, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 5, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 6, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 7, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 8, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 9, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 10, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-  { id: 11, name: "Krushang rathod", number: 9879854706, gender: "Male" },
-];
+import { useCustomer } from "./hook/useCustomer";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -36,41 +23,24 @@ const switchStyles = {
     color: "green",
   },
   "&.Mui-checked + .MuiSwitch-track": {
-    backgroundColor: "lightgreen", // Customize the track color when checked
+    backgroundColor: "lightgreen",
   },
 };
 
 const Customer = () => {
   const navigate = useNavigate();
-  // pagination code start
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customers.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () => customers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
-  );
-  // pagination code end
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
-
-  const editHandler = () => {
-    navigate("/edit-customer");
-  };
+  const {
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    deleteHandler,
+    deleteBtnClickHandler,
+    searchCustomerHandler,
+    changeStatusHandler,
+    page,
+    handleChangePage,
+    visibleRows,
+    count,
+  } = useCustomer();
 
   return (
     <>
@@ -78,6 +48,7 @@ const Customer = () => {
         btnTitle="Add Customer"
         inputName="customer"
         navigatePath="/add-customer"
+        callAPI={searchCustomerHandler}
       />
 
       {/* customer listing */}
@@ -103,22 +74,31 @@ const Customer = () => {
                         <TableRow key={row.id}>
                           <TableCell align="left">{index + 1}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
-                          <TableCell align="left">{row.number}</TableCell>
+                          <TableCell align="left">{row.phoneNumber}</TableCell>
                           <TableCell align="left">{row.gender}</TableCell>
                           <TableCell align="left">
-                            <Switch style={switchStyles} />
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
                           </TableCell>
                           <TableCell align="left">
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={editHandler}
+                                onClick={() =>
+                                  navigate(`/edit-customer/${row.id}`)
+                                }
                               >
                                 <FiEdit3 size={15} />
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -130,31 +110,21 @@ const Customer = () => {
                   })
                 ) : (
                   <TableRow>
-                    <TableCell sx={{ textAlign: "center" }} colSpan={5}>
+                    <TableCell sx={{ textAlign: "center" }} colSpan={6}>
                       No customers Found
                     </TableCell>
                   </TableRow>
-                )}
-                {emptyRows > 0 && (
-                  <Box
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </Box>
                 )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={10}
+            rowsPerPageOptions={[10]}
             component="div"
-            count={customers.length}
-            rowsPerPage={rowsPerPage}
+            count={count}
+            rowsPerPage={[10]}
             page={page}
             onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       </Box>
@@ -162,8 +132,9 @@ const Customer = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="customer"
+          deleteHandler={deleteHandler}
         />
       )}
     </>

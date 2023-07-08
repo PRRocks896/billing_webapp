@@ -4,7 +4,6 @@ import {
   PAYMENT_TYPE_LIST_API,
   UPDATE_PAYMENT_TYPE_API,
   DELETE_PAYMENT_TYPE_API,
-  SEARCH_PAYMENT_TYPE_API,
 } from "../utils/constant";
 import { attachId, get, post, remove, put } from "./webRequest";
 
@@ -33,10 +32,5 @@ export const updatePaymentType = async (payload, id) => {
 export const deletePaymentType = async (id) => {
   const newUrl = await attachId(DELETE_PAYMENT_TYPE_API, id);
   const response = await remove(newUrl);
-  return response;
-};
-
-export const searchPaymentType = async (body) => {
-  const response = await post(SEARCH_PAYMENT_TYPE_API, body);
   return response;
 };

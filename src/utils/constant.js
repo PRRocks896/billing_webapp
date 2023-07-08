@@ -2,6 +2,13 @@
 export const LOGIN_API = "api/auth/login-via-email";
 export const GET_LOGGED_IN_USER_API = "api/user/get";
 
+// customer apis
+export const CUSTOMER_LIST_API = "api/customer/list";
+export const CREATE_CUSTOMER_API = "api/customer";
+export const GET_SINGLE_CUSTOMER_API = "api/customer/";
+export const UPDATE_CUSTOMER_API = "api/customer/";
+export const DELETE_CUSTOMER_API = "api/customer/";
+
 // staff apis
 export const STAFF_LIST_API = "api/staff/list";
 export const CREATE_STAFF_API = "api/staff";
@@ -14,7 +21,6 @@ export const CREATE_STATES_API = "api/state";
 export const GET_SINGLE_STATES_API = "api/state/";
 export const UPDATE_STATES_API = "api/state/";
 export const DELETE_STATES_API = "api/state/";
-export const SEARCH_STATES_API = "api/state/get";
 
 // city apis
 export const CITY_LIST_API = "api/city/list";
@@ -29,7 +35,6 @@ export const CREATE_SERVICE_CATEGORY_API = "api/service-category";
 export const DELETE_SERVICE_CATEGORY_API = "api/service-category/";
 export const GET_SINGLE_SERVICE_CATEGORY_API = "api/service-category/";
 export const UPDATE_SERVICE_CATEGORY_API = "api/service-category/";
-export const SEARCH_SERVICE_CATEGORY_API = "api/service-category/get";
 
 // service apis
 export const SERVICE_LIST_API = "api/service/list";
@@ -37,7 +42,6 @@ export const CREATE_SERVICE_API = "api/service";
 export const DELETE_SERVICE_API = "api/service/";
 export const GET_SINGLE_SERVICE_API = "api/service/";
 export const UPDATE_SERVICE_API = "api/service/";
-export const SEARCH_SERVICE_API = "api/service/get";
 
 // payment type apis
 export const PAYMENT_TYPE_LIST_API = "api/payment-type/list";
@@ -45,4 +49,3 @@ export const CREATE_PAYMENT_TYPE_API = "api/payment-type";
 export const DELETE_PAYMENT_TYPE_API = "api/payment-type/";
 export const GET_SINGLE_PAYMENT_TYPE_API = "api/payment-type/";
 export const UPDATE_PAYMENT_TYPE_API = "api/payment-type/";
-export const SEARCH_PAYMENT_TYPE_API = "api/payment-type/get";

@@ -33,7 +33,7 @@ const routes = createBrowserRouter([
 
       { path: "customer", element: <Customer /> },
       { path: "add-customer", element: <AddCustomer tag="add" /> },
-      { path: "edit-customer", element: <AddCustomer tag="edit" /> },
+      { path: "edit-customer/:id", element: <AddCustomer tag="edit" /> },
 
       { path: "staff", element: <Staff /> },
       { path: "add-staff", element: <AddEditStaff tag="add" /> },

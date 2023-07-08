@@ -2,7 +2,6 @@ import {
   CREATE_SERVICE_API,
   DELETE_SERVICE_API,
   GET_SINGLE_SERVICE_API,
-  SEARCH_SERVICE_API,
   SERVICE_LIST_API,
   UPDATE_SERVICE_API,
 } from "../utils/constant";
@@ -33,10 +32,5 @@ export const getServiceById = async (id) => {
 export const updateService = async (payload, id) => {
   const newUrl = await attachId(UPDATE_SERVICE_API, id);
   const response = await put(newUrl, payload);
-  return response;
-};
-
-export const searchService = async (payload) => {
-  const response = await post(SEARCH_SERVICE_API, payload);
   return response;
 };
