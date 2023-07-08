@@ -29,7 +29,7 @@ const Sidebar = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const [activeTab, setActiveTab] = useState(location.pathname.substring(1));
+  const activeTab = location.pathname.substring(1);
 
   return (
     <>
@@ -72,10 +72,7 @@ const Sidebar = () => {
                 className={`sub-menu-link ${
                   activeTab === "customer" && "active"
                 }`}
-                onClick={() => {
-                  setActiveTab("customer");
-                  navigate("/customer");
-                }}
+                onClick={() => navigate("/customer")}
               >
                 <Typography>
                   <FiSquare />
@@ -84,10 +81,7 @@ const Sidebar = () => {
               </Box>
               <Box
                 className={`sub-menu-link ${activeTab === "staff" && "active"}`}
-                onClick={() => {
-                  setActiveTab("staff");
-                  navigate("/staff");
-                }}
+                onClick={() => navigate("/staff")}
               >
                 <Typography>
                   <FiSquare />
@@ -98,10 +92,7 @@ const Sidebar = () => {
                 className={`sub-menu-link ${
                   activeTab === "service-category" && "active"
                 }`}
-                onClick={() => {
-                  setActiveTab("service-category");
-                  navigate("/service-category");
-                }}
+                onClick={() => navigate("/service-category")}
               >
                 <Typography>
                   <FiSquare />
@@ -112,10 +103,7 @@ const Sidebar = () => {
                 className={`sub-menu-link ${
                   activeTab === "service" && "active"
                 }`}
-                onClick={() => {
-                  setActiveTab("service");
-                  navigate("/service");
-                }}
+                onClick={() => navigate("/service")}
               >
                 <Typography>
                   <FiSquare />
@@ -126,10 +114,7 @@ const Sidebar = () => {
                 className={`sub-menu-link ${
                   activeTab === "payment-type" && "active"
                 }`}
-                onClick={() => {
-                  setActiveTab("payment-type");
-                  navigate("/payment-type");
-                }}
+                onClick={() => navigate("/payment-type")}
               >
                 <Typography>
                   <FiSquare />
@@ -140,10 +125,7 @@ const Sidebar = () => {
                 className={`sub-menu-link ${
                   activeTab === "states" && "active"
                 }`}
-                onClick={() => {
-                  setActiveTab("states");
-                  navigate("/states");
-                }}
+                onClick={() => navigate("/states")}
               >
                 <Typography>
                   <FiSquare />
@@ -154,10 +136,7 @@ const Sidebar = () => {
                 className={`sub-menu-link ${
                   activeTab === "cities" && "active"
                 }`}
-                onClick={() => {
-                  setActiveTab("cities");
-                  navigate("/cities");
-                }}
+                onClick={() => navigate("/cities")}
               >
                 <Typography>
                   <FiSquare />
