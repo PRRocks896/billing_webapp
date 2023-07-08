@@ -18,13 +18,10 @@ export const useAddEditService = (tag) => {
   const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
   const serviceSategories = useSelector((state) => state.serviceCategory.data);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  console.log(loggedInUser);
 
-  const {
-    control,
-    setValue,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, setValue, handleSubmit } = useForm({
     defaultValues: {
       service_name: "",
       amount: "",
@@ -40,7 +37,7 @@ export const useAddEditService = (tag) => {
           name: data.service_name,
           service_category_id: data.category.value,
           amount: data.amount,
-          createdBy: 1,
+          createdBy: loggedInUser.id,
         };
 
         const response = await createService(payload);
@@ -56,7 +53,7 @@ export const useAddEditService = (tag) => {
           name: data.service_name,
           service_category_id: data.category.value,
           amount: data.amount,
-          createdBy: 1,
+          updatedBy: loggedInUser.id,
         };
 
         const response = await updateService(payload, id);

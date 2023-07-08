@@ -13,9 +13,9 @@ export const useAddEditCity = (tag) => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [statesOptions, setStatesOptions] = useState([]);
-  const states = useSelector((state) => state.states.data);
-  // const user = useSelector((state) => state);
-  // console.log(user);
+  // const states = useSelector((state) => state.states.data);
+  const [states, setStates] = useState([]);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
@@ -31,7 +31,7 @@ export const useAddEditCity = (tag) => {
         const payload = {
           name: data.cityName,
           stateID: data.stateId.value,
-          createdBy: 1,
+          createdBy: loggedInUser.id,
         };
 
         const response = await createCity(payload);
@@ -46,7 +46,7 @@ export const useAddEditCity = (tag) => {
         const payload = {
           name: data.cityName,
           stateID: data.stateId.value,
-          updatedBy: 1,
+          updatedBy: loggedInUser.id,
         };
 
         const response = await updateCity(payload, id);
@@ -101,6 +101,7 @@ export const useAddEditCity = (tag) => {
 
   const fetchStateData = useCallback(async () => {
     try {
+      console.log("fetchStateData");
       const body = {
         where: {
           isActive: true,
@@ -117,20 +118,22 @@ export const useAddEditCity = (tag) => {
 
       if (response.statusCode === 200) {
         const payload = response.data.rows;
-        dispatch(statesAction.storeStates(payload));
+        // dispatch(statesAction.storeStates(payload));
+        setStates(payload);
         makeStatesOption();
       } else if (response.statusCode === 404) {
         const payload = [];
-        dispatch(statesAction.storeStates(payload));
+        // dispatch(statesAction.storeStates(payload));
+        setStates(payload);
       }
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [dispatch, makeStatesOption]);
+  }, [makeStatesOption]);
 
   useEffect(() => {
     fetchStateData();
-  }, [fetchStateData]);
+  }, []);
 
   return {
     control,

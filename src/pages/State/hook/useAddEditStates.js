@@ -8,10 +8,13 @@ import {
 } from "../../../service/states";
 import { showToast } from "../../../utils/helper";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export const useAddEditStates = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  console.log(loggedInUser);
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
@@ -22,7 +25,7 @@ export const useAddEditStates = (tag) => {
   const onSubmit = async (data) => {
     try {
       if (tag === "add") {
-        const payload = { name: data.stateName, createdBy: 1 };
+        const payload = { name: data.stateName, createdBy: loggedInUser.id };
         const response = await createStates(payload);
         console.log(response);
         if (response.statusCode === 200) {
@@ -31,8 +34,8 @@ export const useAddEditStates = (tag) => {
         } else {
           showToast(response.messageCode, false);
         }
-      } else {
-        const payload = { name: data.stateName };
+      } else if (tag === "edit") {
+        const payload = { name: data.stateName, updatedBy: loggedInUser.id };
         const response = await updateStates(payload, id);
 
         if (response.statusCode === 200) {

@@ -16,12 +16,7 @@ export const useAddEditPaymentType = (tag) => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
   console.log(loggedInUser);
 
-  const {
-    setValue,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { setValue, control, handleSubmit } = useForm({
     defaultValues: {
       payment_type: "",
     },

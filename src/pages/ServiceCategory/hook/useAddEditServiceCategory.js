@@ -8,17 +8,15 @@ import {
 } from "../../../service/serviceCategory";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export const useAddEditServiceCategory = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  console.log(loggedInUser);
 
-  const {
-    setValue,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
+  const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
       service_category: "",
     },
@@ -29,7 +27,10 @@ export const useAddEditServiceCategory = (tag) => {
   const onSubmit = async (data) => {
     try {
       if (tag === "add") {
-        const payload = { name: data.service_category, createdBy: 1 };
+        const payload = {
+          name: data.service_category,
+          createdBy: loggedInUser.id,
+        };
         const response = await createServiceCategory(payload);
 
         if (response.statusCode === 200) {
@@ -39,7 +40,10 @@ export const useAddEditServiceCategory = (tag) => {
           showToast(response.messageCode, false);
         }
       } else if (tag === "edit") {
-        const payload = { name: data.service_category };
+        const payload = {
+          name: data.service_category,
+          updatedBy: loggedInUser.id,
+        };
         const response = await updateServiceCategory(payload, id);
 
         if (response.statusCode === 200) {
