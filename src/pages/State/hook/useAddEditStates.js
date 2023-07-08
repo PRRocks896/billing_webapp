@@ -14,7 +14,6 @@ export const useAddEditStates = (tag) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  console.log(loggedInUser);
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {

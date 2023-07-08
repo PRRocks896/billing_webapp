@@ -62,7 +62,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   }
   if (pageTitle.includes("/")) {
     pageTitle = location.pathname.split("/")[1];
-    console.log(pageTitle);
   }
   pageTitle = pageTitle.toUpperCase();
 
@@ -75,9 +74,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  // sidebar
-  // const theme = useTheme();
 
   return (
     <>
