@@ -1,18 +1,31 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
 import React from "react";
+import InputAdornment from "@mui/material/InputAdornment";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+// -------------------------
 import { Controller } from "react-hook-form";
 import { useLogin } from "./hook/useLogin";
-import loginImage from "../../assets/images/login-cover.png";
+import loginImage from "../../assets/images/Group.png";
+import SiteLogo from "../../assets/images/logo.png";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const { control, handleSubmit, onSubmit } = useLogin();
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <Grid container className="login">
@@ -34,81 +47,120 @@ const Login = () => {
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box width="100%" px={2} className="login-box">
-              <Typography className="login-heading" variant="h4" gutterBottom>
-                Login
-              </Typography>
+              <Box>
+                <Box className="logo">
+                  <img src={SiteLogo} alt="logo" />
+                </Box>
+                <Typography className="login-heading" variant="h4" gutterBottom>
+                  Login
+                </Typography>
+              </Box>
 
-              <Controller
+              <Box
                 sx={{
-                  margin: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "18px",
+                  width: "90%",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-                name="email"
-                control={control}
-                render={({
-                  field: { onBlur, onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <FormControl
-                    size="small"
-                    variant="standard"
-                    fullWidth
-                    className="login-form-control"
-                  >
-                    <TextField
-                      label="Email"
+                className="field-box"
+              >
+                <Controller
+                  sx={{
+                    margin: "20px",
+                  }}
+                  name="email"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
                       size="small"
-                      name="email"
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      error={!!error}
-                      helperText={error?.message ? error.message : ""}
-                    />
-                  </FormControl>
-                )}
-                rules={{
-                  required: "Email required",
-                }}
-              />
+                      variant="standard"
+                      fullWidth
+                      className="login-form-control"
+                    >
+                      <TextField
+                        label="Username or Email"
+                        size="small"
+                        name="email"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Email required",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Please enter valid email.",
+                    },
+                  }}
+                />
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      fullWidth
+                      className="login-form-control"
+                    >
+                      <TextField
+                        type={showPassword ? "text" : "password"}
+                        label="Password"
+                        size="small"
+                        name="password"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message ? error.message : ""}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Password required",
+                  }}
+                />
+                <Link className="forgot-heading">
+                  <Typography>Forgot Password?</Typography>
+                </Link>
+              </Box>
 
-              <Controller
-                name="password"
-                control={control}
-                render={({
-                  field: { onBlur, onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <FormControl
-                    size="small"
-                    variant="standard"
-                    fullWidth
-                    className="login-form-control"
-                  >
-                    <TextField
-                      type="password"
-                      label="Password"
-                      size="small"
-                      name="password"
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      error={!!error}
-                      helperText={error?.message ? error.message : ""}
-                    />
-                  </FormControl>
-                )}
-                rules={{
-                  required: "Password required",
-                }}
-              />
-              <Typography className="login-heading" gutterBottom>
-                <a href="/">Forgot Password?</a>
-              </Typography>
               <Box
                 display="flex"
                 justifyContent="center"
-                mt={2}
                 width={"250px"}
+                className="login-action-box"
               >
                 <Button type="submit" className="btn btn-tertiary">
                   Login
