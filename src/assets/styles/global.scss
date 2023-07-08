@@ -487,3 +487,51 @@ span {
     }
   }
 }
+
+// custom toast csss Toastify__toast--error
+.Toastify{
+  .Toastify__toast-container{
+    .Toastify__toast{
+      background-color: var(--color-black);
+      color: var(--color-white);
+
+      &.Toastify__toast--success{
+        .Toastify__toast-body{
+          .Toastify__toast-icon{
+            svg{
+              fill: var(--color-green);
+            }
+          }
+        }
+        .Toastify__close-button{
+          svg{
+            color: var(--color-white);
+            fill: var(--color-white);
+          }
+        }
+        .Toastify__progress-bar{
+          background-color: var(--color-green);
+        }
+      }
+
+      &.Toastify__toast--errors{
+        .Toastify__toast-body{
+          .Toastify__toast-icon{
+            svg{
+              fill: red;
+            }
+          }
+        }
+        .Toastify__close-button{
+          svg{
+            color: var(--color-white);
+            fill: var(--color-white);
+          }
+        }
+        .Toastify__progress-bar{
+          background-color: red;
+        }
+      }
+    }
+  }
+}
