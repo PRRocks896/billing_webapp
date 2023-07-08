@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export const authHeader = () => {
@@ -119,4 +120,35 @@ export const put = async (url, data) => {
     .catch((err) => {
       return err.response.data;
     });
+};
+
+export const AxiosInterceptor = ({ children }) => {
+  console.warn("AxiosInterceptor ");
+  axios.interceptors.response.use(
+    (res) => res,
+    (err) => {
+      console.warn("AxiosInterceptor ", err.response);
+      if (err?.response?.status === 401) {
+        toast.error("SESSION EXPIRE", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        // localStorage.clear();
+        // const errPayload = {
+        //   code: err.response.data.status,
+        //   status:"fail",
+        //   message:err.response.data.message}
+        // dispatch(setFeedback(errPayload));
+      }
+      return err.response;
+    }
+  );
+
+  return children;
 };
