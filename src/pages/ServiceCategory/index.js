@@ -94,7 +94,7 @@ const ServiceCategory = () => {
                   visibleRows.map((row, index) => {
                     return (
                       <>
-                        <TableRow key={row.id}>
+                        <TableRow key={index}>
                           <TableCell align="left">{index + 1}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell>

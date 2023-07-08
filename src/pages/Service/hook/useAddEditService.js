@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { getServiceCategoryList } from "../../../service/serviceCategory";
-import { serviceCategoryAction } from "../../../redux/serviceCategory";
 import { showToast } from "../../../utils/helper";
 import {
   createService,
@@ -11,15 +9,14 @@ import {
   updateService,
 } from "../../../service/service";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const useAddEditService = (tag) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
-  const serviceSategories = useSelector((state) => state.serviceCategory.data);
+  const [serviceSategories, setServiceSategories] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  console.log(loggedInUser);
 
   const { control, setValue, handleSubmit } = useForm({
     defaultValues: {
@@ -100,45 +97,42 @@ export const useAddEditService = (tag) => {
   }, [id, setValue]);
 
   // gemrate service category options for drop down
-  const makeServiceCaytegoryOption = useCallback(() => {
+  useMemo(() => {
     const data = serviceSategories.map((item) => {
       return { value: item.id, label: item.name };
     });
     setCategoryOptions([...data]);
   }, [serviceSategories]);
 
-  const fetchServiceCategoryData = useCallback(async () => {
+  useEffect(() => {
     try {
-      const body = {
-        where: {
-          isActive: true,
-          isDeleted: false,
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 1000,
-          page: 1,
-        },
+      const fetchServiceCategoryData = async () => {
+        const body = {
+          where: {
+            isActive: true,
+            isDeleted: false,
+          },
+          pagination: {
+            sortBy: "createdAt",
+            descending: true,
+            rows: 1000,
+            page: 1,
+          },
+        };
+        const response = await getServiceCategoryList(body);
+        if (response.statusCode === 200) {
+          const payload = response.data.rows;
+          setServiceSategories(payload);
+        } else if (response.statusCode === 404) {
+          const payload = [];
+          setServiceSategories(payload);
+        }
       };
-      const response = await getServiceCategoryList(body);
-
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
-        dispatch(serviceCategoryAction.storeServiceCategories(payload));
-      } else if (response.statusCode === 404) {
-        const payload = [];
-        dispatch(serviceCategoryAction.storeServiceCategories(payload));
-      }
+      fetchServiceCategoryData();
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [dispatch]);
-
-  useEffect(() => {
-    fetchServiceCategoryData();
-    makeServiceCaytegoryOption();
-  }, [fetchServiceCategoryData, makeServiceCaytegoryOption, serviceSategories]);
+  }, []);
 
   return {
     control,

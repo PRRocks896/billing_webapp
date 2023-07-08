@@ -93,6 +93,7 @@ const AddEditService = ({ tag }) => {
                   }) => (
                     <FormControl size="small" fullWidth>
                       <Autocomplete
+                        freeSolo
                         size="small"
                         options={categoryOptions}
                         id="category"

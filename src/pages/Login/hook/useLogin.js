@@ -9,24 +9,19 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
     mode: "onBlur",
   });
-  console.log(errors);
 
   const onSubmit = async (data) => {
     try {
       const payload = { email: data.email, password: data.password };
       const response = await login(payload);
-      console.log(response.data);
+
       if (response.statusCode === 200) {
         const authToken = response.data.token;
         setAuthToken(authToken);
