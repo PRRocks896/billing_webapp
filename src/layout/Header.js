@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
@@ -20,8 +20,10 @@ import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
-import { logoutHandler } from "../utils/helper";
-import { useSelector } from "react-redux";
+import { logoutHandler, showToast } from "../utils/helper";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLoggedInUserData } from "../service/loggedInUser";
+import { loggedInUserAction } from "../redux/loggedInUser";
 
 const drawerWidth = 300;
 
@@ -53,7 +55,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const data = useSelector((state) => state.loggedInUser);
-
+  const dispatch = useDispatch();
   let location = useLocation();
   let pageTitle = location.pathname.slice(1).toUpperCase();
 
@@ -74,6 +76,26 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // fetch logged in user details start
+  const fetchLoggedInUser = async () => {
+    try {
+      const response = await fetchLoggedInUserData();
+      if (response.statusCode === 200) {
+        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
+      } else {
+        showToast(response.messageCode, false);
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  };
+  useEffect(() => {
+    fetchLoggedInUser();
+  }, []);
+
+  // fetch logged in user details end
 
   return (
     <>
