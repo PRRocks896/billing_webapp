@@ -7,11 +7,13 @@ import {
   updatePaymentType,
 } from "../../../service/paymentType";
 import { showToast } from "../../../utils/helper";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
+import useLoader from "../../../hook/useLoader";
 
 export const useAddEditPaymentType = (tag) => {
   const navigate = useNavigate();
+  const { loading } = useLoader();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -24,6 +26,7 @@ export const useAddEditPaymentType = (tag) => {
 
   const onSubmit = async (data) => {
     try {
+      loading(true);
       if (tag === "add") {
         const payload = { name: data.payment_type, createdBy: loggedInUser.id };
         const response = await createPaymentType(payload);
@@ -46,26 +49,32 @@ export const useAddEditPaymentType = (tag) => {
       }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
   };
 
-  useEffect(() => {
+  const fetchEditPaymentTypeData = useCallback(async () => {
     try {
-      const fetchEditPaymentTypeData = async () => {
-        if (id) {
-          const response = await getPaymentTypeById(id);
-          if (response.statusCode === 200) {
-            setValue("payment_type", response.data.name);
-          } else {
-            showToast(response.message, false);
-          }
+      loading(true);
+      if (id) {
+        const response = await getPaymentTypeById(id);
+        if (response.statusCode === 200) {
+          setValue("payment_type", response.data.name);
+        } else {
+          showToast(response.message, false);
         }
-      };
-      fetchEditPaymentTypeData();
+      }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
-  }, [id, setValue]);
+  }, [id, loading, setValue]);
+
+  useEffect(() => {
+    fetchEditPaymentTypeData();
+  }, [fetchEditPaymentTypeData]);
 
   const cancelHandler = () => {
     navigate(-1);

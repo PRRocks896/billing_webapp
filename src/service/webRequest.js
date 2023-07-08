@@ -1,6 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { logoutHandler, showToast } from "../utils/helper";
 const baseUrl = process.env.REACT_APP_BASE_URL;
+
+const axiosInstance = axios.create();
 
 export const authHeader = () => {
   // return authorization header with basic auth credentials
@@ -62,6 +65,12 @@ export const remove = async (url, data = null) => {
     })
     .catch((err) => {
       console.error(err);
+      console.error(err);
+      if (err.response.data.statusCode === 401) {
+        showToast(err.response.data.message, false);
+        logoutHandler();
+      }
+      return err.response.data;
     });
   return response;
 };
@@ -83,6 +92,12 @@ export const patch = async (url, data) => {
     })
     .catch((err) => {
       // return err?.response?.data;
+      console.error(err);
+      if (err.response.data.statusCode === 401) {
+        showToast(err.response.data.message, false);
+        logoutHandler();
+      }
+      return err.response.data;
     });
 };
 
@@ -98,6 +113,10 @@ export const post = async (url, data) => {
     })
     .catch((err) => {
       console.error(err);
+      if (err.response.data.statusCode === 401) {
+        showToast(err.response.data.message, false);
+        logoutHandler();
+      }
       return err.response.data;
     });
 };
@@ -118,17 +137,25 @@ export const put = async (url, data) => {
       }
     })
     .catch((err) => {
+      console.error(err);
+      if (err.response.data.statusCode === 401) {
+        showToast(err.response.data.message, false);
+        logoutHandler();
+      }
       return err.response.data;
     });
 };
 
 export const AxiosInterceptor = ({ children }) => {
   console.warn("AxiosInterceptor ");
-  axios.interceptors.response.use(
-    (res) => res,
+  axiosInstance.interceptors.response.use(
+    (response) => {
+      console.warn(response);
+      return response;
+    },
     (err) => {
-      console.warn("AxiosInterceptor ", err.response);
-      if (err?.response?.status === 401) {
+      console.warn("AxiosInterceptor err ", err);
+      if (err?.response?.data.statusCode === 401) {
         toast.error("SESSION EXPIRE", {
           position: "top-right",
           autoClose: 5000,
@@ -139,9 +166,11 @@ export const AxiosInterceptor = ({ children }) => {
           progress: undefined,
           theme: "light",
         });
-        // localStorage.clear();
+        localStorage.clear();
+        window.location.href = "/login";
       }
-      return err.response;
+      console.log("outof if");
+      return err;
     }
   );
 

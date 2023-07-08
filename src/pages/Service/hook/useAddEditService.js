@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { getServiceCategoryList } from "../../../service/serviceCategory";
@@ -10,8 +10,10 @@ import {
 } from "../../../service/service";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import useLoader from "../../../hook/useLoader";
 
 export const useAddEditService = (tag) => {
+  const { loading } = useLoader();
   const navigate = useNavigate();
   const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
@@ -29,6 +31,7 @@ export const useAddEditService = (tag) => {
 
   const onSubmit = async (data) => {
     try {
+      loading(true);
       if (tag === "add") {
         const payload = {
           name: data.service_name,
@@ -64,6 +67,8 @@ export const useAddEditService = (tag) => {
       }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
   };
 
@@ -71,30 +76,34 @@ export const useAddEditService = (tag) => {
     navigate(-1);
   };
 
-  useEffect(() => {
+  const fetchEditServiceData = useCallback(async () => {
     try {
-      const fetchEditServiceData = async () => {
-        if (id) {
-          const response = await getServiceById(id);
+      if (id) {
+        loading(true);
+        const response = await getServiceById(id);
 
-          if (response.statusCode === 200) {
-            const category = {
-              value: response.data.px_service_category.id,
-              label: response.data.px_service_category.name,
-            };
-            setValue("service_name", response.data.name);
-            setValue("amount", response.data.amount);
-            setValue("category", category);
-          } else {
-            showToast(response.message, false);
-          }
+        if (response.statusCode === 200) {
+          const category = {
+            value: response.data.px_service_category.id,
+            label: response.data.px_service_category.name,
+          };
+          setValue("service_name", response.data.name);
+          setValue("amount", response.data.amount);
+          setValue("category", category);
+        } else {
+          showToast(response.message, false);
         }
-      };
-      fetchEditServiceData();
+      }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
-  }, [id, setValue]);
+  }, [id, loading, setValue]);
+
+  useEffect(() => {
+    fetchEditServiceData();
+  }, [fetchEditServiceData]);
 
   // gemrate service category options for drop down
   useMemo(() => {

@@ -7,11 +7,13 @@ import {
   updateStates,
 } from "../../../service/states";
 import { showToast } from "../../../utils/helper";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
+import useLoader from "../../../hook/useLoader";
 
 export const useAddEditStates = (tag) => {
   const navigate = useNavigate();
+  const { loading } = useLoader();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -23,6 +25,7 @@ export const useAddEditStates = (tag) => {
   });
   const onSubmit = async (data) => {
     try {
+      loading(true);
       if (tag === "add") {
         const payload = { name: data.stateName, createdBy: loggedInUser.id };
         const response = await createStates(payload);
@@ -44,29 +47,35 @@ export const useAddEditStates = (tag) => {
           showToast(response.message, false);
         }
       }
+      loading(false);
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
   };
 
-  useEffect(() => {
+  const fetchEditStateData = useCallback(async () => {
     try {
-      const fetchEditStateData = async () => {
-        if (id) {
-          const response = await getStatesById(id);
-          console.warn(response);
-          if (response.statusCode === 200) {
-            setValue("stateName", response.data.name);
-          } else {
-            showToast(response.message, false);
-          }
+      if (id) {
+        loading(true);
+        const response = await getStatesById(id);
+        if (response.statusCode === 200) {
+          setValue("stateName", response.data.name);
+        } else {
+          showToast(response.message, false);
         }
-      };
-      fetchEditStateData();
+      }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
-  }, [id, setValue]);
+  }, [id, loading, setValue]);
+
+  useEffect(() => {
+    fetchEditStateData();
+  }, [fetchEditStateData]);
 
   const cancelHandler = () => {
     navigate(-1);

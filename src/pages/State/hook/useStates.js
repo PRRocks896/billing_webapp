@@ -3,9 +3,11 @@ import { showToast } from "../../../utils/helper";
 import { statesAction } from "../../../redux/states";
 import { useDispatch, useSelector } from "react-redux";
 import { getStatesList, deleteState } from "../../../service/states";
+import useLoader from "../../../hook/useLoader";
 
 export const useStates = () => {
   const dispatch = useDispatch();
+  const { loading } = useLoader();
   const states = useSelector((state) => state.states.data);
 
   // pagination code start
@@ -29,6 +31,7 @@ export const useStates = () => {
   const fetchStatesData = useCallback(
     async (searchValue = "") => {
       try {
+        loading(true);
         const body = {
           where: {
             // isActive: true,
@@ -44,6 +47,7 @@ export const useStates = () => {
         };
 
         const response = await getStatesList(body);
+        loading(false);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
@@ -54,6 +58,8 @@ export const useStates = () => {
         }
       } catch (error) {
         showToast(error.message, false);
+      } finally {
+        loading(false);
       }
     },
     [dispatch, page]
@@ -78,10 +84,14 @@ export const useStates = () => {
 
   const deleteHandler = async () => {
     try {
+      setIsDeleteModalOpen(false);
+      loading(true);
       const response = await deleteState(deleteId);
+      loading(false);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(statesAction.removeStates({ id: deleteId }));
+        setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
       }
@@ -89,6 +99,7 @@ export const useStates = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
+      loading(false);
     }
   };
 

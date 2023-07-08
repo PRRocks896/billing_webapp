@@ -7,10 +7,12 @@ import {
   updateServiceCategory,
 } from "../../../service/serviceCategory";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
+import useLoader from "../../../hook/useLoader";
 
 export const useAddEditServiceCategory = (tag) => {
+  const { loading } = useLoader();
   const navigate = useNavigate();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -26,6 +28,7 @@ export const useAddEditServiceCategory = (tag) => {
   // add - update logic
   const onSubmit = async (data) => {
     try {
+      loading(true);
       if (tag === "add") {
         const payload = {
           name: data.service_category,
@@ -55,27 +58,33 @@ export const useAddEditServiceCategory = (tag) => {
       }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
   };
 
-  useEffect(() => {
+  const fetchEditServiceCategoryData = useCallback(async () => {
     try {
-      const fetchEditServiceCategoryData = async () => {
-        if (id) {
-          const response = await getServiceCategoryById(id);
+      if (id) {
+        loading(true);
+        const response = await getServiceCategoryById(id);
 
-          if (response.statusCode === 200) {
-            setValue("service_category", response.data.name);
-          } else {
-            showToast(response.message, false);
-          }
+        if (response.statusCode === 200) {
+          setValue("service_category", response.data.name);
+        } else {
+          showToast(response.message, false);
         }
-      };
-      fetchEditServiceCategoryData();
+      }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
-  }, [id, setValue]);
+  }, [id, loading, setValue]);
+
+  useEffect(() => {
+    fetchEditServiceCategoryData();
+  }, [fetchEditServiceCategoryData]);
 
   // cancel handler and error displaying
   const cancelHandler = () => {

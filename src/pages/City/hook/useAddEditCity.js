@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { createCity, getCityById, updateCity } from "../../../service/city";
@@ -6,9 +6,11 @@ import { showToast } from "../../../utils/helper";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getStatesList } from "../../../service/states";
+import useLoader from "../../../hook/useLoader";
 
 export const useAddEditCity = (tag) => {
   const navigate = useNavigate();
+  const { loading } = useLoader();
   const { id } = useParams();
   const [statesOptions, setStatesOptions] = useState([]);
   const [states, setStates] = useState([]);
@@ -23,6 +25,7 @@ export const useAddEditCity = (tag) => {
   });
 
   const onSubmit = async (data) => {
+    loading(true);
     try {
       if (tag === "add") {
         const payload = {
@@ -30,7 +33,6 @@ export const useAddEditCity = (tag) => {
           stateID: data.stateId.value,
           createdBy: loggedInUser.id,
         };
-
         const response = await createCity(payload);
 
         if (response.statusCode === 200) {
@@ -45,7 +47,6 @@ export const useAddEditCity = (tag) => {
           stateID: data.stateId.value,
           updatedBy: loggedInUser.id,
         };
-
         const response = await updateCity(payload, id);
 
         if (response.statusCode === 200) {
@@ -57,31 +58,37 @@ export const useAddEditCity = (tag) => {
       }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
   };
 
-  useEffect(() => {
+  const fetchEditCityData = useCallback(async () => {
     try {
-      const fetchEditCityData = async () => {
-        if (id) {
-          const response = await getCityById(id);
-
-          if (response.statusCode === 200) {
-            setValue("cityName", response.data.name);
-            setValue("stateId", {
-              value: response.data.stateID,
-              label: response.data.px_state.name,
-            });
-          } else {
-            showToast(response.message, false);
-          }
+      if (id) {
+        loading(true);
+        const response = await getCityById(id);
+        loading(false);
+        if (response.statusCode === 200) {
+          setValue("cityName", response.data.name);
+          setValue("stateId", {
+            value: response.data.stateID,
+            label: response.data.px_state.name,
+          });
+        } else {
+          showToast(response.message, false);
         }
-      };
-      fetchEditCityData();
+      }
     } catch (error) {
       showToast(error.message, false);
+    } finally {
+      loading(false);
     }
-  }, [id, setValue]);
+  }, [id, loading, setValue]);
+
+  useEffect(() => {
+    fetchEditCityData();
+  }, [fetchEditCityData]);
 
   const cancelHandler = () => {
     navigate(-1);

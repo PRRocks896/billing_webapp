@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteService, getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
+import useLoader from "../../../hook/useLoader";
 
 export const useService = () => {
   const dispatch = useDispatch();
+  const { loading } = useLoader();
 
   const service = useSelector((state) => state.service.data);
 
@@ -30,6 +32,7 @@ export const useService = () => {
   const fetchServiceData = useCallback(
     async (searchValue = "") => {
       try {
+        loading(true);
         const body = {
           where: {
             // isActive: true,
@@ -55,6 +58,8 @@ export const useService = () => {
         }
       } catch (error) {
         showToast(error.message, false);
+      } finally {
+        loading(false);
       }
     },
     [dispatch, page]
@@ -79,10 +84,14 @@ export const useService = () => {
 
   const deleteHandler = async () => {
     try {
+      setIsDeleteModalOpen(false);
+      loading(true);
       const response = await deleteService(deleteId);
+
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(serviceAction.removeService({ id: deleteId }));
+        setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
       }
@@ -90,6 +99,7 @@ export const useService = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
+      loading(false);
     }
   };
 

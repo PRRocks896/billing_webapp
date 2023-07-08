@@ -4,9 +4,11 @@ import { getPaymentTypeList } from "../../../service/paymentType";
 import { paymentTypeAction } from "../../../redux/paymentType";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePaymentType } from "../../../service/paymentType";
+import useLoader from "../../../hook/useLoader";
 
 export const usePaymentType = () => {
   const dispatch = useDispatch();
+  const { loading } = useLoader();
   const paymentTypeData = useSelector((state) => state.paymentType.data);
 
   const [deleteId, setDeleteId] = useState("");
@@ -30,6 +32,7 @@ export const usePaymentType = () => {
   const fetchPaymentTypeData = useCallback(
     async (searchValue = "") => {
       try {
+        loading(true);
         const body = {
           where: {
             // isActive: true,
@@ -54,6 +57,8 @@ export const usePaymentType = () => {
         }
       } catch (error) {
         showToast(error.message, false);
+      } finally {
+        loading(false);
       }
     },
     [dispatch, page]
@@ -78,10 +83,13 @@ export const usePaymentType = () => {
 
   const deleteHandler = async () => {
     try {
+      setIsDeleteModalOpen(false);
+      loading(true);
       const response = await deletePaymentType(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(paymentTypeAction.removePaymentType({ id: deleteId }));
+        setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
       }
@@ -89,6 +97,7 @@ export const usePaymentType = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
+      loading(false);
     }
   };
 

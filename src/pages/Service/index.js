@@ -41,6 +41,8 @@ const Service = () => {
   } = useService();
   const navigate = useNavigate();
 
+  let index = page * 10;
+
   return (
     <>
       <TopBar
@@ -67,11 +69,11 @@ const Service = () => {
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row, index) => {
+                  visibleRows.map((row) => {
                     return (
                       <>
                         <TableRow key={index}>
-                          <TableCell align="left">{index + 1}</TableCell>
+                          <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">
                             {row.px_service_category?.name}
                           </TableCell>

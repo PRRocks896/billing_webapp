@@ -6,9 +6,11 @@ import {
   deleteServiceCategory,
   getServiceCategoryList,
 } from "../../../service/serviceCategory";
+import useLoader from "../../../hook/useLoader";
 
 export const useServiceCategory = () => {
   const dispatch = useDispatch();
+  const { loading } = useLoader();
 
   const serviceCategories = useSelector((state) => state.serviceCategory.data);
 
@@ -33,6 +35,7 @@ export const useServiceCategory = () => {
   const fetchServiceCategoryData = useCallback(
     async (searchValue = "") => {
       try {
+        loading(true);
         const body = {
           where: {
             // isActive: true,
@@ -58,6 +61,8 @@ export const useServiceCategory = () => {
         }
       } catch (error) {
         showToast(error.message, false);
+      } finally {
+        loading(false);
       }
     },
     [dispatch, page]
@@ -82,10 +87,13 @@ export const useServiceCategory = () => {
 
   const deleteHandler = async () => {
     try {
+      setIsDeleteModalOpen(false);
+      loading(true);
       const response = await deleteServiceCategory(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(serviceCategoryAction.removeServiceCategory({ id: deleteId }));
+        setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
       }
@@ -93,6 +101,7 @@ export const useServiceCategory = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
+      loading(false);
     }
   };
 
