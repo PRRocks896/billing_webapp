@@ -34,12 +34,14 @@ const PaymentType = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchPaymentTypeHandler,
+    changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,
     count,
   } = usePaymentType();
   const navigate = useNavigate();
+  let index = page * 10;
 
   return (
     <>
@@ -65,16 +67,17 @@ const PaymentType = () => {
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row, index) => {
+                  visibleRows.map((row) => {
                     return (
                       <>
                         <TableRow key={index}>
-                          <TableCell align="left">{index + 1}</TableCell>
+                          <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell>
                             <Switch
                               style={switchStyles}
                               checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
                             />
                           </TableCell>
                           <TableCell>

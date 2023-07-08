@@ -40,7 +40,6 @@ const Service = () => {
     count,
   } = useService();
   const navigate = useNavigate();
-
   let index = page * 10;
 
   return (

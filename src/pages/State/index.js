@@ -41,6 +41,7 @@ const State = () => {
     count,
   } = useStates();
   const navigate = useNavigate();
+  let index = page * 10;
 
   return (
     <>
@@ -66,7 +67,7 @@ const State = () => {
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row, index) => {
+                  visibleRows.map((row) => {
                     return (
                       <>
                         <TableRow key={index}>

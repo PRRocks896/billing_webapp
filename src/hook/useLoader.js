@@ -5,7 +5,6 @@ const useLoader = () => {
   const dispatch = useDispatch();
 
   const loading = (isLoading) => {
-    console.log(isLoading);
     if (isLoading) {
       dispatch(startLoading());
     } else {

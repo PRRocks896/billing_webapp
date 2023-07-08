@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
-import { getPaymentTypeList } from "../../../service/paymentType";
+import {
+  getPaymentTypeList,
+  updatePaymentType,
+} from "../../../service/paymentType";
 import { paymentTypeAction } from "../../../redux/paymentType";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePaymentType } from "../../../service/paymentType";
@@ -10,6 +13,7 @@ export const usePaymentType = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
   const paymentTypeData = useSelector((state) => state.paymentType.data);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -101,12 +105,33 @@ export const usePaymentType = () => {
     }
   };
 
+  const changeStatusHandler = async (e, id) => {
+    try {
+      const payload = {
+        isActive: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updatePaymentType(payload, id);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        const payload2 = { id, status: payload.isActive };
+        dispatch(paymentTypeAction.changePaymentTypeStatus(payload2));
+      } else {
+        showToast(response.message, false);
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    }
+  };
+
   return {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchPaymentTypeHandler,
+    changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,
