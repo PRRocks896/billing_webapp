@@ -1,17 +1,27 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { paymentTypeAction } from "../../../redux/paymentType";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deletePaymentType } from "../../../service/paymentType";
 
 export const usePaymentType = () => {
   const dispatch = useDispatch();
+  const paymentTypeData = useSelector((state) => state.paymentType.data);
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  // const deleteModalClose = () => setIsDeleteModalOpen(false);
+
+  const [page, setPage] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const visibleRows = useMemo(() => {
+    return paymentTypeData;
+  }, [paymentTypeData]);
 
   //  fetch payment type logic
   const fetchPaymentTypeData = useCallback(
@@ -26,14 +36,14 @@ export const usePaymentType = () => {
           pagination: {
             sortBy: "createdAt",
             descending: true,
-            rows: 5,
-            page: 1,
+            rows: 10,
+            page: page + 1,
           },
         };
         const response = await getPaymentTypeList(body);
-
         if (response.statusCode === 200) {
           const payload = response.data.rows;
+          setCount(response.data.count);
           dispatch(paymentTypeAction.storePaymentType(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
@@ -43,7 +53,7 @@ export const usePaymentType = () => {
         showToast(error.message, false);
       }
     },
-    [dispatch]
+    [dispatch, page]
   );
 
   const searchPaymentTypeHandler = async (payload) => {
@@ -60,7 +70,6 @@ export const usePaymentType = () => {
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    // deleteModalOpen();
     setIsDeleteModalOpen(true);
   };
 
@@ -70,7 +79,6 @@ export const usePaymentType = () => {
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(paymentTypeAction.removePaymentType({ id: deleteId }));
-        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
@@ -87,5 +95,9 @@ export const usePaymentType = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchPaymentTypeHandler,
+    page,
+    handleChangePage,
+    visibleRows,
+    count,
   };
 };

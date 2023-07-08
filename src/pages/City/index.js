@@ -36,10 +36,7 @@ const City = () => {
     searchCityHandler,
     // ----
     page,
-    rowsPerPage,
     handleChangePage,
-    handleChangeRowsPerPage,
-    // emptyRows,
     visibleRows,
     count,
   } = useCity();
@@ -115,15 +112,6 @@ const City = () => {
                     </TableCell>
                   </TableRow>
                 )}
-                {/* {emptyRows > 0 && (
-                  <Box
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </Box>
-                )} */}
               </TableBody>
             </Table>
           </TableContainer>
@@ -131,10 +119,9 @@ const City = () => {
             rowsPerPageOptions={10}
             component="div"
             count={count}
-            rowsPerPage={rowsPerPage}
+            rowsPerPage={10}
             page={page}
             onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       </Box>

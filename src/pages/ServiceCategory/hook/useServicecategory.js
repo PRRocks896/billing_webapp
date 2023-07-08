@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { serviceCategoryAction } from "../../../redux/serviceCategory";
 import { showToast } from "../../../utils/helper";
 import {
@@ -10,10 +10,24 @@ import {
 export const useServiceCategory = () => {
   const dispatch = useDispatch();
 
+  const serviceCategories = useSelector((state) => state.serviceCategory.data);
+
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  // const deleteModalClose = () => setIsDeleteModalOpen(false);
+
+  // pagination code start
+  const [page, setPage] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const visibleRows = useMemo(() => {
+    return serviceCategories;
+  }, [serviceCategories]);
+
+  // pagination code end
 
   //  fetch staff logic
   const fetchServiceCategoryData = useCallback(
@@ -28,14 +42,15 @@ export const useServiceCategory = () => {
           pagination: {
             sortBy: "createdAt",
             descending: true,
-            rows: 5,
-            page: 1,
+            rows: 10,
+            page: page + 1,
           },
         };
         const response = await getServiceCategoryList(body);
 
         if (response.statusCode === 200) {
           const payload = response.data.rows;
+          setCount(response.data.count);
           dispatch(serviceCategoryAction.storeServiceCategories(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
@@ -45,7 +60,7 @@ export const useServiceCategory = () => {
         showToast(error.message, false);
       }
     },
-    [dispatch]
+    [dispatch, page]
   );
 
   useEffect(() => {
@@ -62,7 +77,6 @@ export const useServiceCategory = () => {
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    // deleteModalOpen();
     setIsDeleteModalOpen(true);
   };
 
@@ -72,7 +86,6 @@ export const useServiceCategory = () => {
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(serviceCategoryAction.removeServiceCategory({ id: deleteId }));
-        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
@@ -89,5 +102,9 @@ export const useServiceCategory = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceCategoryHandler,
+    page,
+    handleChangePage,
+    visibleRows,
+    count,
   };
 };

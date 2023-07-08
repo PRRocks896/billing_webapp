@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -16,7 +16,6 @@ import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
 import { useService } from "./hook/useService";
-import { useSelector } from "react-redux";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -35,32 +34,12 @@ const Service = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceHandler,
+    page,
+    handleChangePage,
+    visibleRows,
+    count,
   } = useService();
   const navigate = useNavigate();
-  const service = useSelector((state) => state.service.data);
-
-  // pagination code start
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - service.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () => service.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage, service]
-  );
-
-  // pagination code end
 
   return (
     <>
@@ -136,26 +115,16 @@ const Service = () => {
                     </TableCell>
                   </TableRow>
                 )}
-                {emptyRows > 0 && (
-                  <Box
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </Box>
-                )}
               </TableBody>
             </Table>
           </TableContainer>
           <TablePagination
             rowsPerPageOptions={10}
             component="div"
-            count={service.length}
-            rowsPerPage={rowsPerPage}
+            count={count}
+            rowsPerPage={10}
             page={page}
             onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       </Box>

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteService, getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
@@ -7,10 +7,24 @@ import { serviceAction } from "../../../redux/service";
 export const useService = () => {
   const dispatch = useDispatch();
 
+  const service = useSelector((state) => state.service.data);
+
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  // const deleteModalClose = () => setIsDeleteModalOpen(false);
+
+  // pagination code start
+  const [page, setPage] = useState(0);
+  const [count, setCount] = useState(0);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const visibleRows = useMemo(() => {
+    return service;
+  }, [service]);
+
+  // pagination code end
 
   //  fetch staff logic
   const fetchServiceData = useCallback(
@@ -25,14 +39,15 @@ export const useService = () => {
           pagination: {
             sortBy: "createdAt",
             descending: true,
-            rows: 5,
-            page: 1,
+            rows: 10,
+            page: page + 1,
           },
         };
         const response = await getServiceList(body);
 
         if (response.statusCode === 200) {
           const payload = response.data.rows;
+          setCount(response.data.count);
           dispatch(serviceAction.storeServices(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
@@ -42,7 +57,7 @@ export const useService = () => {
         showToast(error.message, false);
       }
     },
-    [dispatch]
+    [dispatch, page]
   );
 
   useEffect(() => {
@@ -59,7 +74,6 @@ export const useService = () => {
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
-    // deleteModalOpen();
     setIsDeleteModalOpen(true);
   };
 
@@ -69,7 +83,6 @@ export const useService = () => {
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(serviceAction.removeService({ id: deleteId }));
-        // deleteModalClose();
       } else {
         showToast(response.messageCode, false);
       }
@@ -86,5 +99,9 @@ export const useService = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceHandler,
+    page,
+    handleChangePage,
+    visibleRows,
+    count,
   };
 };

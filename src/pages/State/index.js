@@ -36,16 +36,11 @@ const State = () => {
     searchStatesandler,
     // ----
     page,
-    rowsPerPage,
     handleChangePage,
-    handleChangeRowsPerPage,
-    // emptyRows,
     visibleRows,
     count,
   } = useStates();
   const navigate = useNavigate();
-
-  let index = rowsPerPage * page;
 
   return (
     <>
@@ -71,7 +66,7 @@ const State = () => {
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row) => {
+                  visibleRows.map((row, index) => {
                     return (
                       <>
                         <TableRow key={index}>
@@ -115,15 +110,6 @@ const State = () => {
                     </TableCell>
                   </TableRow>
                 )}
-                {/* {emptyRows > 0 && (
-                  <Box
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </Box>
-                )} */}
               </TableBody>
             </Table>
           </TableContainer>
@@ -131,10 +117,9 @@ const State = () => {
             rowsPerPageOptions={10}
             component="div"
             count={count}
-            rowsPerPage={rowsPerPage}
+            rowsPerPage={10}
             page={page}
             onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       </Box>

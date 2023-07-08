@@ -15,7 +15,7 @@ export const useAddEditService = (tag) => {
   const navigate = useNavigate();
   const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
-  const [serviceSategories, setServiceSategories] = useState([]);
+  const [serviceCategories, setServiceCategories] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const { control, setValue, handleSubmit } = useForm({
@@ -98,11 +98,11 @@ export const useAddEditService = (tag) => {
 
   // gemrate service category options for drop down
   useMemo(() => {
-    const data = serviceSategories.map((item) => {
+    const data = serviceCategories.map((item) => {
       return { value: item.id, label: item.name };
     });
     setCategoryOptions([...data]);
-  }, [serviceSategories]);
+  }, [serviceCategories]);
 
   useEffect(() => {
     try {
@@ -122,10 +122,10 @@ export const useAddEditService = (tag) => {
         const response = await getServiceCategoryList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
-          setServiceSategories(payload);
+          setServiceCategories(payload);
         } else if (response.statusCode === 404) {
           const payload = [];
-          setServiceSategories(payload);
+          setServiceCategories(payload);
         }
       };
       fetchServiceCategoryData();
