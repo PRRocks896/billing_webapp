@@ -3,18 +3,26 @@ body{
     overflow: hidden;
     .image-box{
       height: 100vh;
+      border-right: 1px solid #ccc;
+      box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       // min-height: 100vh !important;
   
-      .logo{
+      .billing-image{
         position: absolute;
         top: 50%;
         left: 25%;
         transform: translate(-50%, -50%);
+
+        img{
+          width: 100%;
+          height: auto;
+        }
       }
       
-      img{
+      .background-img{
         width: 100%;
         max-height: 100vh;
+        min-height: 100vh;
       }
     }
     .login-box{
@@ -48,6 +56,13 @@ body{
         }
         .login-action-box{
           width: 35% !important;
+        }
+        .login{
+          .image-box{
+            .billing-image{
+              width: 500px !important;
+            }
+          }
         }
       }
     }

@@ -10,11 +10,13 @@ import Typography from "@mui/material/Typography";
 // -------------------------
 import { Controller } from "react-hook-form";
 import { useLogin } from "./hook/useLogin";
-import loginImage from "../../assets/images/Group.png";
-import SiteLogo from "../../assets/images/logo.png";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link } from "react-router-dom";
+
+import BackImage from "../../assets/images/Group.png";
+import systemImage from "../../assets/images/Frame.svg";
+import SiteLogo from "../../assets/images/logo.png";
 
 const Login = () => {
   const { control, handleSubmit, onSubmit } = useLogin();
@@ -36,7 +38,10 @@ const Login = () => {
         display={{ xs: "none", sm: "block" }}
         className="image-box"
       >
-        <img src={loginImage} alt="login" width="100%" height="100%" />
+        <Box className="billing-image">
+          <img src={systemImage} alt="" />
+        </Box>
+        <img src={BackImage} alt="background" className="background-img" />
       </Grid>
       <Grid item xs={12} sm={6}>
         <Box
@@ -48,9 +53,7 @@ const Login = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box width="100%" px={2} className="login-box">
               <Box>
-                <Box className="logo">
-                  <img src={SiteLogo} alt="logo" />
-                </Box>
+                <img src={SiteLogo} alt="logo" />
                 <Typography className="login-heading" variant="h4" gutterBottom>
                   Login
                 </Typography>
