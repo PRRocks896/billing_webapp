@@ -34,6 +34,7 @@ const ServiceCategory = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceCategoryHandler,
+    changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,
@@ -76,6 +77,7 @@ const ServiceCategory = () => {
                             <Switch
                               style={switchStyles}
                               checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
                             />
                           </TableCell>
                           <TableCell>

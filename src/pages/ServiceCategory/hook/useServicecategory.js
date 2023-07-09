@@ -5,6 +5,7 @@ import { showToast } from "../../../utils/helper";
 import {
   deleteServiceCategory,
   getServiceCategoryList,
+  updateServiceCategory,
 } from "../../../service/serviceCategory";
 import useLoader from "../../../hook/useLoader";
 
@@ -13,6 +14,7 @@ export const useServiceCategory = () => {
   const { loading } = useLoader();
 
   const serviceCategories = useSelector((state) => state.serviceCategory.data);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -31,7 +33,7 @@ export const useServiceCategory = () => {
 
   // pagination code end
 
-  //  fetch staff logic
+  //  fetch service category logic
   const fetchServiceCategoryData = useCallback(
     async (searchValue = "") => {
       try {
@@ -72,6 +74,7 @@ export const useServiceCategory = () => {
     fetchServiceCategoryData();
   }, [fetchServiceCategoryData]);
 
+  // search service category handler
   const searchServiceCategoryHandler = async (payload) => {
     try {
       fetchServiceCategoryData(payload.searchValue);
@@ -80,11 +83,13 @@ export const useServiceCategory = () => {
     }
   };
 
+  // delete btn click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
+  // delete service category handler
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
@@ -105,12 +110,34 @@ export const useServiceCategory = () => {
     }
   };
 
+  // change service category status handler
+  const changeStatusHandler = async (e, id) => {
+    try {
+      const payload = {
+        isActive: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updateServiceCategory(payload, id);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        const payload2 = { id, status: payload.isActive };
+        dispatch(serviceCategoryAction.changeServiceCategoryStatus(payload2));
+      } else {
+        showToast(response.message, false);
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    }
+  };
+
   return {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceCategoryHandler,
+    changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,

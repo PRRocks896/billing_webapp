@@ -32,7 +32,7 @@ export const usePaymentType = () => {
 
   // pagination end
 
-  //  fetch payment type logic
+  //  fetch payment type
   const fetchPaymentTypeData = useCallback(
     async (searchValue = "") => {
       try {
@@ -68,6 +68,7 @@ export const usePaymentType = () => {
     [dispatch, page]
   );
 
+  // search payment type
   const searchPaymentTypeHandler = async (payload) => {
     try {
       fetchPaymentTypeData(payload.searchValue);
@@ -80,11 +81,13 @@ export const usePaymentType = () => {
     fetchPaymentTypeData();
   }, [fetchPaymentTypeData]);
 
+  // delete payment type click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
+  // delete payment type
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
@@ -105,6 +108,7 @@ export const usePaymentType = () => {
     }
   };
 
+  // change status handler
   const changeStatusHandler = async (e, id) => {
     try {
       const payload = {

@@ -34,6 +34,7 @@ const City = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchCityHandler,
+    changeStatusHandler,
     // ----
     page,
     handleChangePage,
@@ -81,6 +82,7 @@ const City = () => {
                             <Switch
                               style={switchStyles}
                               checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
                             />
                           </TableCell>
                           <TableCell>

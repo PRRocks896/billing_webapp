@@ -13,7 +13,7 @@ import { useLogin } from "./hook/useLogin";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link } from "react-router-dom";
-
+import Sidecover from "../../assets/images/login-sidecover.png";
 import BackImage from "../../assets/images/Group.png";
 import systemImage from "../../assets/images/Frame.svg";
 import SiteLogo from "../../assets/images/logo.png";
@@ -38,10 +38,10 @@ const Login = () => {
         display={{ xs: "none", sm: "block" }}
         className="image-box"
       >
-        <Box className="billing-image">
+        {/* <Box className="billing-image">
           <img src={systemImage} alt="" />
-        </Box>
-        <img src={BackImage} alt="background" className="background-img" />
+        </Box> */}
+        <img src={Sidecover} alt="background" className="background-img" />
       </Grid>
       <Grid item xs={12} sm={6}>
         <Box

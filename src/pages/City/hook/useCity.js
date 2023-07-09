@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
-import { deleteCity, getCityList } from "../../../service/city";
+import { deleteCity, getCityList, updateCity } from "../../../service/city";
 import { cityAction } from "../../../redux/city";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
@@ -9,6 +9,7 @@ export const useCity = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
   const cities = useSelector((state) => state.city.data);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -56,7 +57,6 @@ export const useCity = () => {
           dispatch(cityAction.storeCity(payload));
         }
       } catch (error) {
-        console.log("catch");
         showToast(error.message, false);
       } finally {
         loading(false);
@@ -69,6 +69,7 @@ export const useCity = () => {
     fetchCityData();
   }, [fetchCityData]);
 
+  // search city handler
   const searchCityHandler = async (payload) => {
     try {
       fetchCityData(payload.searchValue);
@@ -77,11 +78,13 @@ export const useCity = () => {
     }
   };
 
+  // delete city btn click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
+  // delete city handler
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
@@ -103,12 +106,34 @@ export const useCity = () => {
     }
   };
 
+  // change status handler
+  const changeStatusHandler = async (e, id) => {
+    try {
+      const payload = {
+        isActive: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updateCity(payload, id);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        const payload2 = { id, status: payload.isActive };
+        dispatch(cityAction.changeCityStatus(payload2));
+      } else {
+        showToast(response.message, false);
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    }
+  };
+
   return {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchCityHandler,
+    changeStatusHandler,
     // ----
     page,
     handleChangePage,

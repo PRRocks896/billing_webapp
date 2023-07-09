@@ -14,6 +14,14 @@ const citySlice = createSlice({
     removeCity(state, action) {
       return { data: state.data.filter((row) => row.id !== action.payload.id) };
     },
+    changeCityStatus(state, action) {
+      const updatedCity = state.data.map((row) =>
+        row.id === action.payload.id
+          ? { ...row, isActive: action.payload.status }
+          : { ...row }
+      );
+      return { data: updatedCity };
+    },
   },
 });
 

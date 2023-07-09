@@ -34,6 +34,7 @@ const Service = () => {
     deleteHandler,
     deleteBtnClickHandler,
     searchServiceHandler,
+    changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,
@@ -82,6 +83,7 @@ const Service = () => {
                             <Switch
                               style={switchStyles}
                               checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
                             />
                           </TableCell>
                           <TableCell>

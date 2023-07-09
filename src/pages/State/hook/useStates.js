@@ -2,13 +2,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { statesAction } from "../../../redux/states";
 import { useDispatch, useSelector } from "react-redux";
-import { getStatesList, deleteState } from "../../../service/states";
+import {
+  getStatesList,
+  deleteState,
+  updateStates,
+} from "../../../service/states";
 import useLoader from "../../../hook/useLoader";
 
 export const useStates = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
   const states = useSelector((state) => state.states.data);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   // pagination code start
   const [page, setPage] = useState(0);
@@ -69,6 +74,7 @@ export const useStates = () => {
     fetchStatesData();
   }, [fetchStatesData]);
 
+  // search states handler
   const searchStatesandler = async (payload) => {
     try {
       fetchStatesData(payload.searchValue);
@@ -77,11 +83,13 @@ export const useStates = () => {
     }
   };
 
+  // delete btn click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
+  // delete state handler
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
@@ -103,12 +111,34 @@ export const useStates = () => {
     }
   };
 
+  // change status handler
+  const changeStatusHandler = async (e, id) => {
+    try {
+      const payload = {
+        isActive: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updateStates(payload, id);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        const payload2 = { id, status: payload.isActive };
+        dispatch(statesAction.changeStatesStatus(payload2));
+      } else {
+        showToast(response.message, false);
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    }
+  };
+
   return {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchStatesandler,
+    changeStatusHandler,
     // ----
     page,
     handleChangePage,
