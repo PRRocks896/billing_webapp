@@ -97,6 +97,7 @@ export const post = async (url, data) => {
     .post(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
       if (res.status === 200) {
+        console.log(res);
         return res.data;
       } else {
         return null;
@@ -157,8 +158,8 @@ export const AxiosInterceptor = ({ children }) => {
           logoutHandler();
         }, 3000);
       } else {
-        console.log(err.reponse);
-        return err;
+        console.log(err.response);
+        return Promise.reject(err);
       }
     }
   );
