@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { logoutHandler, showToast } from "../utils/helper";
+// import { logoutHandler, showToast } from "../utils/helper";
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
 const axiosInstance = axios.create();
@@ -42,7 +42,7 @@ export const attachId = (url, id) => {
 };
 
 export const get = async (url) => {
-  const response = await axios
+  const response = await axiosInstance
     .get(`${baseUrl}${url}`, authHeader())
     .then((res) => {
       if (res.status === 200) {
@@ -58,25 +58,20 @@ export const get = async (url) => {
 };
 
 export const remove = async (url, data = null) => {
-  const response = await axios
+  const response = await axiosInstance
     .delete(`${baseUrl}${url}`, authHeader())
     .then((res) => {
       return res.data;
     })
     .catch((err) => {
       console.error(err);
-      console.error(err);
-      if (err.response.data.statusCode === 401) {
-        showToast(err.response.data.message, false);
-        logoutHandler();
-      }
       return err.response.data;
     });
   return response;
 };
 
 export const patch = async (url, data) => {
-  return await axios
+  return await axiosInstance
     .patch(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
       if (res.status === 200) {
@@ -91,18 +86,13 @@ export const patch = async (url, data) => {
       }
     })
     .catch((err) => {
-      // return err?.response?.data;
       console.error(err);
-      if (err.response.data.statusCode === 401) {
-        showToast(err.response.data.message, false);
-        logoutHandler();
-      }
       return err.response.data;
     });
 };
 
 export const post = async (url, data) => {
-  return await axios
+  return await axiosInstance
     .post(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
       if (res.status === 200) {
@@ -113,16 +103,12 @@ export const post = async (url, data) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.response.data.statusCode === 401) {
-        showToast(err.response.data.message, false);
-        logoutHandler();
-      }
       return err.response.data;
     });
 };
 
 export const put = async (url, data) => {
-  return await axios
+  return await axiosInstance
     .put(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
       if (res.status === 200) {
@@ -138,10 +124,10 @@ export const put = async (url, data) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.response.data.statusCode === 401) {
-        showToast(err.response.data.message, false);
-        logoutHandler();
-      }
+      // if (err.response.data.statusCode === 401) {
+      //   showToast(err.response.data.message, false);
+      //   logoutHandler();
+      // }
       return err.response.data;
     });
 };
@@ -150,7 +136,6 @@ export const AxiosInterceptor = ({ children }) => {
   console.warn("AxiosInterceptor ");
   axiosInstance.interceptors.response.use(
     (response) => {
-      console.warn(response);
       return response;
     },
     (err) => {
@@ -166,8 +151,8 @@ export const AxiosInterceptor = ({ children }) => {
           progress: undefined,
           theme: "light",
         });
-        localStorage.clear();
-        window.location.href = "/login";
+        // localStorage.clear();
+        // window.location.href = "/login";
       }
       console.log("outof if");
       return err;
