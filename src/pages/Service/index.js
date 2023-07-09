@@ -122,7 +122,7 @@ const Service = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={10}
+            rowsPerPageOptions={[10]}
             component="div"
             count={count}
             rowsPerPage={10}

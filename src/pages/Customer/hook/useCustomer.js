@@ -14,7 +14,6 @@ export const useCustomer = () => {
   const { loading } = useLoader();
   const customerData = useSelector((state) => state.customer.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  console.log(customerData);
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
