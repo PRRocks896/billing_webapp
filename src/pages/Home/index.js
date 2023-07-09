@@ -15,6 +15,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import DonutChart from "../../components/DonutChart ";
 
 const ActivityCardArray = [
   { title: "Customer", number: 467, icon: <PiUsersThree /> },
@@ -53,7 +54,9 @@ const Home = () => {
       {/* Projects */}
       <Grid container marginTop={2} spacing={1}>
         <Grid item xs={12} sm={12} md={6} lg={6} xxl={4}>
-          <Box className="card"></Box>
+          <Box className="card">
+            <DonutChart />
+          </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6} xxl={4}>
           <Box className="card">
