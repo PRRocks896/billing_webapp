@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import { logoutHandler } from "../utils/helper";
 // import { logoutHandler, showToast } from "../utils/helper";
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
@@ -136,6 +137,7 @@ export const AxiosInterceptor = ({ children }) => {
   console.warn("AxiosInterceptor ");
   axiosInstance.interceptors.response.use(
     (response) => {
+      console.warn("AxiosInterceptor response ", response);
       return response;
     },
     (err) => {
@@ -151,11 +153,13 @@ export const AxiosInterceptor = ({ children }) => {
           progress: undefined,
           theme: "light",
         });
-        // localStorage.clear();
-        // window.location.href = "/login";
+        setTimeout(() => {
+          logoutHandler();
+        }, 3000);
+      } else {
+        console.log(err.reponse);
+        return err;
       }
-      console.log("outof if");
-      return err;
     }
   );
 
