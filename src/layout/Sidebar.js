@@ -152,6 +152,17 @@ const Sidebar = () => {
                   Roles
                 </Typography>
               </Box>
+              <Box
+                className={`sub-menu-link ${
+                  activeTab === "module" && "active"
+                }`}
+                onClick={() => navigate("/module")}
+              >
+                <Typography>
+                  <FiSquare />
+                  Modules
+                </Typography>
+              </Box>
             </AccordionDetails>
           </Accordion>
           <Accordion

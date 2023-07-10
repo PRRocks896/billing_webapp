@@ -109,7 +109,7 @@ const State = () => {
                 ) : (
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No state Found
+                      No State Found
                     </TableCell>
                   </TableRow>
                 )}

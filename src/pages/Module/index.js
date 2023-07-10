@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
-import { useRole } from "./hook/useRole";
+import { useModule } from "./hook/useModule";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -27,30 +27,29 @@ const switchStyles = {
   },
 };
 
-const Role = () => {
+const Module = () => {
   const navigate = useNavigate();
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
-    searchRoleHandler,
+    searchModuleHandler,
     changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,
     count,
-  } = useRole();
+  } = useModule();
 
   let index = page * 10;
-
   return (
     <>
       <TopBar
-        btnTitle={"Add Role"}
-        inputName="role"
-        navigatePath="/add-role"
-        callAPI={searchRoleHandler}
+        btnTitle={"Add Module"}
+        inputName="module"
+        navigatePath="/add-module"
+        callAPI={searchModuleHandler}
       />
 
       {/* state listing */}
@@ -61,7 +60,7 @@ const Role = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>No</TableCell>
-                  <TableCell>Role</TableCell>
+                  <TableCell>Module</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
@@ -107,7 +106,7 @@ const Role = () => {
                 ) : (
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No Roles Found
+                      No Modules Found
                     </TableCell>
                   </TableRow>
                 )}
@@ -137,4 +136,4 @@ const Role = () => {
   );
 };
 
-export default Role;
+export default Module;

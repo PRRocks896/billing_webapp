@@ -120,7 +120,7 @@ export const post = async (url, data) => {
     })
     .catch((err) => {
       console.error(err);
-      return err;
+      return err.response.data;
     });
   return response;
 };
