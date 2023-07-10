@@ -84,7 +84,9 @@ const Module = () => {
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={() => navigate(`/edit-role/${row.id}`)}
+                                onClick={() =>
+                                  navigate(`/edit-module/${row.id}`)
+                                }
                               >
                                 <FiEdit3 size={15} />
                               </Button>

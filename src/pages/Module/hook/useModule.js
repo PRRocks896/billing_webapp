@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
-import { roleAction } from "../../../redux/role";
 import {
   deleteModule,
   getModuleList,
@@ -14,7 +13,6 @@ export const useModule = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
   const moduleData = useSelector((state) => state.module.data);
-  console.log(moduleData);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
@@ -53,7 +51,6 @@ export const useModule = () => {
           },
         };
         const response = await getModuleList(body);
-        console.log(response);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
@@ -96,9 +93,10 @@ export const useModule = () => {
       setIsDeleteModalOpen(false);
       loading(true);
       const response = await deleteModule(deleteId);
+
       if (response.statusCode === 200) {
         showToast(response.message, true);
-        dispatch(roleAction.removeRole({ id: deleteId }));
+        dispatch(moduleAction.removeModule({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);

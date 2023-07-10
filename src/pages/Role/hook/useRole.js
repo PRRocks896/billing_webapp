@@ -9,7 +9,6 @@ export const useRole = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
   const roleData = useSelector((state) => state.role.data);
-  console.log(roleData);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
