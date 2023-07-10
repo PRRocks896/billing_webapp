@@ -40,6 +40,7 @@ export const useAddEditCustomer = (tag) => {
         };
         console.log(payload);
         const response = await createCustomer(payload);
+        console.log("rk", response);
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);

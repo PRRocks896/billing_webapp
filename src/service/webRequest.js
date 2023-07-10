@@ -54,6 +54,7 @@ export const get = async (url) => {
     })
     .catch((err) => {
       console.error(err);
+      return err;
     });
   return response;
 };
@@ -93,11 +94,25 @@ export const patch = async (url, data) => {
 };
 
 export const post = async (url, data) => {
-  return await axiosInstance
+  // return await axiosInstance
+  //   .post(`${baseUrl}${url}`, data, authHeader())
+  //   .then((res) => {
+  //     if (res.status === 200) {
+  //       console.log(res);
+  //       return res.data;
+  //     } else {
+  //       return null;
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     return err.response.data;
+  //   });
+  const response = await axiosInstance
     .post(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
+      console.log(res);
       if (res.status === 200) {
-        console.log(res);
         return res.data;
       } else {
         return null;
@@ -105,8 +120,9 @@ export const post = async (url, data) => {
     })
     .catch((err) => {
       console.error(err);
-      return err.response.data;
+      return err;
     });
+  return response;
 };
 
 export const put = async (url, data) => {
@@ -156,11 +172,11 @@ export const AxiosInterceptor = ({ children }) => {
         });
         setTimeout(() => {
           logoutHandler();
-        }, 3000);
-      } else {
-        console.log(err.response);
-        return Promise.reject(err);
+        }, 5000);
       }
+
+      console.log(err.response);
+      return Promise.reject(err);
     }
   );
 
