@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -14,96 +15,43 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "./hook/useUser";
 
-const users = [
-  {
-    id: 1,
-    first_name: "krushag",
-    last_name: "rathod",
-    username: "RK8998",
-    branch: "Branch 1",
-    role: "user",
-    email: "kushang@gmail.com",
-    phone: 9879854706,
-    address: "B/302 Nilkanth apt, near kantareshwar temple, katargam, surat-4",
+const switchStyles = {
+  color: "var(--color-black)",
+  "&.MuiChecked": {
+    color: "green",
   },
-  {
-    id: 2,
-    first_name: "krushag",
-    last_name: "rathod",
-    username: "RK8998",
-    branch: "Branch 1",
-    role: "user",
-    email: "kushang@gmail.com",
-    phone: 9879854706,
-    address: "B/302 Nilkanth apt, near kantareshwar temple, katargam, surat-4",
+  "&.Mui-checked + .MuiSwitch-track": {
+    backgroundColor: "lightgreen", // Customize the track color when checked
   },
-  {
-    id: 3,
-    first_name: "krushag",
-    last_name: "rathod",
-    username: "RK8998",
-    branch: "Branch 1",
-    role: "user",
-    email: "kushang@gmail.com",
-    phone: 9879854706,
-    address: "B/302 Nilkanth apt, near kantareshwar temple, katargam, surat-4",
-  },
-  {
-    id: 4,
-    first_name: "krushag",
-    last_name: "rathod",
-    username: "RK8998",
-    branch: "Branch 1",
-    role: "user",
-    email: "kushang@gmail.com",
-    phone: 9879854706,
-    address: "B/302 Nilkanth apt, near kantareshwar temple, katargam, surat-4",
-  },
-  {
-    id: 5,
-    first_name: "krushag",
-    last_name: "rathod",
-    username: "RK8998",
-    branch: "Branch 1",
-    role: "user",
-    email: "kushang@gmail.com",
-    phone: 9879854706,
-    address: "B/302 Nilkanth apt, near kantareshwar temple, katargam, surat-4",
-  },
-];
+};
 
 const User = () => {
+  const {
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    deleteHandler,
+    deleteBtnClickHandler,
+    searchUserHandler,
+    changeStatusHandler,
+    page,
+    handleChangePage,
+    visibleRows,
+    count,
+  } = useUser();
   const navigate = useNavigate();
+  let index = page * 10;
   // pagination code start
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () => users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
-  );
-  // pagination code end
-
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const deleteModalOpen = () => setIsDeleteModalOpen(true);
-  const deleteModalClose = () => setIsDeleteModalOpen(false);
 
   return (
     <>
-      <TopBar btnTitle="Add User" inputName="user" navigatePath="/add-user" />
+      <TopBar
+        btnTitle="Add User"
+        inputName="user"
+        navigatePath="/add-user"
+        callAPI={searchUserHandler}
+      />
 
       {/* service category listing */}
       <Box className="card">
@@ -112,43 +60,51 @@ const User = () => {
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell>No</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Username</TableCell>
                   <TableCell>Branch</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
-                  <TableCell>Address</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row, index) => {
+                  visibleRows.map((row) => {
                     return (
                       <>
-                        <TableRow key={row.id}>
+                        <TableRow key={index}>
+                          <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">
-                            {row.first_name + " " + row.last_name}
+                            {row.firstName + " " + row.lastName}
                           </TableCell>
-                          <TableCell align="left">{row.username}</TableCell>
-                          <TableCell align="left">{row.branch}</TableCell>
+                          <TableCell align="left">{row.userName}</TableCell>
+                          <TableCell align="left">{row.branchName}</TableCell>
                           <TableCell align="left">{row.email}</TableCell>
-                          <TableCell align="left">{row.phone}</TableCell>
-                          <TableCell align="left" className="exclude-wrap">
-                            {row.address}
+                          <TableCell align="left">{row.phoneNumber}</TableCell>
+                          <TableCell>
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
                           </TableCell>
-
                           <TableCell align="left">
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={() => navigate("/edit-user")}
+                                onClick={() => navigate(`/edit-user/${row.id}`)}
                               >
                                 <FiEdit3 size={15} />
                               </Button>
                               <Button
                                 className="btn btn-primary"
-                                onClick={deleteModalOpen}
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
                               >
                                 <FiTrash2 size={15} />
                               </Button>
@@ -161,18 +117,9 @@ const User = () => {
                 ) : (
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No service Found
+                      No Users Found
                     </TableCell>
                   </TableRow>
-                )}
-                {emptyRows > 0 && (
-                  <Box
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </Box>
                 )}
               </TableBody>
             </Table>
@@ -180,7 +127,7 @@ const User = () => {
           <TablePagination
             rowsPerPageOptions={10}
             component="div"
-            count={users.length}
+            count={count}
             rowsPerPage={10}
             page={page}
             onPageChange={handleChangePage}
@@ -191,8 +138,9 @@ const User = () => {
       {isDeleteModalOpen && (
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
-          deleteModalClose={deleteModalClose}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="user"
+          deleteHandler={deleteHandler}
         />
       )}
     </>

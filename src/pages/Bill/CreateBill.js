@@ -22,7 +22,7 @@ import {
   FiTrash2,
   FiXCircle,
 } from "react-icons/fi";
-import { useCreateBill } from "./CreateBill.hooks";
+import { useCreateBill } from "./hook/useCreateBill";
 
 const CreateBill = () => {
   const {

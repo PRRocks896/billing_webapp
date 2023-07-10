@@ -1,20 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
-import {
-  getPaymentTypeList,
-  updatePaymentType,
-} from "../../../service/paymentType";
+import { deleteUser, getUserList, updateUser } from "../../../service/users";
 import { paymentTypeAction } from "../../../redux/paymentType";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePaymentType } from "../../../service/paymentType";
 import useLoader from "../../../hook/useLoader";
+import { userAction } from "../../../redux/users";
 
-export const usePaymentType = () => {
+export const useUser = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
-  const paymentTypeData = useSelector((state) => state.paymentType.data);
+  const usersData = useSelector((state) => state.users.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
-
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -27,13 +23,13 @@ export const usePaymentType = () => {
   };
 
   const visibleRows = useMemo(() => {
-    return paymentTypeData;
-  }, [paymentTypeData]);
+    return usersData;
+  }, [usersData]);
 
   // pagination end
 
-  //  fetch payment type
-  const fetchPaymentTypeData = useCallback(
+  //  fetch user data
+  const fetchUsersData = useCallback(
     async (searchValue = "") => {
       try {
         loading(true);
@@ -50,16 +46,14 @@ export const usePaymentType = () => {
             page: page + 1,
           },
         };
-
-        const response = await getPaymentTypeList(body);
-
+        const response = await getUserList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
-          dispatch(paymentTypeAction.storePaymentType(payload));
+          dispatch(userAction.storeUser(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
-          dispatch(paymentTypeAction.storePaymentType(payload));
+          dispatch(userAction.storeUser(payload));
         }
       } catch (error) {
         showToast(error.message, false);
@@ -70,34 +64,34 @@ export const usePaymentType = () => {
     [dispatch, page]
   );
 
-  // search payment type
-  const searchPaymentTypeHandler = async (payload) => {
+  // search states handler
+  const searchUserHandler = async (payload) => {
     try {
-      fetchPaymentTypeData(payload.searchValue);
+      fetchUsersData(payload.searchValue);
     } catch (error) {
       showToast(error.message, false);
     }
   };
 
   useEffect(() => {
-    fetchPaymentTypeData();
-  }, [fetchPaymentTypeData]);
+    fetchUsersData();
+  }, [fetchUsersData]);
 
-  // delete payment type click handler
+  // delete user click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
-  // delete payment type
+  // delete user
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
       loading(true);
-      const response = await deletePaymentType(deleteId);
+      const response = await deleteUser(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
-        dispatch(paymentTypeAction.removePaymentType({ id: deleteId }));
+        dispatch(userAction.removeUser({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
@@ -117,12 +111,12 @@ export const usePaymentType = () => {
         isActive: e.target.checked,
         updatedBy: loggedInUser.id,
       };
-      const response = await updatePaymentType(payload, id);
+      const response = await updateUser(payload, id);
 
       if (response.statusCode === 200) {
         showToast(response.message, true);
         const payload2 = { id, status: payload.isActive };
-        dispatch(paymentTypeAction.changePaymentTypeStatus(payload2));
+        dispatch(userAction.changeUserStatus(payload2));
       } else {
         showToast(response.message, false);
       }
@@ -136,7 +130,7 @@ export const usePaymentType = () => {
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
-    searchPaymentTypeHandler,
+    searchUserHandler,
     changeStatusHandler,
     page,
     handleChangePage,

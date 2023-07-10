@@ -8,6 +8,7 @@ import PaymentTypeReducer from "./paymentType";
 import ServiceReducer from "./service";
 import LoggedInUserReducer from "./loggedInUser";
 import LoaderReducer from "./loader";
+import UserReducer from "./users";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   paymentType: PaymentTypeReducer,
   service: ServiceReducer,
   loggedInUser: LoggedInUserReducer,
+  users: UserReducer,
 });
 
 export default rootReducer;

@@ -50,3 +50,17 @@ export const CREATE_PAYMENT_TYPE_API = "api/payment-type";
 export const DELETE_PAYMENT_TYPE_API = "api/payment-type/";
 export const GET_SINGLE_PAYMENT_TYPE_API = "api/payment-type/";
 export const UPDATE_PAYMENT_TYPE_API = "api/payment-type/";
+
+// users apis
+export const CREATE_USER_API = "api/user";
+export const GET_SINGLE_USER_API = "api/user/";
+export const USER_LIST_API = "api/user/list";
+export const UPDATE_USER_API = "api/user/";
+export const DELETE_USER_API = "api/user/";
+
+// role apis
+export const CREATE_ROLE_API = "api/role";
+export const GET_SINGLE_ROLE_API = "api/role/";
+export const ROLE_LIST_API = "api/role/list";
+export const UPDATE_ROLE_API = "api/role/";
+export const DELETE_ROLE_API = "api/role/";

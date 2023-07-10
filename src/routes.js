@@ -11,7 +11,6 @@ import PaymentType from "./pages/PaymentType";
 import AddEditPaymentType from "./pages/PaymentType/AddEditPaymentType";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
-import AddUser from "./pages/User/AddUser";
 import City from "./pages/City";
 import State from "./pages/State";
 import AddEditStates from "./pages/State/AddEditStates";
@@ -20,6 +19,7 @@ import ServiceCategory from "./pages/ServiceCategory";
 import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCategory";
 import Login from "./pages/Login";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
+import AddEditUser from "./pages/User/AddEditUser";
 
 const token = getAuthToken();
 
@@ -69,8 +69,8 @@ const routes = createBrowserRouter([
       { path: "edit-state/:id", element: <AddEditStates tag="edit" /> },
 
       { path: "user", element: <User /> },
-      { path: "add-user", element: <AddUser tag="add" /> },
-      { path: "edit-user", element: <AddUser tag="edit" /> },
+      { path: "add-user", element: <AddEditUser tag="add" /> },
+      { path: "edit-user/:id", element: <AddEditUser tag="edit" /> },
       { path: "create-bill", element: <CreateBill /> },
     ],
   },
