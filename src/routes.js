@@ -20,6 +20,8 @@ import ServiceCategory from "./pages/ServiceCategory";
 import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCategory";
 import Login from "./pages/Login";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
+import Role from "./pages/Role";
+import AddEditRole from "./pages/Role/addEditRole";
 
 const token = getAuthToken();
 
@@ -71,7 +73,12 @@ const routes = createBrowserRouter([
       { path: "user", element: <User /> },
       { path: "add-user", element: <AddUser tag="add" /> },
       { path: "edit-user", element: <AddUser tag="edit" /> },
+
       { path: "create-bill", element: <CreateBill /> },
+
+      { path: "role", element: <Role /> },
+      { path: "add-role", element: <AddEditRole tag="add" /> },
+      { path: "edit-role/:id", element: <AddEditRole tag="edit" /> },
     ],
   },
   { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },
