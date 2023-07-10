@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
@@ -80,6 +80,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   // fetch logged in user details start
   const fetchLoggedInUser = async () => {
     try {
+      console.log("fetchLoggedInUser");
       const response = await fetchLoggedInUserData();
       console.log(response);
       if (response.statusCode === 200) {
@@ -92,12 +93,15 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
       showToast(error.message, false);
     }
   };
-  useEffect(() => {
+  // useEffect(() => {
+  //   fetchLoggedInUser();
+  // }, []);
+
+  useLayoutEffect(() => {
     fetchLoggedInUser();
   }, []);
 
   // fetch logged in user details end
-
   return (
     <>
       <AppBar position="fixed" open={open} className="header">
