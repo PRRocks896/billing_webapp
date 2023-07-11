@@ -1,29 +1,26 @@
-import React, { useEffect, useLayoutEffect } from "react";
-
-import { styled } from "@mui/material/styles";
-import MuiAppBar from "@mui/material/AppBar";
-import {
-  IconButton,
-  Box,
-  Drawer,
-  Typography,
-  Divider,
-  Toolbar,
-  Tooltip,
-  Avatar,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-} from "@mui/material";
+import React from "react";
 import { FiUser, FiLogOut, FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
+
 import { useLocation } from "react-router-dom";
-import { logoutHandler, showToast } from "../utils/helper";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchLoggedInUserData } from "../service/loggedInUser";
-import { loggedInUserAction } from "../redux/loggedInUser";
+import { logoutHandler } from "../utils/helper";
+import { useSelector } from "react-redux";
+
+import { styled } from "@mui/material/styles";
+import MuiAppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import Avatar from "@mui/material/Avatar";
+import Tooltip from "@mui/material/Tooltip";
+import Toolbar from "@mui/material/Toolbar";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
 
 const drawerWidth = 300;
 
@@ -55,7 +52,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const data = useSelector((state) => state.loggedInUser);
-  const dispatch = useDispatch();
   let location = useLocation();
   // let pageTitle = location.pathname.slice(1).toUpperCase();
   let pageTitle = "";
@@ -76,30 +72,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  // fetch logged in user details start
-  const fetchLoggedInUser = async () => {
-    try {
-      console.log("fetchLoggedInUser");
-      const response = await fetchLoggedInUserData();
-      console.log(response);
-      if (response.statusCode === 200) {
-        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
-      } else {
-        showToast(response.messageCode, false);
-      }
-    } catch (error) {
-      console.log(error);
-      showToast(error.message, false);
-    }
-  };
-  // useEffect(() => {
-  //   fetchLoggedInUser();
-  // }, []);
-
-  useLayoutEffect(() => {
-    fetchLoggedInUser();
-  }, []);
 
   // fetch logged in user details end
   return (
