@@ -13,7 +13,7 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const users = [
   {
@@ -101,9 +101,18 @@ const User = () => {
   const deleteModalOpen = () => setIsDeleteModalOpen(true);
   const deleteModalClose = () => setIsDeleteModalOpen(false);
 
+  const location = useLocation();
+  const permisson = location.state;
+  console.log(permisson);
+
   return (
     <>
-      <TopBar btnTitle="Add User" inputName="user" navigatePath="/add-user" />
+      <TopBar
+        btnTitle="Add User"
+        inputName="user"
+        navigatePath="/add-user"
+        addPermission={permisson.add}
+      />
 
       {/* service category listing */}
       <Box className="card">
@@ -117,8 +126,10 @@ const User = () => {
                   <TableCell>Branch</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Action</TableCell>
+                  {/* <TableCell>Address</TableCell> */}
+                  {(permisson.edit || permisson.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -134,26 +145,32 @@ const User = () => {
                           <TableCell align="left">{row.branch}</TableCell>
                           <TableCell align="left">{row.email}</TableCell>
                           <TableCell align="left">{row.phone}</TableCell>
-                          <TableCell align="left" className="exclude-wrap">
+                          {/* <TableCell align="left" className="exclude-wrap">
                             {row.address}
-                          </TableCell>
+                          </TableCell> */}
 
-                          <TableCell align="left">
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() => navigate("/edit-user")}
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteModalOpen}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
+                          {(permisson.edit || permisson.delete) && (
+                            <TableCell align="left">
+                              <Box className="table-action-btn">
+                                {permisson.edit && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={() => navigate("/edit-user")}
+                                  >
+                                    <FiEdit3 size={15} />
+                                  </Button>
+                                )}
+                                {permisson.delete && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={deleteModalOpen}
+                                  >
+                                    <FiTrash2 size={15} />
+                                  </Button>
+                                )}
+                              </Box>
+                            </TableCell>
+                          )}
                         </TableRow>
                       </>
                     );

@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useCallback, useLayoutEffect } from "react";
 import { FiUser, FiLogOut, FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
 
 import { useLocation } from "react-router-dom";
-import { logoutHandler } from "../utils/helper";
-import { useSelector } from "react-redux";
+import { logoutHandler, showToast } from "../utils/helper";
+import { useDispatch, useSelector } from "react-redux";
+import { loggedInUserAction } from "../redux/loggedInUser";
+import { fetchLoggedInUserData } from "../service/loggedInUser";
 
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
@@ -51,9 +53,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
+  const dispatch = useDispatch();
   const data = useSelector((state) => state.loggedInUser);
   let location = useLocation();
-  // let pageTitle = location.pathname.slice(1).toUpperCase();
+
   let pageTitle = "";
 
   if (location.pathname === "/") {
@@ -73,7 +76,27 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     setAnchorEl(null);
   };
 
-  // fetch logged in user details end
+  // fetch logged in user details start
+  const fetchLoggedInUser = useCallback(async () => {
+    try {
+      console.log("fetchLoggedInUser");
+      const response = await fetchLoggedInUserData();
+      console.log(response);
+      if (response.statusCode === 200) {
+        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
+      } else {
+        showToast(response.messageCode, false);
+      }
+    } catch (error) {
+      console.log(error);
+      showToast(error.message, false);
+    }
+  }, [dispatch]);
+
+  useLayoutEffect(() => {
+    fetchLoggedInUser();
+  }, [fetchLoggedInUser]);
+
   return (
     <>
       <AppBar position="fixed" open={open} className="header">

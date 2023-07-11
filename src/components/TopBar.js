@@ -12,7 +12,13 @@ import { useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { showToast } from "../utils/helper";
 
-const TopBar = ({ btnTitle, inputName, navigatePath, callAPI = () => {} }) => {
+const TopBar = ({
+  btnTitle,
+  inputName,
+  navigatePath,
+  callAPI = () => {},
+  addPermission,
+}) => {
   const navigate = useNavigate();
   // const [searchvalue, setSearchvalue] = useState("");
 
@@ -59,16 +65,17 @@ const TopBar = ({ btnTitle, inputName, navigatePath, callAPI = () => {} }) => {
               />
             </Box>
           </Grid>
-
-          <Grid item>
-            <Button
-              component={"button"}
-              className="btn btn-tertiary"
-              onClick={() => navigate(navigatePath)}
-            >
-              <FiPlus /> &nbsp; <p>{btnTitle}</p>
-            </Button>
-          </Grid>
+          {addPermission && (
+            <Grid item>
+              <Button
+                component={"button"}
+                className="btn btn-tertiary"
+                onClick={() => navigate(navigatePath)}
+              >
+                <FiPlus /> &nbsp; <p>{btnTitle}</p>
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Box>
     </>

@@ -76,7 +76,7 @@ const routes = createBrowserRouter([
       { path: "add-user", element: <AddUser tag="add" /> },
       { path: "edit-user", element: <AddUser tag="edit" /> },
 
-      { path: "create-bill", element: <CreateBill /> },
+      { path: "bill", element: <CreateBill /> },
 
       { path: "role", element: <Role /> },
       { path: "add-role", element: <AddEditRole tag="add" /> },
