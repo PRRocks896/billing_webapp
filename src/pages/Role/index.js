@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
-import { useStates } from "./hook/useStates";
+import { useRole } from "./hook/useRole";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -27,30 +27,30 @@ const switchStyles = {
   },
 };
 
-const State = () => {
+const Role = () => {
+  const navigate = useNavigate();
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
-    searchStatesandler,
+    searchRoleHandler,
     changeStatusHandler,
-    // ----
     page,
     handleChangePage,
     visibleRows,
     count,
-  } = useStates();
-  const navigate = useNavigate();
+  } = useRole();
+
   let index = page * 10;
 
   return (
     <>
       <TopBar
-        btnTitle={"Add State"}
-        inputName="state"
-        navigatePath="/add-state"
-        callAPI={searchStatesandler}
+        btnTitle={"Add Role"}
+        inputName="role"
+        navigatePath="/add-role"
+        callAPI={searchRoleHandler}
       />
 
       {/* state listing */}
@@ -61,7 +61,7 @@ const State = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>No</TableCell>
-                  <TableCell>Name</TableCell>
+                  <TableCell>Role</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
@@ -85,9 +85,7 @@ const State = () => {
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={() =>
-                                  navigate(`/edit-state/${row.id}`)
-                                }
+                                onClick={() => navigate(`/edit-role/${row.id}`)}
                               >
                                 <FiEdit3 size={15} />
                               </Button>
@@ -127,16 +125,16 @@ const State = () => {
         </Box>
       </Box>
 
-      {isDeleteModalOpen && (
-        <ConfirmationModal
-          isDeleteModalOpen={isDeleteModalOpen}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          title="state"
-          deleteHandler={deleteHandler}
-        />
-      )}
+      {/* {isDeleteModalOpen && ( */}
+      <ConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+        title="state"
+        deleteHandler={deleteHandler}
+      />
+      {/* )} */}
     </>
   );
 };
 
-export default State;
+export default Role;

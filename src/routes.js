@@ -11,6 +11,7 @@ import PaymentType from "./pages/PaymentType";
 import AddEditPaymentType from "./pages/PaymentType/AddEditPaymentType";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
+import AddEditUser from "./pages/User/AddEditUser";
 import City from "./pages/City";
 import State from "./pages/State";
 import AddEditStates from "./pages/State/AddEditStates";
@@ -19,7 +20,8 @@ import ServiceCategory from "./pages/ServiceCategory";
 import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCategory";
 import Login from "./pages/Login";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
-import AddEditUser from "./pages/User/AddEditUser";
+import Role from "./pages/Role";
+import AddEditRole from "./pages/Role/addEditRole";
 
 const token = getAuthToken();
 
@@ -70,8 +72,13 @@ const routes = createBrowserRouter([
 
       { path: "user", element: <User /> },
       { path: "add-user", element: <AddEditUser tag="add" /> },
-      { path: "edit-user/:id", element: <AddEditUser tag="edit" /> },
+      { path: "edit-user", element: <AddEditUser tag="edit" /> },
+
       { path: "create-bill", element: <CreateBill /> },
+
+      { path: "role", element: <Role /> },
+      { path: "add-role", element: <AddEditRole tag="add" /> },
+      { path: "edit-role/:id", element: <AddEditRole tag="edit" /> },
     ],
   },
   { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },

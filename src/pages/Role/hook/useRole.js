@@ -1,18 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
-import { customerActions } from "../../../redux/customer";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
-import {
-  deleteCustomer,
-  getCustomerList,
-  updateCustomer,
-} from "../../../service/customer";
+import { getRoleList, updateRole, deleteRole } from "../../../service/role";
+import { roleAction } from "../../../redux/role";
 
-export const useCustomer = () => {
+export const useRole = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
-  const customerData = useSelector((state) => state.customer.data);
+  const roleData = useSelector((state) => state.role.data);
+  console.log(roleData);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
@@ -27,13 +24,13 @@ export const useCustomer = () => {
   };
 
   const visibleRows = useMemo(() => {
-    return customerData;
-  }, [customerData]);
+    return roleData;
+  }, [roleData]);
 
   // pagination end
 
-  //  fetch customer logic
-  const fetchCustomerData = useCallback(
+  //  fetch payment type
+  const fetchRoleData = useCallback(
     async (searchValue = "") => {
       try {
         loading(true);
@@ -50,14 +47,15 @@ export const useCustomer = () => {
             page: page + 1,
           },
         };
-        const response = await getCustomerList(body);
+        const response = await getRoleList(body);
+        console.log(response);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
-          dispatch(customerActions.storeCustomer(payload));
+          dispatch(roleAction.storeRole(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
-          dispatch(customerActions.storeCustomer(payload));
+          dispatch(roleAction.storeRole(payload));
         }
       } catch (error) {
         showToast(error.message, false);
@@ -68,31 +66,34 @@ export const useCustomer = () => {
     [dispatch, page]
   );
 
-  const searchCustomerHandler = async (payload) => {
+  // search payment type
+  const searchRoleHandler = async (payload) => {
     try {
-      fetchCustomerData(payload.searchValue);
+      fetchRoleData(payload.searchValue);
     } catch (error) {
       showToast(error.message, false);
     }
   };
 
   useEffect(() => {
-    fetchCustomerData();
-  }, [fetchCustomerData]);
+    fetchRoleData();
+  }, [fetchRoleData]);
 
+  // delete payment type click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
+  // delete payment type
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
       loading(true);
-      const response = await deleteCustomer(deleteId);
+      const response = await deleteRole(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
-        dispatch(customerActions.removeCustomer({ id: deleteId }));
+        dispatch(roleAction.removeRole({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
@@ -105,18 +106,19 @@ export const useCustomer = () => {
     }
   };
 
+  // change status handler
   const changeStatusHandler = async (e, id) => {
     try {
       const payload = {
         isActive: e.target.checked,
         updatedBy: loggedInUser.id,
       };
-      const response = await updateCustomer(payload, id);
+      const response = await updateRole(payload, id);
 
       if (response.statusCode === 200) {
         showToast(response.message, true);
         const payload2 = { id, status: payload.isActive };
-        dispatch(customerActions.changeCustomerStatus(payload2));
+        dispatch(roleAction.changeRoleStatus(payload2));
       } else {
         showToast(response.message, false);
       }
@@ -130,7 +132,7 @@ export const useCustomer = () => {
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
-    searchCustomerHandler,
+    searchRoleHandler,
     changeStatusHandler,
     page,
     handleChangePage,

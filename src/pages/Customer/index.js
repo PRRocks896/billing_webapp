@@ -122,7 +122,7 @@ const Customer = () => {
             rowsPerPageOptions={[10]}
             component="div"
             count={count}
-            rowsPerPage={[10]}
+            rowsPerPage={10}
             page={page}
             onPageChange={handleChangePage}
           />

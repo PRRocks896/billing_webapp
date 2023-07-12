@@ -9,6 +9,7 @@ import ServiceReducer from "./service";
 import LoggedInUserReducer from "./loggedInUser";
 import LoaderReducer from "./loader";
 import UserReducer from "./users";
+import RoleReducer from "./role";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   service: ServiceReducer,
   loggedInUser: LoggedInUserReducer,
   users: UserReducer,
+  role: RoleReducer,
 });
 
 export default rootReducer;

@@ -71,41 +71,34 @@ const City = () => {
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <>
-                        <TableRow key={index}>
-                          <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
-                          <TableCell align="left">
-                            {row.px_state.name}
-                          </TableCell>
-                          <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() => navigate(`/edit-city/${row.id}`)}
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
-                                )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      </>
+                      <TableRow key={index}>
+                        <TableCell align="left">{(index += 1)}</TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
+                        <TableCell align="left">{row.px_state.name}</TableCell>
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isActive}
+                            onChange={(e) => changeStatusHandler(e, row.id)}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box className="table-action-btn">
+                            <Button
+                              className="btn btn-primary"
+                              onClick={() => navigate(`/edit-city/${row.id}`)}
+                            >
+                              <FiEdit3 size={15} />
+                            </Button>
+                            <Button
+                              className="btn btn-primary"
+                              onClick={deleteBtnClickHandler.bind(null, row.id)}
+                            >
+                              <FiTrash2 size={15} />
+                            </Button>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
                     );
                   })
                 ) : (
@@ -119,7 +112,7 @@ const City = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={10}
+            rowsPerPageOptions={[10]}
             component="div"
             count={count}
             rowsPerPage={10}

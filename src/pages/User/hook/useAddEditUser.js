@@ -1,11 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import {
-  createStates,
-  getStatesById,
-  updateStates,
-} from "../../../service/states";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,9 +13,10 @@ export const useAddEditUser = (tag) => {
   const { loading } = useLoader();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  console.log("loggedInUser", loggedInUser.branchName);
+
   const [roleOptions, setRoleOptions] = useState([]);
   const [roles, setRoles] = useState([]);
+
   const { setValue, handleSubmit, control, watch } = useForm({
     defaultValues: {
       roleID: "",

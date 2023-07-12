@@ -1,27 +1,21 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import useLoader from "../../../hook/useLoader";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  createCustomer,
-  getCustomerById,
-  updateCustomer,
-} from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
+import useLoader from "../../../hook/useLoader";
+import { createRole, getRoleById, updateRole } from "../../../service/role";
 
-export const useAddEditCustomer = (tag) => {
+export const useAddEditRole = (tag) => {
   const navigate = useNavigate();
   const { loading } = useLoader();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
-  const { control, setValue, handleSubmit } = useForm({
+  const { setValue, control, handleSubmit } = useForm({
     defaultValues: {
-      customer_name: "",
-      phone: "",
-      gender: tag === "add" ? "male" : "",
+      name: "",
     },
     mode: "onBlur",
   });
@@ -30,17 +24,8 @@ export const useAddEditCustomer = (tag) => {
     try {
       loading(true);
       if (tag === "add") {
-        const payload = {
-          userID: loggedInUser.id,
-          cityID: 1,
-          phoneNumber: data.phone,
-          gender: data.gender,
-          name: data.customer_name,
-          createdBy: loggedInUser.id,
-        };
-        console.log(payload);
-        const response = await createCustomer(payload);
-        console.log("rk", response);
+        const payload = { name: data.name, createdBy: loggedInUser.id };
+        const response = await createRole(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -48,15 +33,8 @@ export const useAddEditCustomer = (tag) => {
           showToast(response.messageCode, false);
         }
       } else if (tag === "edit") {
-        const payload = {
-          userID: loggedInUser.id,
-          cityID: 1,
-          phoneNumber: data.phone,
-          gender: data.gender,
-          name: data.customer_name,
-          updatedBy: loggedInUser.id,
-        };
-        const response = await updateCustomer(payload, id);
+        const payload = { name: data.name, updatedBy: loggedInUser.id };
+        const response = await updateRole(payload, id);
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
@@ -72,15 +50,14 @@ export const useAddEditCustomer = (tag) => {
     }
   };
 
-  const fetchEditCustomerData = useCallback(async () => {
+  const fetchEditRoleData = useCallback(async () => {
     try {
       loading(true);
       if (id) {
-        const response = await getCustomerById(id);
+        const response = await getRoleById(id);
+        console.log(response);
         if (response.statusCode === 200) {
-          setValue("customer_name", response.data.name);
-          setValue("phone", response.data.phoneNumber);
-          setValue("gender", response.data.gender);
+          setValue("name", response.data.name);
         } else {
           showToast(response.message, false);
         }
@@ -93,8 +70,8 @@ export const useAddEditCustomer = (tag) => {
   }, [id, loading, setValue]);
 
   useEffect(() => {
-    fetchEditCustomerData();
-  }, [fetchEditCustomerData]);
+    fetchEditRoleData();
+  }, [fetchEditRoleData]);
 
   const cancelHandler = () => {
     navigate(-1);

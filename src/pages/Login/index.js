@@ -94,11 +94,7 @@ const Login = () => {
                     </FormControl>
                   )}
                   rules={{
-                    required: "Email required",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: "Please enter valid email.",
-                    },
+                    required: "Username or Email is required",
                   }}
                 />
                 <Controller

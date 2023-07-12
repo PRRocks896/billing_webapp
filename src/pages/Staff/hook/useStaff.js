@@ -10,7 +10,6 @@ export const useStaff = () => {
   const { loading } = useLoader();
   const staffData = useSelector((state) => state.staff.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  console.log(staffData);
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

@@ -28,7 +28,10 @@ const CreateBill = () => {
   const {
     fields,
     control,
-    options,
+    paymentTypeOptions,
+    customersOptions,
+    staffOptions,
+    serviceOptions,
     reset,
     addRow,
     onSubmit,
@@ -87,7 +90,7 @@ const CreateBill = () => {
                       size="small"
                       disablePortal
                       id="paymentID"
-                      options={options}
+                      options={paymentTypeOptions}
                       value={value}
                       onBlur={onBlur}
                       onChange={(event, newValue) => onChange(newValue)}
@@ -151,7 +154,7 @@ const CreateBill = () => {
                       disablePortal
                       id="customerID"
                       label="customerID"
-                      options={options}
+                      options={customersOptions}
                       value={value}
                       onBlur={onBlur}
                       onChange={(event, newValue) => onChange(newValue)}
@@ -182,7 +185,7 @@ const CreateBill = () => {
                       size="small"
                       disablePortal
                       id="staffID"
-                      options={options}
+                      options={staffOptions}
                       value={value}
                       onBlur={onBlur}
                       onChange={(event, newValue) => onChange(newValue)}
@@ -245,7 +248,7 @@ const CreateBill = () => {
                               size="small"
                               disablePortal
                               id="serivce"
-                              options={options}
+                              options={serviceOptions}
                               sx={{ width: 300 }}
                               value={value}
                               onBlur={onBlur}

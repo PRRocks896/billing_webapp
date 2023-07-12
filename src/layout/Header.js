@@ -57,12 +57,12 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const data = useSelector((state) => state.loggedInUser);
   const dispatch = useDispatch();
   let location = useLocation();
-  let pageTitle = location.pathname.slice(1).toUpperCase();
+  // let pageTitle = location.pathname.slice(1).toUpperCase();
+  let pageTitle = "";
 
-  if (pageTitle === "/") {
+  if (location.pathname === "/") {
     pageTitle = "Home";
-  }
-  if (pageTitle.includes("/")) {
+  } else if (location.pathname.includes("/")) {
     pageTitle = location.pathname.split("/")[1];
   }
   pageTitle = pageTitle.toUpperCase();
@@ -81,6 +81,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const fetchLoggedInUser = async () => {
     try {
       const response = await fetchLoggedInUserData();
+      console.log(response);
       if (response.statusCode === 200) {
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
       } else {

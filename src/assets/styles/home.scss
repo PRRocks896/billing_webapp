@@ -1,6 +1,6 @@
 .page-wrapper {
   .mb-24 {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
   }
 
   // top bar
@@ -303,6 +303,40 @@
         min-width: 30px;
         height: 30px;
       }
+    }
+  }
+
+  // table
+  .table-wrapper {
+    padding-bottom: 5px;
+    .customer-summary-table {
+			thead {
+				tr {
+					th {
+            &:nth-child(1) {
+							min-width: 95px;
+						}
+            &:nth-child(2) {
+							min-width: 200px;
+						}
+            &:nth-child(3) {
+							min-width: 160px;
+						}
+					}
+				}
+			}
+		}
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+  
+    &::-webkit-scrollbar-track {
+      box-shadow: none;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--color-green);
+      border-radius: 50px;
     }
   }
 

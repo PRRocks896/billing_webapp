@@ -18,7 +18,7 @@ const Loader = () => {
         size={70}
         color="#000"
       /> */}
-      <span class="loader"></span>
+      <span className="loader"></span>
     </Backdrop>
   );
 };
