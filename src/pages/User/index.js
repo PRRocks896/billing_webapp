@@ -14,7 +14,6 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "./hook/useUser";
 import { useLocation, useNavigate } from "react-router-dom";
 

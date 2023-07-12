@@ -28,7 +28,7 @@ export const useLogin = () => {
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate("/", { replace: true });
       } else {
-        showToast(response.messageCode, false);
+        showToast((response.message || response.messageCode), false);
       }
     } catch (error) {
       showToast(error.message, false);
