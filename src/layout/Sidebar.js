@@ -21,6 +21,7 @@ import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
+  let panelNo = 3;
   const { accessModules, px_role } = useSelector((state) => state.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
@@ -293,8 +294,8 @@ const Sidebar = () => {
           {mainMenuListArray?.map((item) => {
             return (
               <Accordion
-                expanded={expanded === "panel3"}
-                onChange={handleChange("panel3")}
+                expanded={expanded === panelNo}
+                onChange={handleChange(panelNo++)}
                 className="menu-list"
                 onClick={() => {
                   navigate(item.px_module.path, {
