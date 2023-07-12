@@ -2,13 +2,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
-import { getRoleList, updateRole, deleteRole } from "../../../service/role";
-import { roleAction } from "../../../redux/role";
+import {
+  deleteModule,
+  getModuleList,
+  updateModule,
+} from "../../../service/module";
+import { moduleAction } from "../../../redux/module";
 
-export const useRole = () => {
+export const useModule = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
-  const roleData = useSelector((state) => state.role.data);
+  const moduleData = useSelector((state) => state.module.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [deleteId, setDeleteId] = useState("");
@@ -23,13 +27,13 @@ export const useRole = () => {
   };
 
   const visibleRows = useMemo(() => {
-    return roleData;
-  }, [roleData]);
+    return moduleData;
+  }, [moduleData]);
 
   // pagination end
 
   //  fetch payment type
-  const fetchRoleData = useCallback(
+  const fetchModuleData = useCallback(
     async (searchValue = "") => {
       try {
         loading(true);
@@ -46,15 +50,14 @@ export const useRole = () => {
             page: page + 1,
           },
         };
-        const response = await getRoleList(body);
-        console.log(response);
+        const response = await getModuleList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
-          dispatch(roleAction.storeRole(payload));
+          dispatch(moduleAction.storeModule(payload));
         } else if (response.statusCode === 404) {
           const payload = [];
-          dispatch(roleAction.storeRole(payload));
+          dispatch(moduleAction.storeModule(payload));
         }
       } catch (error) {
         showToast(error.message, false);
@@ -66,17 +69,17 @@ export const useRole = () => {
   );
 
   // search payment type
-  const searchRoleHandler = async (payload) => {
+  const searchModuleHandler = async (payload) => {
     try {
-      fetchRoleData(payload.searchValue);
+      fetchModuleData(payload.searchValue);
     } catch (error) {
       showToast(error.message, false);
     }
   };
 
   useEffect(() => {
-    fetchRoleData();
-  }, [fetchRoleData]);
+    fetchModuleData();
+  }, [fetchModuleData]);
 
   // delete payment type click handler
   const deleteBtnClickHandler = (id) => {
@@ -89,10 +92,11 @@ export const useRole = () => {
     try {
       setIsDeleteModalOpen(false);
       loading(true);
-      const response = await deleteRole(deleteId);
+      const response = await deleteModule(deleteId);
+
       if (response.statusCode === 200) {
         showToast(response.message, true);
-        dispatch(roleAction.removeRole({ id: deleteId }));
+        dispatch(moduleAction.removeModule({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
         showToast(response.messageCode, false);
@@ -112,12 +116,12 @@ export const useRole = () => {
         isActive: e.target.checked,
         updatedBy: loggedInUser.id,
       };
-      const response = await updateRole(payload, id);
+      const response = await updateModule(payload, id);
 
       if (response.statusCode === 200) {
         showToast(response.message, true);
         const payload2 = { id, status: payload.isActive };
-        dispatch(roleAction.changeRoleStatus(payload2));
+        dispatch(moduleAction.changeModuleStatus(payload2));
       } else {
         showToast(response.message, false);
       }
@@ -131,7 +135,7 @@ export const useRole = () => {
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
-    searchRoleHandler,
+    searchModuleHandler,
     changeStatusHandler,
     page,
     handleChangePage,

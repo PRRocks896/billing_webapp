@@ -107,7 +107,7 @@ const Role = () => {
                 ) : (
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No state Found
+                      No Roles Found
                     </TableCell>
                   </TableRow>
                 )}

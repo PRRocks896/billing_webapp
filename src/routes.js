@@ -22,6 +22,8 @@ import Login from "./pages/Login";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
 import Role from "./pages/Role";
 import AddEditRole from "./pages/Role/addEditRole";
+import Module from "./pages/Module";
+import AddEditModule from "./pages/Module/addEditModule";
 
 const token = getAuthToken();
 
@@ -74,11 +76,15 @@ const routes = createBrowserRouter([
       { path: "add-user", element: <AddEditUser tag="add" /> },
       { path: "edit-user", element: <AddEditUser tag="edit" /> },
 
-      { path: "create-bill", element: <CreateBill /> },
+      { path: "bill", element: <CreateBill /> },
 
       { path: "role", element: <Role /> },
       { path: "add-role", element: <AddEditRole tag="add" /> },
       { path: "edit-role/:id", element: <AddEditRole tag="edit" /> },
+
+      { path: "module", element: <Module /> },
+      { path: "add-module", element: <AddEditModule tag="add" /> },
+      { path: "edit-module/:id", element: <AddEditModule tag="edit" /> },
     ],
   },
   { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },

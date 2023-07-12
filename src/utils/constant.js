@@ -64,3 +64,10 @@ export const GET_SINGLE_ROLE_API = "api/role/";
 export const ROLE_LIST_API = "api/role/list";
 export const UPDATE_ROLE_API = "api/role/";
 export const DELETE_ROLE_API = "api/role/";
+
+// module apis
+export const MODULE_LIST_API = "api/module/list";
+export const CREATE_MODULE_API = "api/module";
+export const DELETE_MODULE_API = "api/module/";
+export const GET_SINGLE_MODULE_API = "api/module/";
+export const UPDATE_MODULE_API = "api/module/";

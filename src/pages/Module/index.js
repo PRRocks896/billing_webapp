@@ -1,4 +1,7 @@
 import React from "react";
+import TopBar from "../../components/TopBar";
+import ConfirmationModal from "../../components/ConfirmationModal";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,11 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
-import TopBar from "../../components/TopBar";
-import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "./hook/useUser";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useModule } from "./hook/useModule";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -28,37 +27,32 @@ const switchStyles = {
   },
 };
 
-const User = () => {
+const Module = () => {
+  const navigate = useNavigate();
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
-    searchUserHandler,
+    searchModuleHandler,
     changeStatusHandler,
     page,
     handleChangePage,
     visibleRows,
     count,
-  } = useUser();
-  const navigate = useNavigate();
+  } = useModule();
+
   let index = page * 10;
-  // pagination code start
-
-  const location = useLocation();
-  const permisson = location.state;
-  console.log(permisson);
-
   return (
     <>
       <TopBar
-        btnTitle="Add User"
-        inputName="user"
-        navigatePath="/add-user"
-        callAPI={searchUserHandler}
+        btnTitle={"Add Module"}
+        inputName="module"
+        navigatePath="/add-module"
+        callAPI={searchModuleHandler}
       />
 
-      {/* service category listing */}
+      {/* state listing */}
       <Box className="card">
         <Box className="">
           <TableContainer className="table-wrapper">
@@ -66,11 +60,7 @@ const User = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>No</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Username</TableCell>
-                  <TableCell>Branch</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Phone</TableCell>
+                  <TableCell>Module</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
@@ -82,13 +72,7 @@ const User = () => {
                       <>
                         <TableRow key={index}>
                           <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">
-                            {row.firstName + " " + row.lastName}
-                          </TableCell>
-                          <TableCell align="left">{row.userName}</TableCell>
-                          <TableCell align="left">{row.branchName}</TableCell>
-                          <TableCell align="left">{row.email}</TableCell>
-                          <TableCell align="left">{row.phoneNumber}</TableCell>
+                          <TableCell align="left">{row.name}</TableCell>
                           <TableCell>
                             <Switch
                               style={switchStyles}
@@ -96,11 +80,13 @@ const User = () => {
                               onChange={(e) => changeStatusHandler(e, row.id)}
                             />
                           </TableCell>
-                          <TableCell align="left">
+                          <TableCell>
                             <Box className="table-action-btn">
                               <Button
                                 className="btn btn-primary"
-                                onClick={() => navigate(`/edit-user/${row.id}`)}
+                                onClick={() =>
+                                  navigate(`/edit-module/${row.id}`)
+                                }
                               >
                                 <FiEdit3 size={15} />
                               </Button>
@@ -122,7 +108,7 @@ const User = () => {
                 ) : (
                   <TableRow>
                     <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No Users Found
+                      No Modules Found
                     </TableCell>
                   </TableRow>
                 )}
@@ -130,7 +116,7 @@ const User = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={10}
+            rowsPerPageOptions={[10]}
             component="div"
             count={count}
             rowsPerPage={10}
@@ -140,16 +126,16 @@ const User = () => {
         </Box>
       </Box>
 
-      {isDeleteModalOpen && (
-        <ConfirmationModal
-          isDeleteModalOpen={isDeleteModalOpen}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          title="user"
-          deleteHandler={deleteHandler}
-        />
-      )}
+      {/* {isDeleteModalOpen && ( */}
+      <ConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+        title="state"
+        deleteHandler={deleteHandler}
+      />
+      {/* )} */}
     </>
   );
 };
 
-export default User;
+export default Module;
