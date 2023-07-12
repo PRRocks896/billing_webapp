@@ -55,6 +55,7 @@ const User = () => {
         inputName="user"
         navigatePath="/add-user"
         callAPI={searchUserHandler}
+        addPermission={permisson.add}
       />
 
       {/* service category listing */}
@@ -71,7 +72,9 @@ const User = () => {
                   <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {(!permisson.edit || permisson.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -95,25 +98,33 @@ const User = () => {
                               onChange={(e) => changeStatusHandler(e, row.id)}
                             />
                           </TableCell>
-                          <TableCell align="left">
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() => navigate(`/edit-user/${row.id}`)}
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
+                          {(permisson.edit || permisson.delete) && (
+                            <TableCell align="left">
+                              <Box className="table-action-btn">
+                                {permisson.edit && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={() =>
+                                      navigate(`/edit-user/${row.id}`)
+                                    }
+                                  >
+                                    <FiEdit3 size={15} />
+                                  </Button>
                                 )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
+                                {permisson.delete && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={deleteBtnClickHandler.bind(
+                                      null,
+                                      row.id
+                                    )}
+                                  >
+                                    <FiTrash2 size={15} />
+                                  </Button>
+                                )}
+                              </Box>
+                            </TableCell>
+                          )}
                         </TableRow>
                       </>
                     );

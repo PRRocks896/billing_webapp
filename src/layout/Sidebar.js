@@ -102,7 +102,16 @@ const Sidebar = () => {
                     className={`sub-menu-link ${
                       activeTab === "module" && "active"
                     }`}
-                    onClick={() => navigate(item.px_module.path)}
+                    onClick={() =>
+                      navigate(item.px_module.path, {
+                        state: {
+                          add: item.add,
+                          edit: item.edit,
+                          delete: item.delete,
+                          view: item.view,
+                        },
+                      })
+                    }
                   >
                     <Typography>
                       <FiSquare />
