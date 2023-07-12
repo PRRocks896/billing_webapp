@@ -24,12 +24,6 @@ const Sidebar = () => {
   const accessModules = useSelector(
     (state) => state.loggedInUser?.accessModules
   );
-  console.log(
-    accessModules[1].add,
-    accessModules[1].edit,
-    accessModules[1].delete,
-    accessModules[1].view
-  );
   const navigate = useNavigate();
   const location = useLocation();
 
