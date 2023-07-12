@@ -13,7 +13,7 @@ import "./assets/styles/customer.scss";
 import "./assets/styles/home.scss";
 import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+const App = () => {
   return (
     <>
       <ToastContainer />
@@ -21,6 +21,6 @@ function App() {
       <RouterProvider router={routes} />
     </>
   );
-}
+};
 
 export default App;
