@@ -76,26 +76,26 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     setAnchorEl(null);
   };
 
-  // fetch logged in user details start
-  const fetchLoggedInUser = useCallback(async () => {
-    try {
-      console.log("fetchLoggedInUser");
-      const response = await fetchLoggedInUserData();
-      console.log(response);
-      if (response.statusCode === 200) {
-        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
-      } else {
-        showToast(response.messageCode, false);
-      }
-    } catch (error) {
-      console.log(error);
-      showToast(error.message, false);
-    }
-  }, [dispatch]);
+  // // fetch logged in user details start
+  // const fetchLoggedInUser = useCallback(async () => {
+  //   try {
+  //     console.log("fetchLoggedInUser");
+  //     const response = await fetchLoggedInUserData();
+  //     console.log(response);
+  //     if (response.statusCode === 200) {
+  //       dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
+  //     } else {
+  //       showToast(response.messageCode, false);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     showToast(error.message, false);
+  //   }
+  // }, [dispatch]);
 
-  useLayoutEffect(() => {
-    fetchLoggedInUser();
-  }, [fetchLoggedInUser]);
+  // useLayoutEffect(() => {
+  //   fetchLoggedInUser();
+  // }, [fetchLoggedInUser]);
 
   return (
     <>

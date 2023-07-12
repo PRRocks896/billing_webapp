@@ -33,7 +33,6 @@ const Sidebar = () => {
   };
 
   const activeTab = location.pathname;
-  console.log(activeTab);
 
   const [mainMenuListArray, setMainMenuListArray] = useState([]);
   const [subMenuListArray, setSubMenuListArray] = useState([]);
@@ -215,7 +214,7 @@ const Sidebar = () => {
                 );
               })}
 
-              {px_role?.name === "Admin" && (
+              {/* {px_role?.name === "Admin" && (
                 <>
                   <Box
                     className={`sub-menu-link ${
@@ -240,7 +239,7 @@ const Sidebar = () => {
                     </Typography>
                   </Box>
                 </>
-              )}
+              )} */}
             </AccordionDetails>
           </Accordion>
 

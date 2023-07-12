@@ -24,6 +24,7 @@ import Role from "./pages/Role";
 import AddEditRole from "./pages/Role/addEditRole";
 import Module from "./pages/Module";
 import AddEditModule from "./pages/Module/addEditModule";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const token = getAuthToken();
 
@@ -35,7 +36,8 @@ const routes = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
 
-      { path: "customer", element: <Customer /> },
+      <ProtectedRoute path="/customer" component={<Customer />} />,
+      // { path: "customer", element: <Customer /> },
       { path: "add-customer", element: <AddCustomer tag="add" /> },
       { path: "edit-customer/:id", element: <AddCustomer tag="edit" /> },
 
