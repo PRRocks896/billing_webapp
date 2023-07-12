@@ -21,9 +21,8 @@ import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
-  const accessModules = useSelector(
-    (state) => state.loggedInUser?.accessModules
-  );
+  let panelNo = 3;
+  const { accessModules, px_role } = useSelector((state) => state.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,7 +32,7 @@ const Sidebar = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const activeTab = location.pathname.substring(1);
+  const activeTab = location.pathname;
 
   const [mainMenuListArray, setMainMenuListArray] = useState([]);
   const [subMenuListArray, setSubMenuListArray] = useState([]);
@@ -214,6 +213,33 @@ const Sidebar = () => {
                   </Box>
                 );
               })}
+
+              {/* {px_role?.name === "Admin" && (
+                <>
+                  <Box
+                    className={`sub-menu-link ${
+                      activeTab === "/role" && "active"
+                    }`}
+                    onClick={() => navigate("/role")}
+                  >
+                    <Typography>
+                      <FiSquare />
+                      Roles
+                    </Typography>
+                  </Box>
+                  <Box
+                    className={`sub-menu-link ${
+                      activeTab === "/module" && "active"
+                    }`}
+                    onClick={() => navigate("/module")}
+                  >
+                    <Typography>
+                      <FiSquare />
+                      Modules
+                    </Typography>
+                  </Box>
+                </>
+              )} */}
             </AccordionDetails>
           </Accordion>
 
@@ -267,8 +293,8 @@ const Sidebar = () => {
           {mainMenuListArray?.map((item) => {
             return (
               <Accordion
-                expanded={expanded === "panel3"}
-                onChange={handleChange("panel3")}
+                expanded={expanded === panelNo}
+                onChange={handleChange(panelNo++)}
                 className="menu-list"
                 onClick={() => {
                   navigate(item.px_module.path, {
