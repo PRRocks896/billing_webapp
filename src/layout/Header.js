@@ -1,14 +1,12 @@
-import React, { useCallback, useLayoutEffect } from "react";
+import React from "react";
 import { FiUser, FiLogOut, FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
 
 import { useLocation } from "react-router-dom";
-import { logoutHandler, showToast } from "../utils/helper";
-import { useDispatch, useSelector } from "react-redux";
-import { loggedInUserAction } from "../redux/loggedInUser";
-import { fetchLoggedInUserData } from "../service/loggedInUser";
+import { logoutHandler } from "../utils/helper";
+import { useSelector } from "react-redux";
 
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
@@ -53,7 +51,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const data = useSelector((state) => state.loggedInUser);
   let location = useLocation();
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect } from "react";
 import {
   Navigate,
   RouterProvider,
@@ -44,7 +44,7 @@ import State from "./pages/State";
 import AddEditStates from "./pages/State/AddEditStates";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
-import AddUser from "./pages/User/AddUser";
+import AddEditUser from "./pages/User/AddEditUser";
 
 const token = getAuthToken();
 
@@ -255,13 +255,16 @@ const App = () => {
         {
           path: "add-user",
           element: (
-            <ProtectedRoute path="user" Component={<AddUser tag="add" />} />
+            <ProtectedRoute path="user" Component={<AddEditUser tag="add" />} />
           ),
         },
         {
           path: "edit-user",
           element: (
-            <ProtectedRoute path="user" Component={<AddUser tag="edit" />} />
+            <ProtectedRoute
+              path="user"
+              Component={<AddEditUser tag="edit" />}
+            />
           ),
         },
 
@@ -270,13 +273,48 @@ const App = () => {
           element: <ProtectedRoute path="bill" Component={<CreateBill />} />,
         },
 
-        { path: "role", element: <Role /> },
-        { path: "add-role", element: <AddEditRole tag="add" /> },
-        { path: "edit-role/:id", element: <AddEditRole tag="edit" /> },
+        {
+          path: "role",
+          element: <ProtectedRoute path="role" Component={<Role />} />,
+        },
+        {
+          path: "add-role",
+          element: (
+            <ProtectedRoute path="role" Component={<AddEditRole tag="add" />} />
+          ),
+        },
+        {
+          path: "edit-role/:id",
+          element: (
+            <ProtectedRoute
+              path="role"
+              Component={<AddEditRole tag="edit" />}
+            />
+          ),
+        },
 
-        { path: "module", element: <Module /> },
-        { path: "add-module", element: <AddEditModule tag="add" /> },
-        { path: "edit-module/:id", element: <AddEditModule tag="edit" /> },
+        {
+          path: "module",
+          element: <ProtectedRoute path="module" Component={<Module />} />,
+        },
+        {
+          path: "add-module",
+          element: (
+            <ProtectedRoute
+              path="module"
+              Component={<AddEditModule tag="add" />}
+            />
+          ),
+        },
+        {
+          path: "edit-module/:id",
+          element: (
+            <ProtectedRoute
+              path="module"
+              Component={<AddEditModule tag="edit" />}
+            />
+          ),
+        },
       ],
     },
     { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },
