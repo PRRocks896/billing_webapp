@@ -5,7 +5,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   FiChevronRight,
   FiFileText,
@@ -18,8 +18,10 @@ import { IoReceiptOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
+  const { accessModules, px_role } = useSelector((state) => state.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,7 +31,40 @@ const Sidebar = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const activeTab = location.pathname.substring(1);
+  const activeTab = location.pathname;
+  console.log(activeTab);
+
+  const [mainMenuListArray, setMainMenuListArray] = useState([]);
+  const [subMenuListArray, setSubMenuListArray] = useState([]);
+
+  useMemo(() => {
+    const mainList =
+      accessModules?.length &&
+      accessModules?.filter((row) => {
+        if (
+          row.px_module.name === "User" ||
+          row.px_module.name === "Bill" ||
+          row.px_module.name === "Report"
+        ) {
+          return row;
+        }
+      });
+    setMainMenuListArray(mainList);
+
+    const subList =
+      accessModules?.length &&
+      accessModules?.filter((row) => {
+        if (
+          row.px_module.name !== "User" &&
+          row.px_module.name !== "Bill" &&
+          row.px_module.name !== "Report"
+        ) {
+          return row;
+        }
+      });
+    console.log(subList);
+    setSubMenuListArray(subList);
+  }, [accessModules]);
 
   return (
     <>
@@ -68,7 +103,7 @@ const Sidebar = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails className="sub-menu-list">
-              <Box
+              {/* <Box
                 className={`sub-menu-link ${
                   activeTab === "customer" && "active"
                 }`}
@@ -162,10 +197,53 @@ const Sidebar = () => {
                   <FiSquare />
                   Modules
                 </Typography>
-              </Box>
+              </Box> */}
+              {subMenuListArray?.map((item) => {
+                return (
+                  <Box
+                    className={`sub-menu-link ${
+                      activeTab === "module" && "active"
+                    }`}
+                    onClick={() => navigate(item.px_module.path)}
+                  >
+                    <Typography>
+                      <FiSquare />
+                      {item.px_module.name}
+                    </Typography>
+                  </Box>
+                );
+              })}
+
+              {px_role?.name === "Admin" && (
+                <>
+                  <Box
+                    className={`sub-menu-link ${
+                      activeTab === "/role" && "active"
+                    }`}
+                    onClick={() => navigate("/role")}
+                  >
+                    <Typography>
+                      <FiSquare />
+                      Roles
+                    </Typography>
+                  </Box>
+                  <Box
+                    className={`sub-menu-link ${
+                      activeTab === "/module" && "active"
+                    }`}
+                    onClick={() => navigate("/module")}
+                  >
+                    <Typography>
+                      <FiSquare />
+                      Modules
+                    </Typography>
+                  </Box>
+                </>
+              )}
             </AccordionDetails>
           </Accordion>
-          <Accordion
+
+          {/* <Accordion
             expanded={expanded === "panel3"}
             onChange={handleChange("panel3")}
             className="menu-list"
@@ -211,7 +289,34 @@ const Sidebar = () => {
                 <FaRegUser /> User
               </Typography>
             </AccordionSummary>
-          </Accordion>
+          </Accordion> */}
+          {mainMenuListArray?.map((item) => {
+            return (
+              <Accordion
+                expanded={expanded === "panel3"}
+                onChange={handleChange("panel3")}
+                className="menu-list"
+                onClick={() => {
+                  navigate(item.px_module.path, {
+                    state: {
+                      add: item.add,
+                      edit: item.edit,
+                      delete: item.delete,
+                      view: item.view,
+                    },
+                  });
+                }}
+              >
+                <AccordionSummary
+                  className="menu-title"
+                  aria-controls="panel3bh-content"
+                  id="panel3bh-header"
+                >
+                  <Typography>{item.px_module.name}</Typography>
+                </AccordionSummary>
+              </Accordion>
+            );
+          })}
         </div>
         <div onClick={logoutHandler}>
           <Accordion
