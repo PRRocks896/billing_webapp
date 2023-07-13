@@ -117,12 +117,10 @@ export const useRights = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log("rights data", data);
     // try {
     //   loading(true);
     //   const payload = data.modules;
     //   const response = await createRight(payload);
-
     //   if (response.statusCode === 200) {
     //     showToast(response.message, true);
     //   } else {

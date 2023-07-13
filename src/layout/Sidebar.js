@@ -11,7 +11,6 @@ import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Sidebar = () => {
   let panelNo = 3;
@@ -97,9 +96,10 @@ const Sidebar = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails className="sub-menu-list">
-              {subMenuListArray?.map((item) => {
+              {subMenuListArray?.map((item, index) => {
                 return (
                   <Box
+                    key={index}
                     className={`sub-menu-link ${
                       activeTab === item?.px_module?.path && "active"
                     }`}
@@ -124,11 +124,10 @@ const Sidebar = () => {
             </AccordionDetails>
           </Accordion>
 
-          <FontAwesomeIcon icon="fa-sharp fa-light fa-check" />
-
-          {mainMenuListArray?.map((item) => {
+          {mainMenuListArray?.map((item, index) => {
             return (
               <Accordion
+                key={index}
                 expanded={expanded === panelNo}
                 onChange={handleChange(panelNo++)}
                 className="menu-list"
