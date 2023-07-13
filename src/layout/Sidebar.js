@@ -26,7 +26,6 @@ const Sidebar = () => {
   };
 
   const activeTab = location.pathname;
-  console.log(activeTab);
 
   const mainMenuListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
@@ -59,7 +58,6 @@ const Sidebar = () => {
       });
     }
   }, [accessModules]);
-  console.log(subMenuListArray);
 
   return (
     <>
@@ -150,7 +148,6 @@ const Sidebar = () => {
                   aria-controls="panel3bh-content"
                   id="panel3bh-header"
                 >
-                  {console.log("item?.px_module?.icon", item?.px_module?.icon)}
                   <Typography>
                     <i className={`${item?.px_module?.icon}`}></i>
                     {item?.px_module?.name}

@@ -11,6 +11,7 @@ import LoaderReducer from "./loader";
 import UserReducer from "./users";
 import RoleReducer from "./role";
 import ModuleReducer from "./module";
+import BillReducer from "./bill";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   users: UserReducer,
   role: RoleReducer,
   module: ModuleReducer,
+  bill: BillReducer,
 });
 
 export default rootReducer;

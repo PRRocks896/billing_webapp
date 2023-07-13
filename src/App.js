@@ -42,10 +42,11 @@ import City from "./pages/City";
 import AddEditCity from "./pages/City/AddEditCity";
 import State from "./pages/State";
 import AddEditStates from "./pages/State/AddEditStates";
-import CreateBill from "./pages/Bill/CreateBill";
+import AddEditBill from "./pages/Bill/AddEditBill";
 import User from "./pages/User";
 import AddEditUser from "./pages/User/AddEditUser";
 import Rights from "./pages/Rights";
+import Bill from "./pages/Bill";
 
 const token = getAuthToken();
 
@@ -270,7 +271,24 @@ const App = () => {
 
         {
           path: "bill",
-          element: <ProtectedRoute path="bill" Component={<CreateBill />} />,
+          element: (
+            <ProtectedRoute path="bill" Component={<Bill tag="add" />} />
+          ),
+        },
+        {
+          path: "add-bill",
+          element: (
+            <ProtectedRoute path="bill" Component={<AddEditBill tag="add" />} />
+          ),
+        },
+        {
+          path: "edit-bill/:id",
+          element: (
+            <ProtectedRoute
+              path="bill"
+              Component={<AddEditBill tag="edit" />}
+            />
+          ),
         },
 
         {

@@ -22,9 +22,9 @@ import {
   FiTrash2,
   FiXCircle,
 } from "react-icons/fi";
-import { useCreateBill } from "./hook/useCreateBill";
+import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 
-const CreateBill = () => {
+const AddEditBill = () => {
   const {
     fields,
     control,
@@ -39,7 +39,7 @@ const CreateBill = () => {
     removeRow,
     handleSubmit,
     calculateTotal,
-  } = useCreateBill();
+  } = useAddEditCreateBill();
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -565,4 +565,4 @@ const CreateBill = () => {
   );
 };
 
-export default CreateBill;
+export default AddEditBill;

@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import { createBill } from "../../../service/bill";
 import useLoader from "../../../hook/useLoader";
 
-export const useCreateBill = () => {
+export const useAddEditCreateBill = () => {
   const { loading } = useLoader();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
