@@ -62,7 +62,7 @@ export const useRole = () => {
         loading(false);
       }
     },
-    [dispatch, page, loading]
+    [dispatch, page]
   );
 
   // search payment type
