@@ -38,7 +38,7 @@ export const useCreateBill = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      billNo: uuidv4(),
+      billNo: "",
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",

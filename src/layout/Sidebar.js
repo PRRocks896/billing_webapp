@@ -147,7 +147,10 @@ const Sidebar = () => {
                   aria-controls="panel3bh-content"
                   id="panel3bh-header"
                 >
-                  <Typography>{item?.px_module?.name}</Typography>
+                  <Typography>
+                    <i className={`${item?.px_module?.icon}`}></i>
+                    {item?.px_module?.name}
+                  </Typography>
                 </AccordionSummary>
               </Accordion>
             );

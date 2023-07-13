@@ -1,5 +1,5 @@
 import React from "react";
-import { FiUser, FiLogOut, FiAlignJustify } from "react-icons/fi";
+import { FiLogOut, FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
@@ -195,12 +195,12 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             </Box>
             <Box className="links">
               <Divider />
-              <MenuItem className="menu-link">
+              {/* <MenuItem className="menu-link">
                 <ListItemIcon className="link-icon">
                   <FiUser />
                 </ListItemIcon>
                 Profile
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem className="menu-link" onClick={logoutHandler}>
                 <ListItemIcon className="link-icon">
                   <FiLogOut />
