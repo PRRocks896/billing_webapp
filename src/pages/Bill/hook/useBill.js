@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
-import {
-  getPaymentTypeList,
-  updatePaymentType,
-} from "../../../service/paymentType";
 import { billAction } from "../../../redux/bill";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";

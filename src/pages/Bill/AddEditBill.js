@@ -68,14 +68,9 @@ const AddEditBill = () => {
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message ? error.message : ""}
                       />
                     </FormControl>
                   )}
-                  rules={{
-                    required: "Please Enter Bill No",
-                  }}
                 />
               </Grid>
               <Grid item xs={2}>

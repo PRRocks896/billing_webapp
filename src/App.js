@@ -252,7 +252,7 @@ const App = () => {
           ),
         },
         {
-          path: "add-bill",
+          path: "create-bill",
           element: (
             <ProtectedRoute path="bill" Component={<AddEditBill tag="add" />} />
           ),

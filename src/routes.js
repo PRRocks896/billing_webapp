@@ -79,7 +79,7 @@ const routes = createBrowserRouter([
       { path: "edit-user", element: <AddEditUser tag="edit" /> },
 
       { path: "bill", element: <Bill /> },
-      { path: "add-bill", element: <AddEditBill tag="add" /> },
+      { path: "create-bill", element: <AddEditBill tag="add" /> },
       { path: "edit-bill/:id", element: <AddEditBill tag="edit" /> },
 
       { path: "role", element: <Role /> },

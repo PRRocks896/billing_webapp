@@ -1,18 +1,19 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
 import { useSelector } from "react-redux";
-import { createBill } from "../../../service/bill";
+import { createBill, getBillById } from "../../../service/bill";
 import useLoader from "../../../hook/useLoader";
 
 export const useAddEditCreateBill = () => {
   const { loading } = useLoader();
+  const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [paymentTypeOptions, setPaymentTypeOptions] = useState([]);
@@ -38,7 +39,7 @@ export const useAddEditCreateBill = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      billNo: "",
+      // billNo: "",
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",
@@ -258,6 +259,7 @@ export const useAddEditCreateBill = () => {
 
       if (response.statusCode === 200) {
         showToast(response.message, true);
+        navigate(-1);
       } else {
         showToast(response.messageCode, false);
       }
@@ -307,6 +309,31 @@ export const useAddEditCreateBill = () => {
 
     setValue(`grandTotal`, grandTotal);
   };
+
+  const fetchEditBillData = useCallback(async () => {
+    try {
+      loading(true);
+      if (id) {
+        const response = await getBillById(id);
+        if (response.statusCode === 200) {
+          // setValue("paymentID", response.data.paymentID);
+          // setValue("staffID", response.data.staffID);
+          // setValue("customerID", response.data.customerID);
+          // setValue("grandTotal", response.data.grandTotal);
+        } else {
+          showToast(response.message, false);
+        }
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    } finally {
+      loading(false);
+    }
+  }, [id, loading, setValue]);
+
+  useEffect(() => {
+    fetchEditBillData();
+  }, []);
 
   return {
     control,

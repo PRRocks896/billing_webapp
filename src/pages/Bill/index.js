@@ -30,8 +30,6 @@ const Bill = () => {
     rights,
   } = useBill();
 
-  console.log("visibleRows", visibleRows);
-
   const navigate = useNavigate();
   let index = page * 10;
 
@@ -40,7 +38,7 @@ const Bill = () => {
       <TopBar
         btnTitle="Create Bill"
         inputName="Bill"
-        navigatePath="/add-bill"
+        navigatePath="/create-bill"
         callAPI={searchBillHandler}
         addPermission={rights.add}
       />
@@ -53,8 +51,12 @@ const Bill = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>No</TableCell>
-                  <TableCell>Name</TableCell>
-
+                  <TableCell>Bill No</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Customer</TableCell>
+                  <TableCell>Staff</TableCell>
+                  <TableCell>Payment Type</TableCell>
+                  <TableCell>Grand Total</TableCell>
                   {(rights.edit || rights.delete) && (
                     <TableCell>Action</TableCell>
                   )}
@@ -67,8 +69,20 @@ const Bill = () => {
                       <>
                         <TableRow key={row.id}>
                           <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
-
+                          <TableCell align="left">{row.billNo}</TableCell>
+                          <TableCell align="left">
+                            {row.createdAt.slice(0, 10)}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.px_customer.name}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.px_staff.name}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.px_payment_type.name}
+                          </TableCell>
+                          <TableCell align="left">{row.grandTotal}</TableCell>
                           {(rights.edit || rights.delete) && (
                             <TableCell>
                               <Box className="table-action-btn">
@@ -76,7 +90,7 @@ const Bill = () => {
                                   <Button
                                     className="btn btn-primary"
                                     onClick={() =>
-                                      navigate(`/edit-payment-type/${row.id}`)
+                                      navigate(`/edit-bill/${row.id}`)
                                     }
                                   >
                                     <FiEdit3 size={15} />

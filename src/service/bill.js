@@ -3,11 +3,12 @@ import {
   CREATE_BILL_API,
   UPDATE_BILL_API,
   DELETE_BILL_API,
+  GET_SINGLE_BILL_API,
 } from "../utils/constant";
 import { attachId, post, remove } from "./webRequest";
 
-export const getBillList = async (bodt) => {
-  const response = await post(BILL_LIST_API);
+export const getBillList = async (body) => {
+  const response = await post(BILL_LIST_API, body);
   return response;
 };
 
@@ -24,6 +25,12 @@ export const editBill = async (id) => {
 
 export const deleteBill = async (id) => {
   const newUrl = await attachId(DELETE_BILL_API, id);
+  const response = await remove(newUrl);
+  return response;
+};
+
+export const getBillById = async (id) => {
+  const newUrl = await attachId(GET_SINGLE_BILL_API, id);
   const response = await remove(newUrl);
   return response;
 };
