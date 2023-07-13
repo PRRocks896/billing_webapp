@@ -55,7 +55,6 @@ export const useAddEditRole = (tag) => {
       loading(true);
       if (id) {
         const response = await getRoleById(id);
-        // console.log(response);
         if (response.statusCode === 200) {
           setValue("name", response.data.name);
         } else {

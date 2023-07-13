@@ -4,12 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
 import { getRoleList, updateRole, deleteRole } from "../../../service/role";
 import { roleAction } from "../../../redux/role";
+import { useLocation } from "react-router";
 
 export const useRole = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const roleData = useSelector((state) => state.role.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -27,6 +30,25 @@ export const useRole = () => {
   }, [roleData]);
 
   // pagination end
+
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch payment type
   const fetchRoleData = useCallback(
@@ -47,7 +69,6 @@ export const useRole = () => {
           },
         };
         const response = await getRoleList(body);
-        // console.log(response);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
@@ -137,5 +158,6 @@ export const useRole = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

@@ -4,12 +4,15 @@ import { deleteCity, getCityList, updateCity } from "../../../service/city";
 import { cityAction } from "../../../redux/city";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
+import { useLocation } from "react-router";
 
 export const useCity = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const cities = useSelector((state) => state.city.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -27,6 +30,25 @@ export const useCity = () => {
   }, [cities]);
 
   // pagination code end
+
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch city logic
   const fetchCityData = useCallback(
@@ -134,10 +156,10 @@ export const useCity = () => {
     deleteBtnClickHandler,
     searchCityHandler,
     changeStatusHandler,
-    // ----
     page,
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

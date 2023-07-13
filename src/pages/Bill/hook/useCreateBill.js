@@ -7,8 +7,14 @@ import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
+import { useSelector } from "react-redux";
+import { createBill } from "../../../service/bill";
+import useLoader from "../../../hook/useLoader";
 
 export const useCreateBill = () => {
+  const { loading } = useLoader();
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+
   const [paymentTypeOptions, setPaymentTypeOptions] = useState([]);
   const [paymentType, setPaymentType] = useState([]);
 
@@ -37,9 +43,9 @@ export const useCreateBill = () => {
       date: new Date().toISOString().split("T")[0],
       customerID: "",
       staffID: "",
-      discount: 0,
-      discountAmount: 0,
-      exchange: 0,
+      // discount: 0,
+      // discountAmount: 0,
+      // exchange: 0,
       grandTotal: 0,
       detail: [
         {
@@ -221,7 +227,47 @@ export const useCreateBill = () => {
     }
   }, []);
 
-  const onSubmit = (data) => console.log("data", data);
+  const onSubmit = async (data) => {
+    const detailData = data.detail.map((item) => {
+      return {
+        serviceID: item.serviceID.value,
+        quantity: item.quantity,
+        rate: item.rate,
+        discount: item.discount,
+        total: item.total,
+      };
+    });
+
+    try {
+      loading(true);
+
+      const payload = {
+        userID: loggedInUser.id,
+        staffID: data.staffID.value,
+        customerID: data.customerID.value,
+        detail: detailData,
+        paymentID: data.paymentID.value,
+        grandTotal: data.grandTotal,
+        // phoneNumber: "",
+        // name: "",
+        cardNo: "",
+        createdBy: loggedInUser.id,
+      };
+
+      const response = await createBill(payload);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+      } else {
+        showToast(response.messageCode, false);
+      }
+      loading(false);
+    } catch (error) {
+      showToast(error.message, false);
+    } finally {
+      loading(false);
+    }
+  };
 
   const addRow = () => {
     const index = getValues("detail").length;
@@ -249,16 +295,15 @@ export const useCreateBill = () => {
       total = total - (total * discount) / 100;
     }
     setValue(`detail.${index}.total`, total);
+    calculateGrandTotal();
   };
 
   const calculateGrandTotal = () => {
-    const discount = getValues(`discount`) || 0;
-    const discountAmount = getValues(`discountAmount`) || 0;
-    const exchange = getValues(`exchange`) || 0;
-
-    const totalBill = fields?.reduce((total, item) => total + item.total, 0);
-    const grandTotal =
-      totalBill - (totalBill * discount) / 100 - discountAmount - exchange;
+    const detail = getValues("detail");
+    let grandTotal = 0;
+    detail.forEach((item) => {
+      grandTotal += item.total;
+    });
 
     setValue(`grandTotal`, grandTotal);
   };

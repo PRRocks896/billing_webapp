@@ -15,7 +15,7 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useUser } from "./hook/useUser";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -39,14 +39,10 @@ const User = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   } = useUser();
   const navigate = useNavigate();
   let index = page * 10;
-  // pagination code start
-
-  const location = useLocation();
-  const permisson = location.state;
-  // console.log(permisson);
 
   return (
     <>
@@ -55,7 +51,7 @@ const User = () => {
         inputName="user"
         navigatePath="/add-user"
         callAPI={searchUserHandler}
-        addPermission={permisson.add}
+        addPermission={rights.add}
       />
 
       {/* service category listing */}
@@ -71,8 +67,8 @@ const User = () => {
                   <TableCell>Branch</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
-                  <TableCell>Status</TableCell>
-                  {(!permisson.edit || permisson.delete) && (
+                  {rights.edit && <TableCell>Status</TableCell>}
+                  {(rights.edit || rights.delete) && (
                     <TableCell>Action</TableCell>
                   )}
                 </TableRow>
@@ -82,7 +78,7 @@ const User = () => {
                   visibleRows.map((row) => {
                     return (
                       <>
-                        <TableRow key={index}>
+                        <TableRow key={row.id}>
                           <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">
                             {row.firstName + " " + row.lastName}
@@ -91,17 +87,21 @@ const User = () => {
                           <TableCell align="left">{row.branchName}</TableCell>
                           <TableCell align="left">{row.email}</TableCell>
                           <TableCell align="left">{row.phoneNumber}</TableCell>
-                          <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
-                          </TableCell>
-                          {(permisson.edit || permisson.delete) && (
+
+                          {rights.edit && (
+                            <TableCell>
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                onChange={(e) => changeStatusHandler(e, row.id)}
+                              />
+                            </TableCell>
+                          )}
+
+                          {(rights.edit || rights.delete) && (
                             <TableCell align="left">
                               <Box className="table-action-btn">
-                                {permisson.edit && (
+                                {rights.edit && (
                                   <Button
                                     className="btn btn-primary"
                                     onClick={() =>
@@ -111,7 +111,7 @@ const User = () => {
                                     <FiEdit3 size={15} />
                                   </Button>
                                 )}
-                                {permisson.delete && (
+                                {rights.delete && (
                                   <Button
                                     className="btn btn-primary"
                                     onClick={deleteBtnClickHandler.bind(

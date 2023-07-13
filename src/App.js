@@ -2,7 +2,7 @@ import React, { useCallback, useLayoutEffect } from "react";
 import {
   Navigate,
   RouterProvider,
-  createBrowserRouter
+  createBrowserRouter,
 } from "react-router-dom";
 // import routes from "./routes";
 import { ToastContainer } from "react-toastify";
@@ -64,7 +64,6 @@ const App = () => {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      // console.log(error);
       showToast(error.message, false);
     }
   }, [dispatch]);
@@ -295,7 +294,7 @@ const App = () => {
         },
         {
           path: "rights",
-          element: <ProtectedRoute path="rights" Component={<Rights/>}/>
+          element: <ProtectedRoute path="rights" Component={<Rights />} />,
         },
         {
           path: "module",

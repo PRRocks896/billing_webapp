@@ -35,14 +35,6 @@ export const useAddEditUser = (tag) => {
     setValue("branchName", loggedInUser?.branchName);
   }, [loggedInUser, setValue]);
 
-  // genrate roles options for drop down
-  useMemo(() => {
-    const data = roles.map((item) => {
-      return { value: item.id, label: item.name };
-    });
-    setRoleOptions([...data]);
-  }, [roles]);
-
   const firstName = watch("firstName");
   const lastName = watch("lastName");
   useMemo(() => {
@@ -54,6 +46,14 @@ export const useAddEditUser = (tag) => {
     const newUserName = formattedFirstName + formattedLastName;
     setValue("userName", newUserName.replace(/\s+/g, ""));
   }, [firstName, lastName, setValue]);
+
+  // genrate roles options for drop down
+  useMemo(() => {
+    const data = roles.map((item) => {
+      return { value: item.id, label: item.name };
+    });
+    setRoleOptions([...data]);
+  }, [roles]);
 
   // get role list
   useEffect(() => {
@@ -103,7 +103,6 @@ export const useAddEditUser = (tag) => {
           createdBy: loggedInUser.id,
         };
         const response = await createUser(payload);
-        // console.log(response);
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);

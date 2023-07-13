@@ -11,7 +11,6 @@ import { useAddEditModule } from "./hook/useAddEditModule";
 const AddEditModule = ({ tag }) => {
   const { control, handleSubmit, onSubmit, cancelHandler } =
     useAddEditModule(tag);
-  // console.log("add module");
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>

@@ -35,11 +35,11 @@ const State = () => {
     deleteBtnClickHandler,
     searchStatesandler,
     changeStatusHandler,
-    // ----
     page,
     handleChangePage,
     visibleRows,
     count,
+    rights,
   } = useStates();
   const navigate = useNavigate();
   let index = page * 10;
@@ -51,6 +51,7 @@ const State = () => {
         inputName="state"
         navigatePath="/add-state"
         callAPI={searchStatesandler}
+        addPermission={rights.add}
       />
 
       {/* state listing */}
@@ -62,8 +63,10 @@ const State = () => {
                 <TableRow>
                   <TableCell>No</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {rights.edit && <TableCell>Status</TableCell>}
+                  {(rights.edit || rights.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -71,37 +74,46 @@ const State = () => {
                   visibleRows.map((row) => {
                     return (
                       <>
-                        <TableRow key={index}>
+                        <TableRow key={row.id}>
                           <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
-                          <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                  navigate(`/edit-state/${row.id}`)
-                                }
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
+                          {rights.edit && (
+                            <TableCell>
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                onChange={(e) => changeStatusHandler(e, row.id)}
+                              />
+                            </TableCell>
+                          )}
+
+                          {(rights.edit || rights.delete) && (
+                            <TableCell>
+                              <Box className="table-action-btn">
+                                {rights.edit && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={() =>
+                                      navigate(`/edit-state/${row.id}`)
+                                    }
+                                  >
+                                    <FiEdit3 size={15} />
+                                  </Button>
                                 )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
+                                {rights.delete && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={deleteBtnClickHandler.bind(
+                                      null,
+                                      row.id
+                                    )}
+                                  >
+                                    <FiTrash2 size={15} />
+                                  </Button>
+                                )}
+                              </Box>
+                            </TableCell>
+                          )}
                         </TableRow>
                       </>
                     );

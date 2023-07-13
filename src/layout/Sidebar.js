@@ -11,6 +11,7 @@ import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Sidebar = () => {
   let panelNo = 3;
@@ -25,11 +26,15 @@ const Sidebar = () => {
   };
 
   const activeTab = location.pathname;
+  console.log(activeTab);
 
   const mainMenuListArray = useMemo(() => {
-    if(accessModules && accessModules.length > 0) {
+    if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
-        if (["User", "Bill", "Report"].includes(row.px_module.name) && row.view) {
+        if (
+          ["User", "Bill", "Report"].includes(row.px_module.name) &&
+          row.view
+        ) {
           return row;
         } else {
           return null;
@@ -41,9 +46,12 @@ const Sidebar = () => {
   }, [accessModules]);
 
   const subMenuListArray = useMemo(() => {
-    if(accessModules && accessModules.length > 0) {
+    if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
-        if (!["User", "Bill", "Report"].includes(row.px_module.name) && row.view) {
+        if (
+          !["User", "Bill", "Report"].includes(row.px_module.name) &&
+          row.view
+        ) {
           return row;
         } else {
           return null;
@@ -51,6 +59,7 @@ const Sidebar = () => {
       });
     }
   }, [accessModules]);
+  console.log(subMenuListArray);
 
   return (
     <>
@@ -94,7 +103,7 @@ const Sidebar = () => {
                 return (
                   <Box
                     className={`sub-menu-link ${
-                      activeTab === "module" && "active"
+                      activeTab === item?.px_module?.path && "active"
                     }`}
                     onClick={() =>
                       navigate(item?.px_module?.path, {
@@ -116,6 +125,8 @@ const Sidebar = () => {
               })}
             </AccordionDetails>
           </Accordion>
+
+          <FontAwesomeIcon icon="fa-sharp fa-light fa-check" />
 
           {mainMenuListArray?.map((item) => {
             return (
@@ -139,6 +150,8 @@ const Sidebar = () => {
                   aria-controls="panel3bh-content"
                   id="panel3bh-header"
                 >
+                  {/* <FontAwesomeIcon icon={item?.px_module?.icon} />{" "} */}
+                  {/* <i className={item?.px_module?.icon}></i> */}
                   <Typography>{item?.px_module?.name}</Typography>
                 </AccordionSummary>
               </Accordion>

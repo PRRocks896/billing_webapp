@@ -39,7 +39,9 @@ const PaymentType = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   } = usePaymentType();
+
   const navigate = useNavigate();
   let index = page * 10;
 
@@ -50,6 +52,7 @@ const PaymentType = () => {
         inputName="Payment Type"
         navigatePath="/add-payment-type"
         callAPI={searchPaymentTypeHandler}
+        addPermission={rights.add}
       />
 
       {/* payment type listing */}
@@ -61,8 +64,10 @@ const PaymentType = () => {
                 <TableRow>
                   <TableCell>No</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {rights.edit && <TableCell>Status</TableCell>}
+                  {(rights.edit || rights.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -70,37 +75,46 @@ const PaymentType = () => {
                   visibleRows.map((row) => {
                     return (
                       <>
-                        <TableRow key={index}>
+                        <TableRow key={row.id}>
                           <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
-                          <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                  navigate(`/edit-payment-type/${row.id}`)
-                                }
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
+                          {rights.edit && (
+                            <TableCell>
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                onChange={(e) => changeStatusHandler(e, row.id)}
+                              />
+                            </TableCell>
+                          )}
+
+                          {(rights.edit || rights.delete) && (
+                            <TableCell>
+                              <Box className="table-action-btn">
+                                {rights.edit && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={() =>
+                                      navigate(`/edit-payment-type/${row.id}`)
+                                    }
+                                  >
+                                    <FiEdit3 size={15} />
+                                  </Button>
                                 )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
+                                {rights.delete && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={deleteBtnClickHandler.bind(
+                                      null,
+                                      row.id
+                                    )}
+                                  >
+                                    <FiTrash2 size={15} />
+                                  </Button>
+                                )}
+                              </Box>
+                            </TableCell>
+                          )}
                         </TableRow>
                       </>
                     );

@@ -8,12 +8,18 @@ import {
   updateStates,
 } from "../../../service/states";
 import useLoader from "../../../hook/useLoader";
+import { useLocation } from "react-router";
 
 export const useStates = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const states = useSelector((state) => state.states.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
+
+  const [deleteId, setDeleteId] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // pagination code start
   const [page, setPage] = useState(0);
@@ -29,8 +35,24 @@ export const useStates = () => {
 
   // pagination code end
 
-  const [deleteId, setDeleteId] = useState("");
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch states logic
   const fetchStatesData = useCallback(
@@ -139,10 +161,10 @@ export const useStates = () => {
     deleteBtnClickHandler,
     searchStatesandler,
     changeStatusHandler,
-    // ----
     page,
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

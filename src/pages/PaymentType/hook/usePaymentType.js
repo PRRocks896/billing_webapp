@@ -8,12 +8,15 @@ import { paymentTypeAction } from "../../../redux/paymentType";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePaymentType } from "../../../service/paymentType";
 import useLoader from "../../../hook/useLoader";
+import { useLocation } from "react-router";
 
 export const usePaymentType = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const paymentTypeData = useSelector((state) => state.paymentType.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -31,6 +34,25 @@ export const usePaymentType = () => {
   }, [paymentTypeData]);
 
   // pagination end
+
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch payment type
   const fetchPaymentTypeData = useCallback(
@@ -142,5 +164,6 @@ export const usePaymentType = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

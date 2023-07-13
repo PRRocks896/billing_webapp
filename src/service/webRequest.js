@@ -111,7 +111,6 @@ export const post = async (url, data) => {
   const response = await axiosInstance
     .post(`${baseUrl}${url}`, data, authHeader())
     .then((res) => {
-      // console.log(res);
       if (res.status === 200) {
         return res.data;
       } else {
@@ -175,7 +174,6 @@ export const AxiosInterceptor = ({ children }) => {
         }, 5000);
       }
 
-      // console.log(err.response);
       return Promise.reject(err);
     }
   );

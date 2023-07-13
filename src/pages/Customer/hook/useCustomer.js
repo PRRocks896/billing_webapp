@@ -8,12 +8,15 @@ import {
   getCustomerList,
   updateCustomer,
 } from "../../../service/customer";
+import { useLocation } from "react-router";
 
 export const useCustomer = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const customerData = useSelector((state) => state.customer.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -31,6 +34,25 @@ export const useCustomer = () => {
   }, [customerData]);
 
   // pagination end
+
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch customer logic
   const fetchCustomerData = useCallback(
@@ -136,5 +158,6 @@ export const useCustomer = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

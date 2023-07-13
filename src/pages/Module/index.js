@@ -40,7 +40,7 @@ const Module = () => {
     handleChangePage,
     visibleRows,
     count,
-    rights
+    rights,
   } = useModule();
 
   let index = page * 10;
@@ -63,12 +63,10 @@ const Module = () => {
                 <TableRow>
                   <TableCell>No</TableCell>
                   <TableCell>Module</TableCell>
-                  {rights.edit &&
-                    <TableCell>Status</TableCell>
-                  }
-                  {(rights.edit || rights.delete) &&
+                  {rights.edit && <TableCell>Status</TableCell>}
+                  {(rights.edit || rights.delete) && (
                     <TableCell>Action</TableCell>
-                  }
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -78,19 +76,19 @@ const Module = () => {
                       <TableRow key={index}>
                         <TableCell align="left">{(index += 1)}</TableCell>
                         <TableCell align="left">{row.name}</TableCell>
-                        {rights.edit &&
+                        {rights.edit && (
                           <TableCell>
-                              <Switch
-                                style={switchStyles}
-                                checked={row.isActive}
-                                onChange={(e) => changeStatusHandler(e, row.id)}
-                              />
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
                           </TableCell>
-                        }
-                        {(rights.edit || rights.delete) &&
+                        )}
+                        {(rights.edit || rights.delete) && (
                           <TableCell>
                             <Box className="table-action-btn">
-                              {rights.edit &&
+                              {rights.edit && (
                                 <Button
                                   className="btn btn-primary"
                                   onClick={() =>
@@ -99,8 +97,8 @@ const Module = () => {
                                 >
                                   <FiEdit3 size={15} />
                                 </Button>
-                              }
-                              {rights.delete &&
+                              )}
+                              {rights.delete && (
                                 <Button
                                   className="btn btn-primary"
                                   onClick={deleteBtnClickHandler.bind(
@@ -110,10 +108,10 @@ const Module = () => {
                                 >
                                   <FiTrash2 size={15} />
                                 </Button>
-                              }
+                              )}
                             </Box>
                           </TableCell>
-                        }
+                        )}
                       </TableRow>
                     );
                   })

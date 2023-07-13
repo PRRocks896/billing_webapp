@@ -4,12 +4,15 @@ import { deleteStaff, getStaffList, updateStaff } from "../../../service/staff";
 import { staffAction } from "../../../redux/staff";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
+import { useLocation } from "react-router";
 
 export const useStaff = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const staffData = useSelector((state) => state.staff.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -27,6 +30,25 @@ export const useStaff = () => {
   }, [staffData]);
 
   // pagination end
+
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch staff logic
   const fetchStaffData = useCallback(
@@ -132,5 +154,6 @@ export const useStaff = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

@@ -24,7 +24,7 @@ import Role from "./pages/Role";
 import AddEditRole from "./pages/Role/addEditRole";
 import Module from "./pages/Module";
 import AddEditModule from "./pages/Module/addEditModule";
-import Rights from './pages/Rights';
+import Rights from "./pages/Rights";
 
 const token = getAuthToken();
 

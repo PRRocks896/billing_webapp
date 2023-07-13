@@ -4,8 +4,6 @@ import { Chart, ArcElement, Tooltip, Title, Legend } from "chart.js";
 Chart.register(ArcElement, Tooltip, Title, Legend);
 
 const DonutChart = () => {
-  // console.log("Doughnut");
-
   const data = {
     labels: ["Customer", "User", "Service"],
     datasets: [

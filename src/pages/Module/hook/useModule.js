@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
@@ -30,21 +30,23 @@ export const useModule = () => {
   };
 
   const rights = useMemo(() => {
-    if(accessModules && accessModules.length > 0) {
-      const selectedModule = accessModules.find(res => res.px_module.path === pathname);
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
       return {
         add: selectedModule.add || false,
         edit: selectedModule.edit || false,
-        delete: selectedModule.delete || false
-      }
+        delete: selectedModule.delete || false,
+      };
     } else {
       return {
         add: false,
         edit: false,
-        delete: false
-      }
+        delete: false,
+      };
     }
-  }, [accessModules, pathname])
+  }, [accessModules, pathname]);
 
   const visibleRows = useMemo(() => {
     return moduleData;
@@ -161,6 +163,6 @@ export const useModule = () => {
     handleChangePage,
     visibleRows,
     count,
-    rights
+    rights,
   };
 };

@@ -8,13 +8,15 @@ import {
 import { showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
 import useLoader from "../../../hook/useLoader";
+import { useLocation } from "react-router";
 
 export const useService = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
-
+  const { pathname } = useLocation();
   const service = useSelector((state) => state.service.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -32,6 +34,25 @@ export const useService = () => {
   }, [service]);
 
   // pagination code end
+
+  const rights = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(
+        (res) => res.px_module.path === pathname
+      );
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false,
+      };
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false,
+      };
+    }
+  }, [accessModules, pathname]);
 
   //  fetch service logic
   const fetchServiceData = useCallback(
@@ -143,5 +164,6 @@ export const useService = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights,
   };
 };

@@ -21,7 +21,6 @@ export const useLogin = () => {
     try {
       const payload = { email: data.email, password: data.password };
       const response = await login(payload);
-      // console.log(response);
       if (response.statusCode === 200) {
         const authToken = response.data.token;
         setAuthToken(authToken);
