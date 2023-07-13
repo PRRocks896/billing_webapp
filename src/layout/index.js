@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import Header from "./Header";
 import { Box } from "@mui/material";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
+import { getAuthToken, showToast } from "../utils/helper";
+import { loggedInUserAction } from "../redux/loggedInUser";
+import { fetchLoggedInUserData } from "../service/loggedInUser";
+import { useDispatch } from "react-redux";
 
 const drawerWidth = 300;
+const token = getAuthToken();
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -65,6 +75,32 @@ const LayoutProvider = () => {
   }, []);
 
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  // fetch logged in user details start
+  const fetchLoggedInUser = useCallback(async () => {
+    try {
+      const response = await fetchLoggedInUserData();
+      if (response.statusCode === 200) {
+        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
+        navigate(pathname);
+      } else {
+        showToast(response.messageCode, false);
+      }
+      // navigate(window.location.pathname);
+    } catch (error) {
+      showToast(error.message, false);
+    }
+  }, [dispatch]);
+
+  useLayoutEffect(() => {
+    if (token) {
+      fetchLoggedInUser();
+    }
+  }, [fetchLoggedInUser]);
+
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/forgot-password")

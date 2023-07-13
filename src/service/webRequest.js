@@ -150,14 +150,11 @@ export const put = async (url, data) => {
 };
 
 export const AxiosInterceptor = ({ children }) => {
-  console.warn("AxiosInterceptor ");
   axiosInstance.interceptors.response.use(
     (response) => {
-      console.warn("AxiosInterceptor response ", response);
       return response;
     },
     (err) => {
-      console.warn("AxiosInterceptor err ", err);
       if (err?.response?.data.statusCode === 401) {
         toast.error("SESSION EXPIRE", {
           position: "top-right",

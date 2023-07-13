@@ -50,30 +50,6 @@ import Rights from "./pages/Rights";
 const token = getAuthToken();
 
 const App = () => {
-  const dispatch = useDispatch();
-
-  // fetch logged in user details start
-  const fetchLoggedInUser = useCallback(async () => {
-    try {
-      // console.log("fetchLoggedInUser");
-      const response = await fetchLoggedInUserData();
-      // console.log("rk", response);
-      if (response.statusCode === 200) {
-        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
-      } else {
-        showToast(response.messageCode, false);
-      }
-    } catch (error) {
-      showToast(error.message, false);
-    }
-  }, [dispatch]);
-
-  useLayoutEffect(() => {
-    if (token) {
-      fetchLoggedInUser();
-    }
-  }, [fetchLoggedInUser]);
-
   const routes2 = createBrowserRouter([
     {
       path: "/",

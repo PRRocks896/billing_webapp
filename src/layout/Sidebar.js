@@ -11,7 +11,6 @@ import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Sidebar = () => {
   let panelNo = 3;
@@ -26,7 +25,6 @@ const Sidebar = () => {
   };
 
   const activeTab = location.pathname;
-  console.log(activeTab);
 
   const mainMenuListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
@@ -59,7 +57,6 @@ const Sidebar = () => {
       });
     }
   }, [accessModules]);
-  console.log(subMenuListArray);
 
   return (
     <>
@@ -99,9 +96,10 @@ const Sidebar = () => {
               </Typography>
             </AccordionSummary>
             <AccordionDetails className="sub-menu-list">
-              {subMenuListArray?.map((item) => {
+              {subMenuListArray?.map((item, index) => {
                 return (
                   <Box
+                    key={index}
                     className={`sub-menu-link ${
                       activeTab === item?.px_module?.path && "active"
                     }`}
@@ -126,11 +124,10 @@ const Sidebar = () => {
             </AccordionDetails>
           </Accordion>
 
-          <FontAwesomeIcon icon="fa-sharp fa-light fa-check" />
-
-          {mainMenuListArray?.map((item) => {
+          {mainMenuListArray?.map((item, index) => {
             return (
               <Accordion
+                key={index}
                 expanded={expanded === panelNo}
                 onChange={handleChange(panelNo++)}
                 className="menu-list"
@@ -150,8 +147,6 @@ const Sidebar = () => {
                   aria-controls="panel3bh-content"
                   id="panel3bh-header"
                 >
-                  {/* <FontAwesomeIcon icon="fa-brands fa-twitter" />{" "} */}
-                  <i className={item?.px_module?.icon}></i>
                   <Typography>{item?.px_module?.name}</Typography>
                 </AccordionSummary>
               </Accordion>
