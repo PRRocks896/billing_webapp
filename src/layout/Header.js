@@ -195,12 +195,12 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             </Box>
             <Box className="links">
               <Divider />
-              <MenuItem className="menu-link">
+              {/* <MenuItem className="menu-link">
                 <ListItemIcon className="link-icon">
                   <FiUser />
                 </ListItemIcon>
                 Profile
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem className="menu-link" onClick={logoutHandler}>
                 <ListItemIcon className="link-icon">
                   <FiLogOut />

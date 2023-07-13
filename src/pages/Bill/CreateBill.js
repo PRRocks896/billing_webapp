@@ -61,6 +61,7 @@ const CreateBill = () => {
                       className="form-control"
                     >
                       <TextField
+                        disabled
                         label="Bill No*"
                         size="small"
                         name="billNo"
@@ -69,7 +70,6 @@ const CreateBill = () => {
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message ? error.message : ""}
-                        disabled
                       />
                     </FormControl>
                   )}
@@ -123,6 +123,7 @@ const CreateBill = () => {
                       className="form-control"
                     >
                       <TextField
+                        disabled
                         type="date"
                         label="Date"
                         size="small"
