@@ -99,7 +99,7 @@ const Home = () => {
                 </TableHead>
                 <TableBody>
                   {customerData?.map((row, index) => (
-                    <TableRow key={index}>
+                    <TableRow key={row.id}>
                       <TableCell>{index + 1}.</TableCell>
                       <TableCell>{row.name}</TableCell>
                       <TableCell>{row.phone}</TableCell>

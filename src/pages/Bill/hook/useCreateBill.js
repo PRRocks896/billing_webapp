@@ -254,9 +254,8 @@ export const useCreateBill = () => {
         createdBy: loggedInUser.id,
       };
 
-      console.log("payload", payload);
       const response = await createBill(payload);
-      console.log("response", response);
+
       if (response.statusCode === 200) {
         showToast(response.message, true);
       } else {

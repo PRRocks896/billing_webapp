@@ -21,14 +21,14 @@ export const useLogin = () => {
     try {
       const payload = { email: data.email, password: data.password };
       const response = await login(payload);
-      console.log(response);
+
       if (response.statusCode === 200) {
         const authToken = response.data.token;
         setAuthToken(authToken);
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate("/", { replace: true });
       } else {
-        showToast(response.messageCode, false);
+        showToast(response.message || response.messageCode, false);
       }
     } catch (error) {
       showToast(error.message, false);

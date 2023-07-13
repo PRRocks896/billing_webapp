@@ -47,7 +47,7 @@ export const useRole = () => {
           },
         };
         const response = await getRoleList(body);
-        console.log(response);
+
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);

@@ -15,7 +15,7 @@ import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import { usePaymentType } from "./hook/usePaymentType";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -40,8 +40,12 @@ const PaymentType = () => {
     visibleRows,
     count,
   } = usePaymentType();
+
   const navigate = useNavigate();
   let index = page * 10;
+
+  const location = useLocation();
+  const permisson = location.state;
 
   return (
     <>
@@ -50,6 +54,7 @@ const PaymentType = () => {
         inputName="Payment Type"
         navigatePath="/add-payment-type"
         callAPI={searchPaymentTypeHandler}
+        addPermission={permisson.add}
       />
 
       {/* payment type listing */}
@@ -62,7 +67,9 @@ const PaymentType = () => {
                   <TableCell>No</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {(!permisson.edit || permisson.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -70,37 +77,51 @@ const PaymentType = () => {
                   visibleRows.map((row) => {
                     return (
                       <>
-                        <TableRow key={index}>
+                        <TableRow key={row.id}>
                           <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
+                            {permisson.edit ? (
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                onChange={(e) => changeStatusHandler(e, row.id)}
+                              />
+                            ) : (
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                disabled
+                              />
+                            )}
                           </TableCell>
-                          <TableCell>
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                  navigate(`/edit-payment-type/${row.id}`)
-                                }
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
+                          {(permisson.edit || permisson.delete) && (
+                            <TableCell>
+                              <Box className="table-action-btn">
+                                {permisson.edit && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={() =>
+                                      navigate(`/edit-payment-type/${row.id}`)
+                                    }
+                                  >
+                                    <FiEdit3 size={15} />
+                                  </Button>
                                 )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
+                                {permisson.delete && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={deleteBtnClickHandler.bind(
+                                      null,
+                                      row.id
+                                    )}
+                                  >
+                                    <FiTrash2 size={15} />
+                                  </Button>
+                                )}
+                              </Box>
+                            </TableCell>
+                          )}
                         </TableRow>
                       </>
                     );

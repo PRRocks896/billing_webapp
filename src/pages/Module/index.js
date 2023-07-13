@@ -70,7 +70,7 @@ const Module = () => {
                   visibleRows.map((row) => {
                     return (
                       <>
-                        <TableRow key={index}>
+                        <TableRow key={row.id}>
                           <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell>

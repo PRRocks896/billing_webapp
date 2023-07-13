@@ -1,7 +1,7 @@
 import React from "react";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -44,6 +44,9 @@ const City = () => {
   const navigate = useNavigate();
   let index = page * 10;
 
+  const location = useLocation();
+  const permisson = location.state;
+
   return (
     <>
       <TopBar
@@ -51,6 +54,7 @@ const City = () => {
         inputName="city"
         navigatePath="/add-city"
         callAPI={searchCityHandler}
+        addPermission={permisson.add}
       />
 
       {/* state listing */}
@@ -64,40 +68,61 @@ const City = () => {
                   <TableCell>City</TableCell>
                   <TableCell>State</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {(!permisson.edit || permisson.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <TableRow key={index}>
+                      <TableRow key={row.id}>
                         <TableCell align="left">{(index += 1)}</TableCell>
                         <TableCell align="left">{row.name}</TableCell>
                         <TableCell align="left">{row.px_state.name}</TableCell>
                         <TableCell>
-                          <Switch
-                            style={switchStyles}
-                            checked={row.isActive}
-                            onChange={(e) => changeStatusHandler(e, row.id)}
-                          />
+                          {permisson.edit ? (
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
+                          ) : (
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              disabled
+                            />
+                          )}
                         </TableCell>
-                        <TableCell>
-                          <Box className="table-action-btn">
-                            <Button
-                              className="btn btn-primary"
-                              onClick={() => navigate(`/edit-city/${row.id}`)}
-                            >
-                              <FiEdit3 size={15} />
-                            </Button>
-                            <Button
-                              className="btn btn-primary"
-                              onClick={deleteBtnClickHandler.bind(null, row.id)}
-                            >
-                              <FiTrash2 size={15} />
-                            </Button>
-                          </Box>
-                        </TableCell>
+                        {(permisson.edit || permisson.delete) && (
+                          <TableCell>
+                            <Box className="table-action-btn">
+                              {permisson.edit && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    navigate(`/edit-city/${row.id}`)
+                                  }
+                                >
+                                  <FiEdit3 size={15} />
+                                </Button>
+                              )}
+                              {permisson.delete && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={deleteBtnClickHandler.bind(
+                                    null,
+                                    row.id
+                                  )}
+                                >
+                                  <FiTrash2 size={15} />
+                                </Button>
+                              )}
+                            </Box>
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })

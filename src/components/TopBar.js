@@ -17,7 +17,7 @@ const TopBar = ({
   inputName,
   navigatePath,
   callAPI = () => {},
-  addPermission,
+  addPermission = true,
 }) => {
   const navigate = useNavigate();
   // const [searchvalue, setSearchvalue] = useState("");

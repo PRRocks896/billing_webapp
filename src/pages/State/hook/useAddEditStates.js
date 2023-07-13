@@ -29,7 +29,7 @@ export const useAddEditStates = (tag) => {
       if (tag === "add") {
         const payload = { name: data.stateName, createdBy: loggedInUser.id };
         const response = await createStates(payload);
-        console.log(response);
+
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);

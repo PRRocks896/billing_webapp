@@ -13,7 +13,6 @@ import {
 } from "../../../service/module";
 
 export const useAddEditModule = (tag) => {
-  console.log("use add module");
   const navigate = useNavigate();
   const { loading } = useLoader();
   const { id } = useParams();
@@ -37,7 +36,6 @@ export const useAddEditModule = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       loading(true);
       if (tag === "add") {
         const payload = {

@@ -1,5 +1,4 @@
 import React from "react";
-
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
@@ -10,11 +9,10 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Switch from "@mui/material/Switch";
-
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCustomer } from "./hook/useCustomer";
 
 const switchStyles = {
@@ -28,7 +26,6 @@ const switchStyles = {
 };
 
 const Customer = () => {
-  const navigate = useNavigate();
   const {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
@@ -41,6 +38,11 @@ const Customer = () => {
     visibleRows,
     count,
   } = useCustomer();
+  const navigate = useNavigate();
+  let index = page * 10;
+
+  const location = useLocation();
+  const permisson = location.state;
 
   return (
     <>
@@ -49,6 +51,7 @@ const Customer = () => {
         inputName="customer"
         navigatePath="/add-customer"
         callAPI={searchCustomerHandler}
+        addPermission={permisson.add}
       />
 
       {/* customer listing */}
@@ -63,47 +66,63 @@ const Customer = () => {
                   <TableCell>Phone</TableCell>
                   <TableCell>Gender</TableCell>
                   <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {(!permisson.edit || permisson.delete) && (
+                    <TableCell>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row, index) => {
+                  visibleRows.map((row) => {
                     return (
                       <>
                         <TableRow key={row.id}>
-                          <TableCell align="left">{index + 1}</TableCell>
+                          <TableCell align="left">{(index += 1)}</TableCell>
                           <TableCell align="left">{row.name}</TableCell>
                           <TableCell align="left">{row.phoneNumber}</TableCell>
                           <TableCell align="left">{row.gender}</TableCell>
                           <TableCell align="left">
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
+                            {permisson.edit ? (
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                onChange={(e) => changeStatusHandler(e, row.id)}
+                              />
+                            ) : (
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                disabled
+                              />
+                            )}
                           </TableCell>
-                          <TableCell align="left">
-                            <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                  navigate(`/edit-customer/${row.id}`)
-                                }
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
+                          {(permisson.edit || permisson.delete) && (
+                            <TableCell align="left">
+                              <Box className="table-action-btn">
+                                {permisson.edit && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={() =>
+                                      navigate(`/edit-customer/${row.id}`)
+                                    }
+                                  >
+                                    <FiEdit3 size={15} />
+                                  </Button>
                                 )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            </Box>
-                          </TableCell>
+                                {permisson.delete && (
+                                  <Button
+                                    className="btn btn-primary"
+                                    onClick={deleteBtnClickHandler.bind(
+                                      null,
+                                      row.id
+                                    )}
+                                  >
+                                    <FiTrash2 size={15} />
+                                  </Button>
+                                )}
+                              </Box>
+                            </TableCell>
+                          )}
                         </TableRow>
                       </>
                     );

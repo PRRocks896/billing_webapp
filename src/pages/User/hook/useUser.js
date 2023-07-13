@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { deleteUser, getUserList, updateUser } from "../../../service/users";
-import { paymentTypeAction } from "../../../redux/paymentType";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
 import { userAction } from "../../../redux/users";
