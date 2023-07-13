@@ -97,7 +97,7 @@ export const useAddEditModule = (tag) => {
 
   useEffect(() => {
     fetchEditModuleData();
-  }, [fetchEditModuleData]);
+  }, []);
 
   const cancelHandler = () => {
     navigate(-1);

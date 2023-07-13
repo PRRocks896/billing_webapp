@@ -150,8 +150,8 @@ const Sidebar = () => {
                   aria-controls="panel3bh-content"
                   id="panel3bh-header"
                 >
-                  {/* <FontAwesomeIcon icon={item?.px_module?.icon} />{" "} */}
-                  {/* <i className={item?.px_module?.icon}></i> */}
+                  {/* <FontAwesomeIcon icon="fa-brands fa-twitter" />{" "} */}
+                  <i className={item?.px_module?.icon}></i>
                   <Typography>{item?.px_module?.name}</Typography>
                 </AccordionSummary>
               </Accordion>
