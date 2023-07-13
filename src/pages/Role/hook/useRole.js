@@ -47,7 +47,7 @@ export const useRole = () => {
           },
         };
         const response = await getRoleList(body);
-        console.log(response);
+        // console.log(response);
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
@@ -62,7 +62,7 @@ export const useRole = () => {
         loading(false);
       }
     },
-    [dispatch, page]
+    [dispatch, page, loading]
   );
 
   // search payment type

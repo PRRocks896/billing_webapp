@@ -29,7 +29,7 @@ export const useAddEditStaff = (tag) => {
           name: data.staff_name,
           createdBy: loggedInUser.id,
         };
-        console.log(payload);
+        // console.log(payload);
         const response = await createStaff(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);

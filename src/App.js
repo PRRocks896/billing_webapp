@@ -2,7 +2,7 @@ import React, { useCallback, useLayoutEffect } from "react";
 import {
   Navigate,
   RouterProvider,
-  createBrowserRouter,
+  createBrowserRouter
 } from "react-router-dom";
 // import routes from "./routes";
 import { ToastContainer } from "react-toastify";
@@ -45,6 +45,7 @@ import AddEditStates from "./pages/State/AddEditStates";
 import CreateBill from "./pages/Bill/CreateBill";
 import User from "./pages/User";
 import AddEditUser from "./pages/User/AddEditUser";
+import Rights from "./pages/Rights";
 
 const token = getAuthToken();
 
@@ -54,16 +55,16 @@ const App = () => {
   // fetch logged in user details start
   const fetchLoggedInUser = useCallback(async () => {
     try {
-      console.log("fetchLoggedInUser");
+      // console.log("fetchLoggedInUser");
       const response = await fetchLoggedInUserData();
-      console.log("rk", response);
+      // console.log("rk", response);
       if (response.statusCode === 200) {
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
       } else {
         showToast(response.messageCode, false);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       showToast(error.message, false);
     }
   }, [dispatch]);
@@ -292,7 +293,10 @@ const App = () => {
             />
           ),
         },
-
+        {
+          path: "rights",
+          element: <ProtectedRoute path="rights" Component={<Rights/>}/>
+        },
         {
           path: "module",
           element: <ProtectedRoute path="module" Component={<Module />} />,
@@ -301,7 +305,7 @@ const App = () => {
           path: "add-module",
           element: (
             <ProtectedRoute
-              path="module"
+              path="add-module"
               Component={<AddEditModule tag="add" />}
             />
           ),
@@ -310,7 +314,7 @@ const App = () => {
           path: "edit-module/:id",
           element: (
             <ProtectedRoute
-              path="module"
+              path="edit-module/:id"
               Component={<AddEditModule tag="edit" />}
             />
           ),

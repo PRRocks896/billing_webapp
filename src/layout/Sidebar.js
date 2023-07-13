@@ -26,36 +26,30 @@ const Sidebar = () => {
 
   const activeTab = location.pathname;
 
-  const [mainMenuListArray, setMainMenuListArray] = useState([]);
-  const [subMenuListArray, setSubMenuListArray] = useState([]);
-
-  useMemo(() => {
-    const mainList =
-      accessModules?.length &&
-      accessModules?.filter((row) => {
-        if (
-          row.px_module.name === "User" ||
-          row.px_module.name === "Bill" ||
-          row.px_module.name === "Report"
-        ) {
+  const mainMenuListArray = useMemo(() => {
+    if(accessModules && accessModules.length > 0) {
+      return accessModules?.filter((row) => {
+        if (["User", "Bill", "Report"].includes(row.px_module.name) && row.view) {
           return row;
+        } else {
+          return null;
         }
       });
-    setMainMenuListArray(mainList);
+    } else {
+      return [];
+    }
+  }, [accessModules]);
 
-    const subList =
-      accessModules?.length &&
-      accessModules?.filter((row) => {
-        if (
-          row.px_module.name !== "User" &&
-          row.px_module.name !== "Bill" &&
-          row.px_module.name !== "Report"
-        ) {
+  const subMenuListArray = useMemo(() => {
+    if(accessModules && accessModules.length > 0) {
+      return accessModules?.filter((row) => {
+        if (!["User", "Bill", "Report"].includes(row.px_module.name) && row.view) {
           return row;
+        } else {
+          return null;
         }
       });
-    console.log(subList);
-    setSubMenuListArray(subList);
+    }
   }, [accessModules]);
 
   return (
@@ -103,7 +97,7 @@ const Sidebar = () => {
                       activeTab === "module" && "active"
                     }`}
                     onClick={() =>
-                      navigate(item.px_module.path, {
+                      navigate(item?.px_module?.path, {
                         state: {
                           add: item.add,
                           edit: item.edit,
@@ -115,7 +109,7 @@ const Sidebar = () => {
                   >
                     <Typography>
                       <FiSquare />
-                      {item.px_module.name}
+                      {item?.px_module?.name}
                     </Typography>
                   </Box>
                 );
@@ -130,12 +124,12 @@ const Sidebar = () => {
                 onChange={handleChange(panelNo++)}
                 className="menu-list"
                 onClick={() => {
-                  navigate(item.px_module.path, {
+                  navigate(item?.px_module?.path, {
                     state: {
-                      add: item.add,
-                      edit: item.edit,
-                      delete: item.delete,
-                      view: item.view,
+                      add: item?.add,
+                      edit: item?.edit,
+                      delete: item?.delete,
+                      view: item?.view,
                     },
                   });
                 }}
@@ -145,7 +139,7 @@ const Sidebar = () => {
                   aria-controls="panel3bh-content"
                   id="panel3bh-header"
                 >
-                  <Typography>{item.px_module.name}</Typography>
+                  <Typography>{item?.px_module?.name}</Typography>
                 </AccordionSummary>
               </Accordion>
             );

@@ -33,7 +33,7 @@ export const useAddEditUser = (tag) => {
 
   useMemo(() => {
     setValue("branchName", loggedInUser?.branchName);
-  }, [loggedInUser]);
+  }, [loggedInUser, setValue]);
 
   // genrate roles options for drop down
   useMemo(() => {
@@ -53,7 +53,7 @@ export const useAddEditUser = (tag) => {
 
     const newUserName = formattedFirstName + formattedLastName;
     setValue("userName", newUserName.replace(/\s+/g, ""));
-  }, [firstName, lastName]);
+  }, [firstName, lastName, setValue]);
 
   // get role list
   useEffect(() => {
@@ -103,7 +103,7 @@ export const useAddEditUser = (tag) => {
           createdBy: loggedInUser.id,
         };
         const response = await createUser(payload);
-        console.log(response);
+        // console.log(response);
         if (response.statusCode === 200) {
           showToast(response.message, true);
           navigate(-1);
@@ -169,7 +169,7 @@ export const useAddEditUser = (tag) => {
 
   useEffect(() => {
     fetchEditUserData();
-  }, []);
+  }, [fetchEditUserData]);
 
   const cancelHandler = () => {
     navigate(-1);

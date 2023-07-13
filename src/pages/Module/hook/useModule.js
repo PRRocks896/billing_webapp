@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation } from 'react-router-dom';
 import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
@@ -12,8 +13,10 @@ import { moduleAction } from "../../../redux/module";
 export const useModule = () => {
   const dispatch = useDispatch();
   const { loading } = useLoader();
+  const { pathname } = useLocation();
   const moduleData = useSelector((state) => state.module.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -25,6 +28,23 @@ export const useModule = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+
+  const rights = useMemo(() => {
+    if(accessModules && accessModules.length > 0) {
+      const selectedModule = accessModules.find(res => res.px_module.path === pathname);
+      return {
+        add: selectedModule.add || false,
+        edit: selectedModule.edit || false,
+        delete: selectedModule.delete || false
+      }
+    } else {
+      return {
+        add: false,
+        edit: false,
+        delete: false
+      }
+    }
+  }, [accessModules, pathname])
 
   const visibleRows = useMemo(() => {
     return moduleData;
@@ -65,7 +85,7 @@ export const useModule = () => {
         loading(false);
       }
     },
-    [dispatch, page]
+    [dispatch, page, loading]
   );
 
   // search payment type
@@ -141,5 +161,6 @@ export const useModule = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights
   };
 };

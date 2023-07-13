@@ -46,7 +46,7 @@ const User = () => {
 
   const location = useLocation();
   const permisson = location.state;
-  console.log(permisson);
+  // console.log(permisson);
 
   return (
     <>

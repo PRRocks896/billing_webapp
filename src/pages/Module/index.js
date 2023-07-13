@@ -40,6 +40,7 @@ const Module = () => {
     handleChangePage,
     visibleRows,
     count,
+    rights
   } = useModule();
 
   let index = page * 10;
@@ -50,6 +51,7 @@ const Module = () => {
         inputName="module"
         navigatePath="/add-module"
         callAPI={searchModuleHandler}
+        addPermission={rights.add}
       />
 
       {/* state listing */}
@@ -61,48 +63,58 @@ const Module = () => {
                 <TableRow>
                   <TableCell>No</TableCell>
                   <TableCell>Module</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
+                  {rights.edit &&
+                    <TableCell>Status</TableCell>
+                  }
+                  {(rights.edit || rights.delete) &&
+                    <TableCell>Action</TableCell>
+                  }
                 </TableRow>
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <>
-                        <TableRow key={index}>
-                          <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
+                      <TableRow key={index}>
+                        <TableCell align="left">{(index += 1)}</TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
+                        {rights.edit &&
                           <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
+                              <Switch
+                                style={switchStyles}
+                                checked={row.isActive}
+                                onChange={(e) => changeStatusHandler(e, row.id)}
+                              />
                           </TableCell>
+                        }
+                        {(rights.edit || rights.delete) &&
                           <TableCell>
                             <Box className="table-action-btn">
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                  navigate(`/edit-module/${row.id}`)
-                                }
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
-                                )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
+                              {rights.edit &&
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    navigate(`/edit-module/${row.id}`)
+                                  }
+                                >
+                                  <FiEdit3 size={15} />
+                                </Button>
+                              }
+                              {rights.delete &&
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={deleteBtnClickHandler.bind(
+                                    null,
+                                    row.id
+                                  )}
+                                >
+                                  <FiTrash2 size={15} />
+                                </Button>
+                              }
                             </Box>
                           </TableCell>
-                        </TableRow>
-                      </>
+                        }
+                      </TableRow>
                     );
                   })
                 ) : (
