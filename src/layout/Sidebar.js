@@ -6,16 +6,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import {
-  FiChevronRight,
-  FiFileText,
-  FiLogOut,
-  FiGrid,
-  FiSquare,
-} from "react-icons/fi";
+import { FiChevronRight, FiLogOut, FiGrid, FiSquare } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
-import { IoReceiptOutline } from "react-icons/io5";
-import { FaRegUser } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
@@ -24,12 +16,7 @@ const Sidebar = () => {
   const accessModules = useSelector(
     (state) => state.loggedInUser?.accessModules
   );
-  console.log(
-    accessModules[1].add,
-    accessModules[1].edit,
-    accessModules[1].delete,
-    accessModules[1].view
-  );
+
   const navigate = useNavigate();
   const location = useLocation();
 

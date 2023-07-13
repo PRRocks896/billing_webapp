@@ -127,7 +127,7 @@ const CreateBill = () => {
                         label="Date"
                         size="small"
                         name="date"
-                        pattern="dd-mm-yyyy"
+                        pattern="\d{2}-\d{2}-\d{4}"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
@@ -420,7 +420,7 @@ const CreateBill = () => {
         <Box className="card">
           <FormGroup className="form-field" sx={{ marginTop: "12px" }}>
             <Grid container spacing={2}>
-              <Grid item xs={2}>
+              {/* <Grid item xs={2}>
                 <Controller
                   name="discount"
                   control={control}
@@ -494,7 +494,7 @@ const CreateBill = () => {
                     </FormControl>
                   )}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={2}>
                 <Controller
                   name="grandTotal"

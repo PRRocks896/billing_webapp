@@ -71,3 +71,10 @@ export const CREATE_MODULE_API = "api/module";
 export const DELETE_MODULE_API = "api/module/";
 export const GET_SINGLE_MODULE_API = "api/module/";
 export const UPDATE_MODULE_API = "api/module/";
+
+// bill apis
+export const BILL_LIST_API = "api/bill/list";
+export const CREATE_BILL_API = "api/bill";
+export const DELETE_BILL_API = "api/bill/";
+export const GET_SINGLE_BILL_API = "api/bill/";
+export const UPDATE_BILL_API = "api/bill/";
