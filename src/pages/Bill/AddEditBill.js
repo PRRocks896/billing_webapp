@@ -23,6 +23,7 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
+import { Fade, Modal, Typography } from "@mui/material";
 
 const AddEditBill = () => {
   const {
@@ -39,6 +40,10 @@ const AddEditBill = () => {
     removeRow,
     handleSubmit,
     calculateTotal,
+    isSaveModalOpen,
+    setIsSaveModalOpen,
+    newBtnClickHandler,
+    dontSaveHandler,
   } = useAddEditCreateBill();
   return (
     <>
@@ -524,7 +529,7 @@ const AddEditBill = () => {
         {/* footer button */}
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item xs={1.5}>
-            <Button className="btn btn-tertiary">
+            <Button className="btn btn-tertiary" onClick={newBtnClickHandler}>
               <FiPlusCircle /> &nbsp;
               <p>New</p>
             </Button>
@@ -556,6 +561,64 @@ const AddEditBill = () => {
           </Grid>
         </Grid>
       </form>
+
+      <>
+        <Modal
+          disableEscapeKeyDown
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={isSaveModalOpen}
+          // onClose={() => setIsSaveModalOpen(false)}
+          closeAfterTransition
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
+        >
+          <Fade in={isSaveModalOpen}>
+            <Box className="modal-wrapper modal-bg">
+              <Typography
+                variant="h6"
+                component="h6"
+                className="text-black modal-title"
+              >
+                Save Bill
+              </Typography>
+              <Box className="modal-body">
+                <Box className="confirmation-text">
+                  <Typography paragraph>
+                    Do you want to save the changes?
+                  </Typography>
+                </Box>
+              </Box>
+              <Box className="modal-footer">
+                <Grid container spacing={3}>
+                  <Grid item md={4} xs={12}>
+                    <Button className="btn btn-tertiary">Save</Button>
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    <Button
+                      className="btn btn-cancel"
+                      onClick={() => dontSaveHandler(false)}
+                    >
+                      Don't Save
+                    </Button>
+                  </Grid>
+                  <Grid item md={4} xs={12}>
+                    <Button
+                      className="btn btn-cancel"
+                      onClick={() => setIsSaveModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Fade>
+        </Modal>
+      </>
     </>
   );
 };
