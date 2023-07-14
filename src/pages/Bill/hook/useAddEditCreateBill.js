@@ -28,16 +28,11 @@ export const useAddEditCreateBill = () => {
   const [serviceOptions, setServiceOptions] = useState([]);
   const [service, setService] = useState([]);
 
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
-  const {
-    control,
-    getValues,
-    setValue,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const { control, getValues, setValue, handleSubmit, reset } = useForm({
     defaultValues: {
       // billNo: "",
       paymentID: "",
@@ -62,6 +57,26 @@ export const useAddEditCreateBill = () => {
     },
     mode: "onBlur",
   });
+
+  const newBtnClickHandler = () => {
+    console.log(getValues("detail"));
+    if (
+      getValues("paymentID") ||
+      getValues("customerID") ||
+      getValues("staffID") ||
+      getValues("grandTotal") ||
+      getValues("detail.0.quantity") ||
+      getValues("detail.0.serviceID")
+    ) {
+      setIsSaveModalOpen(true);
+    } else {
+      reset();
+    }
+  };
+  const dontSaveHandler = () => {
+    reset();
+    setIsSaveModalOpen(false);
+  };
 
   const { fields, append, remove } = useFieldArray({
     name: "detail",
@@ -350,5 +365,9 @@ export const useAddEditCreateBill = () => {
     handleSubmit,
     calculateTotal,
     calculateGrandTotal,
+    isSaveModalOpen,
+    setIsSaveModalOpen,
+    newBtnClickHandler,
+    dontSaveHandler,
   };
 };
