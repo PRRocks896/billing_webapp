@@ -168,7 +168,7 @@ export const useAddEditUser = (tag) => {
 
   useEffect(() => {
     fetchEditUserData();
-  }, [fetchEditUserData]);
+  }, []);
 
   const cancelHandler = () => {
     navigate(-1);

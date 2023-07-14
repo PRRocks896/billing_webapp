@@ -236,7 +236,7 @@ const App = () => {
           ),
         },
         {
-          path: "edit-user",
+          path: "edit-user/:id",
           element: (
             <ProtectedRoute
               path="user"
