@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect } from "react";
+import React from "react";
 import {
   Navigate,
   RouterProvider,
@@ -7,10 +7,7 @@ import {
 // import routes from "./routes";
 import { ToastContainer } from "react-toastify";
 import Loader from "./components/Loader";
-import { checkIsAuthenticated, getAuthToken, showToast } from "./utils/helper";
-import { useDispatch } from "react-redux";
-import { fetchLoggedInUserData } from "./service/loggedInUser";
-import { loggedInUserAction } from "./redux/loggedInUser";
+import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
 
 // css imports
 import "./assets/styles/global.scss";
@@ -236,7 +233,7 @@ const App = () => {
           ),
         },
         {
-          path: "edit-user",
+          path: "edit-user/:id",
           element: (
             <ProtectedRoute
               path="user"
@@ -255,15 +252,6 @@ const App = () => {
           path: "create-bill",
           element: (
             <ProtectedRoute path="bill" Component={<AddEditBill tag="add" />} />
-          ),
-        },
-        {
-          path: "edit-bill/:id",
-          element: (
-            <ProtectedRoute
-              path="bill"
-              Component={<AddEditBill tag="edit" />}
-            />
           ),
         },
 

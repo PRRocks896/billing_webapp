@@ -5,8 +5,8 @@ import { showToast } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import useLoader from "../../../hook/useLoader";
-import { createRight } from "../../../service/rights";
-import { useSelector } from "react-redux";
+// import { createRight } from "../../../service/rights";
+// import { useSelector } from "react-redux";
 
 export const useRights = () => {
   const navigate = useNavigate();
