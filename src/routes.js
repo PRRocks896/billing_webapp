@@ -80,6 +80,10 @@ const routes = createBrowserRouter([
 
       { path: "bill", element: <Bill /> },
       { path: "create-bill", element: <AddEditBill tag="add" /> },
+      {
+        path: "edit-bill/:id",
+        element: <AddEditBill tag="edit" />,
+      },
 
       { path: "role", element: <Role /> },
       { path: "add-role", element: <AddEditRole tag="add" /> },

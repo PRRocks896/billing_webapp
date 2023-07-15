@@ -22,7 +22,7 @@ const switchStyles = {
   "&.MuiChecked": {
     color: "green",
   },
-  "&.Mui-checked + .MuiSwitch-track": {
+  "&.MuiChecked + .MuiSwitchTrack": {
     backgroundColor: "lightgreen", // Customize the track color when checked
   },
 };
@@ -75,58 +75,56 @@ const User = () => {
               </TableHead>
               <TableBody>
                 {visibleRows.length ? (
-                  visibleRows.map((row) => {
+                  visibleRows.map((row, i) => {
                     return (
-                      <>
-                        <TableRow key={row.id}>
-                          <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">
-                            {row.firstName + " " + row.lastName}
+                      <TableRow key={i}>
+                        <TableCell align="left">{(index += 1)}</TableCell>
+                        <TableCell align="left">
+                          {row.firstName + " " + row.lastName}
+                        </TableCell>
+                        <TableCell align="left">{row.userName}</TableCell>
+                        <TableCell align="left">{row.branchName}</TableCell>
+                        <TableCell align="left">{row.email}</TableCell>
+                        <TableCell align="left">{row.phoneNumber}</TableCell>
+
+                        {rights.edit && (
+                          <TableCell>
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
                           </TableCell>
-                          <TableCell align="left">{row.userName}</TableCell>
-                          <TableCell align="left">{row.branchName}</TableCell>
-                          <TableCell align="left">{row.email}</TableCell>
-                          <TableCell align="left">{row.phoneNumber}</TableCell>
+                        )}
 
-                          {rights.edit && (
-                            <TableCell>
-                              <Switch
-                                style={switchStyles}
-                                checked={row.isActive}
-                                onChange={(e) => changeStatusHandler(e, row.id)}
-                              />
-                            </TableCell>
-                          )}
-
-                          {(rights.edit || rights.delete) && (
-                            <TableCell align="left">
-                              <Box className="table-action-btn">
-                                {rights.edit && (
-                                  <Button
-                                    className="btn btn-primary"
-                                    onClick={() =>
-                                      navigate(`/edit-user/${row.id}`)
-                                    }
-                                  >
-                                    <FiEdit3 size={15} />
-                                  </Button>
-                                )}
-                                {rights.delete && (
-                                  <Button
-                                    className="btn btn-primary"
-                                    onClick={deleteBtnClickHandler.bind(
-                                      null,
-                                      row.id
-                                    )}
-                                  >
-                                    <FiTrash2 size={15} />
-                                  </Button>
-                                )}
-                              </Box>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      </>
+                        {(rights.edit || rights.delete) && (
+                          <TableCell align="left">
+                            <Box className="table-action-btn">
+                              {rights.edit && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    navigate(`/edit-user/${row.id}`)
+                                  }
+                                >
+                                  <FiEdit3 size={15} />
+                                </Button>
+                              )}
+                              {rights.delete && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={deleteBtnClickHandler.bind(
+                                    null,
+                                    row.id
+                                  )}
+                                >
+                                  <FiTrash2 size={15} />
+                                </Button>
+                              )}
+                            </Box>
+                          </TableCell>
+                        )}
+                      </TableRow>
                     );
                   })
                 ) : (
@@ -140,7 +138,7 @@ const User = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={10}
+            rowsPerPageOptions={[10]}
             component="div"
             count={count}
             rowsPerPage={10}

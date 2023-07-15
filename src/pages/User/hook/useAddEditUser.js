@@ -1,15 +1,17 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { showToast } from "../../../utils/helper";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useLoader from "../../../hook/useLoader";
-import { createUser } from "../../../service/users";
+import { createUser, getUserById } from "../../../service/users";
 import { getRolesList } from "../../../service/roles";
 
 export const useAddEditUser = (tag) => {
   const navigate = useNavigate();
   const { loading } = useLoader();
+  const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [roleOptions, setRoleOptions] = useState([]);
@@ -116,38 +118,38 @@ export const useAddEditUser = (tag) => {
     }
   };
 
-  // const fetchEditUserData = useCallback(async () => {
-  //   try {
-  //     if (id) {
-  //       loading(true);
-  //       const response = await getUserById(id);
-  //       if (response.statusCode === 200) {
-  //         const role = {
-  //           value: response.data.roleID,
-  //           label: response.data.px_role.name,
-  //         };
+  const fetchEditUserData = useCallback(async () => {
+    try {
+      if (id) {
+        loading(true);
+        const response = await getUserById(id);
+        if (response.statusCode === 200) {
+          const role = {
+            value: response.data.roleID,
+            label: response.data.px_role.name,
+          };
 
-  //         setValue("firstName", response.data.firstName);
-  //         setValue("lastName", response.data.lastName);
-  //         setValue("userName", response.data.userName);
-  //         setValue("roleID", role);
-  //         // setValue("password", response.data.password);
-  //         setValue("email", response.data.email);
-  //         setValue("phoneNumber", response.data.phoneNumber);
-  //       } else {
-  //         showToast(response.message, false);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     showToast(error.message, false);
-  //   } finally {
-  //     loading(false);
-  //   }
-  // }, [id, loading, setValue]);
+          setValue("firstName", response.data.firstName);
+          setValue("lastName", response.data.lastName);
+          setValue("userName", response.data.userName);
+          setValue("roleID", role);
+          // setValue("password", response.data.password);
+          setValue("email", response.data.email);
+          setValue("phoneNumber", response.data.phoneNumber);
+        } else {
+          showToast(response.message, false);
+        }
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    } finally {
+      loading(false);
+    }
+  }, [id, loading, setValue]);
 
-  // useEffect(() => {
-  //   fetchEditUserData();
-  // }, []);
+  useEffect(() => {
+    fetchEditUserData();
+  }, []);
 
   const cancelHandler = () => {
     navigate(-1);

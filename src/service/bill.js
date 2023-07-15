@@ -5,7 +5,7 @@ import {
   DELETE_BILL_API,
   GET_SINGLE_BILL_API,
 } from "../utils/constant";
-import { attachId, post, remove } from "./webRequest";
+import { attachId, get, post, put, remove } from "./webRequest";
 
 export const getBillList = async (body) => {
   const response = await post(BILL_LIST_API, body);
@@ -17,9 +17,9 @@ export const createBill = async (body) => {
   return response;
 };
 
-export const editBill = async (id) => {
+export const updateBill = async (payload, id) => {
   const newUrl = await attachId(UPDATE_BILL_API, id);
-  const response = await remove(newUrl);
+  const response = await put(newUrl, payload);
   return response;
 };
 
@@ -31,6 +31,6 @@ export const deleteBill = async (id) => {
 
 export const getBillById = async (id) => {
   const newUrl = await attachId(GET_SINGLE_BILL_API, id);
-  const response = await remove(newUrl);
+  const response = await get(newUrl);
   return response;
 };

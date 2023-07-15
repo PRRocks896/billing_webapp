@@ -25,7 +25,7 @@ import {
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
 
-const AddEditBill = () => {
+const AddEditBill = ({ tag }) => {
   const {
     fields,
     control,
@@ -44,7 +44,8 @@ const AddEditBill = () => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
-  } = useAddEditCreateBill();
+  } = useAddEditCreateBill(tag);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
