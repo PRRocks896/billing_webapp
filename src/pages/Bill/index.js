@@ -10,10 +10,9 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useNavigate } from "react-router-dom";
 import { useBill } from "./hook/useBill";
 
 const Bill = () => {
@@ -30,7 +29,6 @@ const Bill = () => {
     rights,
   } = useBill();
 
-  const navigate = useNavigate();
   let index = page * 10;
 
   return (
@@ -83,16 +81,6 @@ const Bill = () => {
                         {(rights.edit || rights.delete) && (
                           <TableCell>
                             <Box className="table-action-btn">
-                              {rights.edit && (
-                                <Button
-                                  className="btn btn-primary"
-                                  onClick={() =>
-                                    navigate(`/edit-bill/${row.id}`)
-                                  }
-                                >
-                                  <FiEdit3 size={15} />
-                                </Button>
-                              )}
                               {rights.delete && (
                                 <Button
                                   className="btn btn-primary"
