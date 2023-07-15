@@ -22,34 +22,6 @@ const AddCustomer = ({ tag }) => {
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                {/* <FormControl variant="standard" className="form-control">
-                  <div
-                    className={
-                      !errors.customer_name ? "input-field" : "border-error"
-                    }
-                  >
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      className="text-black input-label"
-                    >
-                      Customer Name *
-                    </Typography>
-                    <input
-                      type="text"
-                      placeholder="Enter customer name"
-                      {...register("customer_name", {
-                        required: "Customer name is required",
-                        maxLength: 100,
-                      })}
-                    />
-                  </div>
-                  {errors.customer_name && (
-                    <span style={{ fontSize: "14px", color: "red" }}>
-                      {errors.customer_name.message}
-                    </span>
-                  )}
-                </FormControl> */}
                 <Controller
                   name="customer_name"
                   control={control}
@@ -81,39 +53,6 @@ const AddCustomer = ({ tag }) => {
               </Grid>
               {/*  */}
               <Grid item xs={6}>
-                {/* <FormControl variant="standard" className="form-control">
-                  <div
-                    className={!errors.phone ? "input-field" : "border-error"}
-                  >
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      className="text-black input-label"
-                    >
-                      Phone *
-                    </Typography>
-                    <input
-                      type="number"
-                      placeholder="Enter phone number"
-                      {...register("phone", {
-                        required: "Phone number is required",
-                        maxLength: {
-                          value: 10,
-                          message: "Phone number must be 10 digit",
-                        },
-                        minLength: {
-                          value: 10,
-                          message: "Phone number must be 10 digit",
-                        },
-                      })}
-                    />
-                  </div>
-                  {errors.phone && (
-                    <span style={{ fontSize: "14px", color: "red" }}>
-                      {errors.phone.message}
-                    </span>
-                  )}
-                </FormControl> */}
                 <Controller
                   name="phone"
                   control={control}

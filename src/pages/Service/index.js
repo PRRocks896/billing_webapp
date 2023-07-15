@@ -14,7 +14,7 @@ import {
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useService } from "./hook/useService";
 
 const switchStyles = {
@@ -22,7 +22,7 @@ const switchStyles = {
   "&.MuiChecked": {
     color: "green",
   },
-  "&.Mui-checked + .MuiSwitch-track": {
+  "&.MuiChecked + .MuiSwitchTrack": {
     backgroundColor: "lightgreen", // Customize the track color when checked
   },
 };
@@ -75,53 +75,51 @@ const Service = () => {
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <>
-                        <TableRow key={row.id}>
-                          <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">
-                            {row.px_service_category?.name}
+                      <TableRow key={"service_" + row.id}>
+                        <TableCell align="left">{(index += 1)}</TableCell>
+                        <TableCell align="left">
+                          {row.px_service_category?.name}
+                        </TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
+                        <TableCell align="left">{row.amount}</TableCell>
+                        {rights.edit && (
+                          <TableCell>
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
                           </TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
-                          <TableCell align="left">{row.amount}</TableCell>
-                          {rights.edit && (
-                            <TableCell>
-                              <Switch
-                                style={switchStyles}
-                                checked={row.isActive}
-                                onChange={(e) => changeStatusHandler(e, row.id)}
-                              />
-                            </TableCell>
-                          )}
+                        )}
 
-                          {(rights.edit || rights.delete) && (
-                            <TableCell>
-                              <Box className="table-action-btn">
-                                {rights.edit && (
-                                  <Button
-                                    className="btn btn-primary"
-                                    onClick={() =>
-                                      navigate(`/edit-service/${row.id}`)
-                                    }
-                                  >
-                                    <FiEdit3 size={15} />
-                                  </Button>
-                                )}
-                                {rights.delete && (
-                                  <Button
-                                    className="btn btn-primary"
-                                    onClick={deleteBtnClickHandler.bind(
-                                      null,
-                                      row.id
-                                    )}
-                                  >
-                                    <FiTrash2 size={15} />
-                                  </Button>
-                                )}
-                              </Box>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      </>
+                        {(rights.edit || rights.delete) && (
+                          <TableCell>
+                            <Box className="table-action-btn">
+                              {rights.edit && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    navigate(`/edit-service/${row.id}`)
+                                  }
+                                >
+                                  <FiEdit3 size={15} />
+                                </Button>
+                              )}
+                              {rights.delete && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={deleteBtnClickHandler.bind(
+                                    null,
+                                    row.id
+                                  )}
+                                >
+                                  <FiTrash2 size={15} />
+                                </Button>
+                              )}
+                            </Box>
+                          </TableCell>
+                        )}
+                      </TableRow>
                     );
                   })
                 ) : (

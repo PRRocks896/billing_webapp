@@ -22,7 +22,7 @@ const switchStyles = {
   "&.MuiChecked": {
     color: "green",
   },
-  "&.Mui-checked + .MuiSwitch-track": {
+  "&.MuiChecked + .MuiSwitchTrack": {
     backgroundColor: "lightgreen", // Customize the track color when checked
   },
 };
@@ -73,7 +73,7 @@ const Module = () => {
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <TableRow key={index}>
+                      <TableRow key={"module_" + row.id}>
                         <TableCell align="left">{(index += 1)}</TableCell>
                         <TableCell align="left">{row.name}</TableCell>
                         {rights.edit && (

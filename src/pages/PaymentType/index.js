@@ -22,7 +22,7 @@ const switchStyles = {
   "&.MuiChecked": {
     color: "green",
   },
-  "&.Mui-checked + .MuiSwitch-track": {
+  "&.MuiChecked + .MuiSwitchTrack": {
     backgroundColor: "lightgreen", // Customize the track color when checked
   },
 };
@@ -74,49 +74,47 @@ const PaymentType = () => {
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <>
-                        <TableRow key={row.id}>
-                          <TableCell align="left">{(index += 1)}</TableCell>
-                          <TableCell align="left">{row.name}</TableCell>
-                          {rights.edit && (
-                            <TableCell>
-                              <Switch
-                                style={switchStyles}
-                                checked={row.isActive}
-                                onChange={(e) => changeStatusHandler(e, row.id)}
-                              />
-                            </TableCell>
-                          )}
+                      <TableRow key={"payment_" + row.id}>
+                        <TableCell align="left">{(index += 1)}</TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
+                        {rights.edit && (
+                          <TableCell>
+                            <Switch
+                              style={switchStyles}
+                              checked={row.isActive}
+                              onChange={(e) => changeStatusHandler(e, row.id)}
+                            />
+                          </TableCell>
+                        )}
 
-                          {(rights.edit || rights.delete) && (
-                            <TableCell>
-                              <Box className="table-action-btn">
-                                {rights.edit && (
-                                  <Button
-                                    className="btn btn-primary"
-                                    onClick={() =>
-                                      navigate(`/edit-payment-type/${row.id}`)
-                                    }
-                                  >
-                                    <FiEdit3 size={15} />
-                                  </Button>
-                                )}
-                                {rights.delete && (
-                                  <Button
-                                    className="btn btn-primary"
-                                    onClick={deleteBtnClickHandler.bind(
-                                      null,
-                                      row.id
-                                    )}
-                                  >
-                                    <FiTrash2 size={15} />
-                                  </Button>
-                                )}
-                              </Box>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      </>
+                        {(rights.edit || rights.delete) && (
+                          <TableCell>
+                            <Box className="table-action-btn">
+                              {rights.edit && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={() =>
+                                    navigate(`/edit-payment-type/${row.id}`)
+                                  }
+                                >
+                                  <FiEdit3 size={15} />
+                                </Button>
+                              )}
+                              {rights.delete && (
+                                <Button
+                                  className="btn btn-primary"
+                                  onClick={deleteBtnClickHandler.bind(
+                                    null,
+                                    row.id
+                                  )}
+                                >
+                                  <FiTrash2 size={15} />
+                                </Button>
+                              )}
+                            </Box>
+                          </TableCell>
+                        )}
+                      </TableRow>
                     );
                   })
                 ) : (
