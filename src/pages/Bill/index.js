@@ -66,7 +66,7 @@ const Bill = () => {
                 {visibleRows.length ? (
                   visibleRows.map((row) => {
                     return (
-                      <TableRow key={row.id}>
+                      <TableRow key={"bill_" + row.id}>
                         <TableCell align="left">{(index += 1)}</TableCell>
                         <TableCell align="left">{row.billNo}</TableCell>
                         <TableCell align="left">

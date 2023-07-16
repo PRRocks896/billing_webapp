@@ -7,12 +7,13 @@ import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
-import useLoader from "../../../hook/useLoader";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditCreateBill = (tag) => {
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -77,6 +78,7 @@ export const useAddEditCreateBill = (tag) => {
       reset();
     }
   };
+
   const dontSaveHandler = () => {
     reset();
     setIsSaveModalOpen(false);
@@ -243,6 +245,7 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   const onSubmit = async (data) => {
+    console.log("data", data);
     const detailData = data.detail.map((item) => {
       return {
         serviceID: item.serviceID.value,
@@ -254,7 +257,7 @@ export const useAddEditCreateBill = (tag) => {
     });
 
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           userID: loggedInUser.id,
@@ -291,7 +294,7 @@ export const useAddEditCreateBill = (tag) => {
           createdBy: loggedInUser.id,
         };
 
-        const response = await updateBill(payload);
+        const response = await updateBill(payload, id);
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
@@ -300,11 +303,11 @@ export const useAddEditCreateBill = (tag) => {
           showToast(response.messageCode, false);
         }
       }
-      loading(false);
+      dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
@@ -339,24 +342,24 @@ export const useAddEditCreateBill = (tag) => {
 
   const calculateGrandTotal = () => {
     const detail = getValues("detail");
+    console.log("detail", detail);
     let grandTotal = 0;
     detail.forEach((item) => {
       grandTotal += item.total;
     });
-
     setValue(`grandTotal`, grandTotal);
   };
 
   const fetchEditBillData = useCallback(async () => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (id) {
         const response = await getBillById(id);
-        console.log("response", response.data.detail);
 
         if (response.statusCode === 200) {
+          const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
-          setValue("date", new Date(response.data.createdAt));
+          setValue("date", date.toISOString().substring(0, 10));
           setValue("paymentID", {
             value: response.data.paymentID,
             label: response.data.px_payment_type.name,
@@ -370,7 +373,22 @@ export const useAddEditCreateBill = (tag) => {
             label: response.data.px_customer.name,
           });
           setValue("grandTotal", response.data.grandTotal);
-          setValue("detail", response.data.detail);
+
+          const items = response.data.detail.map((item) => {
+            return {
+              id: item.id,
+              index: item.index,
+              serviceID: {
+                value: item.serviceID,
+                label: item.service.name,
+              },
+              quantity: item.quantity,
+              rate: item.rate,
+              discount: item.discount,
+              total: item.total,
+            };
+          });
+          setValue("detail", items);
         } else {
           showToast(response.message, false);
         }
@@ -378,13 +396,13 @@ export const useAddEditCreateBill = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditBillData();
-  }, []);
+  }, [fetchEditBillData]);
 
   return {
     control,

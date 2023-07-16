@@ -7,12 +7,11 @@ import {
 } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
-import useLoader from "../../../hook/useLoader";
 import { useLocation } from "react-router";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useService = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const service = useSelector((state) => state.service.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -58,7 +57,7 @@ export const useService = () => {
   const fetchServiceData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -85,7 +84,7 @@ export const useService = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -114,7 +113,7 @@ export const useService = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteService(deleteId);
 
       if (response.statusCode === 200) {
@@ -128,7 +127,7 @@ export const useService = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

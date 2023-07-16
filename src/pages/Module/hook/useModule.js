@@ -2,17 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
 import {
   deleteModule,
   getModuleList,
   updateModule,
 } from "../../../service/module";
 import { moduleAction } from "../../../redux/module";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useModule = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const moduleData = useSelector((state) => state.module.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -58,7 +57,7 @@ export const useModule = () => {
   const fetchModuleData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -84,7 +83,7 @@ export const useModule = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -113,7 +112,7 @@ export const useModule = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteModule(deleteId);
 
       if (response.statusCode === 200) {
@@ -127,7 +126,7 @@ export const useModule = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

@@ -4,17 +4,17 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createModule,
   getModuleById,
   updateModule,
 } from "../../../service/module";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditModule = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -36,7 +36,7 @@ export const useAddEditModule = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           name: data.name,
@@ -70,13 +70,13 @@ export const useAddEditModule = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditModuleData = useCallback(async () => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (id) {
         const response = await getModuleById(id);
 
@@ -91,13 +91,13 @@ export const useAddEditModule = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, setValue, loading]);
+  }, [id, setValue, dispatch]);
 
   useEffect(() => {
     fetchEditModuleData();
-  }, []);
+  }, [fetchEditModuleData]);
 
   const cancelHandler = () => {
     navigate(-1);

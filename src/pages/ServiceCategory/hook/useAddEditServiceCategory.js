@@ -8,12 +8,13 @@ import {
 } from "../../../service/serviceCategory";
 import { useParams } from "react-router-dom";
 import { useCallback, useEffect } from "react";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditServiceCategory = (tag) => {
-  const { loading } = useLoader();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -27,7 +28,7 @@ export const useAddEditServiceCategory = (tag) => {
   // add - update logic
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           name: data.service_category,
@@ -58,14 +59,14 @@ export const useAddEditServiceCategory = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditServiceCategoryData = useCallback(async () => {
     try {
       if (id) {
-        loading(true);
+        dispatch(startLoading());
         const response = await getServiceCategoryById(id);
 
         if (response.statusCode === 200) {
@@ -77,9 +78,9 @@ export const useAddEditServiceCategory = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditServiceCategoryData();

@@ -2,13 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { deleteUser, getUserList, updateUser } from "../../../service/users";
 import { useDispatch, useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
 import { userAction } from "../../../redux/users";
 import { useLocation } from "react-router";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useUser = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const usersData = useSelector((state) => state.users.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -54,7 +53,7 @@ export const useUser = () => {
   const fetchUsersData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -80,7 +79,7 @@ export const useUser = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -109,7 +108,7 @@ export const useUser = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteUser(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
@@ -122,7 +121,7 @@ export const useUser = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

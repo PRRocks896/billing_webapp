@@ -4,13 +4,14 @@ import { useNavigate } from "react-router";
 import { createCity, getCityById, updateCity } from "../../../service/city";
 import { showToast } from "../../../utils/helper";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getStatesList } from "../../../service/states";
-import useLoader from "../../../hook/useLoader";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditCity = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const [statesOptions, setStatesOptions] = useState([]);
   const [states, setStates] = useState([]);
@@ -25,8 +26,8 @@ export const useAddEditCity = (tag) => {
   });
 
   const onSubmit = async (data) => {
-    loading(true);
     try {
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           name: data.cityName,
@@ -59,16 +60,16 @@ export const useAddEditCity = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditCityData = useCallback(async () => {
     try {
       if (id) {
-        loading(true);
+        dispatch(startLoading());
         const response = await getCityById(id);
-        loading(false);
+        dispatch(stopLoading());
         if (response.statusCode === 200) {
           setValue("cityName", response.data.name);
           setValue("stateId", {
@@ -82,9 +83,9 @@ export const useAddEditCity = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditCityData();
