@@ -4,14 +4,12 @@ import { getRolesList } from "../../../service/roles";
 import { showToast } from "../../../utils/helper";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import useLoader from "../../../hook/useLoader";
-import { createRight } from "../../../service/rights";
-import { useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../../redux/loader";
+import { useDispatch } from "react-redux";
 
 export const useRights = () => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
-
+  const dispatch = useDispatch();
   const [roleOptions, setRoleOptions] = useState([]);
   const [roles, setRoles] = useState([]);
   const [moduleList, setModuleList] = useState([]);
@@ -48,7 +46,7 @@ export const useRights = () => {
   // get role list
   useEffect(() => {
     try {
-      loading(true);
+      dispatch(startLoading());
       const fetchRolesData = async () => {
         const body = {
           where: {
@@ -76,14 +74,14 @@ export const useRights = () => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, []);
+  }, [dispatch]);
 
   // get module list
   useEffect(() => {
     try {
-      loading(true);
+      dispatch(startLoading());
       const fetchModuleData = async () => {
         const body = {
           where: {
@@ -112,13 +110,13 @@ export const useRights = () => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, []);
+  }, [dispatch]);
 
   const onSubmit = async (data) => {
     // try {
-    //   loading(true);
+    //    dispatch(startLoading());
     //   const payload = data.modules;
     //   const response = await createRight(payload);
     //   if (response.statusCode === 200) {
@@ -126,11 +124,11 @@ export const useRights = () => {
     //   } else {
     //     showToast(response.messageCode, false);
     //   }
-    //   loading(false);
+    //   dispatch(stopLoading());
     // } catch (error) {
     //   showToast(error.message, false);
     // } finally {
-    //   loading(false);
+    //   dispatch(stopLoading());
     // }
   };
 

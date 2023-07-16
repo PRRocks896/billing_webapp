@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
 import { getRoleList, updateRole, deleteRole } from "../../../service/role";
 import { roleAction } from "../../../redux/role";
 import { useLocation } from "react-router";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useRole = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const roleData = useSelector((state) => state.role.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -54,7 +53,7 @@ export const useRole = () => {
   const fetchRoleData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -80,7 +79,7 @@ export const useRole = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -109,7 +108,7 @@ export const useRole = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteRole(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
@@ -122,7 +121,7 @@ export const useRole = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

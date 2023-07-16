@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import useLoader from "../../../hook/useLoader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import {
   createCustomer,
@@ -10,10 +9,12 @@ import {
 } from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditCustomer = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -28,7 +29,7 @@ export const useAddEditCustomer = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           userID: loggedInUser.id,
@@ -68,13 +69,13 @@ export const useAddEditCustomer = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditCustomerData = useCallback(async () => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (id) {
         const response = await getCustomerById(id);
         if (response.statusCode === 200) {
@@ -88,9 +89,9 @@ export const useAddEditCustomer = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditCustomerData();

@@ -90,7 +90,7 @@ const Rights = () => {
                     {moduleList.length > 0 ? (
                       moduleList.map((row, index) => {
                         return (
-                          <TableRow key={row.id} id={row.id}>
+                          <TableRow key={"rights_" + row.id} id={row.id}>
                             <TableCell>{row.name}</TableCell>
                             <TableCell>
                               <Controller

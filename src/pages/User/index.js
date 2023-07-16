@@ -77,7 +77,7 @@ const User = () => {
                 {visibleRows.length ? (
                   visibleRows.map((row, i) => {
                     return (
-                      <TableRow key={i}>
+                      <TableRow key={"user_" + row.id}>
                         <TableCell align="left">{(index += 1)}</TableCell>
                         <TableCell align="left">
                           {row.firstName + " " + row.lastName}

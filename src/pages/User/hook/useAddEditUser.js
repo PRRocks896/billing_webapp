@@ -3,14 +3,15 @@ import { useNavigate } from "react-router";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
 import { createUser, getUserById } from "../../../service/users";
 import { getRolesList } from "../../../service/roles";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditUser = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -89,7 +90,7 @@ export const useAddEditUser = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           roleID: data.roleID.value,
@@ -110,18 +111,18 @@ export const useAddEditUser = (tag) => {
           showToast(response.messageCode, false);
         }
       }
-      loading(false);
+      dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditUserData = useCallback(async () => {
     try {
       if (id) {
-        loading(true);
+        dispatch(startLoading());
         const response = await getUserById(id);
         if (response.statusCode === 200) {
           const role = {
@@ -143,13 +144,13 @@ export const useAddEditUser = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditUserData();
-  }, []);
+  }, [fetchEditUserData]);
 
   const cancelHandler = () => {
     navigate(-1);

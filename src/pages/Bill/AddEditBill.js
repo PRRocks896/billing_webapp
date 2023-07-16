@@ -232,7 +232,13 @@ const AddEditBill = ({ tag }) => {
                     <TableRow key={field.id} id={field.id}>
                       <TableCell>
                         {fields.length === index + 1 && (
-                          <Button type="button" onClick={addRow}>
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              addRow();
+                              calculateTotal(index);
+                            }}
+                          >
                             <FiPlusCircle /> &nbsp;
                           </Button>
                         )}
@@ -404,7 +410,10 @@ const AddEditBill = ({ tag }) => {
                         {fields.length !== 1 && (
                           <Button
                             type="button"
-                            onClick={() => removeRow(index)}
+                            onClick={() => {
+                              removeRow(index);
+                              calculateTotal(index);
+                            }}
                           >
                             <FiMinusCircle /> &nbsp;
                           </Button>

@@ -81,6 +81,7 @@ const LayoutProvider = () => {
 
   // fetch logged in user details start
   const fetchLoggedInUser = useCallback(async () => {
+    // alert("fetchLoggedInUser");
     try {
       const response = await fetchLoggedInUserData();
       if (response.statusCode === 200) {
@@ -93,7 +94,7 @@ const LayoutProvider = () => {
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   useLayoutEffect(() => {
     if (token) {
