@@ -93,7 +93,7 @@ const LayoutProvider = () => {
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [dispatch, navigate, pathname]);
+  }, [dispatch, navigate]);
 
   useLayoutEffect(() => {
     if (token) {
