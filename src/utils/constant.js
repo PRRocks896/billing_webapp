@@ -80,4 +80,10 @@ export const GET_SINGLE_BILL_API = "api/bill/";
 export const UPDATE_BILL_API = "api/bill/";
 
 // rights apis
+export const RIGHT_LIST_API = "api/right/list";
+export const CREATE_BULK_RIGHT_API = "api/right/bulk-create";
 export const CREATE_RIGHT_API = "api/right";
+export const DELETE_RIGHT_API = "api/right/";
+export const GET_SINGLE_RIGHT_API = "api/right/";
+export const UPDATE_RIGHT_API = "api/right/";
+
