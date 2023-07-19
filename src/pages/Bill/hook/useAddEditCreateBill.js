@@ -39,7 +39,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset } = useForm({
+  const { control, getValues, setValue, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       billNo: "G" + billNo,
       paymentID: "",
@@ -69,6 +69,13 @@ export const useAddEditCreateBill = (tag) => {
     name: "detail",
     control: control,
   });
+
+  const selectedDetails = watch("detail");
+  console.log(selectedDetails);
+
+  useMemo(() => {
+    console.log("call", selectedDetails);
+  }, [selectedDetails]);
 
   const newBtnClickHandler = () => {
     if (

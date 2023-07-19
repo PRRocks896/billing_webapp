@@ -206,6 +206,32 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
+
+              <Grid item xs={2}>
+                <Controller
+                  name="roomNo"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Room No*"
+                        size="small"
+                        name="roomNo"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
             </Grid>
           </FormGroup>
         </Box>
