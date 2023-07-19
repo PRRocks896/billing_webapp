@@ -562,7 +562,11 @@ const AddEditBill = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item xs={1.5}>
-            <Button size="large" className="btn btn-tertiary">
+            <Button
+              size="large"
+              className="btn btn-tertiary"
+              sx={{ width: "max-content" }}
+            >
               <FiPrinter /> &nbsp; <p>Re-Print</p>
             </Button>
           </Grid>
