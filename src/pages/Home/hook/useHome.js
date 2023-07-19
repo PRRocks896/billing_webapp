@@ -8,7 +8,6 @@ export const useHome = () => {
   const fetchDashboardData = async () => {
     try {
       const resposen = await fetchDashboardDetails();
-      console.log(resposen);
       setDetails(resposen.data);
     } catch (error) {
       console.log(error);

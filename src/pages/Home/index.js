@@ -35,7 +35,6 @@ const customerData = [
 
 const Home = () => {
   const { details } = useHome();
-  console.log(details);
 
   return (
     <>
@@ -71,7 +70,7 @@ const Home = () => {
       <Grid container marginTop={2} spacing={1}>
         <Grid item xs={12} sm={12} md={6} lg={6} xxl={4}>
           <Box className="card">
-            <DonutChart />
+            <DonutChart chartData={details?.counts} />
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6} xxl={4}>
