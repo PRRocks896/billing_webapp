@@ -44,6 +44,7 @@ import User from "./pages/User";
 import AddEditUser from "./pages/User/AddEditUser";
 import Rights from "./pages/Rights";
 import Bill from "./pages/Bill";
+import Report from "./pages/Report";
 
 const token = getAuthToken();
 
@@ -308,6 +309,10 @@ const App = () => {
               Component={<AddEditModule tag="edit" />}
             />
           ),
+        },
+        {
+          path: "report",
+          element: <ProtectedRoute path="report" Component={<Report />} />,
         },
       ],
     },

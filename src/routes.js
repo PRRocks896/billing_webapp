@@ -26,6 +26,7 @@ import AddEditModule from "./pages/Module/addEditModule";
 import Rights from "./pages/Rights";
 import AddEditBill from "./pages/Bill/AddEditBill";
 import Bill from "./pages/Bill";
+import Report from "./pages/Report";
 
 const token = getAuthToken();
 
@@ -94,6 +95,8 @@ const routes = createBrowserRouter([
       { path: "edit-module/:id", element: <AddEditModule tag="edit" /> },
 
       { path: "rights", element: <Rights /> },
+
+      { path: "report", element: <Report /> },
     ],
   },
   { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },

@@ -14,13 +14,14 @@ import Box from "@mui/material/Box";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
+// import Avatar from "@mui/material/Avatar";
+// import Tooltip from "@mui/material/Tooltip";
 import Toolbar from "@mui/material/Toolbar";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import Clock from "../components/Clock";
 
 const drawerWidth = 300;
 
@@ -67,9 +68,9 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   // account dropdown
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openAccount = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -116,8 +117,12 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
           >
             {pageTitle}
           </Typography>
+          <Box className="username">
+            <Typography>{data?.firstName + " " + data?.lastName}</Typography>
+            <Clock />
+          </Box>
 
-          <Box className="account-dropdown">
+          {/* <Box className="account-dropdown">
             <Tooltip title="Profile Setting">
               <IconButton
                 onClick={handleClick}
@@ -130,7 +135,8 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 </Avatar>
               </IconButton>
             </Tooltip>
-          </Box>
+          </Box> */}
+
           <Menu
             className="account-dropdown-menu"
             anchorEl={anchorEl}
