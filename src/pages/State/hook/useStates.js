@@ -7,12 +7,11 @@ import {
   deleteState,
   updateStates,
 } from "../../../service/states";
-import useLoader from "../../../hook/useLoader";
 import { useLocation } from "react-router";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useStates = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const states = useSelector((state) => state.states.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -58,7 +57,7 @@ export const useStates = () => {
   const fetchStatesData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -74,7 +73,7 @@ export const useStates = () => {
         };
 
         const response = await getStatesList(body);
-        loading(false);
+        dispatch(stopLoading());
         if (response.statusCode === 200) {
           const payload = response.data.rows;
           setCount(response.data.count);
@@ -86,7 +85,7 @@ export const useStates = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -115,9 +114,9 @@ export const useStates = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteState(deleteId);
-      loading(false);
+      dispatch(stopLoading());
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(statesAction.removeStates({ id: deleteId }));
@@ -129,7 +128,7 @@ export const useStates = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

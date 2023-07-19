@@ -2,17 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { showToast } from "../../../utils/helper";
 import { customerActions } from "../../../redux/customer";
 import { useDispatch, useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
 import {
   deleteCustomer,
   getCustomerList,
   updateCustomer,
 } from "../../../service/customer";
 import { useLocation } from "react-router";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useCustomer = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const customerData = useSelector((state) => state.customer.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -58,7 +57,7 @@ export const useCustomer = () => {
   const fetchCustomerData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -84,7 +83,7 @@ export const useCustomer = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -110,7 +109,7 @@ export const useCustomer = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteCustomer(deleteId);
       if (response.statusCode === 200) {
         showToast(response.message, true);
@@ -123,7 +122,7 @@ export const useCustomer = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

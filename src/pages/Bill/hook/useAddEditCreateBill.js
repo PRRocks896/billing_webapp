@@ -7,12 +7,13 @@ import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { showToast } from "../../../utils/helper";
-import { useSelector } from "react-redux";
-import { createBill, getBillById } from "../../../service/bill";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { createBill, getBillById, updateBill } from "../../../service/bill";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
-export const useAddEditCreateBill = () => {
-  const { loading } = useLoader();
+export const useAddEditCreateBill = (tag) => {
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -34,7 +35,7 @@ export const useAddEditCreateBill = () => {
 
   const { control, getValues, setValue, handleSubmit, reset } = useForm({
     defaultValues: {
-      // billNo: "",
+      billNo: "",
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",
@@ -58,8 +59,12 @@ export const useAddEditCreateBill = () => {
     mode: "onBlur",
   });
 
+  const { fields, append, remove } = useFieldArray({
+    name: "detail",
+    control: control,
+  });
+
   const newBtnClickHandler = () => {
-    console.log(getValues("detail"));
     if (
       getValues("paymentID") ||
       getValues("customerID") ||
@@ -73,15 +78,11 @@ export const useAddEditCreateBill = () => {
       reset();
     }
   };
+
   const dontSaveHandler = () => {
     reset();
     setIsSaveModalOpen(false);
   };
-
-  const { fields, append, remove } = useFieldArray({
-    name: "detail",
-    control: control,
-  });
 
   // genrate payment options for drop down
   useMemo(() => {
@@ -244,6 +245,7 @@ export const useAddEditCreateBill = () => {
   }, []);
 
   const onSubmit = async (data) => {
+    console.log("data", data);
     const detailData = data.detail.map((item) => {
       return {
         serviceID: item.serviceID.value,
@@ -255,34 +257,57 @@ export const useAddEditCreateBill = () => {
     });
 
     try {
-      loading(true);
+      dispatch(startLoading());
+      if (tag === "add") {
+        const payload = {
+          userID: loggedInUser.id,
+          staffID: data.staffID.value,
+          customerID: data.customerID.value,
+          detail: detailData,
+          paymentID: data.paymentID.value,
+          grandTotal: data.grandTotal,
+          // phoneNumber: "",
+          // name: "",
+          cardNo: "",
+          createdBy: loggedInUser.id,
+        };
 
-      const payload = {
-        userID: loggedInUser.id,
-        staffID: data.staffID.value,
-        customerID: data.customerID.value,
-        detail: detailData,
-        paymentID: data.paymentID.value,
-        grandTotal: data.grandTotal,
-        // phoneNumber: "",
-        // name: "",
-        cardNo: "",
-        createdBy: loggedInUser.id,
-      };
+        const response = await createBill(payload);
 
-      const response = await createBill(payload);
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          navigate(-1);
+        } else {
+          showToast(response.messageCode, false);
+        }
+      } else if (tag === "edit") {
+        const payload = {
+          userID: loggedInUser.id,
+          staffID: data.staffID.value,
+          customerID: data.customerID.value,
+          detail: detailData,
+          paymentID: data.paymentID.value,
+          grandTotal: data.grandTotal,
+          // phoneNumber: "",
+          // name: "",
+          cardNo: "",
+          createdBy: loggedInUser.id,
+        };
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
-        navigate(-1);
-      } else {
-        showToast(response.messageCode, false);
+        const response = await updateBill(payload, id);
+
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          navigate(-1);
+        } else {
+          showToast(response.messageCode, false);
+        }
       }
-      loading(false);
+      dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
@@ -317,24 +342,53 @@ export const useAddEditCreateBill = () => {
 
   const calculateGrandTotal = () => {
     const detail = getValues("detail");
+    console.log("detail", detail);
     let grandTotal = 0;
     detail.forEach((item) => {
       grandTotal += item.total;
     });
-
     setValue(`grandTotal`, grandTotal);
   };
 
   const fetchEditBillData = useCallback(async () => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (id) {
         const response = await getBillById(id);
+
         if (response.statusCode === 200) {
-          // setValue("paymentID", response.data.paymentID);
-          // setValue("staffID", response.data.staffID);
-          // setValue("customerID", response.data.customerID);
-          // setValue("grandTotal", response.data.grandTotal);
+          const date = new Date(response.data.createdAt);
+          setValue("billNo", response.data.billNo);
+          setValue("date", date.toISOString().substring(0, 10));
+          setValue("paymentID", {
+            value: response.data.paymentID,
+            label: response.data.px_payment_type.name,
+          });
+          setValue("staffID", {
+            value: response.data.staffID,
+            label: response.data.px_staff.name,
+          });
+          setValue("customerID", {
+            value: response.data.customerID,
+            label: response.data.px_customer.name,
+          });
+          setValue("grandTotal", response.data.grandTotal);
+
+          const items = response.data.detail.map((item) => {
+            return {
+              id: item.id,
+              index: item.index,
+              serviceID: {
+                value: item.serviceID,
+                label: item.service.name,
+              },
+              quantity: item.quantity,
+              rate: item.rate,
+              discount: item.discount,
+              total: item.total,
+            };
+          });
+          setValue("detail", items);
         } else {
           showToast(response.message, false);
         }
@@ -342,13 +396,13 @@ export const useAddEditCreateBill = () => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditBillData();
-  }, []);
+  }, [fetchEditBillData]);
 
   return {
     control,

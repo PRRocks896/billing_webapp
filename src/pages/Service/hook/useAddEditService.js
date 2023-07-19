@@ -9,12 +9,13 @@ import {
   updateService,
 } from "../../../service/service";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditService = (tag) => {
-  const { loading } = useLoader();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
   const [serviceCategories, setServiceCategories] = useState([]);
@@ -31,7 +32,7 @@ export const useAddEditService = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           name: data.service_name,
@@ -68,7 +69,7 @@ export const useAddEditService = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
@@ -79,7 +80,7 @@ export const useAddEditService = (tag) => {
   const fetchEditServiceData = useCallback(async () => {
     try {
       if (id) {
-        loading(true);
+        dispatch(startLoading());
         const response = await getServiceById(id);
 
         if (response.statusCode === 200) {
@@ -97,9 +98,9 @@ export const useAddEditService = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditServiceData();

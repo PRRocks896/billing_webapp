@@ -25,7 +25,7 @@ import {
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
 
-const AddEditBill = () => {
+const AddEditBill = ({ tag }) => {
   const {
     fields,
     control,
@@ -44,7 +44,8 @@ const AddEditBill = () => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
-  } = useAddEditCreateBill();
+  } = useAddEditCreateBill(tag);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -231,7 +232,13 @@ const AddEditBill = () => {
                     <TableRow key={field.id} id={field.id}>
                       <TableCell>
                         {fields.length === index + 1 && (
-                          <Button type="button" onClick={addRow}>
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              addRow();
+                              calculateTotal(index);
+                            }}
+                          >
                             <FiPlusCircle /> &nbsp;
                           </Button>
                         )}
@@ -403,7 +410,10 @@ const AddEditBill = () => {
                         {fields.length !== 1 && (
                           <Button
                             type="button"
-                            onClick={() => removeRow(index)}
+                            onClick={() => {
+                              removeRow(index);
+                              calculateTotal(index);
+                            }}
                           >
                             <FiMinusCircle /> &nbsp;
                           </Button>

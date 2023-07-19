@@ -8,12 +8,13 @@ import {
 } from "../../../service/states";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditStates = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -25,7 +26,7 @@ export const useAddEditStates = (tag) => {
   });
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = { name: data.stateName, createdBy: loggedInUser.id };
         const response = await createStates(payload);
@@ -46,18 +47,18 @@ export const useAddEditStates = (tag) => {
           showToast(response.message, false);
         }
       }
-      loading(false);
+      dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditStateData = useCallback(async () => {
     try {
       if (id) {
-        loading(true);
+        dispatch(startLoading());
         const response = await getStatesById(id);
         if (response.statusCode === 200) {
           setValue("stateName", response.data.name);
@@ -68,9 +69,9 @@ export const useAddEditStates = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditStateData();

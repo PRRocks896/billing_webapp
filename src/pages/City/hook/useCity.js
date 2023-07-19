@@ -3,12 +3,11 @@ import { showToast } from "../../../utils/helper";
 import { deleteCity, getCityList, updateCity } from "../../../service/city";
 import { cityAction } from "../../../redux/city";
 import { useDispatch, useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
 import { useLocation } from "react-router";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useCity = () => {
   const dispatch = useDispatch();
-  const { loading } = useLoader();
   const { pathname } = useLocation();
   const cities = useSelector((state) => state.city.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -54,7 +53,7 @@ export const useCity = () => {
   const fetchCityData = useCallback(
     async (searchValue = "") => {
       try {
-        loading(true);
+        dispatch(startLoading());
         const body = {
           where: {
             // isActive: true,
@@ -81,7 +80,7 @@ export const useCity = () => {
       } catch (error) {
         showToast(error.message, false);
       } finally {
-        loading(false);
+        dispatch(stopLoading());
       }
     },
     [dispatch, page]
@@ -110,9 +109,9 @@ export const useCity = () => {
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
-      loading(true);
+      dispatch(startLoading());
       const response = await deleteCity(deleteId);
-      loading(false);
+      dispatch(stopLoading());
       if (response.statusCode === 200) {
         showToast(response.message, true);
         dispatch(cityAction.removeCity({ id: deleteId }));
@@ -124,7 +123,7 @@ export const useCity = () => {
       showToast(error.message, false);
     } finally {
       setIsDeleteModalOpen(false);
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 

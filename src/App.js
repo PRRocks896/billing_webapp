@@ -254,6 +254,15 @@ const App = () => {
             <ProtectedRoute path="bill" Component={<AddEditBill tag="add" />} />
           ),
         },
+        {
+          path: "edit-bill/:id",
+          element: (
+            <ProtectedRoute
+              path="bill"
+              Component={<AddEditBill tag="edit" />}
+            />
+          ),
+        },
 
         {
           path: "role",

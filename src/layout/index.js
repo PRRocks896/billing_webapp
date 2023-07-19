@@ -1,7 +1,7 @@
 import React, {
-  useCallback,
+  // useCallback,
   useEffect,
-  useLayoutEffect,
+  // useLayoutEffect,
   useState,
 } from "react";
 import Header from "./Header";
@@ -14,7 +14,6 @@ import { fetchLoggedInUserData } from "../service/loggedInUser";
 import { useDispatch } from "react-redux";
 
 const drawerWidth = 300;
-const token = getAuthToken();
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -46,6 +45,12 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const LayoutProvider = () => {
   const theme = useTheme();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const token = getAuthToken();
+
   const [open, setOpen] = useState(true);
 
   const handleDrawerOpen = () => {
@@ -74,32 +79,27 @@ const LayoutProvider = () => {
     };
   }, []);
 
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
-
   // fetch logged in user details start
-  const fetchLoggedInUser = useCallback(async () => {
+  const fetchLoggedInUser = async () => {
     try {
       const response = await fetchLoggedInUserData();
       if (response.statusCode === 200) {
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate(pathname);
       } else {
-        showToast(response.messageCode, false);
+        showToast(response.message, false);
       }
-      // navigate(window.location.pathname);
     } catch (error) {
       showToast(error.message, false);
     }
-  }, [dispatch]);
+  }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (token) {
       fetchLoggedInUser();
     }
-  }, [fetchLoggedInUser]);
+    // eslint-disable-next-line
+  }, [token]);
 
   if (
     pathname.startsWith("/login") ||

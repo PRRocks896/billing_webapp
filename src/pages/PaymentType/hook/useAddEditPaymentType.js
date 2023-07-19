@@ -8,12 +8,13 @@ import {
 } from "../../../service/paymentType";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditPaymentType = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -26,7 +27,7 @@ export const useAddEditPaymentType = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = { name: data.payment_type, createdBy: loggedInUser.id };
         const response = await createPaymentType(payload);
@@ -50,13 +51,13 @@ export const useAddEditPaymentType = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
   const fetchEditPaymentTypeData = useCallback(async () => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (id) {
         const response = await getPaymentTypeById(id);
         if (response.statusCode === 200) {
@@ -68,9 +69,9 @@ export const useAddEditPaymentType = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
-  }, [id, loading, setValue]);
+  }, [id, dispatch, setValue]);
 
   useEffect(() => {
     fetchEditPaymentTypeData();

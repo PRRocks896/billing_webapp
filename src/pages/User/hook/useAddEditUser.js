@@ -1,15 +1,18 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { showToast } from "../../../utils/helper";
-import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import useLoader from "../../../hook/useLoader";
-import { createUser } from "../../../service/users";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { createUser, getUserById } from "../../../service/users";
 import { getRolesList } from "../../../service/roles";
+import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditUser = (tag) => {
   const navigate = useNavigate();
-  const { loading } = useLoader();
+  const dispatch = useDispatch();
+
+  const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [roleOptions, setRoleOptions] = useState([]);
@@ -87,7 +90,7 @@ export const useAddEditUser = (tag) => {
 
   const onSubmit = async (data) => {
     try {
-      loading(true);
+      dispatch(startLoading());
       if (tag === "add") {
         const payload = {
           roleID: data.roleID.value,
@@ -108,46 +111,46 @@ export const useAddEditUser = (tag) => {
           showToast(response.messageCode, false);
         }
       }
-      loading(false);
+      dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
-      loading(false);
+      dispatch(stopLoading());
     }
   };
 
-  // const fetchEditUserData = useCallback(async () => {
-  //   try {
-  //     if (id) {
-  //       loading(true);
-  //       const response = await getUserById(id);
-  //       if (response.statusCode === 200) {
-  //         const role = {
-  //           value: response.data.roleID,
-  //           label: response.data.px_role.name,
-  //         };
+  const fetchEditUserData = useCallback(async () => {
+    try {
+      if (id) {
+        dispatch(startLoading());
+        const response = await getUserById(id);
+        if (response.statusCode === 200) {
+          const role = {
+            value: response.data.roleID,
+            label: response.data.px_role.name,
+          };
 
-  //         setValue("firstName", response.data.firstName);
-  //         setValue("lastName", response.data.lastName);
-  //         setValue("userName", response.data.userName);
-  //         setValue("roleID", role);
-  //         // setValue("password", response.data.password);
-  //         setValue("email", response.data.email);
-  //         setValue("phoneNumber", response.data.phoneNumber);
-  //       } else {
-  //         showToast(response.message, false);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     showToast(error.message, false);
-  //   } finally {
-  //     loading(false);
-  //   }
-  // }, [id, loading, setValue]);
+          setValue("firstName", response.data.firstName);
+          setValue("lastName", response.data.lastName);
+          setValue("userName", response.data.userName);
+          setValue("roleID", role);
+          // setValue("password", response.data.password);
+          setValue("email", response.data.email);
+          setValue("phoneNumber", response.data.phoneNumber);
+        } else {
+          showToast(response.message, false);
+        }
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }, [id, dispatch, setValue]);
 
-  // useEffect(() => {
-  //   fetchEditUserData();
-  // }, []);
+  useEffect(() => {
+    fetchEditUserData();
+  }, [fetchEditUserData]);
 
   const cancelHandler = () => {
     navigate(-1);
