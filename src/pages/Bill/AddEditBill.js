@@ -100,7 +100,7 @@ const AddEditBill = ({ tag }) => {
                           {...params}
                           label="Payment Type"
                           error={!!error}
-                          helperText={error?.message ? error.message : ""}
+                          // helperText={error?.message ? error.message : ""}
                         />
                       )}
                     />
@@ -134,7 +134,7 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        // helperText={error?.message ? error.message : ""}
                       />
                     </FormControl>
                   )}
@@ -165,7 +165,7 @@ const AddEditBill = ({ tag }) => {
                           {...params}
                           label="Customer"
                           error={!!error}
-                          helperText={error?.message ? error.message : ""}
+                          // helperText={error?.message ? error.message : ""}
                         />
                       )}
                     />
@@ -194,9 +194,9 @@ const AddEditBill = ({ tag }) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Sales Person"
+                          label="Staff Person"
                           error={!!error}
-                          helperText={error?.message ? error.message : ""}
+                          // helperText={error?.message ? error.message : ""}
                         />
                       )}
                     />
@@ -230,7 +230,7 @@ const AddEditBill = ({ tag }) => {
                 <TableBody>
                   {fields?.map((field, index) => (
                     <TableRow key={field.id} id={field.id}>
-                      <TableCell>
+                      <TableCell sx={{ margin: "0px", padding: "0px" }}>
                         {fields.length === index + 1 && (
                           <Button
                             type="button"
@@ -266,9 +266,7 @@ const AddEditBill = ({ tag }) => {
                                   {...params}
                                   label="Item"
                                   error={!!error}
-                                  helperText={
-                                    error?.message ? error.message : ""
-                                  }
+                                  // helperText={error?.message ? error.message : ""}
                                 />
                               )}
                             />
@@ -290,14 +288,16 @@ const AddEditBill = ({ tag }) => {
                               <TextField
                                 size="small"
                                 name="quantity"
+                                className="text-center"
                                 value={value}
+                                style={{ textAlign: "center" }}
                                 onChange={(e) => [
                                   onChange(e),
                                   calculateTotal(index),
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                helperText={error?.message ? error.message : ""}
+                                // helperText={error?.message ? error.message : ""}
                               />
                             </FormControl>
                           )}
@@ -315,13 +315,14 @@ const AddEditBill = ({ tag }) => {
                             fieldState: { error },
                           }) => (
                             <FormControl
-                              style={{ width: "60px" }}
+                              style={{ width: "90px" }}
                               size="small"
                               variant="standard"
                             >
                               <TextField
                                 size="small"
                                 name="rate"
+                                className="text-center"
                                 value={value}
                                 // onChange={onChange}
                                 onChange={(e) => [
@@ -330,7 +331,7 @@ const AddEditBill = ({ tag }) => {
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                helperText={error?.message ? error.message : ""}
+                                // helperText={error?.message ? error.message : ""}
                               />
                             </FormControl>
                           )}
@@ -355,6 +356,7 @@ const AddEditBill = ({ tag }) => {
                               <TextField
                                 size="small"
                                 name="discount"
+                                className="text-center"
                                 value={value}
                                 onChange={(e) => [
                                   onChange(e),
@@ -362,7 +364,7 @@ const AddEditBill = ({ tag }) => {
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                helperText={error?.message ? error.message : ""}
+                                // helperText={error?.message ? error.message : ""}
                               />
                             </FormControl>
                           )}
