@@ -13,6 +13,12 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
+  const billData = useSelector((state) => state.bill.data);
+
+  let billNo = useMemo(() => {
+    let firstBillNo = +billData[0].billNo.substring(1);
+    return (firstBillNo += 1).toString().padStart(8, "0");
+  }, [billData]);
 
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -35,7 +41,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const { control, getValues, setValue, handleSubmit, reset } = useForm({
     defaultValues: {
-      billNo: "",
+      billNo: "G" + billNo,
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",
