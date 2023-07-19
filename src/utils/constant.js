@@ -2,6 +2,9 @@
 export const LOGIN_API = "api/auth/login-via-email";
 export const GET_LOGGED_IN_USER_API = "api/user/get";
 
+// home apis
+export const FETCH_DASHBOARD_DETAILS_API = "api/dashboard";
+
 // customer apis
 export const CUSTOMER_LIST_API = "api/customer/list";
 export const CREATE_CUSTOMER_API = "api/customer";
@@ -80,4 +83,9 @@ export const GET_SINGLE_BILL_API = "api/bill/";
 export const UPDATE_BILL_API = "api/bill/";
 
 // rights apis
+export const RIGHT_LIST_API = "api/right/list";
+export const CREATE_BULK_RIGHT_API = "api/right/bulk-create";
 export const CREATE_RIGHT_API = "api/right";
+export const DELETE_RIGHT_API = "api/right/";
+export const GET_SINGLE_RIGHT_API = "api/right/";
+export const UPDATE_RIGHT_API = "api/right/";

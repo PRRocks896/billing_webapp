@@ -16,13 +16,14 @@ import {
   Typography,
 } from "@mui/material";
 import DonutChart from "../../components/DonutChart ";
+import { useHome } from "./hook/useHome";
 
-const ActivityCardArray = [
-  { title: "Customer", number: 467, icon: <PiUsersThree /> },
-  { title: "Staff", number: 23, icon: <FaRegHandshake /> },
-  { title: "Service", number: 12, icon: <SlSettings /> },
-  { title: "User", number: 78, icon: <FaRegUser size={"50px"} /> },
-];
+// const ActivityCardArray = [
+//   { title: "Customer", number: 467, icon: <PiUsersThree /> },
+//   { title: "Staff", number: 23, icon: <FaRegHandshake /> },
+//   { title: "Service", number: 12, icon: <SlSettings /> },
+//   { title: "User", number: 78, icon: <FaRegUser size={"50px"} /> },
+// ];
 
 const customerData = [
   { id: 1, name: "Customer 1", phone: 8575698421 },
@@ -33,20 +34,34 @@ const customerData = [
 ];
 
 const Home = () => {
+  const { details } = useHome();
+
   return (
     <>
       <Box className="card">
         {/* activity card */}
         <Box className="activity-card-wrapper mb-24">
           <Grid container spacing={3}>
-            {ActivityCardArray?.map((ActivityCardList, index) => (
-              <ActivityCard
-                key={index}
-                ActivityTitle={ActivityCardList.title}
-                ActivityNumber={ActivityCardList.number}
-                ActivityIcon={ActivityCardList.icon}
-              />
-            ))}
+            <ActivityCard
+              ActivityTitle={"Customer"}
+              ActivityNumber={details?.counts?.customerCount}
+              ActivityIcon={<PiUsersThree />}
+            />
+            <ActivityCard
+              ActivityTitle={"Staff"}
+              ActivityNumber={details?.counts?.staffCount}
+              ActivityIcon={<FaRegHandshake />}
+            />
+            <ActivityCard
+              ActivityTitle={"Service"}
+              ActivityNumber={details?.counts?.serviceCount}
+              ActivityIcon={<SlSettings />}
+            />
+            <ActivityCard
+              ActivityTitle={"User"}
+              ActivityNumber={details?.counts?.userCount}
+              ActivityIcon={<FaRegUser />}
+            />
           </Grid>
         </Box>
       </Box>
@@ -55,7 +70,7 @@ const Home = () => {
       <Grid container marginTop={2} spacing={1}>
         <Grid item xs={12} sm={12} md={6} lg={6} xxl={4}>
           <Box className="card">
-            <DonutChart />
+            <DonutChart chartData={details?.counts} />
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6} xxl={4}>

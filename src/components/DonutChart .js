@@ -3,14 +3,17 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Title, Legend } from "chart.js";
 Chart.register(ArcElement, Tooltip, Title, Legend);
 
-const DonutChart = () => {
+const DonutChart = ({ chartData }) => {
+  chartData = chartData || {};
+  const { customerCount, staffCount, serviceCount, userCount } = chartData;
+
   const data = {
-    labels: ["Customer", "User", "Service"],
+    labels: ["Customer", "Staff", "Service", "User"],
     datasets: [
       {
         label: "Customer",
-        data: [100, 100, 100],
-        backgroundColor: ["#364865", "#21ab58", "#777777"],
+        data: [customerCount, staffCount, serviceCount, userCount],
+        backgroundColor: ["#364865", "#21ab58", "#364865", "#777777"],
         hoverOffset: 4,
       },
     ],
