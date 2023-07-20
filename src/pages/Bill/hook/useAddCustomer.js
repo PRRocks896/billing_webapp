@@ -1,0 +1,55 @@
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { createCustomer } from "../../../service/customer";
+import { showToast } from "../../../utils/helper";
+import { startLoading, stopLoading } from "../../../redux/loader";
+
+export const useAddCustomer = (setIsCustomerModalOpen, fetchCustomersData) => {
+  const dispatch = useDispatch();
+
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      customer_name: "",
+      phone: "",
+      gender: "male",
+    },
+    mode: "onBlur",
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      dispatch(startLoading());
+      const payload = {
+        userID: loggedInUser.id,
+        // cityID: 1,
+        phoneNumber: data.phone,
+        gender: data.gender,
+        name: data.customer_name,
+        createdBy: loggedInUser.id,
+      };
+      const response = await createCustomer(payload);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        setIsCustomerModalOpen(false);
+        fetchCustomersData();
+        reset();
+      } else {
+        showToast(response.messageCode, false);
+      }
+    } catch (error) {
+      showToast(error.message, false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  };
+
+  return {
+    control,
+    handleSubmit,
+    onSubmit,
+    reset,
+  };
+};

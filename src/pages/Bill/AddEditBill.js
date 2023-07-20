@@ -47,6 +47,7 @@ const AddEditBill = ({ tag }) => {
     dontSaveHandler,
     isCustomerModalOpen,
     setIsCustomerModalOpen,
+    fetchCustomersData,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -687,6 +688,7 @@ const AddEditBill = ({ tag }) => {
       <AddCustomer
         isCustomerModalOpen={isCustomerModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
+        fetchCustomersData={fetchCustomersData}
       />
     </>
   );

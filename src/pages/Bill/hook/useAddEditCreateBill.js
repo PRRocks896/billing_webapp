@@ -16,7 +16,8 @@ export const useAddEditCreateBill = (tag) => {
   const billData = useSelector((state) => state.bill.data);
 
   let billNo = useMemo(() => {
-    let firstBillNo = +billData[0].billNo?.substring(1);
+    let firstBillNo = 0;
+    firstBillNo = billData.length && +billData[0].billNo?.substring(1);
     return (firstBillNo += 1).toString().padStart(8, "0");
   }, [billData]);
 
@@ -28,6 +29,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const [customersOptions, setCustomersOptions] = useState([]);
   const [customers, setCustomers] = useState([]);
+  console.log("Customer", customers);
 
   const [staffOptions, setStaffOptions] = useState([]);
   const [staff, setStaff] = useState([]);
@@ -147,35 +149,35 @@ export const useAddEditCreateBill = (tag) => {
   }, [customers]);
 
   // get customers list
-  useEffect(() => {
+  const fetchCustomersData = async () => {
     try {
-      const fetchCustomersData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
-        const response = await getCustomerList(body);
-
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setCustomers(payload);
-        } else if (response.statusCode === 404) {
-          const payload = [];
-          setCustomers(payload);
-        }
+      const body = {
+        where: {
+          isActive: true,
+          isDeleted: false,
+        },
+        pagination: {
+          sortBy: "createdAt",
+          descending: true,
+          rows: 1000,
+          page: 1,
+        },
       };
-      fetchCustomersData();
+      const response = await getCustomerList(body);
+
+      if (response.statusCode === 200) {
+        const payload = response.data.rows;
+        setCustomers(payload);
+      } else if (response.statusCode === 404) {
+        const payload = [];
+        setCustomers(payload);
+      }
     } catch (error) {
       showToast(error.message, false);
     }
+  };
+  useEffect(() => {
+    fetchCustomersData();
   }, []);
 
   // genrate staff options for drop down
@@ -439,5 +441,6 @@ export const useAddEditCreateBill = (tag) => {
     dontSaveHandler,
     isCustomerModalOpen,
     setIsCustomerModalOpen,
+    fetchCustomersData,
   };
 };
