@@ -25,6 +25,7 @@ import {
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
 import AddCustomer from "./AddCustomer";
+import AddStaff from "./AddStaff";
 
 const AddEditBill = ({ tag }) => {
   const {
@@ -45,9 +46,14 @@ const AddEditBill = ({ tag }) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+
     isCustomerModalOpen,
     setIsCustomerModalOpen,
     fetchCustomersData,
+
+    isStaffModalOpen,
+    setIsStaffModalOpen,
+    fetchStaffData,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -243,12 +249,16 @@ const AddEditBill = ({ tag }) => {
                     />
                   )}
                   rules={{
-                    required: "Please Select Sales Person",
+                    required: "Please Select Staff Person",
                   }}
                 />
               </Grid>
               <Grid item xs={1}>
-                <Button type="button" className="btn">
+                <Button
+                  type="button"
+                  className="btn"
+                  onClick={() => setIsStaffModalOpen(true)}
+                >
                   <FiPlusCircle />
                 </Button>
               </Grid>
@@ -689,6 +699,12 @@ const AddEditBill = ({ tag }) => {
         isCustomerModalOpen={isCustomerModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         fetchCustomersData={fetchCustomersData}
+      />
+
+      <AddStaff
+        isStaffModalOpen={isStaffModalOpen}
+        setIsStaffModalOpen={setIsStaffModalOpen}
+        fetchStaffData={fetchStaffData}
       />
     </>
   );

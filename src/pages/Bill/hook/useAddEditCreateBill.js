@@ -39,6 +39,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -189,35 +190,35 @@ export const useAddEditCreateBill = (tag) => {
   }, [staff]);
 
   // get staff list
-  useEffect(() => {
+  const fetchStaffData = async () => {
     try {
-      const fetchStaffData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
-        const response = await getStaffList(body);
-
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setStaff(payload);
-        } else if (response.statusCode === 404) {
-          const payload = [];
-          setStaff(payload);
-        }
+      const body = {
+        where: {
+          isActive: true,
+          isDeleted: false,
+        },
+        pagination: {
+          sortBy: "createdAt",
+          descending: true,
+          rows: 1000,
+          page: 1,
+        },
       };
-      fetchStaffData();
+      const response = await getStaffList(body);
+
+      if (response.statusCode === 200) {
+        const payload = response.data.rows;
+        setStaff(payload);
+      } else if (response.statusCode === 404) {
+        const payload = [];
+        setStaff(payload);
+      }
     } catch (error) {
       showToast(error.message, false);
     }
+  };
+  useEffect(() => {
+    fetchStaffData();
   }, []);
 
   // genrate service options for drop down
@@ -439,8 +440,13 @@ export const useAddEditCreateBill = (tag) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+
     isCustomerModalOpen,
     setIsCustomerModalOpen,
     fetchCustomersData,
+
+    isStaffModalOpen,
+    setIsStaffModalOpen,
+    fetchStaffData,
   };
 };
