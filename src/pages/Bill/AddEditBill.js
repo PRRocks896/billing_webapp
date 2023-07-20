@@ -24,6 +24,7 @@ import {
 } from "react-icons/fi";
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
+import AddCustomer from "./AddCustomer";
 
 const AddEditBill = ({ tag }) => {
   const {
@@ -44,6 +45,8 @@ const AddEditBill = ({ tag }) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+    isCustomerModalOpen,
+    setIsCustomerModalOpen,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -143,6 +146,33 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
+
+              <Grid item xs={2}>
+                <Controller
+                  name="roomNo"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Room No*"
+                        size="small"
+                        name="roomNo"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+
               <Grid item xs={3}>
                 <Controller
                   control={control}
@@ -175,6 +205,16 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
+              <Grid item xs={1}>
+                <Button
+                  type="button"
+                  className="btn"
+                  onClick={() => setIsCustomerModalOpen(true)}
+                >
+                  <FiPlusCircle />
+                </Button>
+              </Grid>
+
               <Grid item xs={3}>
                 <Controller
                   control={control}
@@ -206,31 +246,10 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-
-              <Grid item xs={2}>
-                <Controller
-                  name="roomNo"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Room No*"
-                        size="small"
-                        name="roomNo"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                      />
-                    </FormControl>
-                  )}
-                />
+              <Grid item xs={1}>
+                <Button type="button" className="btn">
+                  <FiPlusCircle />
+                </Button>
               </Grid>
             </Grid>
           </FormGroup>
@@ -597,7 +616,10 @@ const AddEditBill = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item xs={1.5}>
-            <Button onClick={() => navigate(-1)} className="btn btn-tertiary">
+            <Button
+              onClick={() => navigate("/bill")}
+              className="btn btn-tertiary"
+            >
               <FiXCircle /> &nbsp; <p>Close</p>
             </Button>
           </Grid>
@@ -661,6 +683,11 @@ const AddEditBill = ({ tag }) => {
           </Fade>
         </Modal>
       </>
+
+      <AddCustomer
+        isCustomerModalOpen={isCustomerModalOpen}
+        setIsCustomerModalOpen={setIsCustomerModalOpen}
+      />
     </>
   );
 };

@@ -16,7 +16,7 @@ export const useAddEditCreateBill = (tag) => {
   const billData = useSelector((state) => state.bill.data);
 
   let billNo = useMemo(() => {
-    let firstBillNo = +billData[0].billNo.substring(1);
+    let firstBillNo = +billData[0].billNo?.substring(1);
     return (firstBillNo += 1).toString().padStart(8, "0");
   }, [billData]);
 
@@ -36,6 +36,7 @@ export const useAddEditCreateBill = (tag) => {
   const [service, setService] = useState([]);
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -436,5 +437,7 @@ export const useAddEditCreateBill = (tag) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+    isCustomerModalOpen,
+    setIsCustomerModalOpen,
   };
 };
