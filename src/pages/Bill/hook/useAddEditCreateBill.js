@@ -29,7 +29,6 @@ export const useAddEditCreateBill = (tag) => {
 
   const [customersOptions, setCustomersOptions] = useState([]);
   const [customers, setCustomers] = useState([]);
-  console.log("Customer", customers);
 
   const [staffOptions, setStaffOptions] = useState([]);
   const [staff, setStaff] = useState([]);
@@ -49,7 +48,9 @@ export const useAddEditCreateBill = (tag) => {
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",
+      Phone: "",
       staffID: "",
+      roomNo: "",
       // discount: 0,
       // discountAmount: 0,
       // exchange: 0,
@@ -74,9 +75,17 @@ export const useAddEditCreateBill = (tag) => {
     control: control,
   });
 
-  const selectedDetails = watch("detail");
-  console.log(selectedDetails);
+  const selectedCus = watch("customerID");
+  useMemo(() => {
+    setValue(
+      "Phone",
+      selectedCus === "" || selectedCus === null
+        ? ""
+        : customers.find((row) => row.id === selectedCus.value).phoneNumber
+    );
+  }, [customers, selectedCus, setValue]);
 
+  const selectedDetails = watch("detail");
   useMemo(() => {
     console.log("call", selectedDetails);
   }, [selectedDetails]);
@@ -88,7 +97,8 @@ export const useAddEditCreateBill = (tag) => {
       getValues("staffID") ||
       getValues("grandTotal") ||
       getValues("detail.0.quantity") ||
-      getValues("detail.0.serviceID")
+      getValues("detail.0.serviceID") ||
+      getValues("roomNo")
     ) {
       setIsSaveModalOpen(true);
     } else {
@@ -150,7 +160,7 @@ export const useAddEditCreateBill = (tag) => {
   }, [customers]);
 
   // get customers list
-  const fetchCustomersData = async () => {
+  const fetchCustomersData = useCallback(async () => {
     try {
       const body = {
         where: {
@@ -176,10 +186,10 @@ export const useAddEditCreateBill = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     }
-  };
+  }, []);
   useEffect(() => {
     fetchCustomersData();
-  }, []);
+  }, [fetchCustomersData]);
 
   // genrate staff options for drop down
   useMemo(() => {
@@ -190,7 +200,7 @@ export const useAddEditCreateBill = (tag) => {
   }, [staff]);
 
   // get staff list
-  const fetchStaffData = async () => {
+  const fetchStaffData = useCallback(async () => {
     try {
       const body = {
         where: {
@@ -216,10 +226,10 @@ export const useAddEditCreateBill = (tag) => {
     } catch (error) {
       showToast(error.message, false);
     }
-  };
+  }, []);
   useEffect(() => {
     fetchStaffData();
-  }, []);
+  }, [fetchStaffData]);
 
   // genrate service options for drop down
   useMemo(() => {
@@ -283,7 +293,7 @@ export const useAddEditCreateBill = (tag) => {
           detail: detailData,
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
-          // phoneNumber: "",
+          phoneNumber: data.Phone,
           // name: "",
           cardNo: "",
           createdBy: loggedInUser.id,
