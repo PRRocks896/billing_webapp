@@ -92,7 +92,7 @@ const LayoutProvider = () => {
     } catch (error) {
       showToast(error.message, false);
     }
-  }
+  };
 
   useEffect(() => {
     if (token) {

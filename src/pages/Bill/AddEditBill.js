@@ -24,6 +24,8 @@ import {
 } from "react-icons/fi";
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
+import AddCustomer from "./AddCustomer";
+import AddStaff from "./AddStaff";
 
 const AddEditBill = ({ tag }) => {
   const {
@@ -44,6 +46,16 @@ const AddEditBill = ({ tag }) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+
+    isCustomerModalOpen,
+    setIsCustomerModalOpen,
+    fetchCustomersData,
+
+    isStaffModalOpen,
+    setIsStaffModalOpen,
+    fetchStaffData,
+
+    setQtyRateValuesHandler,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -100,7 +112,7 @@ const AddEditBill = ({ tag }) => {
                           {...params}
                           label="Payment Type"
                           error={!!error}
-                          helperText={error?.message ? error.message : ""}
+                          // helperText={error?.message ? error.message : ""}
                         />
                       )}
                     />
@@ -134,7 +146,7 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        // helperText={error?.message ? error.message : ""}
                       />
                     </FormControl>
                   )}
@@ -143,6 +155,78 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
+
+              <Grid item xs={2}>
+                <Controller
+                  name="roomNo"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Room No*"
+                        size="small"
+                        name="roomNo"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please enter room no",
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <Controller
+                  control={control}
+                  name={`staffID`}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      id="staffID"
+                      options={staffOptions}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={(event, newValue) => onChange(newValue)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Staff Person"
+                          error={!!error}
+                          // helperText={error?.message ? error.message : ""}
+                        />
+                      )}
+                    />
+                  )}
+                  rules={{
+                    required: "Please Select Staff Person",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={1}>
+                <Button
+                  type="button"
+                  className="btn"
+                  onClick={() => setIsStaffModalOpen(true)}
+                >
+                  <FiPlusCircle />
+                </Button>
+              </Grid>
+
               <Grid item xs={3}>
                 <Controller
                   control={control}
@@ -165,7 +249,7 @@ const AddEditBill = ({ tag }) => {
                           {...params}
                           label="Customer"
                           error={!!error}
-                          helperText={error?.message ? error.message : ""}
+                          // helperText={error?.message ? error.message : ""}
                         />
                       )}
                     />
@@ -177,34 +261,38 @@ const AddEditBill = ({ tag }) => {
               </Grid>
               <Grid item xs={3}>
                 <Controller
+                  name="Phone"
                   control={control}
-                  name={`staffID`}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
                   }) => (
-                    <Autocomplete
+                    <FormControl
                       size="small"
-                      disablePortal
-                      id="staffID"
-                      options={staffOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Sales Person"
-                          error={!!error}
-                          helperText={error?.message ? error.message : ""}
-                        />
-                      )}
-                    />
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        disabled
+                        label="Phone"
+                        size="small"
+                        name="Phone"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                      />
+                    </FormControl>
                   )}
-                  rules={{
-                    required: "Please Select Sales Person",
-                  }}
                 />
+              </Grid>
+              <Grid item xs={1}>
+                <Button
+                  type="button"
+                  className="btn"
+                  onClick={() => setIsCustomerModalOpen(true)}
+                >
+                  <FiPlusCircle />
+                </Button>
               </Grid>
             </Grid>
           </FormGroup>
@@ -230,7 +318,7 @@ const AddEditBill = ({ tag }) => {
                 <TableBody>
                   {fields?.map((field, index) => (
                     <TableRow key={field.id} id={field.id}>
-                      <TableCell>
+                      <TableCell sx={{ margin: "0px", padding: "0px" }}>
                         {fields.length === index + 1 && (
                           <Button
                             type="button"
@@ -260,15 +348,16 @@ const AddEditBill = ({ tag }) => {
                               sx={{ width: 300 }}
                               value={value}
                               onBlur={onBlur}
-                              onChange={(event, newValue) => onChange(newValue)}
+                              onChange={(event, newValue) => [
+                                onChange(newValue),
+                                setQtyRateValuesHandler(newValue.value, index),
+                              ]}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
                                   label="Item"
                                   error={!!error}
-                                  helperText={
-                                    error?.message ? error.message : ""
-                                  }
+                                  // helperText={error?.message ? error.message : ""}
                                 />
                               )}
                             />
@@ -290,14 +379,16 @@ const AddEditBill = ({ tag }) => {
                               <TextField
                                 size="small"
                                 name="quantity"
+                                className="text-center"
                                 value={value}
+                                style={{ textAlign: "center" }}
                                 onChange={(e) => [
                                   onChange(e),
                                   calculateTotal(index),
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                helperText={error?.message ? error.message : ""}
+                                // helperText={error?.message ? error.message : ""}
                               />
                             </FormControl>
                           )}
@@ -315,13 +406,14 @@ const AddEditBill = ({ tag }) => {
                             fieldState: { error },
                           }) => (
                             <FormControl
-                              style={{ width: "60px" }}
+                              style={{ width: "90px" }}
                               size="small"
                               variant="standard"
                             >
                               <TextField
                                 size="small"
                                 name="rate"
+                                className="text-center"
                                 value={value}
                                 // onChange={onChange}
                                 onChange={(e) => [
@@ -330,7 +422,7 @@ const AddEditBill = ({ tag }) => {
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                helperText={error?.message ? error.message : ""}
+                                // helperText={error?.message ? error.message : ""}
                               />
                             </FormControl>
                           )}
@@ -355,6 +447,7 @@ const AddEditBill = ({ tag }) => {
                               <TextField
                                 size="small"
                                 name="discount"
+                                className="text-center"
                                 value={value}
                                 onChange={(e) => [
                                   onChange(e),
@@ -362,7 +455,7 @@ const AddEditBill = ({ tag }) => {
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                helperText={error?.message ? error.message : ""}
+                                // helperText={error?.message ? error.message : ""}
                               />
                             </FormControl>
                           )}
@@ -560,12 +653,19 @@ const AddEditBill = ({ tag }) => {
             </Button>
           </Grid>
           <Grid item xs={1.5}>
-            <Button size="large" className="btn btn-tertiary">
+            <Button
+              size="large"
+              className="btn btn-tertiary"
+              sx={{ width: "max-content" }}
+            >
               <FiPrinter /> &nbsp; <p>Re-Print</p>
             </Button>
           </Grid>
           <Grid item xs={1.5}>
-            <Button onClick={() => navigate(-1)} className="btn btn-tertiary">
+            <Button
+              onClick={() => navigate("/bill")}
+              className="btn btn-tertiary"
+            >
               <FiXCircle /> &nbsp; <p>Close</p>
             </Button>
           </Grid>
@@ -629,6 +729,18 @@ const AddEditBill = ({ tag }) => {
           </Fade>
         </Modal>
       </>
+
+      <AddCustomer
+        isCustomerModalOpen={isCustomerModalOpen}
+        setIsCustomerModalOpen={setIsCustomerModalOpen}
+        fetchCustomersData={fetchCustomersData}
+      />
+
+      <AddStaff
+        isStaffModalOpen={isStaffModalOpen}
+        setIsStaffModalOpen={setIsStaffModalOpen}
+        fetchStaffData={fetchStaffData}
+      />
     </>
   );
 };

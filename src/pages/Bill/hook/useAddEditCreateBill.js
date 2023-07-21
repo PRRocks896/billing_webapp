@@ -13,6 +13,18 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
+  const billData = useSelector((state) => state.bill.data);
+
+  let billNo = useMemo(() => {
+    let firstBillNo = 0;
+    if (billData.length) {
+      firstBillNo = +billData[0].billNo?.substring(1);
+      window.localStorage.setItem("billNo", firstBillNo);
+    } else {
+      firstBillNo = +window.localStorage.getItem("billNo");
+    }
+    return (firstBillNo += 1).toString().padStart(8, "0");
+  }, [billData]);
 
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -30,16 +42,20 @@ export const useAddEditCreateBill = (tag) => {
   const [service, setService] = useState([]);
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset } = useForm({
+  const { control, getValues, setValue, handleSubmit, reset, watch } = useForm({
     defaultValues: {
-      billNo: "",
+      billNo: "G" + billNo,
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",
+      Phone: "",
       staffID: "",
+      roomNo: "",
       // discount: 0,
       // discountAmount: 0,
       // exchange: 0,
@@ -64,6 +80,17 @@ export const useAddEditCreateBill = (tag) => {
     control: control,
   });
 
+  const selectedCus = watch("customerID");
+  console.log("selectedCus", selectedCus);
+  useMemo(() => {
+    setValue(
+      "Phone",
+      selectedCus === "" || selectedCus === null
+        ? ""
+        : customers.find((row) => row.id === selectedCus.value)?.phoneNumber
+    );
+  }, [customers, selectedCus, setValue]);
+
   const newBtnClickHandler = () => {
     if (
       getValues("paymentID") ||
@@ -71,7 +98,8 @@ export const useAddEditCreateBill = (tag) => {
       getValues("staffID") ||
       getValues("grandTotal") ||
       getValues("detail.0.quantity") ||
-      getValues("detail.0.serviceID")
+      getValues("detail.0.serviceID") ||
+      getValues("roomNo")
     ) {
       setIsSaveModalOpen(true);
     } else {
@@ -133,36 +161,36 @@ export const useAddEditCreateBill = (tag) => {
   }, [customers]);
 
   // get customers list
-  useEffect(() => {
+  const fetchCustomersData = useCallback(async () => {
     try {
-      const fetchCustomersData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
-        const response = await getCustomerList(body);
-
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setCustomers(payload);
-        } else if (response.statusCode === 404) {
-          const payload = [];
-          setCustomers(payload);
-        }
+      const body = {
+        where: {
+          isActive: true,
+          isDeleted: false,
+        },
+        pagination: {
+          sortBy: "createdAt",
+          descending: true,
+          rows: 1000,
+          page: 1,
+        },
       };
-      fetchCustomersData();
+      const response = await getCustomerList(body);
+
+      if (response.statusCode === 200) {
+        const payload = response.data.rows;
+        setCustomers(payload);
+      } else if (response.statusCode === 404) {
+        const payload = [];
+        setCustomers(payload);
+      }
     } catch (error) {
       showToast(error.message, false);
     }
   }, []);
+  useEffect(() => {
+    fetchCustomersData();
+  }, [fetchCustomersData]);
 
   // genrate staff options for drop down
   useMemo(() => {
@@ -173,36 +201,36 @@ export const useAddEditCreateBill = (tag) => {
   }, [staff]);
 
   // get staff list
-  useEffect(() => {
+  const fetchStaffData = useCallback(async () => {
     try {
-      const fetchStaffData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
-        const response = await getStaffList(body);
-
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setStaff(payload);
-        } else if (response.statusCode === 404) {
-          const payload = [];
-          setStaff(payload);
-        }
+      const body = {
+        where: {
+          isActive: true,
+          isDeleted: false,
+        },
+        pagination: {
+          sortBy: "createdAt",
+          descending: true,
+          rows: 1000,
+          page: 1,
+        },
       };
-      fetchStaffData();
+      const response = await getStaffList(body);
+
+      if (response.statusCode === 200) {
+        const payload = response.data.rows;
+        setStaff(payload);
+      } else if (response.statusCode === 404) {
+        const payload = [];
+        setStaff(payload);
+      }
     } catch (error) {
       showToast(error.message, false);
     }
   }, []);
+  useEffect(() => {
+    fetchStaffData();
+  }, [fetchStaffData]);
 
   // genrate service options for drop down
   useMemo(() => {
@@ -266,7 +294,8 @@ export const useAddEditCreateBill = (tag) => {
           detail: detailData,
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
-          // phoneNumber: "",
+          phoneNumber: data.Phone,
+          roomNo: data.roomNo,
           // name: "",
           cardNo: "",
           createdBy: loggedInUser.id,
@@ -288,6 +317,7 @@ export const useAddEditCreateBill = (tag) => {
           detail: detailData,
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
+          roomNo: data.roomNo,
           // phoneNumber: "",
           // name: "",
           cardNo: "",
@@ -350,15 +380,24 @@ export const useAddEditCreateBill = (tag) => {
     setValue(`grandTotal`, grandTotal);
   };
 
+  const setQtyRateValuesHandler = (id, index) => {
+    setValue(`detail.${index}.quantity`, 1);
+    setValue(`detail.${index}.discount`, 0);
+    const ser = service.find((row) => row.id === id);
+    setValue(`detail.${index}.rate`, ser.amount);
+    calculateTotal(index);
+  };
+
   const fetchEditBillData = useCallback(async () => {
     try {
       dispatch(startLoading());
       if (id) {
         const response = await getBillById(id);
-
+        console.log(response.data);
         if (response.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
+          setValue("roomNo", response.data.roomNo);
           setValue("date", date.toISOString().substring(0, 10));
           setValue("paymentID", {
             value: response.data.paymentID,
@@ -423,5 +462,15 @@ export const useAddEditCreateBill = (tag) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+
+    isCustomerModalOpen,
+    setIsCustomerModalOpen,
+    fetchCustomersData,
+
+    isStaffModalOpen,
+    setIsStaffModalOpen,
+    fetchStaffData,
+
+    setQtyRateValuesHandler,
   };
 };
