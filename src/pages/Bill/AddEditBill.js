@@ -91,7 +91,7 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={2.5}>
                 <Controller
                   control={control}
                   name={`paymentID`}
@@ -156,7 +156,7 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
 
-              <Grid item xs={2}>
+              <Grid item xs={1.5}>
                 <Controller
                   name="roomNo"
                   control={control}
