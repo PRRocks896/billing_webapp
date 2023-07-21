@@ -17,7 +17,12 @@ export const useAddEditCreateBill = (tag) => {
 
   let billNo = useMemo(() => {
     let firstBillNo = 0;
-    firstBillNo = billData.length && +billData[0].billNo?.substring(1);
+    if (billData.length) {
+      firstBillNo = +billData[0].billNo?.substring(1);
+      window.localStorage.setItem("billNo", firstBillNo);
+    } else {
+      firstBillNo = +window.localStorage.getItem("billNo");
+    }
     return (firstBillNo += 1).toString().padStart(8, "0");
   }, [billData]);
 
