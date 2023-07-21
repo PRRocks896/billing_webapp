@@ -81,12 +81,13 @@ export const useAddEditCreateBill = (tag) => {
   });
 
   const selectedCus = watch("customerID");
+  console.log("selectedCus", selectedCus);
   useMemo(() => {
     setValue(
       "Phone",
       selectedCus === "" || selectedCus === null
         ? ""
-        : customers.find((row) => row.id === selectedCus.value).phoneNumber
+        : customers.find((row) => row.id === selectedCus.value)?.phoneNumber
     );
   }, [customers, selectedCus, setValue]);
 
@@ -294,6 +295,7 @@ export const useAddEditCreateBill = (tag) => {
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
           phoneNumber: data.Phone,
+          roomNo: data.roomNo,
           // name: "",
           cardNo: "",
           createdBy: loggedInUser.id,
@@ -315,6 +317,7 @@ export const useAddEditCreateBill = (tag) => {
           detail: detailData,
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
+          roomNo: data.roomNo,
           // phoneNumber: "",
           // name: "",
           cardNo: "",
@@ -390,10 +393,11 @@ export const useAddEditCreateBill = (tag) => {
       dispatch(startLoading());
       if (id) {
         const response = await getBillById(id);
-
+        console.log(response.data);
         if (response.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
+          setValue("roomNo", response.data.roomNo);
           setValue("date", date.toISOString().substring(0, 10));
           setValue("paymentID", {
             value: response.data.paymentID,
