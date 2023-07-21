@@ -85,11 +85,6 @@ export const useAddEditCreateBill = (tag) => {
     );
   }, [customers, selectedCus, setValue]);
 
-  const selectedDetails = watch("detail");
-  useMemo(() => {
-    console.log("call", selectedDetails);
-  }, [selectedDetails]);
-
   const newBtnClickHandler = () => {
     if (
       getValues("paymentID") ||
@@ -377,6 +372,14 @@ export const useAddEditCreateBill = (tag) => {
     setValue(`grandTotal`, grandTotal);
   };
 
+  const setQtyRateValuesHandler = (id, index) => {
+    setValue(`detail.${index}.quantity`, 1);
+    setValue(`detail.${index}.discount`, 0);
+    const ser = service.find((row) => row.id === id);
+    setValue(`detail.${index}.rate`, ser.amount);
+    calculateTotal(index);
+  };
+
   const fetchEditBillData = useCallback(async () => {
     try {
       dispatch(startLoading());
@@ -458,5 +461,7 @@ export const useAddEditCreateBill = (tag) => {
     isStaffModalOpen,
     setIsStaffModalOpen,
     fetchStaffData,
+
+    setQtyRateValuesHandler,
   };
 };

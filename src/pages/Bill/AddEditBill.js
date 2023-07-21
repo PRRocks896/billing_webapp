@@ -54,6 +54,8 @@ const AddEditBill = ({ tag }) => {
     isStaffModalOpen,
     setIsStaffModalOpen,
     fetchStaffData,
+
+    setQtyRateValuesHandler,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -346,7 +348,10 @@ const AddEditBill = ({ tag }) => {
                               sx={{ width: 300 }}
                               value={value}
                               onBlur={onBlur}
-                              onChange={(event, newValue) => onChange(newValue)}
+                              onChange={(event, newValue) => [
+                                onChange(newValue),
+                                setQtyRateValuesHandler(newValue.value, index),
+                              ]}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
