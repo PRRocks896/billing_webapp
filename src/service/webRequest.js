@@ -149,6 +149,27 @@ export const put = async (url, data) => {
     });
 };
 
+export const getPDF = async (url, data) => {
+  return axiosInstance
+    .post(`${baseUrl}${url}`, data, {
+      responseType: "blob", //Force to receive data in a Blob Format
+      headers: {
+        "x-api-key": "05646635804321276",
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then((response) => {
+      //Create a Blob from the PDF Stream
+      const file = new Blob([response.data], { type: "application/pdf" });
+      return URL.createObjectURL(file);
+      //Build a URL from the file
+      // const fileURL = URL.createObjectURL(file);
+      //Open the URL on new Window
+      // window.open(fileURL);
+      // return fileURL;
+    });
+};
+
 export const AxiosInterceptor = ({ children }) => {
   axiosInstance.interceptors.response.use(
     (response) => {

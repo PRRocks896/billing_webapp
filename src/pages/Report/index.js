@@ -1,39 +1,31 @@
-import { Box, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import React from "react";
 import { useReport } from "./hook/useReport";
-// import DateRangePicker from "rsuite/DateRangePicker";
+import { DateRangePicker } from "rsuite";
 
 const Report = () => {
-  const { handleSubmit, onSubmit, pdfData } = useReport();
+  const { pdfData, dateRange, handleDateChange } = useReport();
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* <DateRangePicker /> */}
+      <Box className="card">
+        <DateRangePicker value={dateRange} onChange={handleDateChange} />
+      </Box>
 
-        <Box className="card">
-          <Button type="submit" className="btn btn-tertiary">
-            Submit
-          </Button>
-
-          <Box marginTop={2}>
-            {pdfData && (
-              <iframe
-                title="PDF Viewer"
-                src={pdfData}
-                width="100%"
-                height="auto"
-              />
-              // <object
-              //   width="100%"
-              //   height="400"
-              //   data={pdfData}
-              //   type="application/pdf"
-              // ></object>
-            )}
+      <Box marginTop={2}>
+        {pdfData ? (
+          <iframe
+            title="PDF Viewer"
+            src={pdfData}
+            width="100%"
+            style={{ height: "calc(100vh - 100px)" }}
+          />
+        ) : (
+          <Box className="card">
+            <Typography>No Report Found</Typography>
           </Box>
-        </Box>
-      </form>
+        )}
+      </Box>
     </>
   );
 };
