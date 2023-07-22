@@ -19,15 +19,15 @@ export const useLogin = () => {
 
   const onSubmit = async (data) => {
     try {
-      const payload = { email: data.email, password: data.password };
+      const payload = { email: data?.email, password: data?.password };
       const response = await login(payload);
-      if (response.statusCode === 200) {
-        const authToken = response.data.token;
+      if (response?.statusCode === 200) {
+        const authToken = response?.data?.token;
         setAuthToken(authToken);
-        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
+        dispatch(loggedInUserAction.storeLoggedInUserData(response?.data));
         navigate("/", { replace: true });
       } else {
-        showToast(response.message || response.messageCode, false);
+        showToast(response?.message || response?.messageCode, false);
       }
     } catch (error) {
       showToast(error.message, false);
