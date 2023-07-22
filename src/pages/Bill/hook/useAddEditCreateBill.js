@@ -10,6 +10,18 @@ import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import ReactDOMServer from "react-dom/server";
+
+import React from "react";
+
+const PrintContent = () => {
+  // Add the HTML content you want to print here
+  const contentToPrint = "<h1>Hello, this is the content to be printed!</h1>";
+
+  return <div dangerouslySetInnerHTML={{ __html: contentToPrint }} />;
+};
+
+export default PrintContent;
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
@@ -81,7 +93,6 @@ export const useAddEditCreateBill = (tag) => {
   });
 
   const selectedCus = watch("customerID");
-  console.log("selectedCus", selectedCus);
   useMemo(() => {
     setValue(
       "Phone",
@@ -446,6 +457,27 @@ export const useAddEditCreateBill = (tag) => {
     fetchEditBillData();
   }, [fetchEditBillData]);
 
+  const printHandler = () => {
+    console.log("printHandler");
+    const printWindow = window.open();
+    const printDocument = (
+      <html>
+        <head>
+          <title>Green day spa</title>
+        </head>
+        <body>
+          <PrintContent />
+        </body>
+      </html>
+    );
+
+    printWindow.document.write(ReactDOMServer.renderToString(printDocument));
+    printWindow.document.close();
+    printWindow.print();
+
+    window.close();
+  };
+
   return {
     control,
     fields,
@@ -475,5 +507,6 @@ export const useAddEditCreateBill = (tag) => {
     fetchStaffData,
 
     setQtyRateValuesHandler,
+    printHandler,
   };
 };

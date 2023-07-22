@@ -56,6 +56,7 @@ const AddEditBill = ({ tag }) => {
     fetchStaffData,
 
     setQtyRateValuesHandler,
+    printHandler,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -656,7 +657,7 @@ const AddEditBill = ({ tag }) => {
             </Grid>
           )}
           <Grid item xs={1.5}>
-            <Button className="btn btn-tertiary">
+            <Button className="btn btn-tertiary" onClick={printHandler}>
               <FiPrinter /> &nbsp; <p>Print</p>
             </Button>
           </Grid>
