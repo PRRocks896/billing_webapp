@@ -7,6 +7,7 @@ import { deleteBill, getBillList } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useBill = () => {
+  window.localStorage.removeItem("billNo");
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const billData = useSelector((state) => state.bill.data);

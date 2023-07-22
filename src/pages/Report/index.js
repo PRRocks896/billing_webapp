@@ -17,7 +17,7 @@ const Report = () => {
   return (
     <>
       <Box className="card">
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={3}>
             <DateRangePicker value={dateRange} onChange={handleDateChange} />
           </Grid>

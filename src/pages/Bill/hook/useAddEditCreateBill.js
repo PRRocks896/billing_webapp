@@ -1,3 +1,4 @@
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
@@ -11,32 +12,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import ReactDOMServer from "react-dom/server";
-
-import React from "react";
-
-const PrintContent = () => {
-  // Add the HTML content you want to print here
-  const contentToPrint = "<h1>Hello, this is the content to be printed!</h1>";
-
-  return <div dangerouslySetInnerHTML={{ __html: contentToPrint }} />;
-};
-
-export default PrintContent;
+import PrintContent from "../../../components/PrintContent";
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
   const billData = useSelector((state) => state.bill.data);
-
-  let billNo = useMemo(() => {
-    let firstBillNo = 0;
-    if (billData.length) {
-      firstBillNo = +billData[0].billNo?.substring(1);
-      window.localStorage.setItem("billNo", firstBillNo);
-    } else {
-      firstBillNo = +window.localStorage.getItem("billNo");
-    }
-    return (firstBillNo += 1).toString().padStart(8, "0");
-  }, [billData]);
 
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -57,11 +37,13 @@ export const useAddEditCreateBill = (tag) => {
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
 
+  const [submitedBillData, setSubmitedBillData] = useState("");
+
   const navigate = useNavigate();
 
   const { control, getValues, setValue, handleSubmit, reset, watch } = useForm({
     defaultValues: {
-      billNo: "G" + billNo,
+      billNo: "",
       paymentID: "",
       date: new Date().toISOString().split("T")[0],
       customerID: "",
@@ -86,6 +68,18 @@ export const useAddEditCreateBill = (tag) => {
     },
     mode: "onBlur",
   });
+
+  useMemo(() => {
+    let firstBillNo = 0;
+    if (billData.length) {
+      firstBillNo = +billData[0].billNo?.substring(1);
+      window.localStorage.setItem("billNo", firstBillNo);
+    } else {
+      firstBillNo = +window.localStorage.getItem("billNo");
+    }
+    let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+    setValue("billNo", billNo);
+  }, [billData, setValue]);
 
   const { fields, append, remove } = useFieldArray({
     name: "detail",
@@ -313,11 +307,14 @@ export const useAddEditCreateBill = (tag) => {
         };
 
         const response = await createBill(payload);
-        console.log(response);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          window.localStorage.removeItem("billNo");
           reset();
+          let firstBillNo = +response.data.billNo?.substring(1);
+          window.localStorage.setItem("billNo", firstBillNo);
+          let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+          setValue("billNo", "G" + billNo);
+          setSubmitedBillData(response.data);
           // navigate("/bill");
         } else {
           showToast(response.messageCode, false);
@@ -459,6 +456,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const printHandler = () => {
     console.log("printHandler");
+    onSubmit();
     const printWindow = window.open();
     const printDocument = (
       <html>
@@ -466,7 +464,7 @@ export const useAddEditCreateBill = (tag) => {
           <title>Green day spa</title>
         </head>
         <body>
-          <PrintContent />
+          <PrintContent billData={submitedBillData} />
         </body>
       </html>
     );
