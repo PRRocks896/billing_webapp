@@ -502,14 +502,14 @@ export const useAddEditCreateBill = (tag) => {
       billNo: getValues("billNo"),
       payment: paymentType.find(
         (row) => row.id === getValues("paymentID").value
-      ).name,
+      )?.name,
       date: getValues("date"),
       customer: customers.find(
         (row) => row.id === getValues("customerID").value
-      ).name,
+      )?.name,
       customerID: getValues("customerID").value,
       phone: getValues("Phone"),
-      staff: staff.find((row) => row.id === getValues("staffID").value).name,
+      staff: staff.find((row) => row.id === getValues("staffID").value)?.name,
       roomNo: getValues("roomNo"),
       detail: getValues("detail").map((row) => {
         return { ...row, item: row.serviceID.label };
