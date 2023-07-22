@@ -1,54 +1,39 @@
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import React from "react";
+import { useReport } from "./hook/useReport";
+// import DateRangePicker from "rsuite/DateRangePicker";
 
 const Report = () => {
+  const { handleSubmit, onSubmit, pdfData } = useReport();
+
   return (
     <>
-      {/* state listing */}
-      <Box className="card">
-        <Box className="">
-          <TableContainer className="table-wrapper">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Sr No</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Branch Name</TableCell>
-                  <TableCell>Customer</TableCell>
-                  <TableCell>Bill No</TableCell>
-                  <TableCell>Service</TableCell>
-                  <TableCell>Qty</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Total Amount</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell align="left">1</TableCell>
-                  <TableCell align="left">19/07/2023</TableCell>
-                  <TableCell align="left">Manikonda</TableCell>
-                  <TableCell align="left">CustomerName-4547851252</TableCell>
-                  <TableCell align="left">G0002</TableCell>
-                  <TableCell align="left">service1</TableCell>
-                  <TableCell align="left">1</TableCell>
-                  <TableCell align="left">100</TableCell>
-                  <TableCell align="left">100</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Typography>Grand Total : 100</Typography>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* <DateRangePicker /> */}
+
+        <Box className="card">
+          <Button type="submit" className="btn btn-tertiary">
+            Submit
+          </Button>
+
+          <Box marginTop={2}>
+            {pdfData && (
+              <iframe
+                title="PDF Viewer"
+                src={pdfData}
+                width="100%"
+                height="auto"
+              />
+              // <object
+              //   width="100%"
+              //   height="400"
+              //   data={pdfData}
+              //   type="application/pdf"
+              // ></object>
+            )}
+          </Box>
         </Box>
-      </Box>
+      </form>
     </>
   );
 };

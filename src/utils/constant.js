@@ -89,3 +89,7 @@ export const CREATE_RIGHT_API = "api/right";
 export const DELETE_RIGHT_API = "api/right/";
 export const GET_SINGLE_RIGHT_API = "api/right/";
 export const UPDATE_RIGHT_API = "api/right/";
+
+// reports apis
+
+export const REPORT_LIST_API = "api/report";

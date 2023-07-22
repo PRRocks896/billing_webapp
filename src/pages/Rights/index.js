@@ -13,7 +13,7 @@ import {
   TableRow,
   TableBody,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import { useRights } from "./hook/useRights";
 import { Controller } from "react-hook-form";
@@ -26,7 +26,7 @@ const Rights = () => {
     onSubmit,
     cancelHandler,
     roleOptions,
-    fetchRightsModuleData
+    fetchRightsModuleData,
   } = useRights();
   return (
     <>
@@ -49,10 +49,19 @@ const Rights = () => {
                         id="role-select"
                         value={value}
                         label="Role"
-                        onChange={(e) => [onChange(e), fetchRightsModuleData(e.target.value)]}
+                        onChange={(e) => [
+                          onChange(e),
+                          fetchRightsModuleData(e.target.value),
+                        ]}
                       >
                         {roleOptions?.map((res, ind) => (
-                          <MenuItem style={{ textTransform: 'capitalize'}} key={`role_${ind}`} value={res.value}>{res.label}</MenuItem>
+                          <MenuItem
+                            style={{ textTransform: "capitalize" }}
+                            key={`role_${ind}`}
+                            value={res.value}
+                          >
+                            {res.label}
+                          </MenuItem>
                         ))}
                         {/* <MenuItem value={20}>Twenty</MenuItem>
                         <MenuItem value={30}>Thirty</MenuItem> */}
@@ -89,10 +98,10 @@ const Rights = () => {
           </FormGroup>
         </Box>
         <br />
-        <Box className="card">
+        <Box className="card ">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TableContainer className="table-wrapper">
+              <TableContainer className="table-wrapper right-table-wrapper">
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -104,91 +113,91 @@ const Rights = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {fields.length > 0 ? (
-                    fields?.map((res, index) => (
-                      <TableRow key={`rights_${index}`} id={res.id}>
-                        <TableCell>{res.moduleName}</TableCell>
-                        <TableCell>
-                          <Controller
-                            control={control}
-                            name={`modules.${index}.view`}
-                            render={({
-                              field: { onBlur, onChange, value },
-                            }) => (
-                              <Checkbox
-                                // value={value}
-                                checked={value}
-                                onChange={(event, newValue) =>
-                                  onChange(newValue)
-                                }
-                                onBlur={onBlur}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Controller
-                            control={control}
-                            name={`modules.${index}.add`}
-                            render={({
-                              field: { onBlur, onChange, value },
-                            }) => (
-                              <Checkbox
-                                // value={value}
-                                checked={value}
-                                onChange={(event, newValue) =>
-                                  onChange(newValue)
-                                }
-                                onBlur={onBlur}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Controller
-                            control={control}
-                            name={`modules.${index}.edit`}
-                            render={({
-                              field: { onBlur, onChange, value },
-                            }) => (
-                              <Checkbox
-                                // value={value}
-                                checked={value}
-                                onChange={(event, newValue) =>
-                                  onChange(newValue)
-                                }
-                                onBlur={onBlur}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Controller
-                            control={control}
-                            name={`modules.${index}.delete`}
-                            render={({
-                              field: { onBlur, onChange, value },
-                            }) => (
-                              <Checkbox
-                                // value={value}
-                                checked={value}
-                                onChange={(event, newValue) =>
-                                  onChange(newValue)
-                                }
-                                onBlur={onBlur}
-                              />
-                            )}
-                          />
+                    {fields.length > 0 ? (
+                      fields?.map((res, index) => (
+                        <TableRow key={`rights_${index}`} id={res.id}>
+                          <TableCell>{res.moduleName}</TableCell>
+                          <TableCell>
+                            <Controller
+                              control={control}
+                              name={`modules.${index}.view`}
+                              render={({
+                                field: { onBlur, onChange, value },
+                              }) => (
+                                <Checkbox
+                                  // value={value}
+                                  checked={value}
+                                  onChange={(event, newValue) =>
+                                    onChange(newValue)
+                                  }
+                                  onBlur={onBlur}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Controller
+                              control={control}
+                              name={`modules.${index}.add`}
+                              render={({
+                                field: { onBlur, onChange, value },
+                              }) => (
+                                <Checkbox
+                                  // value={value}
+                                  checked={value}
+                                  onChange={(event, newValue) =>
+                                    onChange(newValue)
+                                  }
+                                  onBlur={onBlur}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Controller
+                              control={control}
+                              name={`modules.${index}.edit`}
+                              render={({
+                                field: { onBlur, onChange, value },
+                              }) => (
+                                <Checkbox
+                                  // value={value}
+                                  checked={value}
+                                  onChange={(event, newValue) =>
+                                    onChange(newValue)
+                                  }
+                                  onBlur={onBlur}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Controller
+                              control={control}
+                              name={`modules.${index}.delete`}
+                              render={({
+                                field: { onBlur, onChange, value },
+                              }) => (
+                                <Checkbox
+                                  // value={value}
+                                  checked={value}
+                                  onChange={(event, newValue) =>
+                                    onChange(newValue)
+                                  }
+                                  onBlur={onBlur}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell sx={{ textAlign: "center" }} colSpan={7}>
+                          No Modules Found
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                        No Modules Found
-                      </TableCell>
-                    </TableRow>
-                  )}
+                    )}
                   </TableBody>
                   {/* <TableBody>
                     {moduleList.length > 0 ? (

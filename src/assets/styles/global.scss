@@ -586,3 +586,15 @@ span {
     }
   }
 }
+
+.right-table-wrapper{
+  max-height: 360px; /* Set the maximum height for the table body to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  position: relative;
+
+  thead{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+}

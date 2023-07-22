@@ -49,7 +49,7 @@ export const useRole = () => {
     }
   }, [accessModules, pathname]);
 
-  //  fetch payment type
+  //  fetch role
   const fetchRoleData = useCallback(
     async (searchValue = "") => {
       try {
@@ -85,7 +85,7 @@ export const useRole = () => {
     [dispatch, page]
   );
 
-  // search payment type
+  // search role
   const searchRoleHandler = async (payload) => {
     try {
       fetchRoleData(payload.searchValue);
@@ -98,13 +98,13 @@ export const useRole = () => {
     fetchRoleData();
   }, [fetchRoleData]);
 
-  // delete payment type click handler
+  // delete role click handler
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
-  // delete payment type
+  // delete role
   const deleteHandler = async () => {
     try {
       setIsDeleteModalOpen(false);
