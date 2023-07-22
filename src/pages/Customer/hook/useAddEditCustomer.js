@@ -11,7 +11,7 @@ import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
-export const useAddEditCustomer = (tag) => {
+export const useAddEditCustomer = (tag, flag = 1) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -33,7 +33,7 @@ export const useAddEditCustomer = (tag) => {
       if (tag === "add") {
         const payload = {
           userID: loggedInUser.id,
-          cityID: 1,
+          // cityID: 1,
           phoneNumber: data.phone,
           gender: data.gender,
           name: data.customer_name,
@@ -44,7 +44,7 @@ export const useAddEditCustomer = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          flag === 1 && navigate(-1);
         } else {
           showToast(response.messageCode, false);
         }
