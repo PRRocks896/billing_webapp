@@ -454,9 +454,36 @@ export const useAddEditCreateBill = (tag) => {
     fetchEditBillData();
   }, [fetchEditBillData]);
 
+  const print = (billData) => {
+    const printWindow = window.open();
+    const printDocument = (
+      <html>
+        <head>
+          <title>{"G" + billData.billNo}</title>
+        </head>
+        <body
+          style={{
+            padding: "0px",
+            margin: "0px",
+            boxSizing: "border-box",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <PrintContent billData={billData} />
+        </body>
+      </html>
+    );
+
+    printWindow.document.write(ReactDOMServer.renderToString(printDocument));
+    printWindow.document.close();
+    printWindow.print();
+
+    window.close();
+  };
+
   const printHandler = async () => {
     console.log("printHandler");
-    // add bill start
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {
@@ -468,88 +495,121 @@ export const useAddEditCreateBill = (tag) => {
       };
     });
 
-    const payload = {
-      userID: loggedInUser.id,
-      staffID: getValues("staffID").value,
-      customerID: getValues("customerID").value,
-      detail: detailData,
-      paymentID: getValues("paymentID").value,
-      grandTotal: getValues("grandTotal"),
-      phoneNumber: getValues("Phone"),
-      roomNo: getValues("roomNo"),
-      // name: "",
-      cardNo: "",
-      createdBy: loggedInUser.id,
-    };
-
-    const cusName = customers.find(
-      (row) => row.id === getValues("customerID").value
-    ).name;
-    const staffName = staff.find(
-      (row) => row.id === getValues("staffID").value
-    ).name;
-    const paymentName = paymentType.find(
-      (row) => row.id === getValues("paymentID").value
-    ).name;
-
-    const detailsData = getValues("detail").map((row) => {
-      return { ...row, item: row.serviceID.label };
-    });
-    console.log(detailsData);
-
+    // print Data start
     const billData = {
       subTotal: getValues("grandTotal"),
       total: getValues("grandTotal"),
       billNo: getValues("billNo"),
-      payment: paymentName,
+      payment: paymentType.find(
+        (row) => row.id === getValues("paymentID").value
+      ).name,
       date: getValues("date"),
-      customer: cusName,
+      customer: customers.find(
+        (row) => row.id === getValues("customerID").value
+      ).name,
       customerID: getValues("customerID").value,
       phone: getValues("Phone"),
-      staff: staffName,
+      staff: staff.find((row) => row.id === getValues("staffID").value).name,
       roomNo: getValues("roomNo"),
-      detail: detailsData,
+      detail: getValues("detail").map((row) => {
+        return { ...row, item: row.serviceID.label };
+      }),
     };
+    // print Data start
 
-    const response = await createBill(payload);
-    if (response.statusCode === 200) {
-      showToast(response.message, true);
-      reset();
-      let firstBillNo = +response.data.billNo?.substring(1);
-      window.localStorage.setItem("billNo", firstBillNo);
-      let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-      setValue("billNo", "G" + billNo);
-      setSubmitedBillData(response.data);
+    // const payload = {
+    //   userID: loggedInUser.id,
+    //   staffID: getValues("staffID").value,
+    //   customerID: getValues("customerID").value,
+    //   detail: detailData,
+    //   paymentID: getValues("paymentID").value,
+    //   grandTotal: getValues("grandTotal"),
+    //   phoneNumber: getValues("Phone"),
+    //   roomNo: getValues("roomNo"),
+    //   // name: "",
+    //   cardNo: "",
+    //   createdBy: loggedInUser.id,
+    // };
 
-      const printWindow = window.open();
-      const printDocument = (
-        <html>
-          <head>
-            <title>{"G" + billNo}</title>
-          </head>
-          <body
-            style={{
-              padding: "0px",
-              margin: "0px",
-              boxSizing: "border-box",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <PrintContent billData={billData} />
-          </body>
-        </html>
-      );
+    // const response = await createBill(payload);
+    // if (response.statusCode === 200) {
+    //   showToast(response.message, true);
+    //   reset();
+    //   let firstBillNo = +response.data.billNo?.substring(1);
+    //   window.localStorage.setItem("billNo", firstBillNo);
+    //   let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+    //   setValue("billNo", "G" + billNo);
+    //   setSubmitedBillData(response.data);
 
-      printWindow.document.write(ReactDOMServer.renderToString(printDocument));
-      printWindow.document.close();
-      printWindow.print();
-
-      window.close();
-    } else {
-      showToast(response.message, false);
-    }
+    //   print(billData);
+    // } else {
+    //   showToast(response.message, false);
+    // }
     // add bill end
+
+    try {
+      dispatch(startLoading());
+      if (tag === "add") {
+        const payload = {
+          userID: loggedInUser.id,
+          staffID: getValues("staffID").value,
+          customerID: getValues("customerID").value,
+          detail: detailData,
+          paymentID: getValues("paymentID").value,
+          grandTotal: getValues("grandTotal"),
+          phoneNumber: getValues("Phone"),
+          roomNo: getValues("roomNo"),
+          // name: "",
+          cardNo: "",
+          createdBy: loggedInUser.id,
+        };
+
+        const response = await createBill(payload);
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          reset();
+          let firstBillNo = +response.data.billNo?.substring(1);
+          window.localStorage.setItem("billNo", firstBillNo);
+          let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+          setValue("billNo", "G" + billNo);
+          setSubmitedBillData(response.data);
+
+          print(billData);
+        } else {
+          showToast(response.message, false);
+        }
+      } else if (tag === "edit") {
+        const payload = {
+          userID: loggedInUser.id,
+          staffID: getValues("staffID").value,
+          customerID: getValues("customerID").value,
+          detail: detailData,
+          paymentID: getValues("paymentID").value,
+          grandTotal: getValues("grandTotal"),
+          roomNo: getValues("roomNo"),
+          // phoneNumber: "",
+          // name: "",
+          cardNo: "",
+          createdBy: loggedInUser.id,
+        };
+
+        const response = await updateBill(payload, id);
+
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          // window.localStorage.removeItem("billNo");
+          print(billData);
+          navigate("/bill");
+        } else {
+          showToast(response.messageCode, false);
+        }
+      }
+      dispatch(stopLoading());
+    } catch (error) {
+      showToast(error.message, false);
+    } finally {
+      dispatch(stopLoading());
+    }
   };
 
   return {
