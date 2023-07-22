@@ -44,7 +44,7 @@ const AddEditBill = ({ tag }) => {
     calculateTotal,
     isSaveModalOpen,
     setIsSaveModalOpen,
-    newBtnClickHandler,
+    // newBtnClickHandler,
     dontSaveHandler,
 
     isCustomerModalOpen,
@@ -631,22 +631,30 @@ const AddEditBill = ({ tag }) => {
 
         {/* footer button */}
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
-          <Grid item xs={1.5}>
-            <Button className="btn btn-tertiary" onClick={newBtnClickHandler}>
-              <FiPlusCircle /> &nbsp;
-              <p>New</p>
-            </Button>
-          </Grid>
+          {tag === "edit" ? (
+            ""
+          ) : (
+            <Grid item xs={1.5}>
+              <Button className="btn btn-tertiary" onClick={() => reset()}>
+                <FiPlusCircle /> &nbsp;
+                <p>New</p>
+              </Button>
+            </Grid>
+          )}
           <Grid item xs={1.5}>
             <Button type="submit" className="btn btn-tertiary">
               <FiSave /> &nbsp; <p>Save</p>
             </Button>
           </Grid>
-          <Grid item xs={1.5}>
-            <Button onClick={reset} className="btn btn-tertiary">
-              <FiTrash2 /> &nbsp; <p>Delete</p>
-            </Button>
-          </Grid>
+          {tag === "edit" ? (
+            ""
+          ) : (
+            <Grid item xs={1.5}>
+              <Button onClick={reset} className="btn btn-tertiary">
+                <FiTrash2 /> &nbsp; <p>Delete</p>
+              </Button>
+            </Grid>
+          )}
           <Grid item xs={1.5}>
             <Button className="btn btn-tertiary">
               <FiPrinter /> &nbsp; <p>Print</p>

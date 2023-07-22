@@ -302,10 +302,12 @@ export const useAddEditCreateBill = (tag) => {
         };
 
         const response = await createBill(payload);
-
+        console.log(response);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          window.localStorage.removeItem("billNo");
+          reset();
+          // navigate("/bill");
         } else {
           showToast(response.messageCode, false);
         }
@@ -328,7 +330,8 @@ export const useAddEditCreateBill = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          window.localStorage.removeItem("billNo");
+          navigate("/bill");
         } else {
           showToast(response.messageCode, false);
         }
