@@ -35,8 +35,8 @@ const PrintContent = ({ billData }) => {
             <p style="text-align: start; margin: 0px; font-size: 12px;">NAME :${
               billData.customer
             }</p>
-            <p style="text-align: start; margin: 0px; font-size: 12px;">ID :${
-              billData.customerID
+            <p style="text-align: start; margin: 0px; font-size: 12px;">Ph :${
+              billData.phone
             }</p>
         </div>
     </div>
@@ -77,11 +77,16 @@ const PrintContent = ({ billData }) => {
     <div
         style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start; flex-direction: column; font-size: 12px;">
         <div>
-            <p style="margin: 5px 0px;">CARD NO : </p>
+          
+          ${
+            billData.payment.toLowerCase().includes("card")
+              ? `<p style={{ margin: "5px 0px" }}> CARD NO : ${billData.cardNo}</p>`
+              : ""
+          }
         </div>
         <div style="display: flex;">
             <p style="margin: 5px 0px; ">${billData.payment} : </p>
-            <p style="margin: 5px 0px; margin-left: 20px;"> ${
+            <p style="margin: 5px 0px; margin-left: 10px;"> ${
               billData.total
             }</p>
         </div>

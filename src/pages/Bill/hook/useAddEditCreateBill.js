@@ -51,6 +51,7 @@ export const useAddEditCreateBill = (tag) => {
       Phone: "",
       staffID: "",
       roomNo: "",
+      cardNo: "",
       // discount: 0,
       // discountAmount: 0,
       // exchange: 0,
@@ -70,6 +71,7 @@ export const useAddEditCreateBill = (tag) => {
     mode: "onBlur",
   });
 
+  console.log(watch("paymentID"));
   useMemo(() => {
     let firstBillNo = 0;
     if (billData.length) {
@@ -303,7 +305,9 @@ export const useAddEditCreateBill = (tag) => {
           phoneNumber: data.Phone,
           roomNo: data.roomNo,
           // name: "",
-          cardNo: "",
+          cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
+            ? data.cardNo
+            : "",
           createdBy: loggedInUser.id,
         };
 
@@ -331,7 +335,10 @@ export const useAddEditCreateBill = (tag) => {
           roomNo: data.roomNo,
           // phoneNumber: "",
           // name: "",
-          cardNo: "",
+          // cardNo: data.cardNo,
+          cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
+            ? data.cardNo
+            : "",
           createdBy: loggedInUser.id,
         };
 
@@ -423,6 +430,7 @@ export const useAddEditCreateBill = (tag) => {
             label: response.data.px_customer.name,
           });
           setValue("grandTotal", response.data.grandTotal);
+          setValue("cardNo", response.data.cardNo);
 
           const items = response.data.detail.map((item) => {
             return {
@@ -503,6 +511,7 @@ export const useAddEditCreateBill = (tag) => {
       payment: paymentType.find(
         (row) => row.id === getValues("paymentID").value
       )?.name,
+      cardNo: getValues("cardNo"),
       date: getValues("date"),
       customer: customers.find(
         (row) => row.id === getValues("customerID").value
@@ -560,7 +569,9 @@ export const useAddEditCreateBill = (tag) => {
           phoneNumber: getValues("Phone"),
           roomNo: getValues("roomNo"),
           // name: "",
-          cardNo: "",
+          cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
+            ? getValues("cardNo")
+            : "",
           createdBy: loggedInUser.id,
         };
 
@@ -589,7 +600,9 @@ export const useAddEditCreateBill = (tag) => {
           roomNo: getValues("roomNo"),
           // phoneNumber: "",
           // name: "",
-          cardNo: "",
+          cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
+            ? getValues("cardNo")
+            : "",
           createdBy: loggedInUser.id,
         };
 
@@ -642,5 +655,6 @@ export const useAddEditCreateBill = (tag) => {
 
     setQtyRateValuesHandler,
     printHandler,
+    getValues,
   };
 };

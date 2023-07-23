@@ -57,6 +57,7 @@ const AddEditBill = ({ tag }) => {
 
     setQtyRateValuesHandler,
     printHandler,
+    getValues,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -92,38 +93,8 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid>
+
               <Grid item xs={2.5}>
-                <Controller
-                  control={control}
-                  name={`paymentID`}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      id="paymentID"
-                      options={paymentTypeOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Payment Type"
-                          error={!!error}
-                          // helperText={error?.message ? error.message : ""}
-                        />
-                      )}
-                    />
-                  )}
-                  rules={{
-                    required: "Please Select Payment",
-                  }}
-                />
-              </Grid>
-              <Grid item xs={2}>
                 <Controller
                   name="date"
                   control={control}
@@ -157,7 +128,7 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
 
-              <Grid item xs={1.5}>
+              <Grid item xs={2.5}>
                 <Controller
                   name="roomNo"
                   control={control}
@@ -295,6 +266,73 @@ const AddEditBill = ({ tag }) => {
                   <FiPlusCircle />
                 </Button>
               </Grid>
+
+              <Grid item xs={2.5}>
+                <Controller
+                  control={control}
+                  name={`paymentID`}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      id="paymentID"
+                      options={paymentTypeOptions}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={(event, newValue) => onChange(newValue)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Payment Type"
+                          error={!!error}
+                          // helperText={error?.message ? error.message : ""}
+                        />
+                      )}
+                    />
+                  )}
+                  rules={{
+                    required: "Please Select Payment",
+                  }}
+                />
+              </Grid>
+
+              {getValues("paymentID") &&
+                getValues("paymentID")
+                  ?.label?.toLowerCase()
+                  ?.includes("card") && (
+                  <Grid item xs={2}>
+                    <Controller
+                      name="cardNo"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            label="Card No (4 digit)"
+                            size="small"
+                            name="cardNo"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Please enter card no",
+                      }}
+                    />
+                  </Grid>
+                )}
             </Grid>
           </FormGroup>
         </Box>
