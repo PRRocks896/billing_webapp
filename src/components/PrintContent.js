@@ -97,16 +97,17 @@ const PrintContent = ({ billData }) => {
     <br>
 
     <div>
-        <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : &nbsp; &nbsp;${date}</p>
-        <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Customer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;:&nbsp; &nbsp; ${
-          billData.customer
-        }</p>
-        <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Service Number &nbsp; &nbsp; &nbsp; &nbsp;: &nbsp; &nbsp;</p>
-        <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">AROMA 60MNT &nbsp; &nbsp; &nbsp;:&nbsp; &nbsp;${date}</p>
-        <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Time &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: &nbsp; &nbsp;${time}</p>
-        <p style="text-align: start; margin: 0px; font-size: 12px;">Therapists Name &nbsp; &nbsp; &nbsp; &nbsp;: &nbsp; &nbsp;${
-          billData.staff
-        }</p>
+      <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : &nbsp; &nbsp;${date}</p>
+      <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Time &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;: &nbsp; &nbsp;${time}</p>
+      <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Customer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;:&nbsp; &nbsp; ${
+        billData.customer
+      }</p>
+      <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Service Name &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;: &nbsp; &nbsp;  ${billData.detail
+        .map((row, index) => row.item)
+        .join(", ")}</p>
+      <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Therapists Name &nbsp; &nbsp; &nbsp; &nbsp;: &nbsp; &nbsp;${
+        billData.staff
+      }</p>
     </div>
   </div>
   `;
