@@ -71,7 +71,6 @@ export const useAddEditCreateBill = (tag) => {
     mode: "onBlur",
   });
 
-  console.log(watch("paymentID"));
   useMemo(() => {
     let firstBillNo = 0;
     if (billData.length) {
@@ -373,8 +372,12 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const removeRow = (index) => {
+    const grandTotal = getValues(`grandTotal`);
+    const rowTotal = getValues(`detail.${index}.total`);
+    const total = grandTotal - rowTotal;
+    setValue(`grandTotal`, total);
+
     remove(index);
-    calculateTotal(index);
   };
 
   const calculateTotal = (index) => {

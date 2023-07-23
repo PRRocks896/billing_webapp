@@ -324,6 +324,10 @@ const AddEditBill = ({ tag }) => {
                             onChange={onChange}
                             onBlur={onBlur}
                             error={!!error}
+                            inputProps={{
+                              pattern: "\\d{0,4}",
+                              maxLength: 4,
+                            }}
                           />
                         </FormControl>
                       )}
