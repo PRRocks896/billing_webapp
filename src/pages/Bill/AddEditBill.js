@@ -506,7 +506,6 @@ const AddEditBill = ({ tag }) => {
                             type="button"
                             onClick={() => {
                               removeRow(index);
-                              calculateTotal(index);
                             }}
                           >
                             <FiMinusCircle /> &nbsp;

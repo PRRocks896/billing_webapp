@@ -279,7 +279,6 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log("data", data);
     const detailData = data.detail.map((item) => {
       return {
         serviceID: item.serviceID.value,
@@ -368,6 +367,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const removeRow = (index) => {
     remove(index);
+    calculateTotal(index);
   };
 
   const calculateTotal = (index) => {
@@ -381,6 +381,20 @@ export const useAddEditCreateBill = (tag) => {
     setValue(`detail.${index}.total`, total);
     calculateGrandTotal();
   };
+
+  // const calculateTotal = () => {
+  //   fields.forEach((field, index) => {
+  //     const rate = getValues(`detail.${index}.rate`) || 0;
+  //     const qty = getValues(`detail.${index}.quantity`) || 0;
+  //     const discount = getValues(`detail.${index}.discount`) || 0;
+  //     let total = qty * rate;
+  //     if (discount > 0) {
+  //       total = total - (total * discount) / 100;
+  //     }
+  //     setValue(`detail.${index}.total`, total);
+  //   });
+  //   calculateGrandTotal();
+  // };
 
   const calculateGrandTotal = () => {
     const detail = getValues("detail");
