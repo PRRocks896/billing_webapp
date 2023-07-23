@@ -189,10 +189,10 @@ export const AxiosInterceptor = ({ children }) => {
         });
         setTimeout(() => {
           logoutHandler();
-        }, 5000);
+        }, 3000);
+      } else {
+        return Promise.reject(err);
       }
-
-      return Promise.reject(err);
     }
   );
 
