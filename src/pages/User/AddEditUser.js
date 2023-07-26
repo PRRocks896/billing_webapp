@@ -12,7 +12,7 @@ import { Controller } from "react-hook-form";
 import { useAddEditUser } from "./hook/useAddEditUser";
 
 const AddEditUser = ({ tag }) => {
-  const { control, roleOptions, handleSubmit, onSubmit, cancelHandler } =
+  const { control, roleOptions, handleSubmit, onSubmit, cancelHandler, role } =
     useAddEditUser(tag);
 
   return (
@@ -166,7 +166,7 @@ const AddEditUser = ({ tag }) => {
                       className="form-control"
                     >
                       <TextField
-                        disabled
+                        disabled={role === "admin" ? false : true}
                         label="Branch Name*"
                         size="small"
                         name="branchName"

@@ -162,5 +162,6 @@ export const useAddEditUser = (tag) => {
     handleSubmit,
     onSubmit,
     cancelHandler,
+    role: loggedInUser.px_role.name.toLowerCase(),
   };
 };
