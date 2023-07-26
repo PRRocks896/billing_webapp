@@ -57,7 +57,6 @@ const AddEditBill = ({ tag }) => {
 
     setQtyRateValuesHandler,
     printHandler,
-    getValues,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -299,44 +298,50 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
 
-              {getValues("paymentID") &&
+              {/* {getValues("paymentID") &&
                 getValues("paymentID")
                   ?.label?.toLowerCase()
-                  ?.includes("card") && (
-                  <Grid item xs={2}>
-                    <Controller
-                      name="cardNo"
-                      control={control}
-                      render={({
-                        field: { onBlur, onChange, value },
-                        fieldState: { error },
-                      }) => (
-                        <FormControl
-                          size="small"
-                          variant="standard"
-                          className="form-control"
-                        >
-                          <TextField
-                            label="Card No (4 digit)"
-                            size="small"
-                            name="cardNo"
-                            value={value}
-                            onChange={onChange}
-                            onBlur={onBlur}
-                            error={!!error}
-                            inputProps={{
-                              pattern: "\\d{0,4}",
-                              maxLength: 4,
-                            }}
-                          />
-                        </FormControl>
-                      )}
-                      rules={{
-                        required: "Please enter card no",
-                      }}
-                    />
-                  </Grid>
-                )}
+                  ?.includes("card") && ( */}
+              <Grid item xs={2}>
+                <Controller
+                  name="cardNo"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        type="text"
+                        disabled={
+                          value?.toLowerCase() === "cash" ||
+                          value?.toLowerCase() === "upi"
+                            ? true
+                            : false
+                        }
+                        label=" "
+                        size="small"
+                        name="cardNo"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please enter card no",
+                    maxLength: { value: 4 },
+                    minLength: { value: 4 },
+                    pattern: { value: /^[0-9]+$/, message: "Only digit" },
+                  }}
+                />
+              </Grid>
+              {/* )} */}
             </Grid>
           </FormGroup>
         </Box>

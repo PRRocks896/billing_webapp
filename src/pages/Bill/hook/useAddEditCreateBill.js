@@ -14,6 +14,8 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 import ReactDOMServer from "react-dom/server";
 import PrintContent from "../../../components/PrintContent";
 
+let editCardNo = "";
+
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
   const billData = useSelector((state) => state.bill.data);
@@ -119,13 +121,37 @@ export const useAddEditCreateBill = (tag) => {
     setIsSaveModalOpen(false);
   };
 
-  // genrate payment options for drop down
+  // genrate payment options for drop down-------------------------------------
   useMemo(() => {
     const data = paymentType.map((item) => {
       return { value: item.id, label: item.name };
     });
     setPaymentTypeOptions([...data]);
-  }, [paymentType]);
+    if (tag === "add") {
+      const initialValue = data.filter(
+        (row) => row?.label?.toLowerCase() === "cash"
+      );
+      setValue("paymentID", initialValue[0]);
+      setValue("cardNo", initialValue[0]?.label);
+    }
+  }, [paymentType, setValue, tag]);
+
+  const selectedPaymentType = watch("paymentID");
+  useMemo(() => {
+    // console.log(selectedPaymentType);
+    if (
+      selectedPaymentType?.label?.toLowerCase() === "cash" ||
+      selectedPaymentType?.label?.toLowerCase() === "upi"
+    ) {
+      setValue("cardNo", selectedPaymentType?.label);
+    } else {
+      if (tag === "add") {
+        setValue("cardNo", "");
+      } else if (tag === "edit") {
+        setValue("cardNo", editCardNo);
+      }
+    }
+  }, [selectedPaymentType, setValue, tag]);
 
   // get payment type list
   useEffect(() => {
@@ -308,7 +334,7 @@ export const useAddEditCreateBill = (tag) => {
             : "",
           createdBy: loggedInUser.id,
         };
-
+        console.log(payload, data.cardNo);
         const response = await createBill(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
@@ -447,6 +473,7 @@ export const useAddEditCreateBill = (tag) => {
             label: response.data.px_customer.name,
           });
           setValue("grandTotal", response.data.grandTotal);
+          editCardNo = response.data.cardNo;
           setValue("cardNo", response.data.cardNo);
 
           const items = response.data.detail.map((item) => {
