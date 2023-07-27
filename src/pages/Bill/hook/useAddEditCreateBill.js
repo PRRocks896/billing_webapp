@@ -44,7 +44,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset, watch, formState } = useForm({
+  const { control, getValues, setValue, handleSubmit, reset, watch, formState, clearErrors } = useForm({
     defaultValues: {
       billNo: "",
       paymentID: "",
@@ -60,7 +60,6 @@ export const useAddEditCreateBill = (tag) => {
       grandTotal: 0,
       detail: [
         {
-          id: uuidv4(),
           index: 0,
           serviceID: "",
           quantity: "",
@@ -73,7 +72,12 @@ export const useAddEditCreateBill = (tag) => {
     mode: "onBlur",
   });
 
-  useMemo(() => {
+  const { fields, append, remove } = useFieldArray({
+    name: "detail",
+    control: control,
+  });
+
+  useEffect(() => {
     let firstBillNo = 0;
     if (billData.length) {
       firstBillNo = +billData[0].billNo?.substring(1);
@@ -85,13 +89,8 @@ export const useAddEditCreateBill = (tag) => {
     setValue("billNo", "G" + billNo);
   }, [billData, setValue]);
 
-  const { fields, append, remove } = useFieldArray({
-    name: "detail",
-    control: control,
-  });
-
   const selectedCus = watch("customerID");
-  useMemo(() => {
+  useEffect(() => {
     setValue(
       "Phone",
       selectedCus === "" || selectedCus === null
@@ -135,22 +134,6 @@ export const useAddEditCreateBill = (tag) => {
       setValue("cardNo", initialValue[0]?.label);
     }
   }, [paymentType, setValue, tag]);
-
-  // const selectedPaymentType = watch("paymentID");
-  // useMemo(() => {
-  //   if (
-  //     selectedPaymentType?.label?.toLowerCase() === "cash" ||
-  //     selectedPaymentType?.label?.toLowerCase() === "upi"
-  //   ) {
-  //     setValue("cardNo", selectedPaymentType?.label);
-  //   } else {
-  //     if (tag === "add") {
-  //       setValue("cardNo", "");
-  //     } else if (tag === "edit") {
-  //       setValue("cardNo", editCardNo);
-  //     }
-  //   }
-  // }, [selectedPaymentType, setValue, tag]);
 
   const handlePaymentChange = (value) => {
     const { label } = value;
@@ -201,7 +184,7 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   // genrate customer options for drop down
-  useMemo(() => {
+  useEffect(() => {
     const data = customers.map((item) => {
       return { value: item.id, label: item.name };
     });
@@ -241,7 +224,7 @@ export const useAddEditCreateBill = (tag) => {
   }, [fetchCustomersData]);
 
   // genrate staff options for drop down
-  useMemo(() => {
+  useEffect(() => {
     const data = staff.map((item) => {
       return { value: item.id, label: item.name };
     });
@@ -281,12 +264,21 @@ export const useAddEditCreateBill = (tag) => {
   }, [fetchStaffData]);
 
   // genrate service options for drop down
-  useMemo(() => {
+  useEffect(() => {
     const data = service.map((item) => {
       return { value: item.id, label: item.name };
     });
     setServiceOptions([...data]);
   }, [service]);
+
+  const isCardSelect = useMemo(() => {
+    const value = getValues('paymentID')?.label?.toLowerCase();
+    if(['cash', 'upi'].includes(value)) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [watch('paymentID')]);
 
   // get service list
   useEffect(() => {
@@ -321,7 +313,6 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   const onSubmit = async (data) => {
-    if(formState.isValid) {
     const detailData = data.detail.map((item) => {
       return {
         serviceID: item.serviceID.value,
@@ -396,9 +387,6 @@ export const useAddEditCreateBill = (tag) => {
     } finally {
       dispatch(stopLoading());
     }
-    } else {
-      showToast('Detail is not Valid', false);
-    }
   };
 
   const addRow = () => {
@@ -463,6 +451,7 @@ export const useAddEditCreateBill = (tag) => {
     const ser = service.find((row) => row.id === id);
     setValue(`detail.${index}.rate`, ser.amount);
     calculateTotal(index);
+    clearErrors(`detail.${index}`);
   };
 
   const fetchEditBillData = useCallback(async () => {
@@ -470,7 +459,6 @@ export const useAddEditCreateBill = (tag) => {
       dispatch(startLoading());
       if (id) {
         const response = await getBillById(id);
-        console.log(response.data);
         if (response.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
@@ -551,7 +539,6 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const printHandler = async () => {
-    if(formState.isValid) {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {
@@ -683,9 +670,6 @@ export const useAddEditCreateBill = (tag) => {
     } finally {
       dispatch(stopLoading());
     }
-    } else {
-      showToast('Detail is not Valid', false);
-    }
   };
 
   return {
@@ -720,5 +704,6 @@ export const useAddEditCreateBill = (tag) => {
     printHandler,
     getValues,
     handlePaymentChange,
+    isCardSelect
   };
 };

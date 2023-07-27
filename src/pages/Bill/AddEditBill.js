@@ -63,10 +63,8 @@ const AddEditBill = ({ tag }) => {
     getValues,
     printHandler,
     handlePaymentChange,
+    isCardSelect
   } = useAddEditCreateBill(tag);
-
-  console.log("paymentID", getValues("paymentID")?.label?.toLowerCase());
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -337,15 +335,13 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              {getValues("paymentID")?.label?.toLowerCase() === "cash" ||
-              getValues("paymentID")?.label?.toLowerCase() === "upi" ? (
+              {isCardSelect ? (
                 <Grid item xs={12} md={3} sm={6}>
                   <Controller
                     name="cardNo"
                     control={control}
                     render={({
-                      field: { onBlur, onChange, value },
-                      fieldState: { error },
+                      field: { value },
                     }) => {
                       return (
                         <FormControl
@@ -411,7 +407,7 @@ const AddEditBill = ({ tag }) => {
                 </Grid>
               )}
               {/* {getValues("paymentID")?.label?.toLowerCase() === "card" && (
-               
+
               )} */}
               {/* )} */}
             </Grid>
@@ -771,7 +767,7 @@ const AddEditBill = ({ tag }) => {
             </Grid>
           )}
           <Grid item xs={1.5}>
-            <Button className="btn btn-tertiary" onClick={printHandler}>
+            <Button className="btn btn-tertiary" onClick={handleSubmit(printHandler)}>
               <FiPrinter /> &nbsp; <p>Print</p>
             </Button>
           </Grid>
