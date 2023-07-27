@@ -111,7 +111,7 @@
     }
   }
 
-  // slider 
+  // slider
   .screencast-slider {
     .see-all {
       margin-right: 90px;
@@ -272,7 +272,7 @@
             font-size: 15px;
             line-height: 27px;
             color: var(--color-grey);
-            padding: 10px 20px;
+            // padding: 10px 20px;
             border-bottom: 1px solid rgba(119, 119, 119, 0.2);
             white-space: nowrap; /* Prevent line breaks */
           }
@@ -329,11 +329,11 @@
     &::-webkit-scrollbar {
       width: 5px;
     }
-  
+
     &::-webkit-scrollbar-track {
       box-shadow: none;
     }
-  
+
     &::-webkit-scrollbar-thumb {
       background-color: var(--color-green);
       border-radius: 50px;
@@ -378,7 +378,7 @@
         margin-bottom: 14px;
       }
 
-  
+
       .worked-progress-bar {
         width: 200px;
 

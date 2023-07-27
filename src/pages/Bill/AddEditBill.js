@@ -11,7 +11,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-
+import { styled } from "@mui/material/styles";
 import React from "react";
 import { Controller } from "react-hook-form";
 import {
@@ -26,6 +26,11 @@ import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
 import AddCustomer from "./AddCustomer";
 import AddStaff from "./AddStaff";
+
+const StyledTableCell = styled(TableCell)({
+  padding: 0,
+  margin: 0
+})
 
 const AddEditBill = ({ tag }) => {
   const {
@@ -57,6 +62,7 @@ const AddEditBill = ({ tag }) => {
 
     setQtyRateValuesHandler,
     printHandler,
+    handlePaymentChange,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -66,7 +72,7 @@ const AddEditBill = ({ tag }) => {
           {/* bill no, payment type, customer, sales person selection */}
           <FormGroup className="form-field">
             <Grid container spacing={2}>
-              <Grid item xs={2}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   name="billNo"
                   control={control}
@@ -93,7 +99,7 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
 
-              <Grid item xs={2.5}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   name="date"
                   control={control}
@@ -117,7 +123,7 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        // helperText={error?.message ? error.message : ""}
+                      // helperText={error?.message ? error.message : ""}
                       />
                     </FormControl>
                   )}
@@ -127,7 +133,7 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
 
-              <Grid item xs={2.5}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   name="roomNo"
                   control={control}
@@ -148,47 +154,59 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
                   rules={{
-                    required: "Please enter room no",
+                    required: "Please enter Room No",
                   }}
                 />
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   control={control}
                   name={`staffID`}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
-                  }) => (
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      id="staffID"
-                      options={staffOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Staff Person"
-                          error={!!error}
-                          // helperText={error?.message ? error.message : ""}
+                  }) => {
+                    return (
+                      <Box sx={{ display: 'grid', gridTemplateColumns: '5fr 1fr' }}>
+                        <Autocomplete
+                          size="small"
+                          disablePortal
+                          id="staffID"
+                          options={staffOptions}
+                          value={value}
+                          onBlur={onBlur}
+                          onChange={(event, newValue) => onChange(newValue)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Staff Person"
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  )}
+                        <Button
+                          type="button"
+                          className="btn"
+                          onClick={() => setIsStaffModalOpen(true)}
+                        >
+                          <FiPlusCircle />
+                        </Button>
+                      </Box>
+                    )
+                  }}
                   rules={{
                     required: "Please Select Staff Person",
                   }}
                 />
               </Grid>
-              <Grid item xs={1}>
+              {/* <Grid item xs={1}>
                 <Button
                   type="button"
                   className="btn"
@@ -196,16 +214,18 @@ const AddEditBill = ({ tag }) => {
                 >
                   <FiPlusCircle />
                 </Button>
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={3}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   control={control}
                   name={`customerID`}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
-                  }) => (
+                  }) => {
+                    return (
+                    <Box sx={{ display: 'grid', gridTemplateColumns: '5fr 1fr' }}>
                     <Autocomplete
                       size="small"
                       disablePortal
@@ -220,17 +240,27 @@ const AddEditBill = ({ tag }) => {
                           {...params}
                           label="Customer"
                           error={!!error}
-                          // helperText={error?.message ? error.message : ""}
+                          helperText={error?.message}
                         />
                       )}
                     />
-                  )}
+                    <Button
+                      sx={{ padding: '0px' }}
+                      type="button"
+                      className="btn"
+                      onClick={() => setIsCustomerModalOpen(true)}
+                    >
+                      <FiPlusCircle />
+                    </Button>
+                    </Box>
+                    )
+                  }}
                   rules={{
                     required: "Please Select Customer",
                   }}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   name="Phone"
                   control={control}
@@ -256,17 +286,18 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid>
-              <Grid item xs={1}>
+              {/* <Grid item xs={1}>
                 <Button
+                  sx={{ padding: '0px' }}
                   type="button"
                   className="btn"
                   onClick={() => setIsCustomerModalOpen(true)}
                 >
                   <FiPlusCircle />
                 </Button>
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={2.5}>
+              <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   control={control}
                   name={`paymentID`}
@@ -281,13 +312,13 @@ const AddEditBill = ({ tag }) => {
                       options={paymentTypeOptions}
                       value={value}
                       onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
+                      onChange={(event, newValue) => [onChange(newValue), handlePaymentChange(newValue)]}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           label="Payment Type"
                           error={!!error}
-                          // helperText={error?.message ? error.message : ""}
+                          helperText={error?.message}
                         />
                       )}
                     />
@@ -297,46 +328,57 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-
-              {/* {getValues("paymentID") &&
-                getValues("paymentID")
-                  ?.label?.toLowerCase()
-                  ?.includes("card") && ( */}
-              <Grid item xs={2}>
+              <Grid item xs={12}  md={3} sm={6}>
                 <Controller
                   name="cardNo"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        type="text"
-                        disabled={
-                          value?.toLowerCase() === "cash" ||
-                          value?.toLowerCase() === "upi"
-                            ? true
-                            : false
-                        }
-                        label=" "
-                        size="small"
-                        name="cardNo"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        error={!!error}
-                      />
-                    </FormControl>
-                  )}
+                  }) => {
+                    if ((value?.toLowerCase() === "cash" || value?.toLowerCase() === "upi")) {
+                      return (
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            type="text"
+                            label={value}
+                            size="small"
+                            name="cardNo"
+                            value={value}
+                            disabled
+                          />
+                        </FormControl>
+                      );
+                    } else {
+                      return (
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            type="text"
+                            label="Card"
+                            size="small"
+                            name="cardNo"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      );
+                    }
+                  }}
                   rules={{
                     required: "Please enter card no",
-                    maxLength: { value: 4 },
-                    minLength: { value: 4 },
+                    maxLength: { value: 4, message: 'Enter last 4 digit of card' },
+                    minLength: { value: 4, message: 'Enter last 4 digit of card' },
                     pattern: { value: /^[0-9]+$/, message: "Only digit" },
                   }}
                 />
@@ -353,20 +395,20 @@ const AddEditBill = ({ tag }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>Sl.</TableCell>
-                    <TableCell>Item Name</TableCell>
-                    <TableCell>Quantity</TableCell>
-                    <TableCell>Rate</TableCell>
-                    <TableCell>Dis %</TableCell>
-                    <TableCell>Value</TableCell>
-                    <TableCell></TableCell>
+                    <StyledTableCell width={'3%'}></StyledTableCell>
+                    <StyledTableCell width={'2%'} >Sl.</StyledTableCell>
+                    <StyledTableCell width={'53%'}>Item Name</StyledTableCell>
+                    <StyledTableCell width={'10%'} >Quantity</StyledTableCell>
+                    <StyledTableCell width={'10%'}>Rate</StyledTableCell>
+                    <StyledTableCell width={'10%'}>Dis %</StyledTableCell>
+                    <StyledTableCell width={'10%'}>Value</StyledTableCell>
+                    <StyledTableCell width={'2%'}></StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {fields?.map((field, index) => (
-                    <TableRow key={field.id} id={field.id}>
-                      <TableCell sx={{ margin: "0px", padding: "0px" }}>
+                    <TableRow key={field.id}>
+                      <StyledTableCell>
                         {fields.length === index + 1 && (
                           <Button
                             type="button"
@@ -378,9 +420,9 @@ const AddEditBill = ({ tag }) => {
                             <FiPlusCircle /> &nbsp;
                           </Button>
                         )}
-                      </TableCell>
-                      <TableCell align="left">{index + 1}</TableCell>
-                      <TableCell align="left">
+                      </StyledTableCell>
+                      <StyledTableCell align="center">{index + 1}</StyledTableCell>
+                      <TableCell>
                         <Controller
                           control={control}
                           name={`detail.${index}.serviceID`}
@@ -393,7 +435,7 @@ const AddEditBill = ({ tag }) => {
                               disablePortal
                               id="serivce"
                               options={serviceOptions}
-                              sx={{ width: 300 }}
+                              // sx={{ width: 300 }}
                               value={value}
                               onBlur={onBlur}
                               onChange={(event, newValue) => [
@@ -405,7 +447,7 @@ const AddEditBill = ({ tag }) => {
                                   {...params}
                                   label="Item"
                                   error={!!error}
-                                  // helperText={error?.message ? error.message : ""}
+                                  helperText={error?.message}
                                 />
                               )}
                             />
@@ -423,25 +465,24 @@ const AddEditBill = ({ tag }) => {
                             field: { onBlur, onChange, value },
                             fieldState: { error },
                           }) => (
-                            <FormControl style={{ width: "60px" }}>
+                            <FormControl size="small" variant="standard" className="form-control">
                               <TextField
                                 size="small"
                                 name="quantity"
                                 className="text-center"
                                 value={value}
-                                style={{ textAlign: "center" }}
                                 onChange={(e) => [
                                   onChange(e),
                                   calculateTotal(index),
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                // helperText={error?.message ? error.message : ""}
+                                helperText={error?.message}
                               />
                             </FormControl>
                           )}
                           rules={{
-                            required: "Required",
+                            required: "Required Qty",
                           }}
                         />
                       </TableCell>
@@ -454,28 +495,27 @@ const AddEditBill = ({ tag }) => {
                             fieldState: { error },
                           }) => (
                             <FormControl
-                              style={{ width: "90px" }}
                               size="small"
                               variant="standard"
+                              className="form-control"
                             >
                               <TextField
                                 size="small"
                                 name="rate"
                                 className="text-center"
                                 value={value}
-                                // onChange={onChange}
                                 onChange={(e) => [
                                   onChange(e),
                                   calculateTotal(index),
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                // helperText={error?.message ? error.message : ""}
+                                helperText={error?.message}
                               />
                             </FormControl>
                           )}
                           rules={{
-                            required: "Required",
+                            required: "Required Rate",
                           }}
                         />
                       </TableCell>
@@ -488,7 +528,6 @@ const AddEditBill = ({ tag }) => {
                             fieldState: { error },
                           }) => (
                             <FormControl
-                              style={{ width: "60px" }}
                               size="small"
                               variant="standard"
                             >
@@ -503,12 +542,12 @@ const AddEditBill = ({ tag }) => {
                                 ]}
                                 onBlur={onBlur}
                                 error={!!error}
-                                // helperText={error?.message ? error.message : ""}
+                                helperText={error?.message}
                               />
                             </FormControl>
                           )}
                           rules={{
-                            required: "Required",
+                            required: "Required Discount",
                             min: {
                               value: 0,
                               message: "",
@@ -533,7 +572,6 @@ const AddEditBill = ({ tag }) => {
                             fieldState: { error },
                           }) => (
                             <FormControl
-                              style={{ width: "100px" }}
                               size="small"
                               variant="standard"
                             >

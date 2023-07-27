@@ -39,12 +39,12 @@ export const useAddEditCreateBill = (tag) => {
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
 
+  // eslint-disable-next-line
   const [submitedBillData, setSubmitedBillData] = useState("");
-  console.log(submitedBillData);
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset, watch } = useForm({
+  const { control, getValues, setValue, handleSubmit, reset, watch, formState } = useForm({
     defaultValues: {
       billNo: "",
       paymentID: "",
@@ -122,7 +122,7 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   // genrate payment options for drop down-------------------------------------
-  useMemo(() => {
+  useEffect(() => {
     const data = paymentType.map((item) => {
       return { value: item.id, label: item.name };
     });
@@ -136,22 +136,37 @@ export const useAddEditCreateBill = (tag) => {
     }
   }, [paymentType, setValue, tag]);
 
-  const selectedPaymentType = watch("paymentID");
-  useMemo(() => {
-    // console.log(selectedPaymentType);
-    if (
-      selectedPaymentType?.label?.toLowerCase() === "cash" ||
-      selectedPaymentType?.label?.toLowerCase() === "upi"
+  // const selectedPaymentType = watch("paymentID");
+  // useMemo(() => {
+  //   if (
+  //     selectedPaymentType?.label?.toLowerCase() === "cash" ||
+  //     selectedPaymentType?.label?.toLowerCase() === "upi"
+  //   ) {
+  //     setValue("cardNo", selectedPaymentType?.label);
+  //   } else {
+  //     if (tag === "add") {
+  //       setValue("cardNo", "");
+  //     } else if (tag === "edit") {
+  //       setValue("cardNo", editCardNo);
+  //     }
+  //   }
+  // }, [selectedPaymentType, setValue, tag]);
+
+  const handlePaymentChange = (value) => {
+    const { label } = value;
+    if(
+      label?.toLowerCase() === "cash" ||
+      label?.toLowerCase() === "upi"
     ) {
-      setValue("cardNo", selectedPaymentType?.label);
+      setValue("cardNo", label);
     } else {
-      if (tag === "add") {
+      if(tag === 'add') {
         setValue("cardNo", "");
-      } else if (tag === "edit") {
+      } else if(tag === 'edit') {
         setValue("cardNo", editCardNo);
       }
     }
-  }, [selectedPaymentType, setValue, tag]);
+  }
 
   // get payment type list
   useEffect(() => {
@@ -306,6 +321,7 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   const onSubmit = async (data) => {
+    if(formState.isValid) {
     const detailData = data.detail.map((item) => {
       return {
         serviceID: item.serviceID.value,
@@ -315,7 +331,6 @@ export const useAddEditCreateBill = (tag) => {
         total: item.total,
       };
     });
-
     try {
       dispatch(startLoading());
       if (tag === "add") {
@@ -334,7 +349,6 @@ export const useAddEditCreateBill = (tag) => {
             : "",
           createdBy: loggedInUser.id,
         };
-        console.log(payload, data.cardNo);
         const response = await createBill(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
@@ -382,12 +396,15 @@ export const useAddEditCreateBill = (tag) => {
     } finally {
       dispatch(stopLoading());
     }
+    } else {
+      showToast('Detail is not Valid', false);
+    }
   };
 
   const addRow = () => {
     const index = getValues("detail").length;
     append({
-      id: uuidv4(),
+      // id: uuidv4(),
       index: index,
       serviceID: "",
       quantity: "",
@@ -398,12 +415,11 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const removeRow = (index) => {
+    remove(index);
     const grandTotal = getValues(`grandTotal`);
     const rowTotal = getValues(`detail.${index}.total`);
     const total = grandTotal - rowTotal;
     setValue(`grandTotal`, total);
-
-    remove(index);
   };
 
   const calculateTotal = (index) => {
@@ -535,7 +551,7 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const printHandler = async () => {
-    console.log("printHandler");
+    if(formState.isValid) {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {
@@ -667,6 +683,9 @@ export const useAddEditCreateBill = (tag) => {
     } finally {
       dispatch(stopLoading());
     }
+    } else {
+      showToast('Detail is not Valid', false);
+    }
   };
 
   return {
@@ -700,5 +719,6 @@ export const useAddEditCreateBill = (tag) => {
     setQtyRateValuesHandler,
     printHandler,
     getValues,
+    handlePaymentChange,
   };
 };
