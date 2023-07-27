@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
@@ -44,7 +44,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset, watch, formState, clearErrors } = useForm({
+  const { control, getValues, setValue, handleSubmit, reset, watch, clearErrors } = useForm({
     defaultValues: {
       billNo: "",
       paymentID: "",
@@ -278,7 +278,8 @@ export const useAddEditCreateBill = (tag) => {
     } else {
       return false;
     }
-  }, [watch('paymentID')]);
+    // eslint-disable-next-line
+  }, [watch('paymentID'), getValues]);
 
   // get service list
   useEffect(() => {

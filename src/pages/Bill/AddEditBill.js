@@ -60,7 +60,6 @@ const AddEditBill = ({ tag }) => {
     setIsStaffModalOpen,
     fetchStaffData,
     setQtyRateValuesHandler,
-    getValues,
     printHandler,
     handlePaymentChange,
     isCardSelect
