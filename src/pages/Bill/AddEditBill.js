@@ -29,8 +29,8 @@ import AddStaff from "./AddStaff";
 
 const StyledTableCell = styled(TableCell)({
   padding: 0,
-  margin: 0
-})
+  margin: 0,
+});
 
 const AddEditBill = ({ tag }) => {
   const {
@@ -59,11 +59,13 @@ const AddEditBill = ({ tag }) => {
     isStaffModalOpen,
     setIsStaffModalOpen,
     fetchStaffData,
-
     setQtyRateValuesHandler,
+    getValues,
     printHandler,
     handlePaymentChange,
   } = useAddEditCreateBill(tag);
+
+  console.log("paymentID", getValues("paymentID")?.label?.toLowerCase());
 
   return (
     <>
@@ -123,7 +125,7 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                      // helperText={error?.message ? error.message : ""}
+                        // helperText={error?.message ? error.message : ""}
                       />
                     </FormControl>
                   )}
@@ -173,7 +175,9 @@ const AddEditBill = ({ tag }) => {
                     fieldState: { error },
                   }) => {
                     return (
-                      <Box sx={{ display: 'grid', gridTemplateColumns: '5fr 1fr' }}>
+                      <Box
+                        sx={{ display: "grid", gridTemplateColumns: "5fr 1fr" }}
+                      >
                         <Autocomplete
                           size="small"
                           disablePortal
@@ -199,7 +203,7 @@ const AddEditBill = ({ tag }) => {
                           <FiPlusCircle />
                         </Button>
                       </Box>
-                    )
+                    );
                   }}
                   rules={{
                     required: "Please Select Staff Person",
@@ -225,35 +229,37 @@ const AddEditBill = ({ tag }) => {
                     fieldState: { error },
                   }) => {
                     return (
-                    <Box sx={{ display: 'grid', gridTemplateColumns: '5fr 1fr' }}>
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      id="customerID"
-                      label="customerID"
-                      options={customersOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Customer"
-                          error={!!error}
-                          helperText={error?.message}
+                      <Box
+                        sx={{ display: "grid", gridTemplateColumns: "5fr 1fr" }}
+                      >
+                        <Autocomplete
+                          size="small"
+                          disablePortal
+                          id="customerID"
+                          label="customerID"
+                          options={customersOptions}
+                          value={value}
+                          onBlur={onBlur}
+                          onChange={(event, newValue) => onChange(newValue)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Customer"
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    <Button
-                      sx={{ padding: '0px' }}
-                      type="button"
-                      className="btn"
-                      onClick={() => setIsCustomerModalOpen(true)}
-                    >
-                      <FiPlusCircle />
-                    </Button>
-                    </Box>
-                    )
+                        <Button
+                          sx={{ padding: "0px" }}
+                          type="button"
+                          className="btn"
+                          onClick={() => setIsCustomerModalOpen(true)}
+                        >
+                          <FiPlusCircle />
+                        </Button>
+                      </Box>
+                    );
                   }}
                   rules={{
                     required: "Please Select Customer",
@@ -312,7 +318,10 @@ const AddEditBill = ({ tag }) => {
                       options={paymentTypeOptions}
                       value={value}
                       onBlur={onBlur}
-                      onChange={(event, newValue) => [onChange(newValue), handlePaymentChange(newValue)]}
+                      onChange={(event, newValue) => [
+                        onChange(newValue),
+                        handlePaymentChange(newValue),
+                      ]}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -328,15 +337,16 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}  md={3} sm={6}>
-                <Controller
-                  name="cardNo"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => {
-                    if ((value?.toLowerCase() === "cash" || value?.toLowerCase() === "upi")) {
+              {getValues("paymentID")?.label?.toLowerCase() === "cash" ||
+              getValues("paymentID")?.label?.toLowerCase() === "upi" ? (
+                <Grid item xs={12} md={3} sm={6}>
+                  <Controller
+                    name="cardNo"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => {
                       return (
                         <FormControl
                           size="small"
@@ -353,7 +363,18 @@ const AddEditBill = ({ tag }) => {
                           />
                         </FormControl>
                       );
-                    } else {
+                    }}
+                  />
+                </Grid>
+              ) : (
+                <Grid item xs={12} md={3} sm={6}>
+                  <Controller
+                    name="cardNo"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => {
                       return (
                         <FormControl
                           size="small"
@@ -373,16 +394,25 @@ const AddEditBill = ({ tag }) => {
                           />
                         </FormControl>
                       );
-                    }
-                  }}
-                  rules={{
-                    required: "Please enter card no",
-                    maxLength: { value: 4, message: 'Enter last 4 digit of card' },
-                    minLength: { value: 4, message: 'Enter last 4 digit of card' },
-                    pattern: { value: /^[0-9]+$/, message: "Only digit" },
-                  }}
-                />
-              </Grid>
+                    }}
+                    rules={{
+                      required: "Please enter card no",
+                      maxLength: {
+                        value: 4,
+                        message: "Enter last 4 digit of card",
+                      },
+                      minLength: {
+                        value: 4,
+                        message: "Enter last 4 digit of card",
+                      },
+                      pattern: { value: /^[0-9]+$/, message: "Only digit" },
+                    }}
+                  />
+                </Grid>
+              )}
+              {/* {getValues("paymentID")?.label?.toLowerCase() === "card" && (
+               
+              )} */}
               {/* )} */}
             </Grid>
           </FormGroup>
@@ -395,14 +425,14 @@ const AddEditBill = ({ tag }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell width={'3%'}></StyledTableCell>
-                    <StyledTableCell width={'2%'} >Sl.</StyledTableCell>
-                    <StyledTableCell width={'53%'}>Item Name</StyledTableCell>
-                    <StyledTableCell width={'10%'} >Quantity</StyledTableCell>
-                    <StyledTableCell width={'10%'}>Rate</StyledTableCell>
-                    <StyledTableCell width={'10%'}>Dis %</StyledTableCell>
-                    <StyledTableCell width={'10%'}>Value</StyledTableCell>
-                    <StyledTableCell width={'2%'}></StyledTableCell>
+                    <StyledTableCell width={"3%"}></StyledTableCell>
+                    <StyledTableCell width={"2%"}>Sl.</StyledTableCell>
+                    <StyledTableCell width={"53%"}>Item Name</StyledTableCell>
+                    <StyledTableCell width={"10%"}>Quantity</StyledTableCell>
+                    <StyledTableCell width={"10%"}>Rate</StyledTableCell>
+                    <StyledTableCell width={"10%"}>Dis %</StyledTableCell>
+                    <StyledTableCell width={"10%"}>Value</StyledTableCell>
+                    <StyledTableCell width={"2%"}></StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -421,7 +451,9 @@ const AddEditBill = ({ tag }) => {
                           </Button>
                         )}
                       </StyledTableCell>
-                      <StyledTableCell align="center">{index + 1}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        {index + 1}
+                      </StyledTableCell>
                       <TableCell>
                         <Controller
                           control={control}
@@ -465,7 +497,11 @@ const AddEditBill = ({ tag }) => {
                             field: { onBlur, onChange, value },
                             fieldState: { error },
                           }) => (
-                            <FormControl size="small" variant="standard" className="form-control">
+                            <FormControl
+                              size="small"
+                              variant="standard"
+                              className="form-control"
+                            >
                               <TextField
                                 size="small"
                                 name="quantity"
@@ -527,10 +563,7 @@ const AddEditBill = ({ tag }) => {
                             field: { onBlur, onChange, value },
                             fieldState: { error },
                           }) => (
-                            <FormControl
-                              size="small"
-                              variant="standard"
-                            >
+                            <FormControl size="small" variant="standard">
                               <TextField
                                 size="small"
                                 name="discount"
@@ -571,10 +604,7 @@ const AddEditBill = ({ tag }) => {
                             field: { onBlur, onChange, value },
                             fieldState: { error },
                           }) => (
-                            <FormControl
-                              size="small"
-                              variant="standard"
-                            >
+                            <FormControl size="small" variant="standard">
                               <TextField
                                 size="small"
                                 name="total"
