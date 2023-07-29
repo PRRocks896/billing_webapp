@@ -83,7 +83,7 @@ const App = () => {
 
         {
           path: "staff",
-          element: <ProtectedRoute path="customer" Component={<Staff />} />,
+          element: <ProtectedRoute path="staff" Component={<Staff />} />,
         },
         {
           path: "add-staff",
