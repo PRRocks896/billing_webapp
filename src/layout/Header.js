@@ -1,23 +1,16 @@
 import React from "react";
-import { FiLogOut, FiAlignJustify } from "react-icons/fi";
+import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
-import ProfileImage from "../assets/images/avatar2.jpg";
+// import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
-
 import { useLocation } from "react-router-dom";
-import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
-
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 // import Avatar from "@mui/material/Avatar";
 // import Tooltip from "@mui/material/Tooltip";
 import Toolbar from "@mui/material/Toolbar";
-import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -51,6 +44,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+const UserName = React.memo(({ firstName = "", lastName = "" }) => {
+  return <Typography>{firstName + " " + lastName}</Typography>;
+});
+
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   // const dispatch = useDispatch();
   const data = useSelector((state) => state.loggedInUser);
@@ -66,35 +63,14 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   pageTitle = pageTitle.toUpperCase();
 
   // account dropdown
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const openAccount = Boolean(anchorEl);
+  // const [anchorEl, setAnchorEl] = React.useState(null);
+  // const openAccount = Boolean(anchorEl);
   // const handleClick = (event) => {
   //   setAnchorEl(event.currentTarget);
   // };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  // // fetch logged in user details start
-  // const fetchLoggedInUser = useCallback(async () => {
-  //   try {
-  //     console.log("fetchLoggedInUser");
-  //     const response = await fetchLoggedInUserData();
-  //     console.log(response);
-  //     if (response.statusCode === 200) {
-  //       dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
-  //     } else {
-  //       showToast(response.messageCode, false);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     showToast(error.message, false);
-  //   }
-  // }, [dispatch]);
-
-  // useLayoutEffect(() => {
-  //   fetchLoggedInUser();
-  // }, [fetchLoggedInUser]);
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
 
   return (
     <>
@@ -118,7 +94,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             {pageTitle}
           </Typography>
           <Box className="username">
-            <Typography>{data?.firstName + " " + data?.lastName}</Typography>
+            <UserName firstName={data?.firstName} lastName={data?.lastName} />
             <Clock />
           </Box>
 
@@ -137,7 +113,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             </Tooltip>
           </Box> */}
 
-          <Menu
+          {/* <Menu
             className="account-dropdown-menu"
             anchorEl={anchorEl}
             id="account-menu"
@@ -173,11 +149,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            {/* <MenuItem onClick={handleClose}> */}
-
-            {/* </MenuItem> */}
-            {/* <MenuItem onClick={handleClose}> */}
-
             <Box className="user-details">
               <Box className="user-img">
                 <img src={ProfileImage} alt="account img" />
@@ -201,12 +172,12 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             </Box>
             <Box className="links">
               <Divider />
-              {/* <MenuItem className="menu-link">
+              <MenuItem className="menu-link">
                 <ListItemIcon className="link-icon">
                   <FiUser />
                 </ListItemIcon>
                 Profile
-              </MenuItem> */}
+              </MenuItem>
               <MenuItem className="menu-link" onClick={logoutHandler}>
                 <ListItemIcon className="link-icon">
                   <FiLogOut />
@@ -214,7 +185,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 Logout
               </MenuItem>
             </Box>
-          </Menu>
+          </Menu> */}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -230,9 +201,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
       >
         <DrawerHeader className="site-logo">
           <img src={SiteLogo} alt="Sitelogo" width={218} height={140} />
-          {/* <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <FiChevronLeft /> : <FiChevronRight />}
-                    </IconButton> */}
         </DrawerHeader>
         <Sidebar />
       </Drawer>

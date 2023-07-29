@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 
+let day;
+let month;
+let year;
+
 const Clock = () => {
   const [time, setTime] = useState(new Date());
 
@@ -14,9 +18,13 @@ const Clock = () => {
   }, []);
 
   // Format the date as DD-MM-YYYY
-  const formattedDate = `${time.getDate()}-${
-    time.getMonth() + 1
-  }-${time.getFullYear()}`;
+  day = time.getDate();
+  month = time.getMonth() + 1;
+  year = time.getFullYear();
+
+  const formattedDate = `
+    ${day <= 9 ? `0${day}` : day}-${month <= 9 ? `0${month}` : month}-${year}
+  `;
 
   // Format the time as HH:MM:SS
   const formattedTime = `${time.getHours()}:${time.getMinutes()}:${time
