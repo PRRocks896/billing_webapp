@@ -200,7 +200,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
         open={open}
       >
         <DrawerHeader className="site-logo">
-          <img src={SiteLogo} alt="Sitelogo" width={218} height={140} />
+          <img src={SiteLogo} alt="Sitelogo" width={140} height={80} />
         </DrawerHeader>
         <Sidebar />
       </Drawer>
