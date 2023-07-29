@@ -38,7 +38,7 @@ export const useAddEditCity = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/city");
         } else {
           showToast(response.messageCode, false);
         }
@@ -52,7 +52,7 @@ export const useAddEditCity = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/city");
         } else {
           showToast(response.messageCode, false);
         }
@@ -92,7 +92,7 @@ export const useAddEditCity = (tag) => {
   }, [fetchEditCityData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/city");
   };
 
   // gemrate service category options for drop down

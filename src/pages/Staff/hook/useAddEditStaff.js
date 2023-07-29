@@ -33,7 +33,7 @@ export const useAddEditStaff = (tag) => {
         const response = await createStaff(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/staff");
         } else {
           showToast(response.messageCode, false);
         }
@@ -47,7 +47,7 @@ export const useAddEditStaff = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/staff");
         } else {
           showToast(response.message, false);
         }
@@ -83,7 +83,7 @@ export const useAddEditStaff = (tag) => {
   }, [fetchEditStaffData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/staff");
   };
 
   return {

@@ -47,7 +47,7 @@ export const useAddEditModule = (tag) => {
         const response = await createModule(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/module");
         } else {
           showToast(response.messageCode, false);
         }
@@ -62,7 +62,7 @@ export const useAddEditModule = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/module");
         } else {
           showToast(response.message, false);
         }
@@ -100,7 +100,7 @@ export const useAddEditModule = (tag) => {
   }, [fetchEditModuleData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/module");
   };
 
   return {

@@ -32,7 +32,7 @@ export const useAddEditStates = (tag) => {
         const response = await createStates(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/states");
         } else {
           showToast(response.messageCode, false);
         }
@@ -42,7 +42,7 @@ export const useAddEditStates = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/states");
         } else {
           showToast(response.message, false);
         }
@@ -78,7 +78,7 @@ export const useAddEditStates = (tag) => {
   }, [fetchEditStateData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/states");
   };
 
   return {

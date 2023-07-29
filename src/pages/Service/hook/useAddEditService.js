@@ -45,7 +45,7 @@ export const useAddEditService = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/service");
         } else {
           showToast(response.messageCode, false);
         }
@@ -61,7 +61,7 @@ export const useAddEditService = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/service");
         } else {
           showToast(response.message, false);
         }
@@ -74,7 +74,7 @@ export const useAddEditService = (tag) => {
   };
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/service");
   };
 
   const fetchEditServiceData = useCallback(async () => {

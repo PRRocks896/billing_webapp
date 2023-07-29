@@ -33,7 +33,7 @@ export const useAddEditPaymentType = (tag) => {
         const response = await createPaymentType(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/payment-type");
         } else {
           showToast(response.messageCode, false);
         }
@@ -43,7 +43,7 @@ export const useAddEditPaymentType = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/payment-type");
         } else {
           showToast(response.message, false);
         }
@@ -78,7 +78,7 @@ export const useAddEditPaymentType = (tag) => {
   }, [fetchEditPaymentTypeData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/payment-type");
   };
 
   return {

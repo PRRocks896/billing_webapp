@@ -106,7 +106,7 @@ export const useAddEditUser = (tag) => {
         const response = await createUser(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/user");
         } else {
           showToast(response.messageCode, false);
         }
@@ -153,7 +153,7 @@ export const useAddEditUser = (tag) => {
   }, [fetchEditUserData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/user");
   };
 
   return {
@@ -162,6 +162,6 @@ export const useAddEditUser = (tag) => {
     handleSubmit,
     onSubmit,
     cancelHandler,
-    role: loggedInUser.px_role.name.toLowerCase(),
+    role: loggedInUser?.px_role?.name.toLowerCase(),
   };
 };

@@ -38,7 +38,7 @@ export const useAddEditServiceCategory = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/service-category");
         } else {
           showToast(response.messageCode, false);
         }
@@ -51,7 +51,7 @@ export const useAddEditServiceCategory = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/service-category");
         } else {
           showToast(response.message, false);
         }
@@ -88,7 +88,7 @@ export const useAddEditServiceCategory = (tag) => {
 
   // cancel handler and error displaying
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/service-category");
   };
 
   return {

@@ -207,7 +207,6 @@ export const useRights = () => {
   };
 
   const cancelHandler = () => {
-    // navigate(-1);
     reset({
       roleID: "",
       modules: [],

@@ -44,14 +44,14 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          flag === 1 && navigate(-1);
+          flag === 1 && navigate("/customer");
         } else {
           showToast(response.messageCode, false);
         }
       } else if (tag === "edit") {
         const payload = {
           userID: loggedInUser.id,
-          cityID: 1,
+          // cityID: 1,
           phoneNumber: data.phone,
           gender: data.gender,
           name: data.customer_name,
@@ -61,7 +61,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/customer");
         } else {
           showToast(response.message, false);
         }
@@ -98,7 +98,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
   }, [fetchEditCustomerData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/customer");
   };
 
   return {

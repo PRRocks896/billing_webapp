@@ -29,7 +29,7 @@ export const useAddEditRole = (tag) => {
         const response = await createRole(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/role");
         } else {
           showToast(response.messageCode, false);
         }
@@ -39,7 +39,7 @@ export const useAddEditRole = (tag) => {
 
         if (response.statusCode === 200) {
           showToast(response.message, true);
-          navigate(-1);
+          navigate("/role");
         } else {
           showToast(response.message, false);
         }
@@ -74,7 +74,7 @@ export const useAddEditRole = (tag) => {
   }, [fetchEditRoleData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/role");
   };
 
   return {
