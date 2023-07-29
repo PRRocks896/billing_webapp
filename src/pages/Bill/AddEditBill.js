@@ -64,6 +64,7 @@ const AddEditBill = ({ tag }) => {
     handlePaymentChange,
     isCardSelect
   } = useAddEditCreateBill(tag);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -334,13 +335,13 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              {isCardSelect ? (
-                <Grid item xs={12} md={3} sm={6}>
+              <Grid item xs={12} md={3} sm={6}>
+                {/* {isCardSelect ? (
                   <Controller
                     name="cardNo"
                     control={control}
                     render={({
-                      field: { value },
+                      field: { onBlur, onChange, value },
                     }) => {
                       return (
                         <FormControl
@@ -350,19 +351,21 @@ const AddEditBill = ({ tag }) => {
                         >
                           <TextField
                             type="text"
-                            label={value}
+                            label={value + `Cash/UPI`}
                             size="small"
                             name="cardNo"
                             value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
                             disabled
                           />
                         </FormControl>
                       );
                     }}
-                  />
-                </Grid>
-              ) : (
-                <Grid item xs={12} md={3} sm={6}>
+                  /> */}
+                {/* // </Grid> */}
+              {/* ) : ( */}
+                {/* // <Grid item xs={12} md={3} sm={6}> */}
                   <Controller
                     name="cardNo"
                     control={control}
@@ -378,7 +381,7 @@ const AddEditBill = ({ tag }) => {
                         >
                           <TextField
                             type="text"
-                            label="Card"
+                            label={value}
                             size="small"
                             name="cardNo"
                             value={value}
@@ -386,11 +389,12 @@ const AddEditBill = ({ tag }) => {
                             onBlur={onBlur}
                             error={!!error}
                             helperText={error?.message}
+                            disabled={isCardSelect}
                           />
                         </FormControl>
                       );
                     }}
-                    rules={{
+                    rules={!isCardSelect ?? {
                       required: "Please enter card no",
                       maxLength: {
                         value: 4,
@@ -403,8 +407,8 @@ const AddEditBill = ({ tag }) => {
                       pattern: { value: /^[0-9]+$/, message: "Only digit" },
                     }}
                   />
-                </Grid>
-              )}
+                  {/* )} */}
+                  </Grid>
               {/* {getValues("paymentID")?.label?.toLowerCase() === "card" && (
 
               )} */}
