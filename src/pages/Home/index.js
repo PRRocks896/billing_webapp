@@ -56,8 +56,8 @@ const Home = () => {
               path="add-service"
             />
             <ActivityCard
-              ActivityTitle={"User"}
-              ActivityNumber={details?.counts?.userCount}
+              ActivityTitle={"Bill"}
+              ActivityNumber={details?.counts?.billCount}
               ActivityIcon={<TbFileInvoice />}
               path="create-bill"
             />

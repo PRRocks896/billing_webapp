@@ -6,30 +6,21 @@ const baseUrl = process.env.REACT_APP_BASE_URL;
 
 const axiosInstance = axios.create();
 
-export const authHeader = () => {
-  // return authorization header with basic auth credentials
-  //   const user = localStorage.getItem("dataToken");
-
-  //   if (user) {
-  //     return { headers: { Authorization: `Bearer ${user}` } };
-  //     // return { Authorization: `Bearer ${user.token}` };
-  //   } else {
-  //     return {};
-  //   }
-  // return { headers: { "x-api-key": "05646635804321276" } };
-
+export const authHeader = (params = {}) => {
   if (localStorage.getItem("token")) {
     return {
       headers: {
         "x-api-key": "05646635804321276",
         Authorization: localStorage.getItem("token"),
       },
+      params,
     };
   } else {
     return {
       headers: {
         "x-api-key": "05646635804321276",
       },
+      params,
     };
   }
 };
@@ -42,9 +33,9 @@ export const attachId = (url, id) => {
   }
 };
 
-export const get = async (url) => {
+export const get = async (url, params = {}) => {
   const response = await axiosInstance
-    .get(`${baseUrl}${url}`, authHeader())
+    .get(`${baseUrl}${url}`, authHeader(params))
     .then((res) => {
       if (res.status === 200) {
         return res.data;

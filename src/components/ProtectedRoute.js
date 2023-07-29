@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 const ProtectedRoute = ({ path, Component }) => {
   const navigate = useNavigate();
   const { accessModules } = useSelector((state) => state.loggedInUser);
-  // alert(accessModules);
+  console.log(accessModules);
   const isAccessible = useMemo(() => {
     // Split path and get only name
     const mainPath = path.split("/")[0];
@@ -18,7 +18,10 @@ const ProtectedRoute = ({ path, Component }) => {
             return true;
           } else if (res.px_module.path === `/${mainPath.split("-")[1]}`) {
             // Check for Add
-            if (mainPath.includes("add") && res.add) {
+            if (
+              (mainPath.includes("add") || mainPath.includes("create")) &&
+              res.add
+            ) {
               return true;
               // Check for Edit
             } else if (mainPath.includes("edit") && res.edit) {
