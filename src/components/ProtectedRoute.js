@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 const ProtectedRoute = ({ path, Component }) => {
   const navigate = useNavigate();
   const { accessModules } = useSelector((state) => state.loggedInUser);
-  console.log(accessModules);
   const isAccessible = useMemo(() => {
     // Split path and get only name
     const mainPath = path.split("/")[0];

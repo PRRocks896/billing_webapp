@@ -23,7 +23,7 @@ const AddCustomer = ({ tag }) => {
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Controller
-                  name="customer_name"
+                  name="name"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -37,12 +37,12 @@ const AddCustomer = ({ tag }) => {
                       <TextField
                         label="Customer name"
                         size="small"
-                        name="customer_name"
+                        name="name"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -54,7 +54,7 @@ const AddCustomer = ({ tag }) => {
               {/*  */}
               <Grid item xs={6}>
                 <Controller
-                  name="phone"
+                  name="phoneNumber"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -69,12 +69,12 @@ const AddCustomer = ({ tag }) => {
                         type="number"
                         label="Phone"
                         size="small"
-                        name="phone"
+                        name="phoneNumber"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -135,7 +135,7 @@ const AddCustomer = ({ tag }) => {
                             />
                             Female
                           </span>
-                          {error?.message ? error.message : ""}
+                          {error?.message}
                         </>
                       )}
                       rules={{ required: "Please select a gender" }}
