@@ -27,6 +27,7 @@ const Rights = () => {
     cancelHandler,
     roleOptions,
     fetchRightsModuleData,
+    onChangeAllHandler,
   } = useRights();
   return (
     <>
@@ -84,6 +85,7 @@ const Rights = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Module Name</TableCell>
+                      <TableCell>All</TableCell>
                       <TableCell>View</TableCell>
                       <TableCell>Add</TableCell>
                       <TableCell>Edit</TableCell>
@@ -98,6 +100,25 @@ const Rights = () => {
                           <TableCell>
                             <Controller
                               control={control}
+                              name={`modules.${index}.all`}
+                              render={({
+                                field: { onBlur, onChange, value },
+                              }) => (
+                                <Checkbox
+                                  // value={value}
+                                  checked={value}
+                                  onChange={(event, newValue) => [
+                                    onChange(newValue),
+                                    onChangeAllHandler("all", index, newValue),
+                                  ]}
+                                  onBlur={onBlur}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Controller
+                              control={control}
                               name={`modules.${index}.view`}
                               render={({
                                 field: { onBlur, onChange, value },
@@ -105,9 +126,10 @@ const Rights = () => {
                                 <Checkbox
                                   // value={value}
                                   checked={value}
-                                  onChange={(event, newValue) =>
-                                    onChange(newValue)
-                                  }
+                                  onChange={(event, newValue) => [
+                                    onChange(newValue),
+                                    onChangeAllHandler("view", index, newValue),
+                                  ]}
                                   onBlur={onBlur}
                                 />
                               )}
@@ -123,9 +145,10 @@ const Rights = () => {
                                 <Checkbox
                                   // value={value}
                                   checked={value}
-                                  onChange={(event, newValue) =>
-                                    onChange(newValue)
-                                  }
+                                  onChange={(event, newValue) => [
+                                    onChange(newValue),
+                                    onChangeAllHandler("add", index, newValue),
+                                  ]}
                                   onBlur={onBlur}
                                 />
                               )}
@@ -141,9 +164,10 @@ const Rights = () => {
                                 <Checkbox
                                   // value={value}
                                   checked={value}
-                                  onChange={(event, newValue) =>
-                                    onChange(newValue)
-                                  }
+                                  onChange={(event, newValue) => [
+                                    onChange(newValue),
+                                    onChangeAllHandler("edit", index, newValue),
+                                  ]}
                                   onBlur={onBlur}
                                 />
                               )}
@@ -159,9 +183,14 @@ const Rights = () => {
                                 <Checkbox
                                   // value={value}
                                   checked={value}
-                                  onChange={(event, newValue) =>
-                                    onChange(newValue)
-                                  }
+                                  onChange={(event, newValue) => [
+                                    onChange(newValue),
+                                    onChangeAllHandler(
+                                      "delete",
+                                      index,
+                                      newValue
+                                    ),
+                                  ]}
                                   onBlur={onBlur}
                                 />
                               )}

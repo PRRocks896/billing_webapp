@@ -13,7 +13,7 @@ export const useRights = () => {
   const [roles, setRoles] = useState([]);
   const [moduleList, setModuleList] = useState([]);
 
-  const { handleSubmit, control, getValues, reset } = useForm({
+  const { handleSubmit, control, getValues, reset, setValue } = useForm({
     defaultValues: {
       roleID: "",
       modules: [
@@ -88,6 +88,7 @@ export const useRights = () => {
             rightID: res?.id,
             moduleID: res?.moduleID,
             moduleName: res?.px_module?.name,
+            all: res?.view && res?.add && res?.edit && res?.delete,
             view: res?.view,
             add: res?.add,
             edit: res?.edit,
@@ -176,6 +177,22 @@ export const useRights = () => {
     }
   };
 
+  const onChangeAllHandler = (tag, index, newValue) => {
+    if (tag === "all") {
+      setValue(`modules.${index}.view`, newValue);
+      setValue(`modules.${index}.add`, newValue);
+      setValue(`modules.${index}.edit`, newValue);
+      setValue(`modules.${index}.delete`, newValue);
+    } else {
+      const isChecked =
+        getValues(`modules.${index}.view`) &&
+        getValues(`modules.${index}.add`) &&
+        getValues(`modules.${index}.edit`) &&
+        getValues(`modules.${index}.delete`);
+      setValue(`modules.${index}.all`, isChecked);
+    }
+  };
+
   const cancelHandler = () => {
     reset({
       roleID: "",
@@ -192,5 +209,6 @@ export const useRights = () => {
     roleOptions,
     moduleList,
     fetchRightsModuleData,
+    onChangeAllHandler,
   };
 };

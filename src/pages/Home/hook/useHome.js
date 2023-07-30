@@ -19,8 +19,7 @@ export const useHome = () => {
       const response = await fetchDashboardDetails(params);
       setDetails(response.data);
     } catch (error) {
-      console.log(error);
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 
