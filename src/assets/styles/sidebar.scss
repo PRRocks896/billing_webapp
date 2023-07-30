@@ -4,12 +4,12 @@
     background-color: var(--color-black);
 
     .site-logo{
-      min-height: 170px;
+      min-height: 130px;
       position: relative;
       margin-bottom: 0px;
 
       @media(max-width:1560.98px){
-        min-height: 170px;
+        min-height: 130px;
       }
       img{
         margin: 0 auto;

@@ -42,9 +42,20 @@
       border-radius: 5px;
       padding: 15px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
 
+      .activity-content_1{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .activity-content_2{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
       h6 {
         font-style: normal;
         font-weight: 400;
@@ -73,14 +84,21 @@
 
       svg {
         color: var(--color-white);
-        width: 70px;
-        height: 70px;
+        width: 55px;
+        height: 55px;
         color: var(--color-green);
         stroke-width: 1.5;
 
         @media(max-width:1280.98px) {
           width: 50px;
           height: 50px;
+        }
+      }
+      .arrow-icon{
+        svg{
+          color: #fff;
+          width: 30px;
+          height: 30px;
         }
       }
     }

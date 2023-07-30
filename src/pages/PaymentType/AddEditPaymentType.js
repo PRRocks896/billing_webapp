@@ -20,7 +20,7 @@ const AddEditPaymentType = ({ tag }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Controller
-                  name="payment_type"
+                  name="name"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -34,12 +34,12 @@ const AddEditPaymentType = ({ tag }) => {
                       <TextField
                         label="Payment Type"
                         size="small"
-                        name="payment_type"
+                        name="name"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}

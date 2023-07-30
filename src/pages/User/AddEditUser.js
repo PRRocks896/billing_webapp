@@ -47,7 +47,7 @@ const AddEditUser = ({ tag }) => {
                         }}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -77,7 +77,7 @@ const AddEditUser = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -108,7 +108,7 @@ const AddEditUser = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -141,7 +141,7 @@ const AddEditUser = ({ tag }) => {
                             {...params}
                             label="Select Role"
                             error={!!error}
-                            helperText={error?.message ? error.message : ""}
+                            helperText={error?.message}
                           />
                         )}
                       />
@@ -174,7 +174,7 @@ const AddEditUser = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -205,7 +205,7 @@ const AddEditUser = ({ tag }) => {
                           onChange={onChange}
                           onBlur={onBlur}
                           error={!!error}
-                          helperText={error?.message ? error.message : ""}
+                          helperText={error?.message}
                         />
                       </FormControl>
                     )}
@@ -238,7 +238,7 @@ const AddEditUser = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -268,7 +268,7 @@ const AddEditUser = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}

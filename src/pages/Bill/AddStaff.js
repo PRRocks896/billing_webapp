@@ -75,7 +75,7 @@ const AddStaff = ({
                               onChange={onChange}
                               onBlur={onBlur}
                               error={!!error}
-                              helperText={error?.message ? error.message : ""}
+                              helperText={error?.message}
                             />
                           </FormControl>
                         )}

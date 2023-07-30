@@ -42,7 +42,7 @@ const AddEditCity = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -73,7 +73,7 @@ const AddEditCity = ({ tag }) => {
                             {...params}
                             label="Select State"
                             error={!!error}
-                            helperText={error?.message ? error.message : ""}
+                            helperText={error?.message}
                           />
                         )}
                       />

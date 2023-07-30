@@ -20,7 +20,7 @@ export const useAddEditPaymentType = (tag) => {
 
   const { setValue, control, handleSubmit } = useForm({
     defaultValues: {
-      payment_type: "",
+      name: "",
     },
     mode: "onBlur",
   });
@@ -28,26 +28,40 @@ export const useAddEditPaymentType = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = { name: data.payment_type, createdBy: loggedInUser.id };
-        const response = await createPaymentType(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = { name: data.payment_type, updatedBy: loggedInUser.id };
-        const response = await updatePaymentType(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.message, false);
-        }
+      const response =
+        tag === "add"
+          ? await createPaymentType({ ...data, createdBy: loggedInUser.id })
+          : await updatePaymentType(
+              { ...data, updatedBy: loggedInUser.id },
+              id
+            );
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/payment-type");
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = { name: data.payment_type, createdBy: loggedInUser.id };
+      //   const response = await createPaymentType(payload);
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/payment-type");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = { name: data.payment_type, updatedBy: loggedInUser.id };
+      //   const response = await updatePaymentType(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/payment-type");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -57,11 +71,11 @@ export const useAddEditPaymentType = (tag) => {
 
   const fetchEditPaymentTypeData = useCallback(async () => {
     try {
-      dispatch(startLoading());
       if (id) {
+        dispatch(startLoading());
         const response = await getPaymentTypeById(id);
         if (response.statusCode === 200) {
-          setValue("payment_type", response.data.name);
+          setValue("name", response.data.name);
         } else {
           showToast(response.message, false);
         }
@@ -74,11 +88,11 @@ export const useAddEditPaymentType = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditPaymentTypeData();
-  }, [fetchEditPaymentTypeData]);
+    tag === "edit" && fetchEditPaymentTypeData();
+  }, [tag, fetchEditPaymentTypeData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/payment-type");
   };
 
   return {

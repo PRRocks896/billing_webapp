@@ -20,8 +20,8 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
   const { control, setValue, handleSubmit } = useForm({
     defaultValues: {
-      customer_name: "",
-      phone: "",
+      name: "",
+      phoneNumber: "",
       gender: tag === "add" ? "male" : "",
     },
     mode: "onBlur",
@@ -30,42 +30,61 @@ export const useAddEditCustomer = (tag, flag = 1) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          userID: loggedInUser.id,
-          // cityID: 1,
-          phoneNumber: data.phone,
-          gender: data.gender,
-          name: data.customer_name,
-          createdBy: loggedInUser.id,
-        };
+      const payload = {
+        userID: loggedInUser.id,
+        ...data,
+      };
+      const response =
+        tag === "add"
+          ? await createCustomer({ ...payload, createdBy: loggedInUser.id })
+          : await updateCustomer(
+              { ...payload, updatedBy: loggedInUser.id },
+              id
+            );
 
-        const response = await createCustomer(payload);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          flag === 1 && navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          userID: loggedInUser.id,
-          cityID: 1,
-          phoneNumber: data.phone,
-          gender: data.gender,
-          name: data.customer_name,
-          updatedBy: loggedInUser.id,
-        };
-        const response = await updateCustomer(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.message, false);
-        }
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        flag === 1 && navigate("/customer");
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     userID: loggedInUser.id,
+      //     // cityID: 1,
+      //     phoneNumber: data.phone,
+      //     gender: data.gender,
+      //     name: data.customer_name,
+      //     createdBy: loggedInUser.id,
+      //   };
+
+      //   const response = await createCustomer(payload);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     flag === 1 && navigate("/customer");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     userID: loggedInUser.id,
+      //     // cityID: 1,
+      //     phoneNumber: data.phone,
+      //     gender: data.gender,
+      //     name: data.customer_name,
+      //     updatedBy: loggedInUser.id,
+      //   };
+      //   const response = await updateCustomer(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/customer");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -75,12 +94,12 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
   const fetchEditCustomerData = useCallback(async () => {
     try {
-      dispatch(startLoading());
       if (id) {
+        dispatch(startLoading());
         const response = await getCustomerById(id);
         if (response.statusCode === 200) {
-          setValue("customer_name", response.data.name);
-          setValue("phone", response.data.phoneNumber);
+          setValue("name", response.data.name);
+          setValue("phoneNumber", response.data.phoneNumber);
           setValue("gender", response.data.gender);
         } else {
           showToast(response.message, false);
@@ -94,11 +113,11 @@ export const useAddEditCustomer = (tag, flag = 1) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditCustomerData();
-  }, [fetchEditCustomerData]);
+    tag === "edit" && fetchEditCustomerData();
+  }, [tag, fetchEditCustomerData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/customer");
   };
 
   return {

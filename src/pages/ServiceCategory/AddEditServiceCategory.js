@@ -19,37 +19,8 @@ const AddEditServiceCategory = ({ tag }) => {
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                {/* <FormControl variant="standard" className="form-control">
-                  <div
-                    className={
-                      !errors.service_category ? "input-field" : "border-error"
-                    }
-                  >
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      className="text-black input-label"
-                    >
-                      Service Category *
-                    </Typography>
-                    <input
-                      type="text"
-                      placeholder="Enter Service category"
-                      {...register("service_category", {
-                        required: "Service category is required",
-                        maxLength: 100,
-                      })}
-                    />
-                  </div>
-                  {errors.service_category && (
-                    <span style={{ fontSize: "14px", color: "red" }}>
-                      {errors.service_category.message}
-                    </span>
-                  )}
-                </FormControl> */}
-                {/*  */}
                 <Controller
-                  name="service_category"
+                  name="name"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -63,12 +34,12 @@ const AddEditServiceCategory = ({ tag }) => {
                       <TextField
                         label="Service Category*"
                         size="small"
-                        name="service_category"
+                        name="name"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
