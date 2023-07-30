@@ -43,7 +43,11 @@ export const useCustomer = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = listPayload(page, { searchText: searchValue });
+        const payload = { searchText: searchValue };
+        if (loggedInUser.roleId !== 1) {
+          payload.createdBy = loggedInUser.id;
+        }
+        const body = listPayload(page, { ...payload });
 
         const response = await getCustomerList(body);
         if (response.statusCode === 200) {
@@ -60,7 +64,7 @@ export const useCustomer = () => {
         dispatch(stopLoading());
       }
     },
-    [dispatch, page]
+    [dispatch, loggedInUser.id, loggedInUser.roleId, page]
   );
 
   const searchCustomerHandler = async (payload) => {
