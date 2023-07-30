@@ -18,19 +18,17 @@ const Clock = () => {
   }, []);
 
   // Format the date as DD-MM-YYYY
-  day = time.getDate();
-  month = time.getMonth() + 1;
-  year = time.getFullYear();
+  day = time.getDate().toString().padStart(2, "0");
+  month = (time.getMonth() + 1).toString().padStart(2, "0");
+  year = time.getFullYear().toString().padStart(2, "0");
 
-  const formattedDate = `
-    ${day <= 9 ? `0${day}` : day}-${month <= 9 ? `0${month}` : month}-${year}
-  `;
+  const formattedDate = `${day}-${month}-${year}`;
 
   // Format the time as HH:MM:SS
-  const formattedTime = `${time.getHours()}:${time.getMinutes()}:${time
-    .getSeconds()
+  const formattedTime = `${time.getHours().toString().padStart(2, "0")}:${time
+    .getMinutes()
     .toString()
-    .padStart(2, "0")}`;
+    .padStart(2, "0")}:${time.getSeconds().toString().padStart(2, "0")}`;
 
   return (
     <div>
