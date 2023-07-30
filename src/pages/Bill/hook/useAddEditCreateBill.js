@@ -129,7 +129,7 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   // genrate payment options for drop down-------------------------------------
-  useEffect(() => {
+  const setPaymentOptionAndCard = useCallback(() => {
     const data = paymentType.map((item) => {
       return { value: item.id, label: item.name };
     });
@@ -142,6 +142,10 @@ export const useAddEditCreateBill = (tag) => {
       setValue("cardNo", initialValue[0]?.label);
     }
   }, [paymentType, setValue, tag]);
+
+  useEffect(() => {
+    setPaymentOptionAndCard();
+  }, [setPaymentOptionAndCard]);
 
   const handlePaymentChange = (value) => {
     const { label } = value;
@@ -315,6 +319,7 @@ export const useAddEditCreateBill = (tag) => {
           let billNo = (firstBillNo += 1).toString().padStart(8, "0");
           setValue("billNo", "G" + billNo);
           setSubmitedBillData(response.data);
+          setPaymentOptionAndCard();
           // navigate("/bill");
         } else {
           showToast(response.messageCode, false);
