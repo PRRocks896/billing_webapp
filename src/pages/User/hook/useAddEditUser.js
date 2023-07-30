@@ -88,13 +88,16 @@ export const useAddEditUser = (tag) => {
         lastName: data.lastName,
         branchName: data.branchName,
         userName: data.userName,
-        password: data.password,
         phoneNumber: data.phoneNumber,
         email: data.email,
       };
       const response =
         tag === "add"
-          ? await createUser({ ...payload, createdBy: loggedInUser.id })
+          ? await createUser({
+              ...payload,
+              password: data.password,
+              createdBy: loggedInUser.id,
+            })
           : await updateUser({ ...payload, updatedBy: loggedInUser.id }, id);
 
       if (response?.statusCode === 200) {

@@ -51,7 +51,6 @@ export const useAddEditCreateBill = (tag) => {
     reset,
     watch,
     clearErrors,
-    formState
   } = useForm({
     defaultValues: {
       billNo: "",
@@ -482,7 +481,7 @@ export const useAddEditCreateBill = (tag) => {
   }, [tag, fetchEditBillData]);
 
   const print = (billData) => {
-    const printWindow = window.open('', '_blank', 'popup=yes');
+    const printWindow = window.open("", "_blank", "popup=yes");
     const printDocument = (
       <html>
         <head>
