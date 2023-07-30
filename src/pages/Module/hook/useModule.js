@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteModule,
@@ -29,22 +29,7 @@ export const useModule = () => {
   };
 
   const rights = useMemo(() => {
-    if (accessModules && accessModules.length > 0) {
-      const selectedModule = accessModules.find(
-        (res) => res.px_module.path === pathname
-      );
-      return {
-        add: selectedModule.add || false,
-        edit: selectedModule.edit || false,
-        delete: selectedModule.delete || false,
-      };
-    } else {
-      return {
-        add: false,
-        edit: false,
-        delete: false,
-      };
-    }
+    return rightsAccess(accessModules, pathname);
   }, [accessModules, pathname]);
 
   const visibleRows = useMemo(() => {
@@ -58,19 +43,8 @@ export const useModule = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = {
-          where: {
-            // isActive: true,
-            isDeleted: false,
-            searchText: searchValue,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 10,
-            page: page + 1,
-          },
-        };
+        const body = listPayload(page, { searchText: searchValue });
+
         const response = await getModuleList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;

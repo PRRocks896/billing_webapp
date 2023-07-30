@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { createCity, getCityById, updateCity } from "../../../service/city";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getStatesList } from "../../../service/states";
@@ -106,18 +106,8 @@ export const useAddEditCity = (tag) => {
   useEffect(() => {
     try {
       const fetchStateData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
+        const body = listPayload(0, { isActive: true }, 1000);
+
         const response = await getStatesList(body);
 
         if (response.statusCode === 200) {

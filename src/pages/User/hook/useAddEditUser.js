@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -60,18 +60,7 @@ export const useAddEditUser = (tag) => {
   useEffect(() => {
     try {
       const fetchRolesData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
+        const body = listPayload(0, { isActive: true }, 1000);
         const response = await getRolesList(body);
 
         if (response.statusCode === 200) {

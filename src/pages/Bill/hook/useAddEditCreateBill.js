@@ -7,7 +7,7 @@ import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -44,7 +44,15 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset, watch, clearErrors } = useForm({
+  const {
+    control,
+    getValues,
+    setValue,
+    handleSubmit,
+    reset,
+    watch,
+    clearErrors,
+  } = useForm({
     defaultValues: {
       billNo: "",
       paymentID: "",
@@ -137,36 +145,23 @@ export const useAddEditCreateBill = (tag) => {
 
   const handlePaymentChange = (value) => {
     const { label } = value;
-    if(
-      label?.toLowerCase() === "cash" ||
-      label?.toLowerCase() === "upi"
-    ) {
+    if (label?.toLowerCase() === "cash" || label?.toLowerCase() === "upi") {
       setValue("cardNo", label);
     } else {
-      if(tag === 'add') {
+      if (tag === "add") {
         setValue("cardNo", "");
-      } else if(tag === 'edit') {
+      } else if (tag === "edit") {
         setValue("cardNo", editCardNo);
       }
     }
-  }
+  };
 
   // get payment type list
   useEffect(() => {
     try {
       const fetchPaymentTypeData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
+        const body = listPayload(0, { isActive: true }, 1000);
+
         const response = await getPaymentTypeList(body);
 
         if (response.statusCode === 200) {
@@ -194,18 +189,8 @@ export const useAddEditCreateBill = (tag) => {
   // get customers list
   const fetchCustomersData = useCallback(async () => {
     try {
-      const body = {
-        where: {
-          isActive: true,
-          isDeleted: false,
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 1000,
-          page: 1,
-        },
-      };
+      const body = listPayload(0, { isActive: true }, 1000);
+
       const response = await getCustomerList(body);
 
       if (response.statusCode === 200) {
@@ -234,18 +219,8 @@ export const useAddEditCreateBill = (tag) => {
   // get staff list
   const fetchStaffData = useCallback(async () => {
     try {
-      const body = {
-        where: {
-          isActive: true,
-          isDeleted: false,
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 1000,
-          page: 1,
-        },
-      };
+      const body = listPayload(0, { isActive: true }, 1000);
+
       const response = await getStaffList(body);
 
       if (response.statusCode === 200) {
@@ -272,31 +247,21 @@ export const useAddEditCreateBill = (tag) => {
   }, [service]);
 
   const isCardSelect = useMemo(() => {
-    const value = getValues('paymentID')?.label?.toLowerCase();
-    if(['cash', 'upi'].includes(value)) {
+    const value = getValues("paymentID")?.label?.toLowerCase();
+    if (["cash", "upi"].includes(value)) {
       return true;
     } else {
       return false;
     }
     // eslint-disable-next-line
-  }, [watch('paymentID'), getValues]);
+  }, [watch("paymentID"), getValues]);
 
   // get service list
   useEffect(() => {
     try {
       const fetchServiceData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
+        const body = listPayload(0, { isActive: true }, 1000);
+
         const response = await getServiceList(body);
 
         if (response.statusCode === 200) {
@@ -705,6 +670,6 @@ export const useAddEditCreateBill = (tag) => {
     printHandler,
     getValues,
     handlePaymentChange,
-    isCardSelect
+    isCardSelect,
   };
 };

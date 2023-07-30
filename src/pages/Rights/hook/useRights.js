@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getModuleList } from "../../../service/module";
 import { getRolesList } from "../../../service/roles";
 import { getRightList, createBulkRight } from "../../../service/rights";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
 import { useForm, useFieldArray } from "react-hook-form";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,18 +48,8 @@ export const useRights = () => {
     try {
       dispatch(startLoading());
       const fetchRolesData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
+        const body = listPayload(0, { isActive: true }, 1000);
+
         const response = await getRolesList(body);
 
         if (response.statusCode === 200) {
@@ -83,19 +73,9 @@ export const useRights = () => {
       roleID: getValues("roleID"),
       modules: [],
     });
-    const body = {
-      where: {
-        roleID: roleID,
-        isActive: true,
-        isDeleted: false,
-      },
-      pagination: {
-        sortBy: "createdAt",
-        descending: true,
-        rows: 10000,
-        page: 1,
-      },
-    };
+
+    const body = listPayload(0, { roleID: roleID, isActive: true }, 1000);
+
     const response = await getRightList(body);
     if (response.statusCode === 200) {
       const { data } = response;
@@ -131,18 +111,8 @@ export const useRights = () => {
   };
 
   const fetchModuleData = async () => {
-    const body = {
-      where: {
-        isActive: true,
-        isDeleted: false,
-      },
-      pagination: {
-        sortBy: "createdAt",
-        descending: true,
-        rows: 1000,
-        page: 1,
-      },
-    };
+    const body = listPayload(0, { isActive: true }, 1000);
+
     const response = await getModuleList(body);
 
     if (response.statusCode === 200) {

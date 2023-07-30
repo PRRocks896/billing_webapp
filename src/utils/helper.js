@@ -59,3 +59,39 @@ export const logoutHandler = () => {
   removeStorageToken();
   window.location.href = "/login";
 };
+
+export const listPayload = (page, where = {}, rows = 10) => {
+  return {
+    where: {
+      // isActive: true,
+      isDeleted: false,
+      // searchText: "",
+      ...where,
+    },
+    pagination: {
+      sortBy: "createdAt",
+      descending: true,
+      rows: rows,
+      page: page + 1,
+    },
+  };
+};
+
+export const rightsAccess = (accessModules, pathname) => {
+  if (accessModules && accessModules.length > 0) {
+    const selectedModule = accessModules.find(
+      (res) => res.px_module.path === pathname
+    );
+    return {
+      add: selectedModule.add || false,
+      edit: selectedModule.edit || false,
+      delete: selectedModule.delete || false,
+    };
+  } else {
+    return {
+      add: false,
+      edit: false,
+      delete: false,
+    };
+  }
+};

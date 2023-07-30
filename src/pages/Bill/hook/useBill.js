@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { billAction } from "../../../redux/bill";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
@@ -32,22 +32,7 @@ export const useBill = () => {
   // pagination end
 
   const rights = useMemo(() => {
-    if (accessModules && accessModules.length > 0) {
-      const selectedModule = accessModules.find(
-        (res) => res.px_module.path === pathname
-      );
-      return {
-        add: selectedModule.add || false,
-        edit: selectedModule.edit || false,
-        delete: selectedModule.delete || false,
-      };
-    } else {
-      return {
-        add: false,
-        edit: false,
-        delete: false,
-      };
-    }
+    return rightsAccess(accessModules, pathname);
   }, [accessModules, pathname]);
 
   //  fetch bill
@@ -55,20 +40,7 @@ export const useBill = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = {
-          where: {
-            // isActive: true,
-            isDeleted: false,
-            searchText: searchValue,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 10,
-            page: page + 1,
-          },
-        };
-
+        const body = listPayload(page, { searchText: searchValue });
         const response = await getBillList(body);
 
         if (response.statusCode === 200) {

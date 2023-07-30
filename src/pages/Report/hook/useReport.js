@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getReportList } from "../../../service/report";
 // import { reportAction } from "../../../redux/report";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { useCallback, useEffect, useState } from "react";
 import { getUserList } from "../../../service/users";
@@ -34,19 +34,8 @@ export const useReport = () => {
 
   const fetchBranch = async () => {
     try {
-      const body = {
-        where: {
-          // isActive: true,
-          isDeleted: false,
-          searchText: "",
-        },
-        pagination: {
-          sortBy: "createdAt",
-          descending: true,
-          rows: 1000,
-          page: 1,
-        },
-      };
+      const body = listPayload(0, {}, 1000);
+
       const response = await getUserList(body);
       if (response.statusCode === 200) {
         const payload = response.data.rows;

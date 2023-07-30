@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { getServiceCategoryList } from "../../../service/serviceCategory";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
 import {
   createService,
   getServiceById,
@@ -117,18 +117,8 @@ export const useAddEditService = (tag) => {
   useEffect(() => {
     try {
       const fetchServiceCategoryData = async () => {
-        const body = {
-          where: {
-            isActive: true,
-            isDeleted: false,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 1000,
-            page: 1,
-          },
-        };
+        const body = listPayload(0, { isActive: true }, 1000);
+
         const response = await getServiceCategoryList(body);
         if (response.statusCode === 200) {
           const payload = response.data.rows;

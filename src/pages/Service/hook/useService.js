@@ -5,7 +5,7 @@ import {
   getServiceList,
   updateService,
 } from "../../../service/service";
-import { showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -35,22 +35,7 @@ export const useService = () => {
   // pagination code end
 
   const rights = useMemo(() => {
-    if (accessModules && accessModules.length > 0) {
-      const selectedModule = accessModules.find(
-        (res) => res.px_module.path === pathname
-      );
-      return {
-        add: selectedModule.add || false,
-        edit: selectedModule.edit || false,
-        delete: selectedModule.delete || false,
-      };
-    } else {
-      return {
-        add: false,
-        edit: false,
-        delete: false,
-      };
-    }
+    return rightsAccess(accessModules, pathname);
   }, [accessModules, pathname]);
 
   //  fetch service logic
@@ -58,19 +43,8 @@ export const useService = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = {
-          where: {
-            // isActive: true,
-            isDeleted: false,
-            searchText: searchValue,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 10,
-            page: page + 1,
-          },
-        };
+        const body = listPayload(page, { searchText: searchValue });
+
         const response = await getServiceList(body);
 
         if (response.statusCode === 200) {

@@ -6,9 +6,8 @@ import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Radio from "@mui/material/Radio";
-
 import { useAddEditCustomer } from "./hook/useAddEditCustomer";
-import { Typography } from "@mui/material";
+import { FormControlLabel, RadioGroup, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 const AddCustomer = ({ tag }) => {
@@ -111,31 +110,29 @@ const AddCustomer = ({ tag }) => {
                         fieldState: { error },
                       }) => (
                         <>
-                          <span>
-                            <Radio
-                              value="male"
-                              checked={value === "male"}
-                              className="radio-field"
-                              inputProps={{ "aria-label": "Male" }}
+                          <FormControl>
+                            <RadioGroup
+                              aria-labelledby="demo-radio-buttons-group-label"
+                              defaultValue=""
+                              name="radio-buttons-group"
+                              value={value}
                               onChange={(e) => onChange(e.target.value)}
                               onBlur={onBlur}
                               error={!!error}
-                            />
-                            Male
-                          </span>
-                          <span>
-                            <Radio
-                              value="female"
-                              checked={value === "female"}
-                              className="radio-field"
-                              inputProps={{ "aria-label": "Female" }}
-                              onChange={(e) => onChange(e.target.value)}
-                              onBlur={onBlur}
-                              error={!!error}
-                            />
-                            Female
-                          </span>
-                          {error?.message ? error.message : ""}
+                            >
+                              <FormControlLabel
+                                value="male"
+                                control={<Radio />}
+                                label="Male"
+                              />
+                              <FormControlLabel
+                                value="female"
+                                control={<Radio />}
+                                label="Female"
+                              />
+                            </RadioGroup>
+                          </FormControl>
+                          {error?.message}
                         </>
                       )}
                       rules={{ required: "Please select a gender" }}

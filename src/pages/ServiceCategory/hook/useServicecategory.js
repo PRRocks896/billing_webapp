@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { serviceCategoryAction } from "../../../redux/serviceCategory";
-import { showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import {
   deleteServiceCategory,
   getServiceCategoryList,
@@ -35,22 +35,7 @@ export const useServiceCategory = () => {
   // pagination code end
 
   const rights = useMemo(() => {
-    if (accessModules && accessModules.length > 0) {
-      const selectedModule = accessModules.find(
-        (res) => res.px_module.path === pathname
-      );
-      return {
-        add: selectedModule.add || false,
-        edit: selectedModule.edit || false,
-        delete: selectedModule.delete || false,
-      };
-    } else {
-      return {
-        add: false,
-        edit: false,
-        delete: false,
-      };
-    }
+    return rightsAccess(accessModules, pathname);
   }, [accessModules, pathname]);
 
   //  fetch service category logic
@@ -58,19 +43,8 @@ export const useServiceCategory = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = {
-          where: {
-            // isActive: true,
-            isDeleted: false,
-            searchText: searchValue,
-          },
-          pagination: {
-            sortBy: "createdAt",
-            descending: true,
-            rows: 10,
-            page: page + 1,
-          },
-        };
+        const body = listPayload(page, { searchText: searchValue });
+
         const response = await getServiceCategoryList(body);
 
         if (response.statusCode === 200) {
