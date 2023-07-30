@@ -43,6 +43,7 @@ export const useReport = () => {
           value: row.id,
           label: row.branchName,
         }));
+        console.log(branchOption);
         setBranchOptions(branchOption);
       } else if (response.statusCode === 404) {
         const payload = [];

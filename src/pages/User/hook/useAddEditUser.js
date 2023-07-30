@@ -15,7 +15,7 @@ export const useAddEditUser = (tag) => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
-  const [roleOptions, setRoleOptions] = useState([]);
+  // const [roleOptions, setRoleOptions] = useState([]);
   const [roles, setRoles] = useState([]);
 
   const { setValue, handleSubmit, control, watch } = useForm({
@@ -49,11 +49,12 @@ export const useAddEditUser = (tag) => {
   }, [firstName, lastName, setValue]);
 
   // genrate roles options for drop down
-  useMemo(() => {
+  const roleOptions = useMemo(() => {
     const data = roles.map((item) => {
       return { value: item.id, label: item.name };
     });
-    setRoleOptions([...data]);
+    // setRoleOptions([...data]);
+    return data;
   }, [roles]);
 
   // get role list
