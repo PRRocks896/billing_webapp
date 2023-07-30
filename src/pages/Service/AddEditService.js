@@ -42,7 +42,7 @@ const AddEditService = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -74,7 +74,7 @@ const AddEditService = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -109,7 +109,7 @@ const AddEditService = ({ tag }) => {
                             {...params}
                             label="Select category"
                             error={!!error}
-                            helperText={error?.message ? error.message : ""}
+                            helperText={error?.message}
                           />
                         )}
                       />

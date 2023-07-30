@@ -13,7 +13,6 @@ export const useAddEditCity = (tag) => {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const [statesOptions, setStatesOptions] = useState([]);
   const [states, setStates] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -28,35 +27,50 @@ export const useAddEditCity = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          name: data.cityName,
-          stateID: data.stateId.value,
-          createdBy: loggedInUser.id,
-        };
-        const response = await createCity(payload);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate("/city");
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          name: data.cityName,
-          stateID: data.stateId.value,
-          updatedBy: loggedInUser.id,
-        };
-        const response = await updateCity(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate("/city");
-        } else {
-          showToast(response.messageCode, false);
-        }
+      const payload = {
+        name: data.cityName,
+        stateID: data.stateId.value,
+      };
+      const response =
+        tag === "add"
+          ? await createCity({ ...payload, createdBy: loggedInUser.id })
+          : await updateCity({ ...payload, updatedBy: loggedInUser.id }, id);
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/city");
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     name: data.cityName,
+      //     stateID: data.stateId.value,
+      //     createdBy: loggedInUser.id,
+      //   };
+      //   const response = await createCity(payload);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/city");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     name: data.cityName,
+      //     stateID: data.stateId.value,
+      //     updatedBy: loggedInUser.id,
+      //   };
+      //   const response = await updateCity(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/city");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -69,7 +83,6 @@ export const useAddEditCity = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getCityById(id);
-        dispatch(stopLoading());
         if (response.statusCode === 200) {
           setValue("cityName", response.data.name);
           setValue("stateId", {
@@ -88,19 +101,20 @@ export const useAddEditCity = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditCityData();
-  }, [fetchEditCityData]);
+    tag === "edit" && fetchEditCityData();
+  }, [tag, fetchEditCityData]);
 
   const cancelHandler = () => {
     navigate("/city");
   };
 
   // gemrate service category options for drop down
-  useMemo(() => {
+  const statesOptions = useMemo(() => {
     const data = states.map((item) => {
       return { value: item.id, label: item.name };
     });
-    setStatesOptions([...data]);
+    // setStatesOptions([...data]);
+    return data;
   }, [states]);
 
   useEffect(() => {

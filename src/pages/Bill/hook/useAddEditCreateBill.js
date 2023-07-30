@@ -53,7 +53,7 @@ export const useAddEditCreateBill = (tag) => {
       Phone: "",
       staffID: "",
       roomNo: "",
-      cardNo: "",
+      cardNo: "Cash",
       // discount: 0,
       // discountAmount: 0,
       // exchange: 0,

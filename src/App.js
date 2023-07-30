@@ -206,19 +206,19 @@ const App = () => {
           element: <ProtectedRoute path="states" Component={<State />} />,
         },
         {
-          path: "add-state",
+          path: "add-states",
           element: (
             <ProtectedRoute
-              path="add-state"
+              path="add-states"
               Component={<AddEditStates tag="add" />}
             />
           ),
         },
         {
-          path: "edit-state/:id",
+          path: "edit-states/:id",
           element: (
             <ProtectedRoute
-              path="edit-state/:id"
+              path="edit-states/:id"
               Component={<AddEditStates tag="edit" />}
             />
           ),

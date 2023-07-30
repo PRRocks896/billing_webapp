@@ -20,34 +20,6 @@ const AddEditStaff = ({ tag }) => {
           <FormGroup className="form-field">
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                {/* <FormControl variant="standard" className="form-control">
-                  <div
-                    className={
-                      !errors.staff_name ? "input-field" : "border-error"
-                    }
-                  >
-                    <Typography
-                      variant="body2"
-                      component="span"
-                      className="text-black input-label"
-                    >
-                      Staff Name *
-                    </Typography>
-                    <input
-                      type="text"
-                      placeholder="Enter staff name"
-                      {...register("staff_name", {
-                        required: "Staff name is required",
-                        maxLength: 100,
-                      })}
-                    />
-                  </div>
-                  {errors.staff_name && (
-                    <span style={{ fontSize: "14px", color: "red" }}>
-                      {errors.staff_name.message}
-                    </span>
-                  )}
-                </FormControl> */}
                 <Controller
                   name="staff_name"
                   control={control}
@@ -68,7 +40,7 @@ const AddEditStaff = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
