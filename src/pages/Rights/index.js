@@ -79,8 +79,9 @@ const Rights = () => {
         <Box className="card ">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TableContainer className="table-wrapper right-table-wrapper">
-                <Table>
+              {/* className="table-wrapper right-table-wrapper" */}
+              <TableContainer sx={{ height: '100vh'}}>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
                       <TableCell>Module Name</TableCell>
