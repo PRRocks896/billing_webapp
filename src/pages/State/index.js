@@ -92,7 +92,7 @@ const State = () => {
                               <Button
                                 className="btn btn-primary"
                                 onClick={() =>
-                                  navigate(`/edit-state/${row.id}`)
+                                  navigate(`/edit-states/${row.id}`)
                                 }
                               >
                                 <FiEdit3 size={15} />
