@@ -16,14 +16,14 @@ export const useAddEditService = (tag) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [categoryOptions, setCategoryOptions] = useState([]);
+  // const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
   const [serviceCategories, setServiceCategories] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const { control, setValue, handleSubmit } = useForm({
     defaultValues: {
-      service_name: "",
+      name: "",
       amount: "",
       category: "",
     },
@@ -33,39 +33,55 @@ export const useAddEditService = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          name: data.service_name,
-          service_category_id: data.category.value,
-          amount: data.amount,
-          createdBy: loggedInUser.id,
-        };
+      const payload = {
+        name: data.name,
+        service_category_id: data.category.value,
+        amount: data.amount,
+      };
 
-        const response = await createService(payload);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate("/service");
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          name: data.service_name,
-          service_category_id: data.category.value,
-          amount: data.amount,
-          updatedBy: loggedInUser.id,
-        };
-
-        const response = await updateService(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate("/service");
-        } else {
-          showToast(response.message, false);
-        }
+      const response =
+        tag === "add"
+          ? await createService({ ...payload, createdBy: loggedInUser.id })
+          : await updateService({ ...payload, updatedBy: loggedInUser.id }, id);
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/service");
+      } else {
+        showToast(response.messageCode, false);
       }
+      // if (tag === "add") {
+      //   const payload = {
+      //     name: data.name,
+      //     service_category_id: data.category.value,
+      //     amount: data.amount,
+      //     createdBy: loggedInUser.id,
+      //   };
+
+      //   const response = await createService(payload);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/service");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     name: data.service_name,
+      //     service_category_id: data.category.value,
+      //     amount: data.amount,
+      //     updatedBy: loggedInUser.id,
+      //   };
+
+      //   const response = await updateService(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/service");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -82,13 +98,12 @@ export const useAddEditService = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getServiceById(id);
-
         if (response.statusCode === 200) {
           const category = {
             value: response.data.px_service_category.id,
             label: response.data.px_service_category.name,
           };
-          setValue("service_name", response.data.name);
+          setValue("name", response.data.name);
           setValue("amount", response.data.amount);
           setValue("category", category);
         } else {
@@ -103,15 +118,16 @@ export const useAddEditService = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditServiceData();
-  }, [fetchEditServiceData]);
+    tag === "edit" && fetchEditServiceData();
+  }, [tag, fetchEditServiceData]);
 
   // gemrate service category options for drop down
-  useMemo(() => {
+  const categoryOptions = useMemo(() => {
     const data = serviceCategories.map((item) => {
       return { value: item.id, label: item.name };
     });
-    setCategoryOptions([...data]);
+    // setCategoryOptions([...data]);
+    return data;
   }, [serviceCategories]);
 
   useEffect(() => {
