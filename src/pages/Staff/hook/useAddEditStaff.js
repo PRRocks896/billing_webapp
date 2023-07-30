@@ -16,7 +16,7 @@ export const useAddEditStaff = (tag) => {
 
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
-      staff_name: "",
+      name: "",
     },
     mode: "onBlur",
   });
@@ -24,34 +24,50 @@ export const useAddEditStaff = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          userID: loggedInUser.id,
-          name: data.staff_name,
-          createdBy: loggedInUser.id,
-        };
-        const response = await createStaff(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          userID: loggedInUser.id,
-          name: data.staff_name,
-          createdBy: loggedInUser.id,
-        };
-        const response = await updateStaff(payload, id);
+      const payload = {
+        userID: loggedInUser.id,
+        ...data,
+      };
+      const response =
+        tag === "add"
+          ? await createStaff({ ...payload, createdBy: loggedInUser.id })
+          : await updateStaff({ ...payload, updatedBy: loggedInUser.id }, id);
 
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.message, false);
-        }
+      if (response?.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/staff");
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     userID: loggedInUser.id,
+      //     name: data.staff_name,
+      //     createdBy: loggedInUser.id,
+      //   };
+      //   const response = await createStaff(payload);
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/staff");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     userID: loggedInUser.id,
+      //     name: data.staff_name,
+      //     updatedBy: loggedInUser.id,
+      //   };
+      //   const response = await updateStaff(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/staff");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -62,11 +78,11 @@ export const useAddEditStaff = (tag) => {
   // edit logic - get single record
   const fetchEditStaffData = useCallback(async () => {
     try {
-      dispatch(startLoading());
       if (id) {
+        dispatch(startLoading());
         const response = await getStaffById(id);
         if (response.statusCode === 200) {
-          setValue("staff_name", response.data.name);
+          setValue("name", response.data.name);
         } else {
           showToast(response.message, false);
         }
@@ -79,11 +95,11 @@ export const useAddEditStaff = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditStaffData();
-  }, [fetchEditStaffData]);
+    tag === "edit" && fetchEditStaffData();
+  }, [tag, fetchEditStaffData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/staff");
   };
 
   return {

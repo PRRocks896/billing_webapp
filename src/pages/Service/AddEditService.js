@@ -23,7 +23,7 @@ const AddEditService = ({ tag }) => {
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Controller
-                  name="service_name"
+                  name="name"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -37,12 +37,12 @@ const AddEditService = ({ tag }) => {
                       <TextField
                         label="Service name*"
                         size="small"
-                        name="service_name"
+                        name="name"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -74,7 +74,7 @@ const AddEditService = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -109,7 +109,7 @@ const AddEditService = ({ tag }) => {
                             {...params}
                             label="Select category"
                             error={!!error}
-                            helperText={error?.message ? error.message : ""}
+                            helperText={error?.message}
                           />
                         )}
                       />

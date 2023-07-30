@@ -56,8 +56,6 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: <Home /> },
-
-        // <ProtectedRoute path="customer" Component="Customer" />,
         {
           path: "customer",
           element: <ProtectedRoute path="customer" Component={<Customer />} />,
@@ -66,7 +64,7 @@ const App = () => {
           path: "add-customer",
           element: (
             <ProtectedRoute
-              path="customer"
+              path="add-customer"
               Component={<AddCustomer tag="add" />}
             />
           ),
@@ -75,7 +73,7 @@ const App = () => {
           path: "edit-customer/:id",
           element: (
             <ProtectedRoute
-              path="customer"
+              path="edit-customer/:id"
               Component={<AddCustomer tag="edit" />}
             />
           ),
@@ -83,13 +81,13 @@ const App = () => {
 
         {
           path: "staff",
-          element: <ProtectedRoute path="customer" Component={<Staff />} />,
+          element: <ProtectedRoute path="staff" Component={<Staff />} />,
         },
         {
           path: "add-staff",
           element: (
             <ProtectedRoute
-              path="staff"
+              path="add-staff"
               Component={<AddEditStaff tag="add" />}
             />
           ),
@@ -98,7 +96,7 @@ const App = () => {
           path: "edit-staff/:id",
           element: (
             <ProtectedRoute
-              path="staff"
+              path="edit-staff/:id"
               Component={<AddEditStaff tag="edit" />}
             />
           ),
@@ -117,7 +115,7 @@ const App = () => {
           path: "add-service-category",
           element: (
             <ProtectedRoute
-              path="service-category"
+              path="add-service-category"
               Component={<AddEditServiceCategory tag="add" />}
             />
           ),
@@ -126,7 +124,7 @@ const App = () => {
           path: "edit-service-category/:id",
           element: (
             <ProtectedRoute
-              path="service-category"
+              path="edit-service-category/:id"
               Component={<AddEditServiceCategory tag="edit" />}
             />
           ),
@@ -140,7 +138,7 @@ const App = () => {
           path: "add-service",
           element: (
             <ProtectedRoute
-              path="service"
+              path="add-service"
               Component={<AddEditService tag="add" />}
             />
           ),
@@ -149,7 +147,7 @@ const App = () => {
           path: "edit-service/:id",
           element: (
             <ProtectedRoute
-              path="service"
+              path="edit-service/:id"
               Component={<AddEditService tag="edit" />}
             />
           ),
@@ -165,7 +163,7 @@ const App = () => {
           path: "add-payment-type",
           element: (
             <ProtectedRoute
-              path="payment-type"
+              path="add-payment-type"
               Component={<AddEditPaymentType tag="add" />}
             />
           ),
@@ -174,7 +172,7 @@ const App = () => {
           path: "edit-payment-type/:id",
           element: (
             <ProtectedRoute
-              path="payment-type"
+              path="edit-payment-type/:id"
               Component={<AddEditPaymentType tag="edit" />}
             />
           ),
@@ -187,14 +185,17 @@ const App = () => {
         {
           path: "add-city",
           element: (
-            <ProtectedRoute path="city" Component={<AddEditCity tag="add" />} />
+            <ProtectedRoute
+              path="add-city"
+              Component={<AddEditCity tag="add" />}
+            />
           ),
         },
         {
           path: "edit-city/:id",
           element: (
             <ProtectedRoute
-              path="city"
+              path="edit-city/:id"
               Component={<AddEditCity tag="edit" />}
             />
           ),
@@ -205,19 +206,19 @@ const App = () => {
           element: <ProtectedRoute path="states" Component={<State />} />,
         },
         {
-          path: "add-state",
+          path: "add-states",
           element: (
             <ProtectedRoute
-              path="states"
+              path="add-states"
               Component={<AddEditStates tag="add" />}
             />
           ),
         },
         {
-          path: "edit-state/:id",
+          path: "edit-states/:id",
           element: (
             <ProtectedRoute
-              path="states"
+              path="edit-states/:id"
               Component={<AddEditStates tag="edit" />}
             />
           ),
@@ -230,14 +231,17 @@ const App = () => {
         {
           path: "add-user",
           element: (
-            <ProtectedRoute path="user" Component={<AddEditUser tag="add" />} />
+            <ProtectedRoute
+              path="add-user"
+              Component={<AddEditUser tag="add" />}
+            />
           ),
         },
         {
           path: "edit-user/:id",
           element: (
             <ProtectedRoute
-              path="user"
+              path="edit-user/:id"
               Component={<AddEditUser tag="edit" />}
             />
           ),
@@ -252,14 +256,17 @@ const App = () => {
         {
           path: "create-bill",
           element: (
-            <ProtectedRoute path="bill" Component={<AddEditBill tag="add" />} />
+            <ProtectedRoute
+              path="create-bill"
+              Component={<AddEditBill tag="add" />}
+            />
           ),
         },
         {
           path: "edit-bill/:id",
           element: (
             <ProtectedRoute
-              path="bill"
+              path="edit-bill/:id"
               Component={<AddEditBill tag="edit" />}
             />
           ),
@@ -272,14 +279,17 @@ const App = () => {
         {
           path: "add-role",
           element: (
-            <ProtectedRoute path="role" Component={<AddEditRole tag="add" />} />
+            <ProtectedRoute
+              path="add-role"
+              Component={<AddEditRole tag="add" />}
+            />
           ),
         },
         {
           path: "edit-role/:id",
           element: (
             <ProtectedRoute
-              path="role"
+              path="edit-role/:id"
               Component={<AddEditRole tag="edit" />}
             />
           ),

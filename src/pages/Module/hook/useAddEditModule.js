@@ -37,36 +37,48 @@ export const useAddEditModule = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          name: data.name,
-          path: data.path,
-          icon: data.icon,
-          createdBy: loggedInUser.id,
-        };
-        const response = await createModule(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          name: data.name,
-          path: data.path,
-          icon: data.icon,
-          updatedBy: loggedInUser.id,
-        };
-        const response = await updateModule(payload, id);
+      const response =
+        tag === "add"
+          ? await createModule({ ...data, createdBy: loggedInUser.id })
+          : await updateModule({ ...data, updatedBy: loggedInUser.id }, id);
 
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.message, false);
-        }
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/module");
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     name: data.name,
+      //     path: data.path,
+      //     icon: data.icon,
+      //     createdBy: loggedInUser.id,
+      //   };
+      //   const response = await createModule(payload);
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/module");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     name: data.name,
+      //     path: data.path,
+      //     icon: data.icon,
+      //     updatedBy: loggedInUser.id,
+      //   };
+      //   const response = await updateModule(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/module");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -76,8 +88,8 @@ export const useAddEditModule = (tag) => {
 
   const fetchEditModuleData = useCallback(async () => {
     try {
-      dispatch(startLoading());
       if (id) {
+        dispatch(startLoading());
         const response = await getModuleById(id);
 
         if (response.statusCode === 200) {
@@ -96,11 +108,11 @@ export const useAddEditModule = (tag) => {
   }, [id, setValue, dispatch]);
 
   useEffect(() => {
-    fetchEditModuleData();
-  }, [fetchEditModuleData]);
+    tag === "edit" && fetchEditModuleData();
+  }, [tag, fetchEditModuleData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/module");
   };
 
   return {

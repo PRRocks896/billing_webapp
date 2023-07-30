@@ -45,91 +45,85 @@ const Bill = () => {
 
       {/* payment type listing */}
       <Box className="card">
-        <Box className="">
-          <TableContainer className="table-wrapper">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>No</TableCell>
-                  <TableCell>Bill No</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Customer</TableCell>
-                  <TableCell>Staff</TableCell>
-                  <TableCell>Payment Type</TableCell>
-                  <TableCell>Grand Total</TableCell>
-                  {(rights.edit || rights.delete) && (
-                    <TableCell>Action</TableCell>
-                  )}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {visibleRows.length ? (
-                  visibleRows.map((row) => {
-                    return (
-                      <TableRow key={"bill_" + row.id}>
-                        <TableCell align="left">{(index += 1)}</TableCell>
-                        <TableCell align="left">{row.billNo}</TableCell>
-                        <TableCell align="left">
-                          {row.createdAt.slice(0, 10)}
-                        </TableCell>
-                        <TableCell align="left">
-                          {row.px_customer.name}
-                        </TableCell>
-                        <TableCell align="left">{row.px_staff.name}</TableCell>
-                        <TableCell align="left">
-                          {row.px_payment_type.name}
-                        </TableCell>
-                        <TableCell align="left">{row.grandTotal}</TableCell>
-
-                        {(rights.edit || rights.delete) && (
-                          <TableCell>
-                            <Box className="table-action-btn">
-                              {rights.edit && (
-                                <Button
-                                  className="btn btn-primary"
-                                  onClick={() =>
-                                    navigate(`/edit-bill/${row.id}`)
-                                  }
-                                >
-                                  <FiEdit3 size={15} />
-                                </Button>
-                              )}
-                              {rights.delete && (
-                                <Button
-                                  className="btn btn-primary"
-                                  onClick={deleteBtnClickHandler.bind(
-                                    null,
-                                    row.id
-                                  )}
-                                >
-                                  <FiTrash2 size={15} />
-                                </Button>
-                              )}
-                            </Box>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No Bill Found
-                    </TableCell>
-                  </TableRow>
+        <TableContainer className="table-wrapper">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>No</TableCell>
+                <TableCell>Bill No</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell>Staff</TableCell>
+                <TableCell>Payment Type</TableCell>
+                <TableCell>Grand Total</TableCell>
+                {(rights.edit || rights.delete) && (
+                  <TableCell>Action</TableCell>
                 )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10]}
-            component="div"
-            count={count}
-            rowsPerPage={10}
-            page={page}
-            onPageChange={handleChangePage}
-          />
-        </Box>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {visibleRows.length ? (
+                visibleRows.map((row) => {
+                  return (
+                    <TableRow key={"bill_" + row.id}>
+                      <TableCell align="left">{(index += 1)}</TableCell>
+                      <TableCell align="left">{row.billNo}</TableCell>
+                      <TableCell align="left">
+                        {row.createdAt.slice(0, 10)}
+                      </TableCell>
+                      <TableCell align="left">{row.px_customer.name}</TableCell>
+                      <TableCell align="left">{row.px_staff.name}</TableCell>
+                      <TableCell align="left">
+                        {row.px_payment_type.name}
+                      </TableCell>
+                      <TableCell align="left">{row.grandTotal}</TableCell>
+
+                      {(rights.edit || rights.delete) && (
+                        <TableCell>
+                          <Box className="table-action-btn">
+                            {rights.edit && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={() => navigate(`/edit-bill/${row.id}`)}
+                              >
+                                <FiEdit3 size={15} />
+                              </Button>
+                            )}
+                            {rights.delete && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
+                              >
+                                <FiTrash2 size={15} />
+                              </Button>
+                            )}
+                          </Box>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell sx={{ textAlign: "center" }} colSpan={7}>
+                    No Bill Found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={count}
+          rowsPerPage={10}
+          page={page}
+          onPageChange={handleChangePage}
+        />
       </Box>
 
       {isDeleteModalOpen && (

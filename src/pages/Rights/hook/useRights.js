@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 export const useRights = () => {
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  const [roleOptions, setRoleOptions] = useState([]);
   const [roles, setRoles] = useState([]);
   const [moduleList, setModuleList] = useState([]);
 
@@ -36,11 +35,12 @@ export const useRights = () => {
   });
 
   // genrate roles options for drop down
-  useMemo(() => {
+  const roleOptions = useMemo(() => {
     const data = roles.map((item) => {
       return { value: item.id, label: item.name };
     });
-    setRoleOptions([...data]);
+    // setRoleOptions([...data]);
+    return data;
   }, [roles]);
 
   // get role list
@@ -177,7 +177,6 @@ export const useRights = () => {
   };
 
   const cancelHandler = () => {
-    // navigate(-1);
     reset({
       roleID: "",
       modules: [],

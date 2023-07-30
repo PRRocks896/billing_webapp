@@ -4,7 +4,7 @@ import { listPayload, showToast } from "../../../utils/helper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createUser, getUserById } from "../../../service/users";
+import { createUser, getUserById, updateUser } from "../../../service/users";
 import { getRolesList } from "../../../service/roles";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
@@ -80,27 +80,50 @@ export const useAddEditUser = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          roleID: data.roleID.value,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          branchName: data.branchName,
-          userName: data.userName,
-          password: data.password,
-          phoneNumber: data.phoneNumber,
-          email: data.email,
-          createdBy: loggedInUser.id,
-        };
-        const response = await createUser(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
+
+      const payload = {
+        roleID: data.roleID.value,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        branchName: data.branchName,
+        userName: data.userName,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+      };
+      const response =
+        tag === "add"
+          ? await createUser({ ...payload, createdBy: loggedInUser.id })
+          : await updateUser({ ...payload, updatedBy: loggedInUser.id }, id);
+
+      if (response?.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/user");
+      } else {
+        showToast(response?.messageCode, false);
       }
-      dispatch(stopLoading());
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     roleID: data.roleID.value,
+      //     firstName: data.firstName,
+      //     lastName: data.lastName,
+      //     branchName: data.branchName,
+      //     userName: data.userName,
+      //     password: data.password,
+      //     phoneNumber: data.phoneNumber,
+      //     email: data.email,
+      //     createdBy: loggedInUser.id,
+      //   };
+      //   const response = await createUser(payload);
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/user");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // }
+      // dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -138,11 +161,11 @@ export const useAddEditUser = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditUserData();
-  }, [fetchEditUserData]);
+    tag === "edit" && fetchEditUserData();
+  }, [tag, fetchEditUserData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/user");
   };
 
   return {
@@ -151,6 +174,6 @@ export const useAddEditUser = (tag) => {
     handleSubmit,
     onSubmit,
     cancelHandler,
-    role: loggedInUser.px_role.name.toLowerCase(),
+    role: loggedInUser?.px_role?.name.toLowerCase(),
   };
 };

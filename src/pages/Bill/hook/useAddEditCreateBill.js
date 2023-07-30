@@ -422,8 +422,8 @@ export const useAddEditCreateBill = (tag) => {
 
   const fetchEditBillData = useCallback(async () => {
     try {
-      dispatch(startLoading());
       if (id) {
+        dispatch(startLoading());
         const response = await getBillById(id);
         if (response.statusCode === 200) {
           const date = new Date(response.data.createdAt);
@@ -473,8 +473,8 @@ export const useAddEditCreateBill = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditBillData();
-  }, [fetchEditBillData]);
+    tag === "edit" && fetchEditBillData();
+  }, [tag, fetchEditBillData]);
 
   const print = (billData) => {
     const printWindow = window.open();

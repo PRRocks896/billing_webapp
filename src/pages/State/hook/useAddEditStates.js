@@ -20,34 +20,45 @@ export const useAddEditStates = (tag) => {
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
-      stateName: "",
+      name: "",
     },
     mode: "onBlur",
   });
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = { name: data.stateName, createdBy: loggedInUser.id };
-        const response = await createStates(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = { name: data.stateName, updatedBy: loggedInUser.id };
-        const response = await updateStates(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.message, false);
-        }
+      const response =
+        tag === "add"
+          ? await createStates({ ...data, createdBy: loggedInUser.id })
+          : await updateStates({ ...data, updatedBy: loggedInUser.id }, id);
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/states");
+      } else {
+        showToast(response.messageCode, false);
       }
-      dispatch(stopLoading());
+
+      // if (tag === "add") {
+      //   const payload = { name: data.stateName, createdBy: loggedInUser.id };
+      //   const response = await createStates(payload);
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/states");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = { name: data.stateName, updatedBy: loggedInUser.id };
+      //   const response = await updateStates(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/states");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
+      // dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -61,7 +72,7 @@ export const useAddEditStates = (tag) => {
         dispatch(startLoading());
         const response = await getStatesById(id);
         if (response.statusCode === 200) {
-          setValue("stateName", response.data.name);
+          setValue("name", response.data.name);
         } else {
           showToast(response.message, false);
         }
@@ -74,11 +85,11 @@ export const useAddEditStates = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditStateData();
-  }, [fetchEditStateData]);
+    tag === "edit" && fetchEditStateData();
+  }, [tag, fetchEditStateData]);
 
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/states");
   };
 
   return {

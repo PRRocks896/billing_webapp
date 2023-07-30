@@ -20,7 +20,7 @@ export const useAddEditServiceCategory = (tag) => {
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
-      service_category: "",
+      name: "",
     },
     mode: "onBlur",
   });
@@ -29,33 +29,52 @@ export const useAddEditServiceCategory = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          name: data.service_category,
-          createdBy: loggedInUser.id,
-        };
-        const response = await createServiceCategory(payload);
+      const payload = { ...data };
+      const response =
+        tag === "add"
+          ? await createServiceCategory({
+              ...payload,
+              createdBy: loggedInUser.id,
+            })
+          : await updateServiceCategory(
+              { ...payload, updatedBy: loggedInUser.id },
+              id
+            );
 
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          name: data.service_category,
-          updatedBy: loggedInUser.id,
-        };
-        const response = await updateServiceCategory(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          navigate(-1);
-        } else {
-          showToast(response.message, false);
-        }
+      if (response?.statusCode === 200) {
+        showToast(response.message, true);
+        navigate("/service-category");
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     name: data.service_category,
+      //     createdBy: loggedInUser.id,
+      //   };
+      //   const response = await createServiceCategory(payload);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/service-category");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     name: data.service_category,
+      //     updatedBy: loggedInUser.id,
+      //   };
+      //   const response = await updateServiceCategory(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     navigate("/service-category");
+      //   } else {
+      //     showToast(response.message, false);
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     } finally {
@@ -68,9 +87,8 @@ export const useAddEditServiceCategory = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getServiceCategoryById(id);
-
         if (response.statusCode === 200) {
-          setValue("service_category", response.data.name);
+          setValue("name", response.data.name);
         } else {
           showToast(response.message, false);
         }
@@ -83,12 +101,12 @@ export const useAddEditServiceCategory = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditServiceCategoryData();
-  }, [fetchEditServiceCategoryData]);
+    tag === "edit" && fetchEditServiceCategoryData();
+  }, [tag, fetchEditServiceCategoryData]);
 
   // cancel handler and error displaying
   const cancelHandler = () => {
-    navigate(-1);
+    navigate("/service-category");
   };
 
   return {

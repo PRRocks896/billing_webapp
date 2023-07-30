@@ -56,96 +56,92 @@ const User = () => {
 
       {/* service category listing */}
       <Box className="card">
-        <Box className="">
-          <TableContainer className="table-wrapper">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>No</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Username</TableCell>
-                  <TableCell>Branch</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Phone</TableCell>
-                  {rights.edit && <TableCell>Status</TableCell>}
-                  {(rights.edit || rights.delete) && (
-                    <TableCell>Action</TableCell>
-                  )}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {visibleRows.length ? (
-                  visibleRows.map((row, i) => {
-                    return (
-                      <TableRow key={"user_" + row.id}>
-                        <TableCell align="left">{(index += 1)}</TableCell>
-                        <TableCell align="left">
-                          {row.firstName + " " + row.lastName}
-                        </TableCell>
-                        <TableCell align="left">{row.userName}</TableCell>
-                        <TableCell align="left">{row.branchName}</TableCell>
-                        <TableCell align="left">{row.email}</TableCell>
-                        <TableCell align="left">{row.phoneNumber}</TableCell>
-
-                        {rights.edit && (
-                          <TableCell>
-                            <Switch
-                              style={switchStyles}
-                              checked={row.isActive}
-                              onChange={(e) => changeStatusHandler(e, row.id)}
-                            />
-                          </TableCell>
-                        )}
-
-                        {(rights.edit || rights.delete) && (
-                          <TableCell align="left">
-                            <Box className="table-action-btn">
-                              {rights.edit && (
-                                <Button
-                                  className="btn btn-primary"
-                                  onClick={() =>
-                                    navigate(`/edit-user/${row.id}`)
-                                  }
-                                >
-                                  <FiEdit3 size={15} />
-                                </Button>
-                              )}
-                              {rights.delete && (
-                                <Button
-                                  className="btn btn-primary"
-                                  onClick={deleteBtnClickHandler.bind(
-                                    null,
-                                    row.id
-                                  )}
-                                >
-                                  <FiTrash2 size={15} />
-                                </Button>
-                              )}
-                            </Box>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                      No Users Found
-                    </TableCell>
-                  </TableRow>
+        <TableContainer className="table-wrapper">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>No</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Username</TableCell>
+                <TableCell>Branch</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Phone</TableCell>
+                {rights.edit && <TableCell>Status</TableCell>}
+                {(rights.edit || rights.delete) && (
+                  <TableCell>Action</TableCell>
                 )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10]}
-            component="div"
-            count={count}
-            rowsPerPage={10}
-            page={page}
-            onPageChange={handleChangePage}
-          />
-        </Box>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {visibleRows.length ? (
+                visibleRows.map((row, i) => {
+                  return (
+                    <TableRow key={"user_" + row.id}>
+                      <TableCell align="left">{(index += 1)}</TableCell>
+                      <TableCell align="left">
+                        {row.firstName + " " + row.lastName}
+                      </TableCell>
+                      <TableCell align="left">{row.userName}</TableCell>
+                      <TableCell align="left">{row.branchName}</TableCell>
+                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">{row.phoneNumber}</TableCell>
+
+                      {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isActive}
+                            onChange={(e) => changeStatusHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )}
+
+                      {(rights.edit || rights.delete) && (
+                        <TableCell align="left">
+                          <Box className="table-action-btn">
+                            {rights.edit && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={() => navigate(`/edit-user/${row.id}`)}
+                              >
+                                <FiEdit3 size={15} />
+                              </Button>
+                            )}
+                            {rights.delete && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
+                              >
+                                <FiTrash2 size={15} />
+                              </Button>
+                            )}
+                          </Box>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell sx={{ textAlign: "center" }} colSpan={7}>
+                    No Users Found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={count}
+          rowsPerPage={10}
+          page={page}
+          onPageChange={handleChangePage}
+        />
       </Box>
 
       {isDeleteModalOpen && (

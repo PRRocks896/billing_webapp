@@ -63,7 +63,7 @@ const AddEditBill = ({ tag }) => {
     printHandler,
     handlePaymentChange,
     isCardSelect,
-    getValues
+    getValues,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -345,7 +345,7 @@ const AddEditBill = ({ tag }) => {
                   >
                     <TextField
                       type="text"
-                      label={getValues('paymentID')?.label}
+                      label={getValues("paymentID")?.label}
                       size="small"
                       name="cardNo"
                       disabled
@@ -367,7 +367,7 @@ const AddEditBill = ({ tag }) => {
                         >
                           <TextField
                             type="text"
-                            label={isCardSelect ? value : 'CardNo'}
+                            label={isCardSelect ? value : "CardNo"}
                             size="small"
                             name="cardNo"
                             value={value}
@@ -401,219 +401,217 @@ const AddEditBill = ({ tag }) => {
 
         {/* service table */}
         <Box sx={{ margin: "15px 0" }} className="card">
-          <Box className="">
-            <TableContainer className="table-wrapper">
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell width={"3%"}></StyledTableCell>
-                    <StyledTableCell width={"2%"}>Sl.</StyledTableCell>
-                    <StyledTableCell width={"53%"}>Item Name</StyledTableCell>
-                    <StyledTableCell width={"10%"}>Quantity</StyledTableCell>
-                    <StyledTableCell width={"10%"}>Rate</StyledTableCell>
-                    <StyledTableCell width={"10%"}>Dis %</StyledTableCell>
-                    <StyledTableCell width={"10%"}>Value</StyledTableCell>
-                    <StyledTableCell width={"2%"}></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {fields?.map((field, index) => (
-                    <TableRow key={field.id}>
-                      <StyledTableCell>
-                        {fields.length === index + 1 && (
-                          <Button
-                            type="button"
-                            onClick={() => {
-                              addRow();
-                              calculateTotal(index);
-                            }}
-                          >
-                            <FiPlusCircle /> &nbsp;
-                          </Button>
+          <TableContainer className="table-wrapper">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell width={"3%"}></StyledTableCell>
+                  <StyledTableCell width={"2%"}>Sl.</StyledTableCell>
+                  <StyledTableCell width={"53%"}>Item Name</StyledTableCell>
+                  <StyledTableCell width={"10%"}>Quantity</StyledTableCell>
+                  <StyledTableCell width={"10%"}>Rate</StyledTableCell>
+                  <StyledTableCell width={"10%"}>Dis %</StyledTableCell>
+                  <StyledTableCell width={"10%"}>Value</StyledTableCell>
+                  <StyledTableCell width={"2%"}></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {fields?.map((field, index) => (
+                  <TableRow key={field.id}>
+                    <StyledTableCell>
+                      {fields.length === index + 1 && (
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            addRow();
+                            calculateTotal(index);
+                          }}
+                        >
+                          <FiPlusCircle /> &nbsp;
+                        </Button>
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {index + 1}
+                    </StyledTableCell>
+                    <TableCell>
+                      <Controller
+                        control={control}
+                        name={`detail.${index}.serviceID`}
+                        render={({
+                          field: { onBlur, onChange, value },
+                          fieldState: { error },
+                        }) => (
+                          <Autocomplete
+                            size="small"
+                            disablePortal
+                            id="serivce"
+                            options={serviceOptions}
+                            // sx={{ width: 300 }}
+                            value={value}
+                            onBlur={onBlur}
+                            onChange={(event, newValue) => [
+                              onChange(newValue),
+                              setQtyRateValuesHandler(newValue.value, index),
+                            ]}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Item"
+                                error={!!error}
+                                helperText={error?.message}
+                              />
+                            )}
+                          />
                         )}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {index + 1}
-                      </StyledTableCell>
-                      <TableCell>
-                        <Controller
-                          control={control}
-                          name={`detail.${index}.serviceID`}
-                          render={({
-                            field: { onBlur, onChange, value },
-                            fieldState: { error },
-                          }) => (
-                            <Autocomplete
+                        rules={{
+                          required: "Item Required",
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`detail.${index}.quantity`}
+                        control={control}
+                        render={({
+                          field: { onBlur, onChange, value },
+                          fieldState: { error },
+                        }) => (
+                          <FormControl
+                            size="small"
+                            variant="standard"
+                            className="form-control"
+                          >
+                            <TextField
                               size="small"
-                              disablePortal
-                              id="serivce"
-                              options={serviceOptions}
-                              // sx={{ width: 300 }}
+                              name="quantity"
+                              className="text-center"
                               value={value}
-                              onBlur={onBlur}
-                              onChange={(event, newValue) => [
-                                onChange(newValue),
-                                setQtyRateValuesHandler(newValue.value, index),
+                              onChange={(e) => [
+                                onChange(e),
+                                calculateTotal(index),
                               ]}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Item"
-                                  error={!!error}
-                                  helperText={error?.message}
-                                />
-                              )}
+                              onBlur={onBlur}
+                              error={!!error}
+                              helperText={error?.message}
                             />
-                          )}
-                          rules={{
-                            required: "Item Required",
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Controller
-                          name={`detail.${index}.quantity`}
-                          control={control}
-                          render={({
-                            field: { onBlur, onChange, value },
-                            fieldState: { error },
-                          }) => (
-                            <FormControl
-                              size="small"
-                              variant="standard"
-                              className="form-control"
-                            >
-                              <TextField
-                                size="small"
-                                name="quantity"
-                                className="text-center"
-                                value={value}
-                                onChange={(e) => [
-                                  onChange(e),
-                                  calculateTotal(index),
-                                ]}
-                                onBlur={onBlur}
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            </FormControl>
-                          )}
-                          rules={{
-                            required: "Required Qty",
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Controller
-                          name={`detail.${index}.rate`}
-                          control={control}
-                          render={({
-                            field: { onBlur, onChange, value },
-                            fieldState: { error },
-                          }) => (
-                            <FormControl
-                              size="small"
-                              variant="standard"
-                              className="form-control"
-                            >
-                              <TextField
-                                size="small"
-                                name="rate"
-                                className="text-center"
-                                value={value}
-                                onChange={(e) => [
-                                  onChange(e),
-                                  calculateTotal(index),
-                                ]}
-                                onBlur={onBlur}
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            </FormControl>
-                          )}
-                          rules={{
-                            required: "Required Rate",
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Controller
-                          name={`detail.${index}.discount`}
-                          control={control}
-                          render={({
-                            field: { onBlur, onChange, value },
-                            fieldState: { error },
-                          }) => (
-                            <FormControl size="small" variant="standard">
-                              <TextField
-                                size="small"
-                                name="discount"
-                                className="text-center"
-                                value={value}
-                                onChange={(e) => [
-                                  onChange(e),
-                                  calculateTotal(index),
-                                ]}
-                                onBlur={onBlur}
-                                error={!!error}
-                                helperText={error?.message}
-                              />
-                            </FormControl>
-                          )}
-                          rules={{
-                            required: "Required Discount",
-                            min: {
-                              value: 0,
-                              message: "",
-                            },
-                            max: {
-                              value: 100,
-                              message: "",
-                            },
-                            pattern: {
-                              value: /^[0-9]/,
-                              message: "Enter only digit",
-                            },
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Controller
-                          name={`detail.${index}.total`}
-                          control={control}
-                          render={({
-                            field: { onBlur, onChange, value },
-                            fieldState: { error },
-                          }) => (
-                            <FormControl size="small" variant="standard">
-                              <TextField
-                                size="small"
-                                name="total"
-                                value={value}
-                                disabled
-                              />
-                            </FormControl>
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {fields.length !== 1 && (
-                          <Button
-                            type="button"
-                            onClick={() => {
-                              removeRow(index);
-                            }}
-                          >
-                            <FiMinusCircle /> &nbsp;
-                          </Button>
+                          </FormControl>
                         )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
+                        rules={{
+                          required: "Required Qty",
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`detail.${index}.rate`}
+                        control={control}
+                        render={({
+                          field: { onBlur, onChange, value },
+                          fieldState: { error },
+                        }) => (
+                          <FormControl
+                            size="small"
+                            variant="standard"
+                            className="form-control"
+                          >
+                            <TextField
+                              size="small"
+                              name="rate"
+                              className="text-center"
+                              value={value}
+                              onChange={(e) => [
+                                onChange(e),
+                                calculateTotal(index),
+                              ]}
+                              onBlur={onBlur}
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          </FormControl>
+                        )}
+                        rules={{
+                          required: "Required Rate",
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`detail.${index}.discount`}
+                        control={control}
+                        render={({
+                          field: { onBlur, onChange, value },
+                          fieldState: { error },
+                        }) => (
+                          <FormControl size="small" variant="standard">
+                            <TextField
+                              size="small"
+                              name="discount"
+                              className="text-center"
+                              value={value}
+                              onChange={(e) => [
+                                onChange(e),
+                                calculateTotal(index),
+                              ]}
+                              onBlur={onBlur}
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          </FormControl>
+                        )}
+                        rules={{
+                          required: "Required Discount",
+                          min: {
+                            value: 0,
+                            message: "",
+                          },
+                          max: {
+                            value: 100,
+                            message: "",
+                          },
+                          pattern: {
+                            value: /^[0-9]/,
+                            message: "Enter only digit",
+                          },
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`detail.${index}.total`}
+                        control={control}
+                        render={({
+                          field: { onBlur, onChange, value },
+                          fieldState: { error },
+                        }) => (
+                          <FormControl size="small" variant="standard">
+                            <TextField
+                              size="small"
+                              name="total"
+                              value={value}
+                              disabled
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {fields.length !== 1 && (
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            removeRow(index);
+                          }}
+                        >
+                          <FiMinusCircle /> &nbsp;
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
 
         {/* discount and grand total */}
@@ -752,7 +750,10 @@ const AddEditBill = ({ tag }) => {
             </Grid>
           )}
           <Grid item xs={1.5}>
-            <Button className="btn btn-tertiary" onClick={handleSubmit(printHandler)}>
+            <Button
+              className="btn btn-tertiary"
+              onClick={handleSubmit(printHandler)}
+            >
               <FiPrinter /> &nbsp; <p>Print</p>
             </Button>
           </Grid>

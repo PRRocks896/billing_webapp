@@ -76,7 +76,7 @@ const AddCustomer = ({
                               onChange={onChange}
                               onBlur={onBlur}
                               error={!!error}
-                              helperText={error?.message ? error.message : ""}
+                              helperText={error?.message}
                             />
                           </FormControl>
                         )}
@@ -108,7 +108,7 @@ const AddCustomer = ({
                               onChange={onChange}
                               onBlur={onBlur}
                               error={!!error}
-                              helperText={error?.message ? error.message : ""}
+                              helperText={error?.message}
                             />
                           </FormControl>
                         )}
@@ -169,7 +169,7 @@ const AddCustomer = ({
                                   />
                                   Female
                                 </span>
-                                {error?.message ? error.message : ""}
+                                {error?.message}
                               </>
                             )}
                             rules={{ required: "Please select a gender" }}
