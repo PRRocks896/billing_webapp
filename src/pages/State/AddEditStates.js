@@ -21,7 +21,7 @@ const AddEditStates = ({ tag }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Controller
-                  name="stateName"
+                  name="name"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -35,12 +35,12 @@ const AddEditStates = ({ tag }) => {
                       <TextField
                         label="State Name*"
                         size="small"
-                        name="stateName"
+                        name="name"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}

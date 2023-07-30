@@ -44,7 +44,15 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
-  const { control, getValues, setValue, handleSubmit, reset, watch, clearErrors } = useForm({
+  const {
+    control,
+    getValues,
+    setValue,
+    handleSubmit,
+    reset,
+    watch,
+    clearErrors,
+  } = useForm({
     defaultValues: {
       billNo: "",
       paymentID: "",
@@ -53,7 +61,7 @@ export const useAddEditCreateBill = (tag) => {
       Phone: "",
       staffID: "",
       roomNo: "",
-      cardNo: "",
+      cardNo: "Cash",
       // discount: 0,
       // discountAmount: 0,
       // exchange: 0,
@@ -137,19 +145,16 @@ export const useAddEditCreateBill = (tag) => {
 
   const handlePaymentChange = (value) => {
     const { label } = value;
-    if(
-      label?.toLowerCase() === "cash" ||
-      label?.toLowerCase() === "upi"
-    ) {
+    if (label?.toLowerCase() === "cash" || label?.toLowerCase() === "upi") {
       setValue("cardNo", label);
     } else {
-      if(tag === 'add') {
+      if (tag === "add") {
         setValue("cardNo", "");
-      } else if(tag === 'edit') {
+      } else if (tag === "edit") {
         setValue("cardNo", editCardNo);
       }
     }
-  }
+  };
 
   // get payment type list
   useEffect(() => {
@@ -272,14 +277,14 @@ export const useAddEditCreateBill = (tag) => {
   }, [service]);
 
   const isCardSelect = useMemo(() => {
-    const value = getValues('paymentID')?.label?.toLowerCase();
-    if(['cash', 'upi'].includes(value)) {
+    const value = getValues("paymentID")?.label?.toLowerCase();
+    if (["cash", "upi"].includes(value)) {
       return true;
     } else {
       return false;
     }
     // eslint-disable-next-line
-  }, [watch('paymentID'), getValues]);
+  }, [watch("paymentID"), getValues]);
 
   // get service list
   useEffect(() => {
@@ -457,8 +462,8 @@ export const useAddEditCreateBill = (tag) => {
 
   const fetchEditBillData = useCallback(async () => {
     try {
-      dispatch(startLoading());
       if (id) {
+        dispatch(startLoading());
         const response = await getBillById(id);
         if (response.statusCode === 200) {
           const date = new Date(response.data.createdAt);
@@ -508,8 +513,8 @@ export const useAddEditCreateBill = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
-    fetchEditBillData();
-  }, [fetchEditBillData]);
+    tag === "edit" && fetchEditBillData();
+  }, [tag, fetchEditBillData]);
 
   const print = (billData) => {
     const printWindow = window.open();
@@ -705,6 +710,6 @@ export const useAddEditCreateBill = (tag) => {
     printHandler,
     getValues,
     handlePaymentChange,
-    isCardSelect
+    isCardSelect,
   };
 };

@@ -63,7 +63,9 @@ const AddEditBill = ({ tag }) => {
     printHandler,
     handlePaymentChange,
     isCardSelect,
+    getValues,
   } = useAddEditCreateBill(tag);
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -334,33 +336,22 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              {isCardSelect ? (
-                <Grid item xs={12} md={3} sm={6}>
-                  <Controller
-                    name="cardNo"
-                    control={control}
-                    render={({ field: { value } }) => {
-                      return (
-                        <FormControl
-                          size="small"
-                          variant="standard"
-                          className="form-control"
-                        >
-                          <TextField
-                            type="text"
-                            label={value}
-                            size="small"
-                            name="cardNo"
-                            value={value}
-                            disabled
-                          />
-                        </FormControl>
-                      );
-                    }}
-                  />
-                </Grid>
-              ) : (
-                <Grid item xs={12} md={3} sm={6}>
+              <Grid item xs={12} md={3} sm={6}>
+                {isCardSelect ? (
+                  <FormControl
+                    size="small"
+                    variant="standard"
+                    className="form-control"
+                  >
+                    <TextField
+                      type="text"
+                      label={getValues("paymentID")?.label}
+                      size="small"
+                      name="cardNo"
+                      disabled
+                    />
+                  </FormControl>
+                ) : (
                   <Controller
                     name="cardNo"
                     control={control}
@@ -376,7 +367,7 @@ const AddEditBill = ({ tag }) => {
                         >
                           <TextField
                             type="text"
-                            label="Card"
+                            label={isCardSelect ? value : "CardNo"}
                             size="small"
                             name="cardNo"
                             value={value}
@@ -384,6 +375,7 @@ const AddEditBill = ({ tag }) => {
                             onBlur={onBlur}
                             error={!!error}
                             helperText={error?.message}
+                            disabled={isCardSelect}
                           />
                         </FormControl>
                       );
@@ -401,12 +393,8 @@ const AddEditBill = ({ tag }) => {
                       pattern: { value: /^[0-9]+$/, message: "Only digit" },
                     }}
                   />
-                </Grid>
-              )}
-              {/* {getValues("paymentID")?.label?.toLowerCase() === "card" && (
-
-              )} */}
-              {/* )} */}
+                )}
+              </Grid>
             </Grid>
           </FormGroup>
         </Box>

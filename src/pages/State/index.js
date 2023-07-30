@@ -49,7 +49,7 @@ const State = () => {
       <TopBar
         btnTitle={"Add State"}
         inputName="state"
-        navigatePath="/add-state"
+        navigatePath="/add-states"
         callAPI={searchStatesandler}
         addPermission={rights.add}
       />
