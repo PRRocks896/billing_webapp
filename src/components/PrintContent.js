@@ -11,7 +11,8 @@ const PrintContent = ({ billData }) => {
   });
 
   const contentToPrint = `
-  <div style="width: 300px; padding: 12px; border: 1px solid black;">
+  <div style="width: 300px; padding: 12px; border: 0px solid black;">
+  <div  style="page-break-after: always">
     <p style="text-transform: capitalize;font-size: 24px;margin: 0px;">green health spa and saloon</p>
     <p style="text-transform: capitalize;font-size: 14px; text-align: center;margin: 0px; margin-top: 5px; ">NO, 52
         HUDA COLONY, MANIKONDA
@@ -95,11 +96,11 @@ const PrintContent = ({ billData }) => {
         * AFTER PAID AMOUNT CANNOT BE REFUND
     </p>
     <p style="text-align: center; margin: 0;font-size: 12px;">
-    Thank You.... Visit Agin....
+    Thank You.... Visit Again....
     
     </p>
-    <br>
-    <br>
+    </div>
+ 
 
     <div>
       <p style="text-align: start; margin: 0px; font-size: 12px; padding: 10px 0;">Date &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : &nbsp; &nbsp;${date}</p>
