@@ -43,6 +43,9 @@
       padding: 15px;
       display: flex;
       flex-direction: column;
+      &:hover{
+        cursor: pointer;
+      }
 
       .activity-content_1{
         width: 100%;
