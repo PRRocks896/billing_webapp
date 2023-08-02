@@ -12,6 +12,7 @@ import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import ReactDOMServer from "react-dom/server";
 import PrintContent from "../../../components/PrintContent";
+import PrintContent2 from "../../../components/PrintContent2";
 
 let editCardNo = "";
 
@@ -496,7 +497,8 @@ export const useAddEditCreateBill = (tag) => {
             justifyContent: "center",
           }}
         >
-          <PrintContent billData={billData} />
+          <PrintContent2 billData={billData} />
+          {/* <PrintContent billData={billData} /> */}
         </body>
       </html>
     );
