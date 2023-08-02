@@ -395,6 +395,74 @@ const AddEditBill = ({ tag }) => {
                   />
                 )}
               </Grid>
+
+              <Grid item xs={3}>
+                <Controller
+                  control={control}
+                  name={`customerID`}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <Autocomplete
+                      size="small"
+                      disablePortal
+                      id="customerID"
+                      label="customerID"
+                      options={customersOptions}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={(event, newValue) => onChange(newValue)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Customer"
+                          error={!!error}
+                          // helperText={error?.message ? error.message : ""}
+                        />
+                      )}
+                    />
+                  )}
+                  rules={{
+                    required: "Please Select Customer",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <Controller
+                  name="Phone"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        disabled
+                        label="Phone"
+                        size="small"
+                        name="Phone"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={1}>
+                <Button
+                  type="button"
+                  className="btn"
+                  onClick={() => setIsCustomerModalOpen(true)}
+                >
+                  <FiPlusCircle />
+                </Button>
+              </Grid>
             </Grid>
           </FormGroup>
         </Box>
