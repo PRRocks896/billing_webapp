@@ -53,7 +53,6 @@ const token = getAuthToken();
 
 const App = () => {
   const isOnline = useNoInternet();
-  console.log("isOnline", isOnline);
 
   const routes2 = createBrowserRouter([
     {

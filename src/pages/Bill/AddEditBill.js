@@ -279,7 +279,7 @@ const AddEditBill = ({ tag }) => {
                       className="form-control"
                     >
                       <TextField
-                        // disabled
+                        disabled
                         label="Customer Name"
                         size="small"
                         name="Phone"
