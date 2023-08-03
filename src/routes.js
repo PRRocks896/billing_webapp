@@ -27,6 +27,8 @@ import Rights from "./pages/Rights";
 import AddEditBill from "./pages/Bill/AddEditBill";
 import Bill from "./pages/Bill";
 import Report from "./pages/Report";
+import NotFound from "./components/NotFound";
+import NoConnection from "./components/NoConnection";
 
 const token = getAuthToken();
 

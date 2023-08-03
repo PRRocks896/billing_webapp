@@ -45,27 +45,41 @@ import AddEditUser from "./pages/User/AddEditUser";
 import Rights from "./pages/Rights";
 import Bill from "./pages/Bill";
 import Report from "./pages/Report";
+import NotFound from "./components/NotFound";
+import NoConnection from "./components/NoConnection";
+import useNoInternet from "./hook/useNoInternet";
 
 const token = getAuthToken();
 
 const App = () => {
+  const isOnline = useNoInternet();
+  console.log("isOnline", isOnline);
+
   const routes2 = createBrowserRouter([
     {
       path: "/",
-      element: <LayoutProvider />,
+      element: isOnline ? <LayoutProvider /> : null,
+      errorElement: <NotFound />,
       loader: checkIsAuthenticated,
       children: [
-        { index: true, element: <Home /> },
+        { index: true, element: isOnline ? <Home /> : <NoConnection /> },
         {
           path: "customer",
-          element: <ProtectedRoute path="customer" Component={<Customer />} />,
+          element: (
+            <ProtectedRoute
+              path="customer"
+              Component={isOnline ? <Customer /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-customer",
           element: (
             <ProtectedRoute
               path="add-customer"
-              Component={<AddCustomer tag="add" />}
+              Component={
+                isOnline ? <AddCustomer tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -74,21 +88,30 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-customer/:id"
-              Component={<AddCustomer tag="edit" />}
+              Component={
+                isOnline ? <AddCustomer tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
 
         {
           path: "staff",
-          element: <ProtectedRoute path="staff" Component={<Staff />} />,
+          element: (
+            <ProtectedRoute
+              path="staff"
+              Component={isOnline ? <Staff /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-staff",
           element: (
             <ProtectedRoute
               path="add-staff"
-              Component={<AddEditStaff tag="add" />}
+              Component={
+                isOnline ? <AddEditStaff tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -97,7 +120,9 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-staff/:id"
-              Component={<AddEditStaff tag="edit" />}
+              Component={
+                isOnline ? <AddEditStaff tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -107,7 +132,7 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="service-category"
-              Component={<ServiceCategory />}
+              Component={isOnline ? <ServiceCategory /> : <NoConnection />}
             />
           ),
         },
@@ -116,7 +141,13 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="add-service-category"
-              Component={<AddEditServiceCategory tag="add" />}
+              Component={
+                isOnline ? (
+                  <AddEditServiceCategory tag="add" />
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -125,21 +156,34 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-service-category/:id"
-              Component={<AddEditServiceCategory tag="edit" />}
+              Component={
+                isOnline ? (
+                  <AddEditServiceCategory tag="edit" />
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
 
         {
           path: "service",
-          element: <ProtectedRoute path="service" Component={<Service />} />,
+          element: (
+            <ProtectedRoute
+              path="service"
+              Component={isOnline ? <Service /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-service",
           element: (
             <ProtectedRoute
               path="add-service"
-              Component={<AddEditService tag="add" />}
+              Component={
+                isOnline ? <AddEditService tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -148,7 +192,9 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-service/:id"
-              Component={<AddEditService tag="edit" />}
+              Component={
+                isOnline ? <AddEditService tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -156,7 +202,10 @@ const App = () => {
         {
           path: "payment-type",
           element: (
-            <ProtectedRoute path="payment-type" Component={<PaymentType />} />
+            <ProtectedRoute
+              path="payment-type"
+              Component={isOnline ? <PaymentType /> : <NoConnection />}
+            />
           ),
         },
         {
@@ -164,7 +213,9 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="add-payment-type"
-              Component={<AddEditPaymentType tag="add" />}
+              Component={
+                isOnline ? <AddEditPaymentType tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -173,21 +224,30 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-payment-type/:id"
-              Component={<AddEditPaymentType tag="edit" />}
+              Component={
+                isOnline ? <AddEditPaymentType tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
 
         {
           path: "city",
-          element: <ProtectedRoute path="city" Component={<City />} />,
+          element: (
+            <ProtectedRoute
+              path="city"
+              Component={isOnline ? <City /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-city",
           element: (
             <ProtectedRoute
               path="add-city"
-              Component={<AddEditCity tag="add" />}
+              Component={
+                isOnline ? <AddEditCity tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -196,21 +256,30 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-city/:id"
-              Component={<AddEditCity tag="edit" />}
+              Component={
+                isOnline ? <AddEditCity tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
 
         {
           path: "states",
-          element: <ProtectedRoute path="states" Component={<State />} />,
+          element: (
+            <ProtectedRoute
+              path="states"
+              Component={isOnline ? <State /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-states",
           element: (
             <ProtectedRoute
               path="add-states"
-              Component={<AddEditStates tag="add" />}
+              Component={
+                isOnline ? <AddEditStates tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -219,21 +288,30 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-states/:id"
-              Component={<AddEditStates tag="edit" />}
+              Component={
+                isOnline ? <AddEditStates tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
 
         {
           path: "user",
-          element: <ProtectedRoute path="user" Component={<User />} />,
+          element: (
+            <ProtectedRoute
+              path="user"
+              Component={isOnline ? <User /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-user",
           element: (
             <ProtectedRoute
               path="add-user"
-              Component={<AddEditUser tag="add" />}
+              Component={
+                isOnline ? <AddEditUser tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -242,7 +320,9 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-user/:id"
-              Component={<AddEditUser tag="edit" />}
+              Component={
+                isOnline ? <AddEditUser tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -250,7 +330,10 @@ const App = () => {
         {
           path: "bill",
           element: (
-            <ProtectedRoute path="bill" Component={<Bill tag="add" />} />
+            <ProtectedRoute
+              path="bill"
+              Component={isOnline ? <Bill tag="add" /> : <NoConnection />}
+            />
           ),
         },
         {
@@ -258,7 +341,9 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="create-bill"
-              Component={<AddEditBill tag="add" />}
+              Component={
+                isOnline ? <AddEditBill tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -267,21 +352,30 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-bill/:id"
-              Component={<AddEditBill tag="edit" />}
+              Component={
+                isOnline ? <AddEditBill tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
 
         {
           path: "role",
-          element: <ProtectedRoute path="role" Component={<Role />} />,
+          element: (
+            <ProtectedRoute
+              path="role"
+              Component={isOnline ? <Role /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-role",
           element: (
             <ProtectedRoute
               path="add-role"
-              Component={<AddEditRole tag="add" />}
+              Component={
+                isOnline ? <AddEditRole tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -290,24 +384,38 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-role/:id"
-              Component={<AddEditRole tag="edit" />}
+              Component={
+                isOnline ? <AddEditRole tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
         {
           path: "rights",
-          element: <ProtectedRoute path="rights" Component={<Rights />} />,
+          element: (
+            <ProtectedRoute
+              path="rights"
+              Component={isOnline ? <Rights /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "module",
-          element: <ProtectedRoute path="module" Component={<Module />} />,
+          element: (
+            <ProtectedRoute
+              path="module"
+              Component={isOnline ? <Module /> : <NoConnection />}
+            />
+          ),
         },
         {
           path: "add-module",
           element: (
             <ProtectedRoute
               path="add-module"
-              Component={<AddEditModule tag="add" />}
+              Component={
+                isOnline ? <AddEditModule tag="add" /> : <NoConnection />
+              }
             />
           ),
         },
@@ -316,17 +424,25 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-module/:id"
-              Component={<AddEditModule tag="edit" />}
+              Component={
+                isOnline ? <AddEditModule tag="edit" /> : <NoConnection />
+              }
             />
           ),
         },
         {
           path: "report",
-          element: <ProtectedRoute path="report" Component={<Report />} />,
+          element: (
+            <ProtectedRoute
+              path="report"
+              Component={isOnline ? <Report /> : <NoConnection />}
+            />
+          ),
         },
       ],
     },
     { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },
+    { path: "*", element: <NotFound /> },
   ]);
 
   return (
