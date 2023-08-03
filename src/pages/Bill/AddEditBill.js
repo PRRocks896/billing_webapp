@@ -396,7 +396,7 @@ const AddEditBill = ({ tag }) => {
                 )}
               </Grid>
 
-              <Grid item xs={3}>
+              {/* <Grid item xs={3}>
                 <Controller
                   control={control}
                   name={`customerID`}
@@ -462,7 +462,7 @@ const AddEditBill = ({ tag }) => {
                 >
                   <FiPlusCircle />
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </FormGroup>
         </Box>
