@@ -243,7 +243,7 @@ const AddEditBill = ({ tag }) => {
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="Customer"
+                              label="Customer Ph No."
                               error={!!error}
                               helperText={error?.message}
                             />
@@ -261,7 +261,7 @@ const AddEditBill = ({ tag }) => {
                     );
                   }}
                   rules={{
-                    required: "Please Select Customer",
+                    required: "Please Select Customer Ph No.",
                   }}
                 />
               </Grid>
@@ -279,8 +279,8 @@ const AddEditBill = ({ tag }) => {
                       className="form-control"
                     >
                       <TextField
-                        disabled
-                        label="Phone"
+                        // disabled
+                        label="Customer Name"
                         size="small"
                         name="Phone"
                         value={value}

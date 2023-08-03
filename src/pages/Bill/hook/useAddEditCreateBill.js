@@ -101,7 +101,7 @@ export const useAddEditCreateBill = (tag) => {
       "Phone",
       selectedCus === "" || selectedCus === null
         ? ""
-        : customers.find((row) => row.id === selectedCus.value)?.phoneNumber
+        : customers.find((row) => row.id === selectedCus.value)?.name
     );
   }, [customers, selectedCus, setValue]);
   // const selectedCus = watch("customerID");
@@ -197,7 +197,7 @@ export const useAddEditCreateBill = (tag) => {
   // genrate customer options for drop down
   useEffect(() => {
     const data = customers.map((item) => {
-      return { value: item.id, label: item.name };
+      return { value: item.id, label: item.phoneNumber };
     });
     setCustomersOptions([...data]);
   }, [customers]);
@@ -314,7 +314,7 @@ export const useAddEditCreateBill = (tag) => {
           detail: detailData,
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
-          phoneNumber: data.Phone,
+          phoneNumber: +data.customerID.label,
           roomNo: data.roomNo,
           // name: "",
           cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
@@ -322,6 +322,7 @@ export const useAddEditCreateBill = (tag) => {
             : "",
           createdBy: loggedInUser.id,
         };
+        console.log("payload", payload);
         const response = await createBill(payload);
         if (response.statusCode === 200) {
           showToast(response.message, true);
@@ -345,6 +346,7 @@ export const useAddEditCreateBill = (tag) => {
           paymentID: data.paymentID.value,
           grandTotal: data.grandTotal,
           roomNo: data.roomNo,
+          phoneNumber: +data.customerID.label,
           // phoneNumber: "",
           // name: "",
           // cardNo: data.cardNo,
@@ -353,7 +355,7 @@ export const useAddEditCreateBill = (tag) => {
             : "",
           createdBy: loggedInUser.id,
         };
-
+        console.log("Edit", payload);
         const response = await updateBill(payload, id);
 
         if (response.statusCode === 200) {
@@ -457,7 +459,7 @@ export const useAddEditCreateBill = (tag) => {
           });
           setValue("customerID", {
             value: response.data.customerID,
-            label: response.data.px_customer.name,
+            label: response.data.px_customer.phoneNumber,
           });
           setValue("grandTotal", response.data.grandTotal);
           editCardNo = response.data.cardNo;
@@ -548,7 +550,7 @@ export const useAddEditCreateBill = (tag) => {
         (row) => row.id === getValues("customerID").value
       )?.name,
       customerID: getValues("customerID").value,
-      phone: getValues("Phone"),
+      phone: getValues("customerID").label,
       staff: staff.find((row) => row.id === getValues("staffID").value)?.name,
       roomNo: getValues("roomNo"),
       detail: getValues("detail").map((row) => {
@@ -597,7 +599,7 @@ export const useAddEditCreateBill = (tag) => {
           detail: detailData,
           paymentID: getValues("paymentID").value,
           grandTotal: getValues("grandTotal"),
-          phoneNumber: getValues("Phone"),
+          phoneNumber: getValues("customerID").label,
           roomNo: getValues("roomNo"),
           // name: "",
           cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
@@ -605,6 +607,8 @@ export const useAddEditCreateBill = (tag) => {
             : "",
           createdBy: loggedInUser.id,
         };
+
+        console.log("22222 payload", payload);
 
         const response = await createBill(payload);
         if (response.statusCode === 200) {
@@ -615,7 +619,7 @@ export const useAddEditCreateBill = (tag) => {
           let billNo = (firstBillNo += 1).toString().padStart(8, "0");
           setValue("billNo", "G" + billNo);
           setSubmitedBillData(response.data);
-
+          setPaymentOptionAndCard();
           print(billData);
         } else {
           showToast(response.message, false);
@@ -629,6 +633,7 @@ export const useAddEditCreateBill = (tag) => {
           paymentID: getValues("paymentID").value,
           grandTotal: getValues("grandTotal"),
           roomNo: getValues("roomNo"),
+          phoneNumber: getValues("customerID").label,
           // phoneNumber: "",
           // name: "",
           cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
@@ -636,7 +641,7 @@ export const useAddEditCreateBill = (tag) => {
             : "",
           createdBy: loggedInUser.id,
         };
-
+        console.log("22222 payload edit", payload);
         const response = await updateBill(payload, id);
 
         if (response.statusCode === 200) {
