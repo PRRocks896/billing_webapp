@@ -11,8 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import ReactDOMServer from "react-dom/server";
-// import PrintContent from "../../../components/PrintContent";
-import PrintContent2 from "../../../components/PrintContent2";
+import PrintContent from "../../../components/PrintContent";
+// import PrintContent2 from "../../../components/PrintContent2";
 
 let editCardNo = "";
 
@@ -497,27 +497,27 @@ export const useAddEditCreateBill = (tag) => {
 
   const print = (billData) => {
     const printWindow = window.open("", "_blank", "popup=yes");
-    const printDocument = (
-      <html>
-        <head>
-          <title>{"G" + billData.billNo}</title>
-        </head>
-        <body
-          style={{
-            padding: "0px",
-            margin: "0px",
-            boxSizing: "border-box",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <PrintContent2 billData={billData} />
-          {/* <PrintContent billData={billData} /> */}
-        </body>
-      </html>
-    );
+    // const printDocument = (
+    //   <html>
+    //     <head>
+    //       <title>{"G" + billData.billNo}</title>
+    //     </head>
+    //     <body
+    //       style={{
+    //         padding: "0px",
+    //         margin: "0px",
+    //         boxSizing: "border-box",
+    //         display: "flex",
+    //         justifyContent: "center",
+    //       }}
+    //     >
+    //       <PrintContent billData={billData} />
+    //     </body>
+    //   </html>
+    // );
 
-    printWindow.document.write(ReactDOMServer.renderToString(printDocument));
+    // printWindow.document.write(ReactDOMServer.renderToString(printDocument));
+    printWindow.document.write(PrintContent(billData));
     printWindow.document.close();
     printWindow.print();
 
