@@ -35,44 +35,14 @@ export const useAddEditCity = (tag) => {
         tag === "add"
           ? await createCity({ ...payload, createdBy: loggedInUser.id })
           : await updateCity({ ...payload, updatedBy: loggedInUser.id }, id);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         navigate("/city");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = {
-      //     name: data.cityName,
-      //     stateID: data.stateId.value,
-      //     createdBy: loggedInUser.id,
-      //   };
-      //   const response = await createCity(payload);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/city");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     name: data.cityName,
-      //     stateID: data.stateId.value,
-      //     updatedBy: loggedInUser.id,
-      //   };
-      //   const response = await updateCity(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/city");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -83,18 +53,18 @@ export const useAddEditCity = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getCityById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("cityName", response.data.name);
           setValue("stateId", {
             value: response.data.stateID,
             label: response.data.px_state.name,
           });
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -124,17 +94,17 @@ export const useAddEditCity = (tag) => {
 
         const response = await getStatesList(body);
 
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
           setStates(payload);
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           setStates(payload);
         }
       };
       fetchStateData();
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   }, []);
 

@@ -65,7 +65,7 @@ export const useAddEditUser = (tag) => {
         const response = await getRolesList(body);
 
         if (response.statusCode === 200) {
-          const payload = response.data.rows;
+          const payload = response?.data?.rows;
           setRoles(payload);
         } else if (response.statusCode === 404) {
           const payload = [];

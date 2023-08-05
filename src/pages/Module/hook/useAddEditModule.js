@@ -42,45 +42,14 @@ export const useAddEditModule = (tag) => {
           ? await createModule({ ...data, createdBy: loggedInUser.id })
           : await updateModule({ ...data, updatedBy: loggedInUser.id }, id);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         navigate("/module");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = {
-      //     name: data.name,
-      //     path: data.path,
-      //     icon: data.icon,
-      //     createdBy: loggedInUser.id,
-      //   };
-      //   const response = await createModule(payload);
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/module");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     name: data.name,
-      //     path: data.path,
-      //     icon: data.icon,
-      //     updatedBy: loggedInUser.id,
-      //   };
-      //   const response = await updateModule(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/module");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -92,16 +61,16 @@ export const useAddEditModule = (tag) => {
         dispatch(startLoading());
         const response = await getModuleById(id);
 
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
           setValue("path", response.data.path);
           setValue("icon", response.data.icon);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

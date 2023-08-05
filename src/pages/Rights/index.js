@@ -39,10 +39,7 @@ const Rights = () => {
                 <Controller
                   control={control}
                   name={`roleID`}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
+                  render={({ field: { onBlur, onChange, value } }) => (
                     <FormControl fullWidth size="small">
                       <InputLabel id="role">Role</InputLabel>
                       <Select
@@ -105,7 +102,6 @@ const Rights = () => {
                                 field: { onBlur, onChange, value },
                               }) => (
                                 <Checkbox
-                                  // value={value}
                                   checked={value}
                                   onChange={(event, newValue) => [
                                     onChange(newValue),
@@ -124,7 +120,6 @@ const Rights = () => {
                                 field: { onBlur, onChange, value },
                               }) => (
                                 <Checkbox
-                                  // value={value}
                                   checked={value}
                                   onChange={(event, newValue) => [
                                     onChange(newValue),
@@ -143,7 +138,6 @@ const Rights = () => {
                                 field: { onBlur, onChange, value },
                               }) => (
                                 <Checkbox
-                                  // value={value}
                                   checked={value}
                                   onChange={(event, newValue) => [
                                     onChange(newValue),
@@ -162,7 +156,6 @@ const Rights = () => {
                                 field: { onBlur, onChange, value },
                               }) => (
                                 <Checkbox
-                                  // value={value}
                                   checked={value}
                                   onChange={(event, newValue) => [
                                     onChange(newValue),
@@ -181,7 +174,6 @@ const Rights = () => {
                                 field: { onBlur, onChange, value },
                               }) => (
                                 <Checkbox
-                                  // value={value}
                                   checked={value}
                                   onChange={(event, newValue) => [
                                     onChange(newValue),

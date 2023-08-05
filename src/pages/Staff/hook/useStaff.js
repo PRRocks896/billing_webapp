@@ -41,16 +41,16 @@ export const useStaff = () => {
         dispatch(startLoading());
         const body = listPayload(page, { searchText: searchValue });
         const response = await getStaffList(body);
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setCount(response.data.count);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          setCount(response?.data?.count);
           dispatch(staffAction.storeStaff(payload));
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           dispatch(staffAction.storeStaff(payload));
         }
       } catch (error) {
-        showToast(error.message, false);
+        showToast(error?.message, false);
       } finally {
         dispatch(stopLoading());
       }
@@ -62,7 +62,7 @@ export const useStaff = () => {
     try {
       fetchStaffData(payload.searchValue);
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 
@@ -80,15 +80,15 @@ export const useStaff = () => {
       setIsDeleteModalOpen(false);
       dispatch(startLoading());
       const response = await deleteStaff(deleteId);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         dispatch(staffAction.removeStaff({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       setIsDeleteModalOpen(false);
       dispatch(stopLoading());
@@ -103,15 +103,15 @@ export const useStaff = () => {
       };
       const response = await updateStaff(payload, id);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         const payload2 = { id, status: payload.isActive };
         dispatch(staffAction.changeStaffStatus(payload2));
       } else {
-        showToast(response.message, false);
+        showToast(response?.message, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 

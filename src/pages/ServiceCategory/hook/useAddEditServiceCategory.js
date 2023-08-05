@@ -42,41 +42,13 @@ export const useAddEditServiceCategory = (tag) => {
             );
 
       if (response?.statusCode === 200) {
-        showToast(response.message, true);
+        showToast(response?.message, true);
         navigate("/service-category");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = {
-      //     name: data.service_category,
-      //     createdBy: loggedInUser.id,
-      //   };
-      //   const response = await createServiceCategory(payload);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/service-category");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     name: data.service_category,
-      //     updatedBy: loggedInUser.id,
-      //   };
-      //   const response = await updateServiceCategory(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/service-category");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -87,14 +59,14 @@ export const useAddEditServiceCategory = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getServiceCategoryById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

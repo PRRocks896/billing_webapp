@@ -50,42 +50,6 @@ const ProtectedRoute = ({ path, Component }) => {
   return Component;
 
   // --------------------------------------------------------
-
-  // const navigate = useNavigate();
-  // console.log("********", path, Component);
-  // const { accessModules } = useSelector((state) => state.loggedInUser);
-  // console.log(accessModules);
-  // useMemo(() => {
-  //   let isAccessPath;
-  //   if (accessModules) {
-  //     for (let element of accessModules) {
-  //       console.warn(element);
-  //       if (element.px_module.path === `/${path}` && element.view) {
-  //         // isAccessPath = true;
-  //         // break;
-  //         if (!element.add) {
-  //           isAccessPath = false;
-  //         } else {
-  //           isAccessPath = true;
-  //         }
-  //         if (!element.edit) {
-  //           isAccessPath = false;
-  //         } else {
-  //           isAccessPath = true;
-  //         }
-  //         if (isAccessPath) {
-  //           break;
-  //         }
-  //       } else {
-  //         isAccessPath = false;
-  //       }
-  //     }
-  //   }
-  //   if (!isAccessPath) {
-  //     navigate("/", { replace: true });
-  //   }
-  // }, [accessModules, navigate, path]);
-  // return Component;
 };
 
 export default ProtectedRoute;

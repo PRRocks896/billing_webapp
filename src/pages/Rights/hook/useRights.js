@@ -16,15 +16,7 @@ export const useRights = () => {
   const { handleSubmit, control, getValues, reset, setValue } = useForm({
     defaultValues: {
       roleID: "",
-      modules: [
-        // {
-        //   moduleID: "",
-        //   view: false,
-        //   add: false,
-        //   edit: false,
-        //   delete: false,
-        // },
-      ],
+      modules: [],
     },
     mode: "onBlur",
   });
@@ -39,7 +31,6 @@ export const useRights = () => {
     const data = roles.map((item) => {
       return { value: item.id, label: item.name };
     });
-    // setRoleOptions([...data]);
     return data;
   }, [roles]);
 
@@ -52,17 +43,17 @@ export const useRights = () => {
 
         const response = await getRolesList(body);
 
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
           setRoles(payload);
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           setRoles(payload);
         }
       };
       fetchRolesData();
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -77,7 +68,7 @@ export const useRights = () => {
     const body = listPayload(0, { roleID: roleID, isActive: true }, 1000);
 
     const response = await getRightList(body);
-    if (response.statusCode === 200) {
+    if (response?.statusCode === 200) {
       const { data } = response;
       const { rows } = data;
       if (rows && rows.length > 0) {
@@ -96,7 +87,7 @@ export const useRights = () => {
           });
         });
       }
-    } else if (response.statusCode === 404) {
+    } else if (response?.statusCode === 404) {
       reset({
         roleID: getValues("roleID"),
         modules: [],
@@ -107,7 +98,7 @@ export const useRights = () => {
         roleID: getValues("roleID"),
         modules: [],
       });
-      showToast(response.message, false);
+      showToast(response?.message, false);
     }
   };
 
@@ -116,7 +107,7 @@ export const useRights = () => {
 
     const response = await getModuleList(body);
 
-    if (response.statusCode === 200) {
+    if (response?.statusCode === 200) {
       const { data } = response;
       const { rows } = data;
       if (rows && rows.length > 0) {
@@ -135,7 +126,7 @@ export const useRights = () => {
         });
       } else {
       }
-    } else if (response.statusCode === 404) {
+    } else if (response?.statusCode === 404) {
       const payload = [];
       setModuleList(payload);
     }
@@ -161,17 +152,17 @@ export const useRights = () => {
         return data;
       });
       const response = await createBulkRight(body);
-      if (response.statusCode === 200) {
+      if (response?.statusCode === 200) {
         reset({
           roleID: "",
           modules: [],
         });
-        showToast(response.message, true);
+        showToast(response?.message, true);
       } else {
-        showToast(response.message, false);
+        showToast(response?.message, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

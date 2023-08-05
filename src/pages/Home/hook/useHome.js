@@ -17,7 +17,7 @@ export const useHome = () => {
     try {
       const params = { currentDate: currentDate() };
       const response = await fetchDashboardDetails(params);
-      setDetails(response.data);
+      setDetails(response?.data);
     } catch (error) {
       showToast(error?.message, false);
     }

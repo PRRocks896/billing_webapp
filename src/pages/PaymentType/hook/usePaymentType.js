@@ -47,16 +47,16 @@ export const usePaymentType = () => {
 
         const response = await getPaymentTypeList(body);
 
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setCount(response.data.count);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          setCount(response?.data?.count);
           dispatch(paymentTypeAction.storePaymentType(payload));
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           dispatch(paymentTypeAction.storePaymentType(payload));
         }
       } catch (error) {
-        showToast(error.message, false);
+        showToast(error?.message, false);
       } finally {
         dispatch(stopLoading());
       }
@@ -69,7 +69,7 @@ export const usePaymentType = () => {
     try {
       fetchPaymentTypeData(payload.searchValue);
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 
@@ -89,15 +89,15 @@ export const usePaymentType = () => {
       setIsDeleteModalOpen(false);
       dispatch(startLoading());
       const response = await deletePaymentType(deleteId);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         dispatch(paymentTypeAction.removePaymentType({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       setIsDeleteModalOpen(false);
       dispatch(stopLoading());
@@ -113,15 +113,15 @@ export const usePaymentType = () => {
       };
       const response = await updatePaymentType(payload, id);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         const payload2 = { id, status: payload.isActive };
         dispatch(paymentTypeAction.changePaymentTypeStatus(payload2));
       } else {
-        showToast(response.message, false);
+        showToast(response?.message, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 

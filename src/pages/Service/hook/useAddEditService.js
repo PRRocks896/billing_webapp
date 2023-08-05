@@ -16,7 +16,6 @@ export const useAddEditService = (tag) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const [categoryOptions, setCategoryOptions] = useState([]);
   const { id } = useParams();
   const [serviceCategories, setServiceCategories] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -43,47 +42,14 @@ export const useAddEditService = (tag) => {
         tag === "add"
           ? await createService({ ...payload, createdBy: loggedInUser.id })
           : await updateService({ ...payload, updatedBy: loggedInUser.id }, id);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         navigate("/service");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-      // if (tag === "add") {
-      //   const payload = {
-      //     name: data.name,
-      //     service_category_id: data.category.value,
-      //     amount: data.amount,
-      //     createdBy: loggedInUser.id,
-      //   };
-
-      //   const response = await createService(payload);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/service");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     name: data.service_name,
-      //     service_category_id: data.category.value,
-      //     amount: data.amount,
-      //     updatedBy: loggedInUser.id,
-      //   };
-
-      //   const response = await updateService(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/service");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -98,7 +64,7 @@ export const useAddEditService = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getServiceById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           const category = {
             value: response.data.px_service_category.id,
             label: response.data.px_service_category.name,
@@ -107,11 +73,11 @@ export const useAddEditService = (tag) => {
           setValue("amount", response.data.amount);
           setValue("category", category);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -126,7 +92,6 @@ export const useAddEditService = (tag) => {
     const data = serviceCategories.map((item) => {
       return { value: item.id, label: item.name };
     });
-    // setCategoryOptions([...data]);
     return data;
   }, [serviceCategories]);
 
@@ -136,17 +101,17 @@ export const useAddEditService = (tag) => {
         const body = listPayload(0, { isActive: true }, 1000);
 
         const response = await getServiceCategoryList(body);
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
           setServiceCategories(payload);
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           setServiceCategories(payload);
         }
       };
       fetchServiceCategoryData();
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   }, []);
 

@@ -31,12 +31,7 @@ const Report = () => {
                 value={branch}
                 onChange={(event, newValue) => handleBranchChange(newValue)}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Branch"
-                    // error={!!error}
-                    // helperText={error?.message ? error.message : ""}
-                  />
+                  <TextField {...params} label="Branch" />
                 )}
               />
             )}

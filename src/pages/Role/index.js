@@ -135,14 +135,12 @@ const Role = () => {
         />
       </Box>
 
-      {/* {isDeleteModalOpen && ( */}
       <ConfirmationModal
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
         title="state"
         deleteHandler={deleteHandler}
       />
-      {/* )} */}
     </>
   );
 };

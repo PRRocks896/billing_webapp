@@ -25,16 +25,16 @@ export const useAddStaff = (setIsStaffModalOpen, fetchStaffData) => {
         createdBy: loggedInUser.id,
       };
       const response = await createStaff(payload);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         setIsStaffModalOpen();
         fetchStaffData();
         reset();
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

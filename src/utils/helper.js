@@ -63,9 +63,7 @@ export const logoutHandler = () => {
 export const listPayload = (page, where = {}, rows = 10) => {
   return {
     where: {
-      // isActive: true,
       isDeleted: false,
-      // searchText: "",
       ...where,
     },
     pagination: {
