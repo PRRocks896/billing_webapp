@@ -17,15 +17,15 @@ const PrintContent = (billData) => {
       <style>
         @media print {
           @page {
-            size: 112mm;
+            size: ${billData.detail.length < 4 ? "120mm " : "140mm"};
           }
         }
       </style>
     </head>
     <body>
       <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
-        <div>
-          <div style="page-break-after: always; height: max-content;">
+       
+          <div style="page-break-after: always; height: 'max-content';">
             <p style="text-transform: capitalize;font-size: 24px; font-weight: 600; margin: 0px">green health spa and saloon</p>
             <p style="text-transform: capitalize;font-size: 16px; margin: 2px 0px 0px 18px; ">NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089</p>
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
@@ -108,6 +108,7 @@ const PrintContent = (billData) => {
             </p>
             <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
+          
           <div style="height: max-content;">
             <table style="font-size: 12px;">
               <tbody>
@@ -141,7 +142,7 @@ const PrintContent = (billData) => {
               </tbody>
             </table>
           </div>
-        </div>
+      
       </div>
     </body>
   </html>
