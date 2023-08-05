@@ -23,7 +23,6 @@ export const useAddCustomer = (setIsCustomerModalOpen, fetchCustomersData) => {
       dispatch(startLoading());
       const payload = {
         userID: loggedInUser.id,
-        // cityID: 1,
         phoneNumber: data.phone,
         gender: data.gender,
         name: data.customer_name,
@@ -31,16 +30,16 @@ export const useAddCustomer = (setIsCustomerModalOpen, fetchCustomersData) => {
       };
       const response = await createCustomer(payload);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         setIsCustomerModalOpen(false);
         fetchCustomersData();
         reset();
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

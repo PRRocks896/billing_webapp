@@ -20,15 +20,13 @@ import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCatego
 import Login from "./pages/Login";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
 import Role from "./pages/Role";
-import AddEditRole from "./pages/Role/addEditRole";
+import AddEditRole from "./pages/Role/AddEditRole";
 import Module from "./pages/Module";
-import AddEditModule from "./pages/Module/addEditModule";
+import AddEditModule from "./pages/Module/ddEditModule";
 import Rights from "./pages/Rights";
 import AddEditBill from "./pages/Bill/AddEditBill";
 import Bill from "./pages/Bill";
 import Report from "./pages/Report";
-import NotFound from "./components/NotFound";
-import NoConnection from "./components/NoConnection";
 
 const token = getAuthToken();
 

@@ -30,34 +30,14 @@ export const useAddEditRole = (tag) => {
           ? await createRole({ ...payload, createdBy: loggedInUser.id })
           : await updateRole({ ...payload, updatedBy: loggedInUser.id }, id);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         navigate("/role");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const response = await createRole(payload);
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/role");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = { name: data.name, updatedBy: loggedInUser.id };
-      //   const response = await updateRole(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/role");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -68,14 +48,14 @@ export const useAddEditRole = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getRoleById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

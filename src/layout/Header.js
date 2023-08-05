@@ -1,15 +1,12 @@
 import React from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
-// import ProfileImage from "../assets/images/avatar2.jpg";
 import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-// import Avatar from "@mui/material/Avatar";
-// import Tooltip from "@mui/material/Tooltip";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
@@ -49,7 +46,6 @@ const UserName = React.memo(({ firstName = "", lastName = "" }) => {
 });
 
 const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
-  // const dispatch = useDispatch();
   const data = useSelector((state) => state.loggedInUser);
   let location = useLocation();
 
@@ -61,16 +57,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     pageTitle = location.pathname.split("/")[1];
   }
   pageTitle = pageTitle.toUpperCase();
-
-  // account dropdown
-  // const [anchorEl, setAnchorEl] = React.useState(null);
-  // const openAccount = Boolean(anchorEl);
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
 
   return (
     <>
@@ -97,95 +83,6 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             <UserName firstName={data?.firstName} lastName={data?.lastName} />
             <Clock />
           </Box>
-
-          {/* <Box className="account-dropdown">
-            <Tooltip title="Profile Setting">
-              <IconButton
-                onClick={handleClick}
-                aria-controls={openAccount ? "account-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={openAccount ? "true" : undefined}
-              >
-                <Avatar className="avatar">
-                  <img src={ProfileImage} alt="account img" />
-                </Avatar>
-              </IconButton>
-            </Tooltip>
-          </Box> */}
-
-          {/* <Menu
-            className="account-dropdown-menu"
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={openAccount}
-            onClose={handleClose}
-            onClick={handleClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.15))",
-                mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                "&:before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <Box className="user-details">
-              <Box className="user-img">
-                <img src={ProfileImage} alt="account img" />
-              </Box>
-              <Typography
-                variant="span"
-                component="span"
-                className="text-grey user-position"
-                align="center"
-              >
-                {data?.px_role?.name}
-              </Typography>
-              <Typography
-                variant="h5"
-                component="h5"
-                className="text-green user-name"
-                align="center"
-              >
-                {data?.firstName + " " + data?.lastName}
-              </Typography>
-            </Box>
-            <Box className="links">
-              <Divider />
-              <MenuItem className="menu-link">
-                <ListItemIcon className="link-icon">
-                  <FiUser />
-                </ListItemIcon>
-                Profile
-              </MenuItem>
-              <MenuItem className="menu-link" onClick={logoutHandler}>
-                <ListItemIcon className="link-icon">
-                  <FiLogOut />
-                </ListItemIcon>
-                Logout
-              </MenuItem>
-            </Box>
-          </Menu> */}
         </Toolbar>
       </AppBar>
       <Drawer

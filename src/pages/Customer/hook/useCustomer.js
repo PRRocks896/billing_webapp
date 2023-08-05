@@ -50,16 +50,16 @@ export const useCustomer = () => {
         const body = listPayload(page, { ...payload });
 
         const response = await getCustomerList(body);
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setCount(response.data.count);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          setCount(response?.data?.count);
           dispatch(customerActions.storeCustomer(payload));
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           dispatch(customerActions.storeCustomer(payload));
         }
       } catch (error) {
-        showToast(error.message, false);
+        showToast(error?.message, false);
       } finally {
         dispatch(stopLoading());
       }
@@ -89,15 +89,15 @@ export const useCustomer = () => {
       setIsDeleteModalOpen(false);
       dispatch(startLoading());
       const response = await deleteCustomer(deleteId);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         dispatch(customerActions.removeCustomer({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       setIsDeleteModalOpen(false);
       dispatch(stopLoading());
@@ -112,15 +112,15 @@ export const useCustomer = () => {
       };
       const response = await updateCustomer(payload, id);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         const payload2 = { id, status: payload.isActive };
         dispatch(customerActions.changeCustomerStatus(payload2));
       } else {
-        showToast(response.message, false);
+        showToast(response?.message, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 

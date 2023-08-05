@@ -42,51 +42,14 @@ export const useAddEditCustomer = (tag, flag = 1) => {
               id
             );
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         flag === 1 && navigate("/customer");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = {
-      //     userID: loggedInUser.id,
-      //     // cityID: 1,
-      //     phoneNumber: data.phone,
-      //     gender: data.gender,
-      //     name: data.customer_name,
-      //     createdBy: loggedInUser.id,
-      //   };
-
-      //   const response = await createCustomer(payload);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     flag === 1 && navigate("/customer");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     userID: loggedInUser.id,
-      //     // cityID: 1,
-      //     phoneNumber: data.phone,
-      //     gender: data.gender,
-      //     name: data.customer_name,
-      //     updatedBy: loggedInUser.id,
-      //   };
-      //   const response = await updateCustomer(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/customer");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -97,16 +60,16 @@ export const useAddEditCustomer = (tag, flag = 1) => {
       if (id) {
         dispatch(startLoading());
         const response = await getCustomerById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("gender", response.data.gender);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

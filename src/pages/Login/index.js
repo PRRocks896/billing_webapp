@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-// -------------------------
+
 import { Controller } from "react-hook-form";
 import { useLogin } from "./hook/useLogin";
 import Visibility from "@mui/icons-material/Visibility";
@@ -89,7 +89,7 @@ const Login = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
@@ -119,7 +119,7 @@ const Login = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        helperText={error?.message ? error.message : ""}
+                        helperText={error?.message}
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">

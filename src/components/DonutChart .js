@@ -31,18 +31,6 @@ const DonutChart = ({ chartData }) => {
         text: "Green Day Spa",
       },
     },
-    // tooltips: {
-    //   enabled: true,
-    //   callbacks: {
-    //     label: function (tooltipItem, data) {
-    //       // Display the value and label of the hovered data point
-    //       const dataset = data.datasets[tooltipItem.datasetIndex];
-    //       const label = data.labels[tooltipItem.index];
-    //       const value = dataset.data[tooltipItem.index];
-    //       return `${label}: ${value}`;
-    //     },
-    //   },
-    // },
   };
 
   const plugins = [

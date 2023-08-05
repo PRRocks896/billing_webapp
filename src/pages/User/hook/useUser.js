@@ -42,16 +42,16 @@ export const useUser = () => {
 
         const body = listPayload(page, { searchText: searchValue });
         const response = await getUserList(body);
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
-          setCount(response.data.count);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          setCount(response?.data?.count);
           dispatch(userAction.storeUser(payload));
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           dispatch(userAction.storeUser(payload));
         }
       } catch (error) {
-        showToast(error.message, false);
+        showToast(error?.message, false);
       } finally {
         dispatch(stopLoading());
       }
@@ -84,15 +84,15 @@ export const useUser = () => {
       setIsDeleteModalOpen(false);
       dispatch(startLoading());
       const response = await deleteUser(deleteId);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         dispatch(userAction.removeUser({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       setIsDeleteModalOpen(false);
       dispatch(stopLoading());
@@ -108,15 +108,15 @@ export const useUser = () => {
       };
       const response = await updateUser(payload, id);
 
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         const payload2 = { id, status: payload.isActive };
         dispatch(userAction.changeUserStatus(payload2));
       } else {
-        showToast(response.message, false);
+        showToast(response?.message, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 

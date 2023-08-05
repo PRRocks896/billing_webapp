@@ -30,7 +30,7 @@ export const useLogin = () => {
         showToast(response?.message || response?.messageCode, false);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 

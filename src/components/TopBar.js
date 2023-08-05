@@ -20,7 +20,6 @@ const TopBar = ({
   addPermission = true,
 }) => {
   const navigate = useNavigate();
-  // const [searchvalue, setSearchvalue] = useState("");
 
   const debouncedSearch = debounce(async (payload) => {
     try {
@@ -31,7 +30,6 @@ const TopBar = ({
   }, 500);
 
   const searchValueHandler = (e) => {
-    // setSearchvalue(e.target.value);
     if (e.target.value.length === 0 || e.target.value.length > 3) {
       const payload = { searchValue: e.target.value };
       debouncedSearch(payload);

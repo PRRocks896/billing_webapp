@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 const useNoInternet = () => {
   const status = window.navigator.onLine;
-  console.log("status", status);
   const [isOnline, setIsOnline] = useState(status);
 
   useEffect(() => {

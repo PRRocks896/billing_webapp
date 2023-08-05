@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-// import PrintContent2 from "../../../components/PrintContent2";
 
 let editCardNo = "";
 
@@ -60,9 +59,6 @@ export const useAddEditCreateBill = (tag) => {
       staffID: "",
       roomNo: "",
       cardNo: "Cash",
-      // discount: 0,
-      // discountAmount: 0,
-      // exchange: 0,
       grandTotal: 0,
       detail: [
         {
@@ -104,20 +100,12 @@ export const useAddEditCreateBill = (tag) => {
         : customers.find((row) => row.id === selectedCus.value)?.name
     );
   }, [customers, selectedCus, setValue]);
-  // const selectedCus = watch("customerID");
-  // useMemo(() => {
-  //   setValue(
-  //     "Phone",
-  //     selectedCus === "" || selectedCus === null
-  //       ? ""
-  //       : customers.find((row) => row.id === selectedCus.value).phoneNumber
-  //   );
-  // }, [customers, selectedCus, setValue]);
 
-  const selectedDetails = watch("detail");
-  useMemo(() => {
-    console.log("call", selectedDetails);
-  }, [selectedDetails]);
+  // const selectedDetails = watch("detail");
+
+  // useMemo(() => {
+  //   console.log("call", selectedDetails);
+  // }, [selectedDetails]);
 
   const newBtnClickHandler = () => {
     if (
@@ -140,7 +128,7 @@ export const useAddEditCreateBill = (tag) => {
     setIsSaveModalOpen(false);
   };
 
-  // genrate payment options for drop down-------------------------------------
+  // genrate payment options for drop down
   const setPaymentOptionAndCard = useCallback(() => {
     const data = paymentType.map((item) => {
       return { value: item.id, label: item.name };
@@ -180,17 +168,17 @@ export const useAddEditCreateBill = (tag) => {
 
         const response = await getPaymentTypeList(body);
 
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
           setPaymentType(payload);
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           setPaymentType(payload);
         }
       };
       fetchPaymentTypeData();
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   }, []);
 
@@ -209,17 +197,18 @@ export const useAddEditCreateBill = (tag) => {
 
       const response = await getCustomerList(body);
 
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
         setCustomers(payload);
-      } else if (response.statusCode === 404) {
+      } else if (response?.statusCode === 404) {
         const payload = [];
         setCustomers(payload);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   }, []);
+
   useEffect(() => {
     fetchCustomersData();
   }, [fetchCustomersData]);
@@ -239,17 +228,18 @@ export const useAddEditCreateBill = (tag) => {
 
       const response = await getStaffList(body);
 
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
         setStaff(payload);
-      } else if (response.statusCode === 404) {
+      } else if (response?.statusCode === 404) {
         const payload = [];
         setStaff(payload);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   }, []);
+
   useEffect(() => {
     fetchStaffData();
   }, [fetchStaffData]);
@@ -280,17 +270,17 @@ export const useAddEditCreateBill = (tag) => {
 
         const response = await getServiceList(body);
 
-        if (response.statusCode === 200) {
-          const payload = response.data.rows;
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
           setService(payload);
-        } else if (response.statusCode === 404) {
+        } else if (response?.statusCode === 404) {
           const payload = [];
           setService(payload);
         }
       };
       fetchServiceData();
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   }, []);
 
@@ -400,7 +390,7 @@ export const useAddEditCreateBill = (tag) => {
       // }
       dispatch(stopLoading());
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -409,7 +399,6 @@ export const useAddEditCreateBill = (tag) => {
   const addRow = () => {
     const index = getValues("detail").length;
     append({
-      // id: uuidv4(),
       index: index,
       serviceID: "",
       quantity: "",
@@ -462,7 +451,7 @@ export const useAddEditCreateBill = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getBillById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
           setValue("roomNo", response.data.roomNo);
@@ -499,11 +488,11 @@ export const useAddEditCreateBill = (tag) => {
           });
           setValue("detail", items);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -515,30 +504,9 @@ export const useAddEditCreateBill = (tag) => {
 
   const print = (billData) => {
     const printWindow = window.open("", "_blank", "popup=yes");
-    // const printDocument = (
-    //   <html>
-    //     <head>
-    //       <title>{"G" + billData.billNo}</title>
-    //     </head>
-    //     <body
-    //       style={{
-    //         padding: "0px",
-    //         margin: "0px",
-    //         boxSizing: "border-box",
-    //         display: "flex",
-    //         justifyContent: "center",
-    //       }}
-    //     >
-    //       <PrintContent billData={billData} />
-    //     </body>
-    //   </html>
-    // );
-
-    // printWindow.document.write(ReactDOMServer.renderToString(printDocument));
     printWindow.document.write(PrintContent(billData));
     printWindow.document.close();
     printWindow.print();
-
     printWindow.close();
   };
 
@@ -575,37 +543,6 @@ export const useAddEditCreateBill = (tag) => {
         return { ...row, item: row.serviceID.label };
       }),
     };
-    // print Data start
-
-    // const payload = {
-    //   userID: loggedInUser.id,
-    //   staffID: getValues("staffID").value,
-    //   customerID: getValues("customerID").value,
-    //   detail: detailData,
-    //   paymentID: getValues("paymentID").value,
-    //   grandTotal: getValues("grandTotal"),
-    //   phoneNumber: getValues("Phone"),
-    //   roomNo: getValues("roomNo"),
-    //   // name: "",
-    //   cardNo: "",
-    //   createdBy: loggedInUser.id,
-    // };
-
-    // const response = await createBill(payload);
-    // if (response.statusCode === 200) {
-    //   showToast(response.message, true);
-    //   reset();
-    //   let firstBillNo = +response.data.billNo?.substring(1);
-    //   window.localStorage.setItem("billNo", firstBillNo);
-    //   let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-    //   setValue("billNo", "G" + billNo);
-    //   setSubmitedBillData(response.data);
-
-    //   print(billData);
-    // } else {
-    //   showToast(response.message, false);
-    // }
-    // add bill end
 
     try {
       dispatch(startLoading());
@@ -619,18 +556,15 @@ export const useAddEditCreateBill = (tag) => {
           grandTotal: getValues("grandTotal"),
           phoneNumber: getValues("customerID").label,
           roomNo: getValues("roomNo"),
-          // name: "",
           cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
             ? getValues("cardNo")
             : "",
           createdBy: loggedInUser.id,
         };
 
-        console.log("22222 payload", payload);
-
         const response = await createBill(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
+        if (response?.statusCode === 200) {
+          showToast(response?.message, true);
           reset();
           let firstBillNo = +response.data.billNo?.substring(1);
           window.localStorage.setItem("billNo", firstBillNo);
@@ -640,7 +574,7 @@ export const useAddEditCreateBill = (tag) => {
           setPaymentOptionAndCard();
           print(billData);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       } else if (tag === "edit") {
         const payload = {
@@ -652,28 +586,24 @@ export const useAddEditCreateBill = (tag) => {
           grandTotal: getValues("grandTotal"),
           roomNo: getValues("roomNo"),
           phoneNumber: getValues("customerID").label,
-          // phoneNumber: "",
-          // name: "",
           cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
             ? getValues("cardNo")
             : "",
           createdBy: loggedInUser.id,
         };
-        console.log("22222 payload edit", payload);
         const response = await updateBill(payload, id);
 
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
-          // window.localStorage.removeItem("billNo");
+        if (response?.statusCode === 200) {
+          showToast(response?.message, true);
           print(billData);
           navigate("/bill");
         } else {
-          showToast(response.messageCode, false);
+          showToast(response?.messageCode, false);
         }
       }
       dispatch(stopLoading());
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

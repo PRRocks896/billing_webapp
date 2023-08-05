@@ -24,6 +24,7 @@ export const useAddEditStates = (tag) => {
     },
     mode: "onBlur",
   });
+
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
@@ -31,36 +32,14 @@ export const useAddEditStates = (tag) => {
         tag === "add"
           ? await createStates({ ...data, createdBy: loggedInUser.id })
           : await updateStates({ ...data, updatedBy: loggedInUser.id }, id);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         navigate("/states");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = { name: data.stateName, createdBy: loggedInUser.id };
-      //   const response = await createStates(payload);
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/states");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = { name: data.stateName, updatedBy: loggedInUser.id };
-      //   const response = await updateStates(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/states");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
-      // dispatch(stopLoading());
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -71,14 +50,14 @@ export const useAddEditStates = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getStatesById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

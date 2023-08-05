@@ -49,7 +49,6 @@ const AddEditBill = ({ tag }) => {
     calculateTotal,
     isSaveModalOpen,
     setIsSaveModalOpen,
-    // newBtnClickHandler,
     dontSaveHandler,
 
     isCustomerModalOpen,
@@ -124,7 +123,6 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                         error={!!error}
-                        // helperText={error?.message ? error.message : ""}
                       />
                     </FormControl>
                   )}
@@ -209,15 +207,6 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              {/* <Grid item xs={1}>
-                <Button
-                  type="button"
-                  className="btn"
-                  onClick={() => setIsStaffModalOpen(true)}
-                >
-                  <FiPlusCircle />
-                </Button>
-              </Grid> */}
 
               <Grid item xs={12} md={3} sm={6}>
                 <Controller
@@ -269,10 +258,7 @@ const AddEditBill = ({ tag }) => {
                 <Controller
                   name="Phone"
                   control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
+                  render={({ field: { onBlur, onChange, value } }) => (
                     <FormControl
                       size="small"
                       variant="standard"
@@ -291,16 +277,6 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid>
-              {/* <Grid item xs={1}>
-                <Button
-                  sx={{ padding: '0px' }}
-                  type="button"
-                  className="btn"
-                  onClick={() => setIsCustomerModalOpen(true)}
-                >
-                  <FiPlusCircle />
-                </Button>
-              </Grid> */}
 
               <Grid item xs={12} md={3} sm={6}>
                 <Controller
@@ -311,6 +287,7 @@ const AddEditBill = ({ tag }) => {
                     fieldState: { error },
                   }) => (
                     <Autocomplete
+                      disableClearable
                       size="small"
                       disablePortal
                       id="paymentID"
@@ -396,74 +373,6 @@ const AddEditBill = ({ tag }) => {
                   />
                 )}
               </Grid>
-
-              {/* <Grid item xs={3}>
-                <Controller
-                  control={control}
-                  name={`customerID`}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      id="customerID"
-                      label="customerID"
-                      options={customersOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => onChange(newValue)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Customer"
-                          error={!!error}
-                          // helperText={error?.message ? error.message : ""}
-                        />
-                      )}
-                    />
-                  )}
-                  rules={{
-                    required: "Please Select Customer",
-                  }}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <Controller
-                  name="Phone"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        disabled
-                        label="Phone"
-                        size="small"
-                        name="Phone"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={1}>
-                <Button
-                  type="button"
-                  className="btn"
-                  onClick={() => setIsCustomerModalOpen(true)}
-                >
-                  <FiPlusCircle />
-                </Button>
-              </Grid> */}
             </Grid>
           </FormGroup>
         </Box>
@@ -516,7 +425,6 @@ const AddEditBill = ({ tag }) => {
                             disablePortal
                             id="serivce"
                             options={serviceOptions}
-                            // sx={{ width: 300 }}
                             value={value}
                             onBlur={onBlur}
                             onChange={(event, newValue) => [
@@ -649,10 +557,7 @@ const AddEditBill = ({ tag }) => {
                       <Controller
                         name={`detail.${index}.total`}
                         control={control}
-                        render={({
-                          field: { onBlur, onChange, value },
-                          fieldState: { error },
-                        }) => (
+                        render={({ field: { onBlur, onChange, value } }) => (
                           <FormControl size="small" variant="standard">
                             <TextField
                               size="small"
@@ -687,89 +592,11 @@ const AddEditBill = ({ tag }) => {
         <Box className="card">
           <FormGroup className="form-field" sx={{ marginTop: "12px" }}>
             <Grid container spacing={2}>
-              {/* <Grid item xs={2}>
-                <Controller
-                  name="discount"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Discount %"
-                        size="small"
-                        name="discount"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <Controller
-                  name="discountAmount"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Discount Amount"
-                        size="small"
-                        name="discountAmount"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <Controller
-                  name="exchange"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Exchange"
-                        size="small"
-                        name="exchange"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                      />
-                    </FormControl>
-                  )}
-                />
-              </Grid> */}
               <Grid item xs={2}>
                 <Controller
                   name="grandTotal"
                   control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
+                  render={({ field: { onBlur, onChange, value } }) => (
                     <FormControl
                       size="small"
                       variant="standard"
@@ -852,7 +679,6 @@ const AddEditBill = ({ tag }) => {
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
           open={isSaveModalOpen}
-          // onClose={() => setIsSaveModalOpen(false)}
           closeAfterTransition
           slotProps={{
             backdrop: {

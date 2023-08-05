@@ -35,35 +35,14 @@ export const useAddEditPaymentType = (tag) => {
               { ...data, updatedBy: loggedInUser.id },
               id
             );
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
         navigate("/payment-type");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = { name: data.payment_type, createdBy: loggedInUser.id };
-      //   const response = await createPaymentType(payload);
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/payment-type");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = { name: data.payment_type, updatedBy: loggedInUser.id };
-      //   const response = await updatePaymentType(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/payment-type");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -74,14 +53,14 @@ export const useAddEditPaymentType = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getPaymentTypeById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

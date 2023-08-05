@@ -34,42 +34,13 @@ export const useAddEditStaff = (tag) => {
           : await updateStaff({ ...payload, updatedBy: loggedInUser.id }, id);
 
       if (response?.statusCode === 200) {
-        showToast(response.message, true);
+        showToast(response?.message, true);
         navigate("/staff");
       } else {
-        showToast(response.messageCode, false);
+        showToast(response?.messageCode, false);
       }
-
-      // if (tag === "add") {
-      //   const payload = {
-      //     userID: loggedInUser.id,
-      //     name: data.staff_name,
-      //     createdBy: loggedInUser.id,
-      //   };
-      //   const response = await createStaff(payload);
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/staff");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     userID: loggedInUser.id,
-      //     name: data.staff_name,
-      //     updatedBy: loggedInUser.id,
-      //   };
-      //   const response = await updateStaff(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     navigate("/staff");
-      //   } else {
-      //     showToast(response.message, false);
-      //   }
-      // }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }
@@ -81,14 +52,14 @@ export const useAddEditStaff = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getStaffById(id);
-        if (response.statusCode === 200) {
+        if (response?.statusCode === 200) {
           setValue("name", response.data.name);
         } else {
-          showToast(response.message, false);
+          showToast(response?.message, false);
         }
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
     }

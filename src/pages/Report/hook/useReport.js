@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getReportList } from "../../../service/report";
-// import { reportAction } from "../../../redux/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { useCallback, useEffect, useState } from "react";
@@ -37,20 +36,19 @@ export const useReport = () => {
       const body = listPayload(0, {}, 1000);
 
       const response = await getUserList(body);
-      if (response.statusCode === 200) {
-        const payload = response.data.rows;
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
         const branchOption = payload.map((row) => ({
           value: row.id,
           label: row.branchName,
         }));
-        console.log(branchOption);
         setBranchOptions(branchOption);
-      } else if (response.statusCode === 404) {
+      } else if (response?.statusCode === 404) {
         const payload = [];
         setBranchOptions(payload);
       }
     } catch (error) {
-      showToast(error.message, false);
+      showToast(error?.message, false);
     }
   };
 
