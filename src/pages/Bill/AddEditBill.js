@@ -314,6 +314,7 @@ const AddEditBill = ({ tag }) => {
                       size="small"
                       disablePortal
                       id="paymentID"
+                      disableClearable
                       options={paymentTypeOptions}
                       value={value}
                       onBlur={onBlur}

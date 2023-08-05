@@ -306,26 +306,27 @@ export const useAddEditCreateBill = (tag) => {
     });
     try {
       dispatch(startLoading());
-      if (tag === "add") {
-        const payload = {
-          userID: loggedInUser.id,
-          staffID: data.staffID.value,
-          customerID: data.customerID.value,
-          detail: detailData,
-          paymentID: data.paymentID.value,
-          grandTotal: data.grandTotal,
-          phoneNumber: +data.customerID.label,
-          roomNo: data.roomNo,
-          // name: "",
-          cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
-            ? data.cardNo
-            : "",
-          createdBy: loggedInUser.id,
-        };
-        console.log("payload", payload);
-        const response = await createBill(payload);
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
+      const payload = {
+        userID: loggedInUser.id,
+        staffID: data.staffID.value,
+        customerID: data.customerID.value,
+        detail: detailData,
+        paymentID: data.paymentID.value,
+        grandTotal: data.grandTotal,
+        phoneNumber: +data.customerID.label,
+        roomNo: data.roomNo,
+        cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
+          ? data.cardNo
+          : "",
+      };
+      const response =
+        tag === "add"
+          ? await createBill({ ...payload, createdBy: loggedInUser.id })
+          : await updateBill({ ...payload, updatedBy: loggedInUser.id }, id);
+
+      if (response.statusCode === 200) {
+        showToast(response.message, true);
+        if (tag === "add") {
           reset();
           let firstBillNo = +response.data.billNo?.substring(1);
           window.localStorage.setItem("billNo", firstBillNo);
@@ -333,39 +334,70 @@ export const useAddEditCreateBill = (tag) => {
           setValue("billNo", "G" + billNo);
           setSubmitedBillData(response.data);
           setPaymentOptionAndCard();
-          // navigate("/bill");
         } else {
-          showToast(response.messageCode, false);
-        }
-      } else if (tag === "edit") {
-        const payload = {
-          userID: loggedInUser.id,
-          staffID: data.staffID.value,
-          customerID: data.customerID.value,
-          detail: detailData,
-          paymentID: data.paymentID.value,
-          grandTotal: data.grandTotal,
-          roomNo: data.roomNo,
-          phoneNumber: +data.customerID.label,
-          // phoneNumber: "",
-          // name: "",
-          // cardNo: data.cardNo,
-          cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
-            ? data.cardNo
-            : "",
-          createdBy: loggedInUser.id,
-        };
-        console.log("Edit", payload);
-        const response = await updateBill(payload, id);
-
-        if (response.statusCode === 200) {
-          showToast(response.message, true);
           window.localStorage.removeItem("billNo");
           navigate("/bill");
-        } else {
-          showToast(response.messageCode, false);
         }
+      } else {
+        showToast(response.messageCode, false);
       }
+
+      // if (tag === "add") {
+      //   const payload = {
+      //     userID: loggedInUser.id,
+      //     staffID: data.staffID.value,
+      //     customerID: data.customerID.value,
+      //     detail: detailData,
+      //     paymentID: data.paymentID.value,
+      //     grandTotal: data.grandTotal,
+      //     phoneNumber: +data.customerID.label,
+      //     roomNo: data.roomNo,
+      //     cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
+      //       ? data.cardNo
+      //       : "",
+      //     createdBy: loggedInUser.id,
+      //   };
+      //   console.log("payload", payload);
+      //   const response = await createBill(payload);
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     reset();
+      //     let firstBillNo = +response.data.billNo?.substring(1);
+      //     window.localStorage.setItem("billNo", firstBillNo);
+      //     let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+      //     setValue("billNo", "G" + billNo);
+      //     setSubmitedBillData(response.data);
+      //     setPaymentOptionAndCard();
+      //     // navigate("/bill");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // } else if (tag === "edit") {
+      //   const payload = {
+      //     userID: loggedInUser.id,
+      //     staffID: data.staffID.value,
+      //     customerID: data.customerID.value,
+      //     detail: detailData,
+      //     paymentID: data.paymentID.value,
+      //     grandTotal: data.grandTotal,
+      //     roomNo: data.roomNo,
+      //     phoneNumber: +data.customerID.label,
+      //     cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
+      //       ? data.cardNo
+      //       : "",
+      //     updatedBy: loggedInUser.id,
+      //   };
+      //   console.log("Edit", payload);
+      //   const response = await updateBill(payload, id);
+
+      //   if (response.statusCode === 200) {
+      //     showToast(response.message, true);
+      //     window.localStorage.removeItem("billNo");
+      //     navigate("/bill");
+      //   } else {
+      //     showToast(response.messageCode, false);
+      //   }
+      // }
       dispatch(stopLoading());
     } catch (error) {
       showToast(error.message, false);
@@ -406,20 +438,6 @@ export const useAddEditCreateBill = (tag) => {
     setValue(`detail.${index}.total`, total);
     calculateGrandTotal();
   };
-
-  // const calculateTotal = () => {
-  //   fields.forEach((field, index) => {
-  //     const rate = getValues(`detail.${index}.rate`) || 0;
-  //     const qty = getValues(`detail.${index}.quantity`) || 0;
-  //     const discount = getValues(`detail.${index}.discount`) || 0;
-  //     let total = qty * rate;
-  //     if (discount > 0) {
-  //       total = total - (total * discount) / 100;
-  //     }
-  //     setValue(`detail.${index}.total`, total);
-  //   });
-  //   calculateGrandTotal();
-  // };
 
   const calculateGrandTotal = () => {
     const detail = getValues("detail");
