@@ -12,8 +12,15 @@ import { Controller } from "react-hook-form";
 import { useAddEditUser } from "./hook/useAddEditUser";
 
 const AddEditUser = ({ tag }) => {
-  const { control, roleOptions, handleSubmit, onSubmit, cancelHandler, role } =
-    useAddEditUser(tag);
+  const {
+    control,
+    roleOptions,
+    handleSubmit,
+    onSubmit,
+    cancelHandler,
+    role,
+    isNotAdmin,
+  } = useAddEditUser(tag);
 
   return (
     <>
@@ -247,6 +254,40 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
+              {isNotAdmin && (
+                <Grid item xs={6}>
+                  <Controller
+                    name="billName"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
+                        <TextField
+                          label="Bill Name*"
+                          size="small"
+                          name="billName"
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      </FormControl>
+                    )}
+                    rules={{
+                      required: "Please Enter Bill Name",
+                    }}
+                  />
+                </Grid>
+              )}
+            </Grid>
+            <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Controller
                   name="phoneNumber"
@@ -277,6 +318,74 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
+              {isNotAdmin && (
+                <Grid item xs={6}>
+                  <Controller
+                    name="phoneNumberSecond"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
+                        <TextField
+                          label="Phone 2*"
+                          size="small"
+                          name="phoneNumberSecond"
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      </FormControl>
+                    )}
+                    rules={{
+                      required: "Please Enter Phone 2",
+                    }}
+                  />
+                </Grid>
+              )}
+            </Grid>
+            <Grid container spacing={2}>
+              {isNotAdmin && (
+                <Grid item xs={6}>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
+                        <TextField
+                          label="Address*"
+                          size="small"
+                          name="address"
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                          multiline
+                          rows={4}
+                        />
+                      </FormControl>
+                    )}
+                    rules={{
+                      required: "Please Enter Address",
+                    }}
+                  />
+                </Grid>
+              )}
             </Grid>
           </FormGroup>
         </Box>

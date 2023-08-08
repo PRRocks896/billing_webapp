@@ -70,6 +70,11 @@ export const useAddEditCreateBill = (tag) => {
           total: "",
         },
       ],
+      roleID: "",
+      billTitle: "",
+      address: "",
+      phoneNumber: "",
+      phoneNumber2: "",
     },
     mode: "onBlur",
   });
@@ -78,6 +83,16 @@ export const useAddEditCreateBill = (tag) => {
     name: "detail",
     control: control,
   });
+
+  useEffect(() => {
+    setValue("phoneNumber", loggedInUser.phoneNumber);
+    if (loggedInUser?.roleID !== 1) {
+      setValue("billTitle", loggedInUser.billTitle);
+      setValue("address", loggedInUser.address);
+      setValue("phoneNumber2", loggedInUser.phoneNumber2);
+      setValue("roleID", loggedInUser.roleID);
+    }
+  }, [loggedInUser, setValue]);
 
   useEffect(() => {
     let firstBillNo = 0;
@@ -92,6 +107,7 @@ export const useAddEditCreateBill = (tag) => {
   }, [billData, setValue]);
 
   const selectedCus = watch("customerID");
+
   useEffect(() => {
     setValue(
       "Phone",
@@ -100,12 +116,6 @@ export const useAddEditCreateBill = (tag) => {
         : customers.find((row) => row.id === selectedCus.value)?.name
     );
   }, [customers, selectedCus, setValue]);
-
-  // const selectedDetails = watch("detail");
-
-  // useMemo(() => {
-  //   console.log("call", selectedDetails);
-  // }, [selectedDetails]);
 
   const newBtnClickHandler = () => {
     if (
@@ -503,8 +513,19 @@ export const useAddEditCreateBill = (tag) => {
   }, [tag, fetchEditBillData]);
 
   const print = (billData) => {
+    const branchData = {
+      title: billData.billTitle
+        ? billData.billTitle
+        : "green health spa and saloon",
+      address: billData.address
+        ? billData.address
+        : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
+      phone1: billData.phoneNumber,
+      phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+    };
+
     const printWindow = window.open("", "_blank", "popup=yes");
-    printWindow.document.write(PrintContent(billData));
+    printWindow.document.write(PrintContent(billData, branchData));
     printWindow.document.close();
     printWindow.print();
     printWindow.close();
@@ -542,6 +563,11 @@ export const useAddEditCreateBill = (tag) => {
       detail: getValues("detail").map((row) => {
         return { ...row, item: row.serviceID.label };
       }),
+      billTitle: getValues("billTitle"),
+      address: getValues("address"),
+      phoneNumber: getValues("phoneNumber"),
+      phoneNumber2: getValues("phoneNumber2"),
+      roleID: getValues("roleID"),
     };
 
     try {

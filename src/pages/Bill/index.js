@@ -108,7 +108,7 @@ const Bill = () => {
                 })
               ) : (
                 <TableRow>
-                  <TableCell sx={{ textAlign: "center" }} colSpan={7}>
+                  <TableCell sx={{ textAlign: "center" }} colSpan={8}>
                     No Bill Found
                   </TableCell>
                 </TableRow>

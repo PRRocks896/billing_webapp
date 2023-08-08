@@ -15,8 +15,8 @@ export const useAddEditUser = (tag) => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
-  // const [roleOptions, setRoleOptions] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [isNotAdmin, setIsNotAdmin] = useState(true);
 
   const { setValue, handleSubmit, control, watch } = useForm({
     defaultValues: {
@@ -26,7 +26,10 @@ export const useAddEditUser = (tag) => {
       branchName: "",
       userName: "",
       password: "",
+      billName: "",
       phoneNumber: "",
+      phoneNumberSecond: "",
+      address: "",
       email: "",
     },
     mode: "onBlur",
@@ -38,6 +41,7 @@ export const useAddEditUser = (tag) => {
 
   const firstName = watch("firstName");
   const lastName = watch("lastName");
+
   useMemo(() => {
     const formattedFirstName =
       firstName.charAt(0).toUpperCase() + firstName.slice(1);
@@ -78,19 +82,56 @@ export const useAddEditUser = (tag) => {
     }
   }, []);
 
+  const selectedUser = watch("roleID");
+
+  useEffect(() => {
+    if (selectedUser?.value === 1) {
+      setIsNotAdmin(false);
+    } else {
+      setIsNotAdmin(true);
+    }
+  }, [selectedUser]);
+
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
 
-      const payload = {
-        roleID: data.roleID.value,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        branchName: data.branchName,
-        userName: data.userName,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-      };
+      // const payload = {
+      //   roleID: data.roleID.value,
+      //   firstName: data.firstName,
+      //   lastName: data.lastName,
+      //   branchName: data.branchName,
+      //   userName: data.userName,
+      //   phoneNumber: data.phoneNumber,
+      //   email: data.email,
+      // };
+
+      let payload;
+      if (isNotAdmin) {
+        payload = {
+          roleID: data.roleID.value,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          branchName: data.branchName,
+          userName: data.userName,
+          phoneNumber: data.phoneNumber,
+          phoneNumber2: data.phoneNumberSecond,
+          billTitle: data.billName,
+          address: data.address,
+          email: data.email,
+        };
+      } else {
+        payload = {
+          roleID: data.roleID.value,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          branchName: data.branchName,
+          userName: data.userName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+        };
+      }
+
       const response =
         tag === "add"
           ? await createUser({
@@ -150,9 +191,13 @@ export const useAddEditUser = (tag) => {
           setValue("lastName", response.data.lastName);
           setValue("userName", response.data.userName);
           setValue("roleID", role);
-          // setValue("password", response.data.password);
           setValue("email", response.data.email);
           setValue("phoneNumber", response.data.phoneNumber);
+          if (response.data.roleID !== 1) {
+            setValue("phoneNumberSecond", response?.data?.phoneNumber2);
+            setValue("billName", response?.data?.billTitle);
+            setValue("address", response?.data?.address);
+          }
         } else {
           showToast(response.message, false);
         }
@@ -179,5 +224,6 @@ export const useAddEditUser = (tag) => {
     onSubmit,
     cancelHandler,
     role: loggedInUser?.px_role?.name.toLowerCase(),
+    isNotAdmin,
   };
 };

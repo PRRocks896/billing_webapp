@@ -1,4 +1,4 @@
-const PrintContent = (billData) => {
+const PrintContent = (billData, branchData) => {
   const date = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -26,13 +26,17 @@ const PrintContent = (billData) => {
       <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
        
           <div style="page-break-after: always; height: 'max-content';">
-            <p style="text-transform: capitalize;font-size: 24px; font-weight: 600; margin: 0px">green health spa and saloon</p>
-            <p style="text-transform: capitalize;font-size: 16px; margin: 2px 0px 0px 18px; ">NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089</p>
+            <p style="text-transform: capitalize;font-size: 24px; font-weight: 600; margin: 0pxl;text-align: center;">${
+              branchData.title
+            }</p>
+            <p style="text-transform: capitalize;font-size: 16px; margin: 2px 0px 0px 18px; text-align: center;">${
+              branchData.address
+            }</p>
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
               <div>
                 <p style="text-align: start; margin: 0px; font-size: 12px;">Ph :${
-                  billData.phone
-                }</p>
+                  branchData.phone1
+                }, ${branchData.phone2}  </p>
                 <p style="text-align: start; margin: 0px; font-size: 12px;">Bill No :${
                   billData.billNo
                 }</p>
