@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import {
   Navigate,
   RouterProvider,
@@ -48,11 +48,22 @@ import Report from "./pages/Report";
 import NotFound from "./components/NotFound";
 import NoConnection from "./components/NoConnection";
 import useNoInternet from "./hook/useNoInternet";
+import { initDB } from "./utils/db";
 
 const token = getAuthToken();
 
 const App = () => {
   const isOnline = useNoInternet();
+
+  const handleInitDB = async () => {
+    const status = await initDB();
+    console.log("rk", status);
+    // setIsDBReady(status);
+  };
+
+  useLayoutEffect(() => {
+    handleInitDB();
+  }, []);
 
   const routes2 = createBrowserRouter([
     {
