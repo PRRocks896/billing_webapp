@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
+import { Stores, addData } from "../../../utils/db";
 
 let editCardNo = "";
 
@@ -307,6 +308,8 @@ export const useAddEditCreateBill = (tag) => {
     try {
       dispatch(startLoading());
       const payload = {
+        id: getValues("billNo"),
+        billNo: getValues("billNo"),
         userID: loggedInUser.id,
         staffID: data.staffID.value,
         customerID: data.customerID.value,
@@ -318,13 +321,26 @@ export const useAddEditCreateBill = (tag) => {
         cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
           ? data.cardNo
           : "",
-      };
-      const response =
-        tag === "add"
-          ? await createBill({ ...payload, createdBy: loggedInUser.id })
-          : await updateBill({ ...payload, updatedBy: loggedInUser.id }, id);
 
-      if (response.statusCode === 200) {
+        px_customer: {
+          name: data.Phone,
+          phoneNumber: +data.customerID.label,
+        },
+        px_payment_type: { name: data.paymentID.label },
+        px_staff: { name: data.staffID.label },
+      };
+
+      const response =
+        tag === "add" &&
+        (await addData(Stores.Bills, {
+          ...payload,
+          createdAt: new Date().toISOString(),
+          createdBy: loggedInUser.id,
+        }));
+
+      console.log(response);
+
+      if (response.status === 200) {
         showToast(response.message, true);
         if (tag === "add") {
           reset();
@@ -339,8 +355,32 @@ export const useAddEditCreateBill = (tag) => {
           navigate("/bill");
         }
       } else {
+        console.log("error", response);
         showToast(response.messageCode, false);
       }
+
+      // const response =
+      //   tag === "add"
+      //     ? await createBill({ ...payload, createdBy: loggedInUser.id })
+      //     : await updateBill({ ...payload, updatedBy: loggedInUser.id }, id);
+
+      // if (response.statusCode === 200) {
+      //   showToast(response.message, true);
+      //   if (tag === "add") {
+      //     reset();
+      //     let firstBillNo = +response.data.billNo?.substring(1);
+      //     window.localStorage.setItem("billNo", firstBillNo);
+      //     let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+      //     setValue("billNo", "G" + billNo);
+      //     setSubmitedBillData(response.data);
+      //     setPaymentOptionAndCard();
+      //   } else {
+      //     window.localStorage.removeItem("billNo");
+      //     navigate("/bill");
+      //   }
+      // } else {
+      //   showToast(response.messageCode, false);
+      // }
 
       // if (tag === "add") {
       //   const payload = {
@@ -574,6 +614,8 @@ export const useAddEditCreateBill = (tag) => {
       dispatch(startLoading());
       if (tag === "add") {
         const payload = {
+          id: getValues("billNo"),
+          billNo: getValues("billNo"),
           userID: loggedInUser.id,
           staffID: getValues("staffID").value,
           customerID: getValues("customerID").value,
@@ -586,10 +628,22 @@ export const useAddEditCreateBill = (tag) => {
             ? getValues("cardNo")
             : "",
           createdBy: loggedInUser.id,
+
+          px_customer: {
+            name: getValues("Phone"),
+            phoneNumber: +getValues("customerID").label,
+          },
+          px_payment_type: { name: getValues("paymentID").label },
+          px_staff: { name: getValues("staffID").label },
         };
 
-        const response = await createBill(payload);
-        if (response?.statusCode === 200) {
+        const response = await addData(Stores.Bills, {
+          ...payload,
+          createdAt: new Date().toISOString(),
+          createdBy: loggedInUser.id,
+        });
+        console.log(response);
+        if (response?.status === 200) {
           showToast(response?.message, true);
           reset();
           let firstBillNo = +response.data.billNo?.substring(1);
@@ -602,6 +656,21 @@ export const useAddEditCreateBill = (tag) => {
         } else {
           showToast(response?.message, false);
         }
+
+        // const response = await createBill(payload);
+        // if (response?.statusCode === 200) {
+        //   showToast(response?.message, true);
+        //   reset();
+        //   let firstBillNo = +response.data.billNo?.substring(1);
+        //   window.localStorage.setItem("billNo", firstBillNo);
+        //   let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+        //   setValue("billNo", "G" + billNo);
+        //   setSubmitedBillData(response.data);
+        //   setPaymentOptionAndCard();
+        //   print(billData);
+        // } else {
+        //   showToast(response?.message, false);
+        // }
       } else if (tag === "edit") {
         const payload = {
           userID: loggedInUser.id,

@@ -329,10 +329,7 @@ const App = () => {
         {
           path: "bill",
           element: (
-            <ProtectedRoute
-              path="bill"
-              Component={isOnline ? <Bill tag="add" /> : <NoConnection />}
-            />
+            <ProtectedRoute path="bill" Component={<Bill tag="add" />} />
           ),
         },
         {
@@ -340,9 +337,7 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="create-bill"
-              Component={
-                isOnline ? <AddEditBill tag="add" /> : <NoConnection />
-              }
+              Component={<AddEditBill tag="add" />}
             />
           ),
         },
@@ -351,9 +346,7 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="edit-bill/:id"
-              Component={
-                isOnline ? <AddEditBill tag="edit" /> : <NoConnection />
-              }
+              Component={<AddEditBill tag="edit" />}
             />
           ),
         },
