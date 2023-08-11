@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { deleteBill, getBillList } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, getStoreData } from "../../../utils/db";
+import { Stores, deleteData, getStoreData } from "../../../utils/db";
 
 export const useBill = () => {
   window.localStorage.removeItem("billNo");
@@ -59,7 +59,8 @@ export const useBill = () => {
           setCount(finalPayload?.length);
           dispatch(billAction.storeBill(finalPayload));
         } else if (response?.statusCode === 404) {
-          const payload = [];
+          const payload = [...descendingLocalBillData];
+          setCount(payload?.length);
           dispatch(billAction.storeBill(payload));
         }
       } catch (error) {
@@ -95,7 +96,13 @@ export const useBill = () => {
     try {
       setIsDeleteModalOpen(false);
       dispatch(startLoading());
-      const response = await deleteBill(deleteId);
+      let response;
+      if (typeof deleteId === "string") {
+        response = await deleteData(Stores.Bills, deleteId);
+      } else {
+        response = await deleteBill(deleteId);
+      }
+      console.log("delete respnse", response);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         dispatch(billAction.removeBill({ id: deleteId }));

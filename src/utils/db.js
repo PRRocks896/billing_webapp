@@ -52,12 +52,12 @@ export const addData = function (storeName, data) {
         data.id = Math.random(); // Example: You need to implement this function
       }
       store.add(data);
-      resolve({ status: 200, message: "Record Added Successfully.", data });
+      resolve({ statusCode: 200, message: "Record Added Successfully.", data });
     };
 
     request.onerror = function () {
       const error = request.error ? request.error.message : "Unknown error";
-      resolve({ status: 400, error });
+      resolve({ statusCode: 400, error });
     };
   });
 };
@@ -74,6 +74,28 @@ export const getStoreData = function (storeName) {
       const res = store.getAll();
       res.onsuccess = function () {
         resolve(res.result);
+      };
+    };
+  });
+};
+
+export const getSingleData = function (storeName, key) {
+  return new Promise(function (resolve) {
+    const request = indexedDB.open("myDB");
+
+    request.onsuccess = function () {
+      console.log("request.onsuccess - getSingleData");
+      db = request.result;
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const res = store.get(key);
+
+      res.onsuccess = function () {
+        resolve({ statusCode: 200, data: res.result });
+      };
+      res.onerror = function () {
+        const error = request.error ? request.error.message : "Unknown error";
+        resolve({ statusCode: 404, error });
       };
     };
   });
@@ -116,11 +138,14 @@ export const deleteData = function (storeName, key) {
       const res = store.delete(key);
 
       res.onsuccess = function () {
-        resolve(true);
+        resolve({ statusCode: 200, message: "Record Removed Successfully." });
+        // resolve(true);
       };
 
       res.onerror = function () {
-        resolve(false);
+        const error = request.error ? request.error.message : "Unknown error";
+        resolve({ statusCode: 400, error });
+        // resolve(false);
       };
     };
   });

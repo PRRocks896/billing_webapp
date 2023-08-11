@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-import { Stores, addData } from "../../../utils/db";
+import { Stores, addData, getSingleData } from "../../../utils/db";
 
 let editCardNo = "";
 
@@ -299,6 +299,7 @@ export const useAddEditCreateBill = (tag) => {
     const detailData = data.detail.map((item) => {
       return {
         serviceID: item.serviceID.value,
+        service: { name: item.serviceID.label },
         quantity: item.quantity,
         rate: item.rate,
         discount: item.discount,
@@ -340,7 +341,7 @@ export const useAddEditCreateBill = (tag) => {
 
       console.log(response);
 
-      if (response.status === 200) {
+      if (response.statusCode === 200) {
         showToast(response.message, true);
         if (tag === "add") {
           reset();
@@ -356,9 +357,9 @@ export const useAddEditCreateBill = (tag) => {
         }
       } else {
         console.log("error", response);
-        showToast(response.messageCode, false);
+        showToast(response.message, false);
       }
-
+      // ------------------
       // const response =
       //   tag === "add"
       //     ? await createBill({ ...payload, createdBy: loggedInUser.id })
@@ -381,7 +382,7 @@ export const useAddEditCreateBill = (tag) => {
       // } else {
       //   showToast(response.messageCode, false);
       // }
-
+      // ------------------
       // if (tag === "add") {
       //   const payload = {
       //     userID: loggedInUser.id,
@@ -500,7 +501,14 @@ export const useAddEditCreateBill = (tag) => {
     try {
       if (id) {
         dispatch(startLoading());
-        const response = await getBillById(id);
+        let response;
+        if (typeof id === "string") {
+          response = await getSingleData(Stores.Bills, id);
+          console.log("getSingleData ", response);
+        } else {
+          response = await getBillById(id);
+          console.log("API edit data ", response);
+        }
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
