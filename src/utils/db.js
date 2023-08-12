@@ -101,6 +101,36 @@ export const getSingleData = function (storeName, key) {
   });
 };
 
+export const searchData = function (storeName, key, searchValue) {
+  return new Promise(function (resolve) {
+    const request = indexedDB.open("myDB");
+
+    request.onsuccess = function () {
+      console.log("request.onsuccess - searchData");
+      const db = request.result;
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+
+      const index = store.index(key);
+      const searchRequest = index.getAll(searchValue);
+
+      searchRequest.onsuccess = function () {
+        const results = searchRequest.result;
+        if (results.length > 0) {
+          resolve({ statusCode: 200, data: results });
+        } else {
+          resolve({ statusCode: 404, error: "No records found" });
+        }
+      };
+
+      searchRequest.onerror = function () {
+        const error = request.error ? request.error.message : "Unknown error";
+        resolve({ statusCode: 500, error });
+      };
+    };
+  });
+};
+
 export const updateData = function (storeName, key, data) {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB", version);
@@ -152,6 +182,33 @@ export const deleteData = function (storeName, key) {
         const error = request.error ? request.error.message : "Unknown error";
         resolve({ statusCode: 400, error });
         // resolve(false);
+      };
+    };
+  });
+};
+
+export const deleteAllData = function (storeName) {
+  return new Promise(function (resolve) {
+    const request = indexedDB.open("myDB", version);
+
+    request.onsuccess = function () {
+      console.log("request.onsuccess - deleteAllData");
+      db = request.result;
+      const tx = db.transaction(storeName, "readwrite");
+      const store = tx.objectStore(storeName);
+
+      const clearRequest = store.clear();
+
+      clearRequest.onsuccess = function () {
+        resolve({
+          statusCode: 200,
+          message: "All Records Removed Successfully.",
+        });
+      };
+
+      clearRequest.onerror = function () {
+        const error = request.error ? request.error.message : "Unknown error";
+        resolve({ statusCode: 400, error });
       };
     };
   });

@@ -49,11 +49,16 @@ import NotFound from "./components/NotFound";
 import NoConnection from "./components/NoConnection";
 import useNoInternet from "./hook/useNoInternet";
 import { initDB } from "./utils/db";
+// import { Stores, deleteAllData, getStoreData,  } from "./utils/db";
+// import { createBulkBill } from "./service/bill";
+// import SyncModal from "./components/SyncModal";
 
 const token = getAuthToken();
 
 const App = () => {
   const isOnline = useNoInternet();
+  // const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  // const [billCount, setBillCount] = useState(0);
 
   const handleInitDB = async () => {
     const status = await initDB();
@@ -64,6 +69,73 @@ const App = () => {
   useLayoutEffect(() => {
     handleInitDB();
   }, []);
+
+  // const handleBeforeUnload = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Leave");
+  //   e.returnValue = "";
+
+  //   try {
+  //     const billData = await getStoreData(Stores.Bills);
+  //     if (billData.statusCode === 200) {
+  //       console.log("billData", billData);
+  //       if (billData.data.length) {
+  //         setBillCount(billData.data.length);
+  //         setIsSyncModalOpen(true);
+
+  //         const bulkBillPayload = billData.data.map((row) => {
+  //           return {
+  //             cardNo: row.cardNo,
+  //             createdAt: row.createdAt,
+  //             createdBy: row.createdBy,
+  //             customerID: row.customerID,
+  //             detail: row.detail.map((item) => ({
+  //               discount: item.discount,
+  //               quantity: item.quantity,
+  //               rate: item.rate,
+  //               serviceID: item.serviceID,
+  //               total: item.total,
+  //             })),
+  //             grandTotal: row.grandTotal.toString(),
+  //             paymentID: row.paymentID,
+  //             phoneNumber: row.phoneNumber.toString(),
+  //             roomNo: +row.roomNo,
+  //             staffID: row.staffID,
+  //             userID: row.userID,
+  //           };
+  //         });
+  //         console.log(bulkBillPayload);
+  //         const response = await createBulkBill(bulkBillPayload);
+  //         console.log(response);
+  //         if (response.statusCode === 200) {
+  //           const deleteAll = await deleteAllData(Stores.Bills);
+  //           if (deleteAll.statusCode === 200) {
+  //             showToast(response.message, true);
+  //             setIsSyncModalOpen(false);
+  //             window.removeEventListener("beforeunload", handleBeforeUnload);
+  //             window.close();
+  //           }
+  //         } else {
+  //           showToast(response.messageCode, false);
+  //         }
+  //       } else {
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //     setIsSyncModalOpen(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
   const routes2 = createBrowserRouter([
     {
@@ -452,6 +524,9 @@ const App = () => {
     <>
       <ToastContainer />
       <Loader />
+      {/* {isSyncModalOpen && (
+        <SyncModal isSyncModalOpen={isSyncModalOpen} count={billCount} />
+      )} */}
       <RouterProvider router={routes2} />
     </>
   );

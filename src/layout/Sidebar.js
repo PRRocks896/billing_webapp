@@ -5,13 +5,13 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FiChevronRight, FiLogOut, FiGrid, FiSquare } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
-import { logoutHandler } from "../utils/helper";
+import { logoutHandler, showToast } from "../utils/helper";
 import { useSelector } from "react-redux";
-import { Stores, getStoreData } from "../utils/db";
+import { Stores, deleteAllData, getStoreData } from "../utils/db";
 import SyncModal from "../components/SyncModal";
 import { createBulkBill } from "../service/bill";
 
@@ -68,13 +68,52 @@ const Sidebar = () => {
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200) {
         console.log("billData", billData);
-        setBillCount(billData.data.length);
-        setIsSyncModalOpen(true);
-        // const response = await createBulkBill();
-        // console.log(response);
+        if (billData.data.length) {
+          setBillCount(billData.data.length);
+          setIsSyncModalOpen(true);
+
+          const bulkBillPayload = billData.data.map((row) => {
+            return {
+              cardNo: row.cardNo,
+              createdAt: row.createdAt,
+              createdBy: row.createdBy,
+              customerID: row.customerID,
+              detail: row.detail.map((item) => ({
+                discount: item.discount,
+                quantity: item.quantity,
+                rate: item.rate,
+                serviceID: item.serviceID,
+                total: item.total,
+              })),
+              grandTotal: row.grandTotal.toString(),
+              paymentID: row.paymentID,
+              phoneNumber: row.phoneNumber.toString(),
+              roomNo: +row.roomNo,
+              staffID: row.staffID,
+              userID: row.userID,
+            };
+          });
+          console.log(bulkBillPayload);
+          const response = await createBulkBill(bulkBillPayload);
+          console.log(response);
+          if (response.statusCode === 200) {
+            const deleteAll = await deleteAllData(Stores.Bills);
+            if (deleteAll.statusCode === 200) {
+              showToast(response.message, true);
+              setIsSyncModalOpen(false);
+              logoutHandler();
+            }
+          } else {
+            showToast(response.messageCode, false);
+          }
+        } else {
+          logoutHandler();
+        }
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSyncModalOpen(false);
     }
   };
 
