@@ -62,20 +62,42 @@ export const addData = function (storeName, data) {
   });
 };
 
-export const getStoreData = function (storeName) {
+export const getStoreData = function (storeName, searchValue) {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB");
-
-    request.onsuccess = function () {
-      console.log("request.onsuccess - getAllData");
+    if (searchValue === "") {
+      request.onsuccess = function () {
+        console.log("request.onsuccess - getAllData", searchValue);
+        db = request.result;
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const res = store.getAll();
+        res.onsuccess = function () {
+          resolve({ statusCode: 200, data: res.result });
+        };
+      };
+    } else {
+      console.log("request.onsuccess - searchData", searchValue);
       db = request.result;
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
-      const res = store.getAll();
-      res.onsuccess = function () {
-        resolve({ statusCode: 200, data: res.result });
+      // const searchRequest = store.getAll(searchValue);
+      const searchRequest = store.getAll(searchValue);
+
+      searchRequest.onsuccess = function () {
+        const results = searchRequest.result;
+        if (results.length > 0) {
+          resolve({ statusCode: 200, data: results });
+        } else {
+          resolve({ statusCode: 404, data: [], error: "No records found" });
+        }
       };
-    };
+
+      searchRequest.onerror = function () {
+        const error = request.error ? request.error.message : "Unknown error";
+        resolve({ statusCode: 400, error });
+      };
+    }
   });
 };
 

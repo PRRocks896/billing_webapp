@@ -42,26 +42,28 @@ export const useBill = () => {
       try {
         dispatch(startLoading());
 
-        const localBillData = await getStoreData(Stores.Bills);
+        const localBillData = await getStoreData(Stores.Bills, searchValue);
+        console.log("localBillData", localBillData);
         let descendingLocalBillData = [];
         if (localBillData.statusCode === 200) {
           descendingLocalBillData = localBillData.data
             .slice()
             .sort((a, b) => b.id.localeCompare(a.id));
           console.log("local bill data: ", descendingLocalBillData);
-        } else {
-          descendingLocalBillData = [];
         }
 
         const body = listPayload(page, { searchText: searchValue });
         const response = await getBillList(body);
+        console.log("response: ", response);
 
         if (response?.statusCode === 200) {
-          const payload = response?.data?.rows;
-          const finalPayload = [...descendingLocalBillData, ...payload];
+          const finalPayload = [
+            ...descendingLocalBillData,
+            ...response?.data?.rows,
+          ];
           console.log(finalPayload);
-          // setCount(response?.data?.count);
-          setCount(finalPayload?.length);
+
+          setCount(response.data.count + descendingLocalBillData.length);
           dispatch(billAction.storeBill(finalPayload));
         } else if (response?.statusCode === 404) {
           const payload = [...descendingLocalBillData];

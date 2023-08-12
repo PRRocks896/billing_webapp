@@ -9,11 +9,11 @@ const billSlice = createSlice({
   initialState,
   reducers: {
     storeBill(state, action) {
-      console.log("inside reducer store bill ", action.payload);
+      // console.log("inside reducer store bill ", action.payload);
       return { data: action.payload };
     },
     removeBill(state, action) {
-      console.log(action.payload);
+      // console.log(action.payload);
       return { data: state.data.filter((row) => row.id !== action.payload.id) };
     },
   },
