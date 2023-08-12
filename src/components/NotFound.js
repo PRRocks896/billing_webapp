@@ -12,7 +12,7 @@ const NotFound = () => {
       <img src={notfoundimage} alt="404" />
       <p>Let's get you back to the homepage.</p>
       <br />
-      <br />
+      {/* <br /> */}
       <Link to={"/"} replace={true}>
         <Button className="btn btn-tertiary">GO TO HOME</Button>
       </Link>

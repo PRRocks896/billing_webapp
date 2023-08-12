@@ -56,7 +56,8 @@ import { initDB } from "./utils/db";
 const token = getAuthToken();
 
 const App = () => {
-  const isOnline = useNoInternet();
+  const { isOnline, pathname } = useNoInternet();
+  console.log(isOnline, pathname);
   // const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   // const [billCount, setBillCount] = useState(0);
 
@@ -140,7 +141,11 @@ const App = () => {
   const routes2 = createBrowserRouter([
     {
       path: "/",
-      element: isOnline ? <LayoutProvider /> : null,
+      element: isOnline ? (
+        <LayoutProvider />
+      ) : pathname.includes("bill") ? (
+        <LayoutProvider />
+      ) : null,
       errorElement: <NotFound />,
       loader: checkIsAuthenticated,
       children: [
