@@ -11,12 +11,17 @@ import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutHandler } from "../utils/helper";
 import { useSelector } from "react-redux";
+import { Stores, getStoreData } from "../utils/db";
+import SyncModal from "../components/SyncModal";
+import { createBulkBill } from "../service/bill";
 
 const Sidebar = () => {
   let panelNo = 3;
   const { accessModules } = useSelector((state) => state.loggedInUser);
   const navigate = useNavigate();
   const location = useLocation();
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [billCount, setBillCount] = useState(0);
 
   // sidebar menu accordion
   const [expanded, setExpanded] = useState(false);
@@ -57,6 +62,21 @@ const Sidebar = () => {
       });
     }
   }, [accessModules]);
+
+  const logoutClickHandler = async () => {
+    try {
+      const billData = await getStoreData(Stores.Bills);
+      if (billData.statusCode === 200) {
+        console.log("billData", billData);
+        setBillCount(billData.data.length);
+        setIsSyncModalOpen(true);
+        // const response = await createBulkBill();
+        // console.log(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -156,7 +176,7 @@ const Sidebar = () => {
             );
           })}
         </div>
-        <div onClick={logoutHandler}>
+        <div onClick={logoutClickHandler}>
           <Accordion
             expanded={expanded === "panel6"}
             onChange={handleChange("panel6")}
@@ -174,6 +194,10 @@ const Sidebar = () => {
           </Accordion>
         </div>
       </Box>
+
+      {isSyncModalOpen && (
+        <SyncModal isSyncModalOpen={isSyncModalOpen} count={billCount} />
+      )}
     </>
   );
 };

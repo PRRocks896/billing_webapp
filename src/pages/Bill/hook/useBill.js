@@ -43,10 +43,15 @@ export const useBill = () => {
         dispatch(startLoading());
 
         const localBillData = await getStoreData(Stores.Bills);
-        const descendingLocalBillData = localBillData
-          .slice()
-          .sort((a, b) => b.id.localeCompare(a.id));
-        console.log("local bill data: ", descendingLocalBillData);
+        let descendingLocalBillData = [];
+        if (localBillData.statusCode === 200) {
+          descendingLocalBillData = localBillData.data
+            .slice()
+            .sort((a, b) => b.id.localeCompare(a.id));
+          console.log("local bill data: ", descendingLocalBillData);
+        } else {
+          descendingLocalBillData = [];
+        }
 
         const body = listPayload(page, { searchText: searchValue });
         const response = await getBillList(body);

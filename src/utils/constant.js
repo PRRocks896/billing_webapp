@@ -78,6 +78,7 @@ export const UPDATE_MODULE_API = "api/module/";
 // bill apis
 export const BILL_LIST_API = "api/bill/list";
 export const CREATE_BILL_API = "api/bill";
+export const CREATE_BULK_BILL_API = "api/bill/bulk-create";
 export const DELETE_BILL_API = "api/bill/";
 export const GET_SINGLE_BILL_API = "api/bill/";
 export const UPDATE_BILL_API = "api/bill/";

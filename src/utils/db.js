@@ -73,7 +73,7 @@ export const getStoreData = function (storeName) {
       const store = tx.objectStore(storeName);
       const res = store.getAll();
       res.onsuccess = function () {
-        resolve(res.result);
+        resolve({ statusCode: 200, data: res.result });
       };
     };
   });
@@ -106,7 +106,7 @@ export const updateData = function (storeName, key, data) {
     const request = indexedDB.open("myDB", version);
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - updateData", key);
+      console.log("request.onsuccess - updateData", key, data);
       db = request.result;
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);
@@ -116,11 +116,17 @@ export const updateData = function (storeName, key, data) {
         const oldData = res.result;
         const newData = { ...oldData, ...data };
         store.put(newData);
-        resolve(newData);
+        // resolve(newData);
+        resolve({
+          statusCode: 200,
+          message: "Record Updated Successfully",
+          data: newData,
+        });
       };
 
       res.onerror = function () {
-        resolve(null);
+        const error = request.error ? request.error.message : "Unknown error";
+        resolve({ statusCode: 404, error });
       };
     };
   });

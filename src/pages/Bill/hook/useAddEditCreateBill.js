@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBill, getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-import { Stores, addData, getSingleData } from "../../../utils/db";
+import { Stores, addData, getSingleData, updateData } from "../../../utils/db";
 
 let editCardNo = "";
 
@@ -298,12 +298,12 @@ export const useAddEditCreateBill = (tag) => {
   const onSubmit = async (data) => {
     const detailData = data.detail.map((item) => {
       return {
-        serviceID: item.serviceID.value,
+        serviceID: +item.serviceID.value,
         service: { name: item.serviceID.label },
-        quantity: item.quantity,
-        rate: item.rate,
-        discount: item.discount,
-        total: item.total,
+        quantity: +item.quantity,
+        rate: +item.rate,
+        discount: +item.discount,
+        total: +item.total,
       };
     });
     try {
@@ -332,12 +332,17 @@ export const useAddEditCreateBill = (tag) => {
       };
 
       const response =
-        tag === "add" &&
-        (await addData(Stores.Bills, {
-          ...payload,
-          createdAt: new Date().toISOString(),
-          createdBy: loggedInUser.id,
-        }));
+        tag === "add"
+          ? await addData(Stores.Bills, {
+              ...payload,
+              createdAt: new Date().toISOString(),
+              createdBy: loggedInUser.id,
+            })
+          : await updateData(Stores.Bills, payload.id, {
+              ...payload,
+              updatedAt: new Date().toISOString(),
+              updatedBy: loggedInUser.id,
+            });
 
       console.log(response);
 
@@ -583,11 +588,12 @@ export const useAddEditCreateBill = (tag) => {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {
-        serviceID: item.serviceID.value,
-        quantity: item.quantity,
-        rate: item.rate,
-        discount: item.discount,
-        total: item.total,
+        serviceID: +item.serviceID.value,
+        service: { name: item.serviceID.label },
+        quantity: +item.quantity,
+        rate: +item.rate,
+        discount: +item.discount,
+        total: +item.total,
       };
     });
 
@@ -635,7 +641,6 @@ export const useAddEditCreateBill = (tag) => {
           cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
             ? getValues("cardNo")
             : "",
-          createdBy: loggedInUser.id,
 
           px_customer: {
             name: getValues("Phone"),
@@ -651,7 +656,7 @@ export const useAddEditCreateBill = (tag) => {
           createdBy: loggedInUser.id,
         });
         console.log(response);
-        if (response?.status === 200) {
+        if (response?.statusCode === 200) {
           showToast(response?.message, true);
           reset();
           let firstBillNo = +response.data.billNo?.substring(1);
@@ -681,6 +686,8 @@ export const useAddEditCreateBill = (tag) => {
         // }
       } else if (tag === "edit") {
         const payload = {
+          id: getValues("billNo"),
+          billNo: getValues("billNo"),
           userID: loggedInUser.id,
           staffID: getValues("staffID").value,
           customerID: getValues("customerID").value,
@@ -692,16 +699,28 @@ export const useAddEditCreateBill = (tag) => {
           cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
             ? getValues("cardNo")
             : "",
-          createdBy: loggedInUser.id,
-        };
-        const response = await updateBill(payload, id);
 
+          px_customer: {
+            name: getValues("Phone"),
+            phoneNumber: +getValues("customerID").label,
+          },
+          px_payment_type: { name: getValues("paymentID").label },
+          px_staff: { name: getValues("staffID").label },
+        };
+
+        // const response = await updateBill(payload, id);
+        const response = await updateData(Stores.Bills, payload.id, {
+          ...payload,
+          updatedAt: new Date().toISOString(),
+          updatedBy: loggedInUser.id,
+        });
+        console.log(response);
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
           print(billData);
           navigate("/bill");
         } else {
-          showToast(response?.messageCode, false);
+          showToast(response?.message, false);
         }
       }
       dispatch(stopLoading());
