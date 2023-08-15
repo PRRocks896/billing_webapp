@@ -1,5 +1,5 @@
-let request;
-let db;
+var request;
+var db;
 let version = 1;
 
 export const Stores = {
@@ -44,6 +44,7 @@ export const addData = function (storeName, data) {
     request.onsuccess = function () {
       console.log("request.onsuccess - addData", data);
       db = request.result;
+      console.log("db", db);
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);
       // Make sure data has a valid 'id' property
@@ -62,42 +63,70 @@ export const addData = function (storeName, data) {
   });
 };
 
-export const getStoreData = function (storeName, searchValue) {
+export const getStoreData = function (storeName, searchValue = "") {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB");
-    if (searchValue === "") {
-      request.onsuccess = function () {
-        console.log("request.onsuccess - getAllData", searchValue);
-        db = request.result;
-        const tx = db.transaction(storeName, "readonly");
-        const store = tx.objectStore(storeName);
-        const res = store.getAll();
-        res.onsuccess = function () {
-          resolve({ statusCode: 200, data: res.result });
-        };
-      };
-    } else {
-      console.log("request.onsuccess - searchData", searchValue);
-      db = request.result;
+
+    // if (searchValue === "") {
+    request.onsuccess = function () {
+      var db = request.result;
+      console.log("request.onsuccess - getAllData", searchValue);
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
-      // const searchRequest = store.getAll(searchValue);
-      const searchRequest = store.getAll(searchValue);
-
-      searchRequest.onsuccess = function () {
-        const results = searchRequest.result;
-        if (results.length > 0) {
-          resolve({ statusCode: 200, data: results });
+      let res;
+      if (searchValue === "") {
+        res = store.getAll();
+      } else {
+        res = store.getAll(searchValue);
+      }
+      res.onsuccess = function () {
+        // resolve({ statusCode: 200, data: res.result });
+        if (res.result.length > 0) {
+          resolve({ statusCode: 200, data: res.result });
         } else {
           resolve({ statusCode: 404, data: [], error: "No records found" });
         }
       };
+    };
+    // }
+    // else {
+    //   // console.log("request.onsuccess - searchData", searchValue);
+    //   // console.log("sdgdsggg", db);
 
-      searchRequest.onerror = function () {
-        const error = request.error ? request.error.message : "Unknown error";
-        resolve({ statusCode: 400, error });
-      };
-    }
+    //   // console.log("db", db);
+    //   // const tx = db.transaction(storeName, "readonly");
+    //   // const store = tx.objectStore(storeName);
+    //   // const searchRequest = store.getAll(searchValue);
+    //   // const searchRequest = store.getAll(searchValue);
+
+    //   request.onsuccess = function () {
+    //     var db = request?.result;
+    //     console.log("db", db);
+    //     const transaction = db.transaction(["bills"], "readonly");
+    //     const store = transaction.objectStore("bills");
+    //     console.log("store", store);
+    //     // const index = store?.index("billNo");
+    //     // const searchRequest = index.getAll(
+    //     //   IDBKeyRange.bound(searchValue, searchValue + "\uffff")
+    //     // );
+    //     const searchRequest = store.getAll();
+    //     console.log("searchRequest", searchRequest);
+    //     // const { result } = searchRequest;
+    //     // console.log("search result", result);
+    //     // const results = searchRequest.result;
+    //     // if (results.length > 0) {
+    //     //   resolve({ statusCode: 200, data: results });
+    //     // } else {
+    //     //   resolve({ statusCode: 404, data: [], error: "No records found" });
+    //     // }
+    //   };
+
+    //   request.onerror = function () {
+    //     const error = request.error ? request.error.message : "Unknown error";
+    //     console.log(error);
+    //     resolve({ statusCode: 400, error });
+    //   };
+    // }
   });
 };
 
@@ -123,7 +152,7 @@ export const getSingleData = function (storeName, key) {
   });
 };
 
-export const searchData = function (storeName, key, searchValue) {
+export const searchData = function (storeName, key, searchValue = "") {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB");
 

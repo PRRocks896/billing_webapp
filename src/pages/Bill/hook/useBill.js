@@ -44,7 +44,9 @@ export const useBill = () => {
 
         const localBillData = await getStoreData(Stores.Bills, searchValue);
         console.log("localBillData", localBillData);
+
         let descendingLocalBillData = [];
+
         if (localBillData.statusCode === 200) {
           descendingLocalBillData = localBillData.data
             .slice()
@@ -52,7 +54,10 @@ export const useBill = () => {
           console.log("local bill data: ", descendingLocalBillData);
         }
 
-        const body = listPayload(page, { searchText: searchValue });
+        const body = listPayload(page, {
+          isDeleted: false,
+          searchText: searchValue,
+        });
         const response = await getBillList(body);
         console.log("response: ", response);
 
@@ -71,6 +76,8 @@ export const useBill = () => {
           dispatch(billAction.storeBill(payload));
         }
       } catch (error) {
+        console.log("search indexDB error", error);
+
         showToast(error?.message, false);
       } finally {
         dispatch(stopLoading());

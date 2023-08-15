@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   Navigate,
   RouterProvider,
@@ -7,7 +7,7 @@ import {
 // import routes from "./routes";
 import { ToastContainer } from "react-toastify";
 import Loader from "./components/Loader";
-import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
+import { checkIsAuthenticated, getAuthToken, showToast } from "./utils/helper";
 
 // css imports
 import "./assets/styles/global.scss";
@@ -49,17 +49,17 @@ import NotFound from "./components/NotFound";
 import NoConnection from "./components/NoConnection";
 import useNoInternet from "./hook/useNoInternet";
 import { initDB } from "./utils/db";
-// import { Stores, deleteAllData, getStoreData,  } from "./utils/db";
-// import { createBulkBill } from "./service/bill";
-// import SyncModal from "./components/SyncModal";
+import { Stores, deleteAllData, getStoreData } from "./utils/db";
+import { createBulkBill } from "./service/bill";
+import SyncModal from "./components/SyncModal";
 
 const token = getAuthToken();
 
 const App = () => {
   const { isOnline, pathname } = useNoInternet();
   console.log(isOnline, pathname);
-  // const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-  // const [billCount, setBillCount] = useState(0);
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [billCount, setBillCount] = useState(0);
 
   const handleInitDB = async () => {
     const status = await initDB();
@@ -529,9 +529,9 @@ const App = () => {
     <>
       <ToastContainer />
       <Loader />
-      {/* {isSyncModalOpen && (
+      {isSyncModalOpen && (
         <SyncModal isSyncModalOpen={isSyncModalOpen} count={billCount} />
-      )} */}
+      )}
       <RouterProvider router={routes2} />
     </>
   );

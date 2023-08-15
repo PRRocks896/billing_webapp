@@ -91,6 +91,8 @@ const Sidebar = () => {
               roomNo: +row.roomNo,
               staffID: row.staffID,
               userID: row.userID,
+              isDeleted: false,
+              isActive: true,
             };
           });
           console.log(bulkBillPayload);
@@ -101,7 +103,7 @@ const Sidebar = () => {
             if (deleteAll.statusCode === 200) {
               showToast(response.message, true);
               setIsSyncModalOpen(false);
-              logoutHandler();
+              // logoutHandler();
             }
           } else {
             showToast(response.messageCode, false);
