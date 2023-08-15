@@ -103,7 +103,7 @@ const Sidebar = () => {
             if (deleteAll.statusCode === 200) {
               showToast(response.message, true);
               setIsSyncModalOpen(false);
-              // logoutHandler();
+              logoutHandler();
             }
           } else {
             showToast(response.messageCode, false);
