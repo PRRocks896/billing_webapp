@@ -5,7 +5,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FiChevronRight, FiLogOut, FiGrid, FiSquare } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -17,7 +17,8 @@ import { createBulkBill } from "../service/bill";
 
 const Sidebar = () => {
   let panelNo = 3;
-  const { accessModules } = useSelector((state) => state.loggedInUser);
+  const { accessModules, id } = useSelector((state) => state.loggedInUser);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
@@ -66,51 +67,48 @@ const Sidebar = () => {
   const logoutClickHandler = async () => {
     try {
       const billData = await getStoreData(Stores.Bills);
-      if (billData.statusCode === 200) {
-        console.log("billData", billData);
-        if (billData.data.length) {
-          setBillCount(billData.data.length);
-          setIsSyncModalOpen(true);
+      if (billData.statusCode === 200 && billData.data.length) {
+        setBillCount(billData.data.length);
+        setIsSyncModalOpen(true);
 
-          const bulkBillPayload = billData.data.map((row) => {
-            return {
-              cardNo: row.cardNo,
-              createdAt: row.createdAt,
-              createdBy: row.createdBy,
-              customerID: row.customerID,
-              detail: row.detail.map((item) => ({
-                discount: item.discount,
-                quantity: item.quantity,
-                rate: item.rate,
-                serviceID: item.serviceID,
-                total: item.total,
-              })),
-              grandTotal: row.grandTotal.toString(),
-              paymentID: row.paymentID,
-              phoneNumber: row.phoneNumber.toString(),
-              roomNo: +row.roomNo,
-              staffID: row.staffID,
-              userID: row.userID,
-              isDeleted: false,
-              isActive: true,
-            };
-          });
-          console.log(bulkBillPayload);
-          const response = await createBulkBill(bulkBillPayload);
-          console.log(response);
-          if (response.statusCode === 200) {
-            const deleteAll = await deleteAllData(Stores.Bills);
-            if (deleteAll.statusCode === 200) {
-              showToast(response.message, true);
-              setIsSyncModalOpen(false);
-              logoutHandler();
-            }
-          } else {
-            showToast(response.messageCode, false);
+        const bulkBillPayload = billData.data.map((row) => {
+          return {
+            cardNo: row.cardNo,
+            createdAt: row.createdAt,
+            createdBy: id,
+            customerID: row.customerID,
+            detail: row.detail.map((item) => ({
+              discount: item.discount,
+              quantity: item.quantity,
+              rate: item.rate,
+              serviceID: item.serviceID,
+              total: item.total,
+            })),
+            grandTotal: row.grandTotal.toString(),
+            paymentID: row.paymentID,
+            phoneNumber: row.phoneNumber.toString(),
+            roomNo: +row.roomNo,
+            staffID: row.staffID,
+            userID: row.userID,
+            isDeleted: false,
+            isActive: true,
+          };
+        });
+
+        const response = await createBulkBill(bulkBillPayload);
+
+        if (response.statusCode === 200) {
+          const deleteAll = await deleteAllData(Stores.Bills);
+          if (deleteAll.statusCode === 200) {
+            showToast(response.message, true);
+            setIsSyncModalOpen(false);
+            logoutHandler();
           }
         } else {
           logoutHandler();
         }
+      } else {
+        logoutHandler();
       }
     } catch (error) {
       console.log(error);

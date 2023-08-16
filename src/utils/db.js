@@ -31,7 +31,6 @@ export const initDB = () => {
     };
 
     request.onerror = () => {
-      console.log(" db initi error");
       resolve(false);
     };
   });
@@ -42,9 +41,8 @@ export const addData = function (storeName, data) {
     const request = indexedDB.open("myDB", version);
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - addData", data);
       db = request.result;
-      console.log("db", db);
+
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);
       // Make sure data has a valid 'id' property
@@ -70,7 +68,7 @@ export const getStoreData = function (storeName, searchValue = "") {
     // if (searchValue === "") {
     request.onsuccess = function () {
       var db = request.result;
-      console.log("request.onsuccess - getAllData", searchValue);
+
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
       let res;
@@ -135,7 +133,6 @@ export const getSingleData = function (storeName, key) {
     const request = indexedDB.open("myDB");
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - getSingleData");
       db = request.result;
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
@@ -157,7 +154,6 @@ export const searchData = function (storeName, key, searchValue = "") {
     const request = indexedDB.open("myDB");
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - searchData");
       const db = request.result;
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
@@ -187,7 +183,6 @@ export const updateData = function (storeName, key, data) {
     const request = indexedDB.open("myDB", version);
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - updateData", key, data);
       db = request.result;
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);
@@ -218,7 +213,6 @@ export const deleteData = function (storeName, key) {
     const request = indexedDB.open("myDB", version);
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - deleteData", key);
       db = request.result;
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);
@@ -243,7 +237,6 @@ export const deleteAllData = function (storeName) {
     const request = indexedDB.open("myDB", version);
 
     request.onsuccess = function () {
-      console.log("request.onsuccess - deleteAllData");
       db = request.result;
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);

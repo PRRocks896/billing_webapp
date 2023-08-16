@@ -7,7 +7,7 @@ import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { listPayload, showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
-import { createBill, getBillById, updateBill } from "../../../service/bill";
+import { getBillById } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
 import { Stores, addData, getSingleData, updateData } from "../../../utils/db";
@@ -344,8 +344,6 @@ export const useAddEditCreateBill = (tag) => {
               updatedBy: loggedInUser.id,
             });
 
-      console.log(response);
-
       if (response.statusCode === 200) {
         showToast(response.message, true);
         if (tag === "add") {
@@ -361,7 +359,6 @@ export const useAddEditCreateBill = (tag) => {
           navigate("/bill");
         }
       } else {
-        console.log("error", response);
         showToast(response.message, false);
       }
       // ------------------
@@ -507,12 +504,10 @@ export const useAddEditCreateBill = (tag) => {
       if (id) {
         dispatch(startLoading());
         let response;
-        if (typeof id === "string") {
+        if (id.charAt(0) === "G") {
           response = await getSingleData(Stores.Bills, id);
-          console.log("getSingleData ", response);
         } else {
           response = await getBillById(id);
-          console.log("API edit data ", response);
         }
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
@@ -655,7 +650,7 @@ export const useAddEditCreateBill = (tag) => {
           createdAt: new Date().toISOString(),
           createdBy: loggedInUser.id,
         });
-        console.log(response);
+
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
           reset();
@@ -714,7 +709,7 @@ export const useAddEditCreateBill = (tag) => {
           updatedAt: new Date().toISOString(),
           updatedBy: loggedInUser.id,
         });
-        console.log(response);
+
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
           print(billData);

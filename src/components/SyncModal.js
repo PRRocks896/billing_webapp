@@ -1,4 +1,4 @@
-import { Box, Fade, Grid, Modal, Typography } from "@mui/material";
+import { Box, Fade, Modal, Typography } from "@mui/material";
 import React from "react";
 import "../assets/styles/loader.scss";
 

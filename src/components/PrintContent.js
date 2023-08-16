@@ -48,7 +48,7 @@ const PrintContent = (billData, branchData) => {
             </div>
             <div style="width: 100%;display: flex;margin-top: 7px;">
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">NAME :${
+                <p style="text-align: start; margin: 0px; font-size: 12px;">Name :${
                   billData.customer
                 }</p>
                 <p style="text-align: start; margin: 0px; font-size: 12px;">Ph :${
@@ -81,7 +81,7 @@ const PrintContent = (billData, branchData) => {
               </tbody>
             </table>
             <div style="width: 100%; border-top: 1px dashed black;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 14px;">
-              <p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">sub Total : </p>
+              <p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">Sub Total : </p>
               <p style="margin: 5px 0px; margin-right: 19px; font-weight: 600;">${
                 billData.subTotal
               }</p>

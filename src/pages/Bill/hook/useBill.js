@@ -43,7 +43,6 @@ export const useBill = () => {
         dispatch(startLoading());
 
         const localBillData = await getStoreData(Stores.Bills, searchValue);
-        console.log("localBillData", localBillData);
 
         let descendingLocalBillData = [];
 
@@ -51,22 +50,21 @@ export const useBill = () => {
           descendingLocalBillData = localBillData.data
             .slice()
             .sort((a, b) => b.id.localeCompare(a.id));
-          console.log("local bill data: ", descendingLocalBillData);
         }
 
         const body = listPayload(page, {
           isDeleted: false,
           searchText: searchValue,
+          userID: loggedInUser.id,
         });
+
         const response = await getBillList(body);
-        console.log("response: ", response);
 
         if (response?.statusCode === 200) {
           const finalPayload = [
             ...descendingLocalBillData,
             ...response?.data?.rows,
           ];
-          console.log(finalPayload);
 
           setCount(response.data.count + descendingLocalBillData.length);
           dispatch(billAction.storeBill(finalPayload));
@@ -76,14 +74,12 @@ export const useBill = () => {
           dispatch(billAction.storeBill(payload));
         }
       } catch (error) {
-        console.log("search indexDB error", error);
-
         showToast(error?.message, false);
       } finally {
         dispatch(stopLoading());
       }
     },
-    [dispatch, page]
+    [dispatch, page, loggedInUser.id]
   );
 
   // search bill
@@ -116,7 +112,7 @@ export const useBill = () => {
       } else {
         response = await deleteBill(deleteId);
       }
-      console.log("delete respnse", response);
+
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         dispatch(billAction.removeBill({ id: deleteId }));
