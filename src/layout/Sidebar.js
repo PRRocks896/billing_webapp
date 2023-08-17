@@ -63,6 +63,7 @@ const Sidebar = () => {
       });
     }
   }, [accessModules]);
+  console.log("subMenuListArray", subMenuListArray);
 
   const logoutClickHandler = async () => {
     try {
@@ -139,49 +140,51 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion>
 
-          <Accordion
-            expanded={expanded === "panel2"}
-            onChange={handleChange("panel2")}
-            className="menu-list"
-          >
-            <AccordionSummary
-              className="menu-title"
-              expandIcon={<FiChevronRight />}
-              aria-controls="panel2bh-content"
-              id="panel2bh-header"
+          {subMenuListArray.length > 0 && (
+            <Accordion
+              expanded={expanded === "panel2"}
+              onChange={handleChange("panel2")}
+              className="menu-list"
             >
-              <Typography>
-                <FiGrid /> Master
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails className="sub-menu-list">
-              {subMenuListArray?.map((item, index) => {
-                return (
-                  <Box
-                    key={index}
-                    className={`sub-menu-link ${
-                      activeTab === item?.px_module?.path && "active"
-                    }`}
-                    onClick={() =>
-                      navigate(item?.px_module?.path, {
-                        state: {
-                          add: item.add,
-                          edit: item.edit,
-                          delete: item.delete,
-                          view: item.view,
-                        },
-                      })
-                    }
-                  >
-                    <Typography>
-                      <FiSquare />
-                      {item?.px_module?.name}
-                    </Typography>
-                  </Box>
-                );
-              })}
-            </AccordionDetails>
-          </Accordion>
+              <AccordionSummary
+                className="menu-title"
+                expandIcon={<FiChevronRight />}
+                aria-controls="panel2bh-content"
+                id="panel2bh-header"
+              >
+                <Typography>
+                  <FiGrid /> Master
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className="sub-menu-list">
+                {subMenuListArray?.map((item, index) => {
+                  return (
+                    <Box
+                      key={index}
+                      className={`sub-menu-link ${
+                        activeTab === item?.px_module?.path && "active"
+                      }`}
+                      onClick={() =>
+                        navigate(item?.px_module?.path, {
+                          state: {
+                            add: item.add,
+                            edit: item.edit,
+                            delete: item.delete,
+                            view: item.view,
+                          },
+                        })
+                      }
+                    >
+                      <Typography>
+                        <FiSquare />
+                        {item?.px_module?.name}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          )}
 
           {mainMenuListArray?.map((item, index) => {
             return (
