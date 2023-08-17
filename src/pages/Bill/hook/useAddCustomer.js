@@ -4,7 +4,11 @@ import { createCustomer } from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
-export const useAddCustomer = (setIsCustomerModalOpen, fetchCustomersData) => {
+export const useAddCustomer = (
+  setIsCustomerModalOpen,
+  fetchCustomersData,
+  setCustomerSelectedHandler
+) => {
   const dispatch = useDispatch();
 
   const loggedInUser = useSelector((state) => state.loggedInUser);
@@ -33,6 +37,11 @@ export const useAddCustomer = (setIsCustomerModalOpen, fetchCustomersData) => {
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         setIsCustomerModalOpen(false);
+        setCustomerSelectedHandler(
+          payload.userID,
+          payload.phoneNumber,
+          payload.name
+        );
         fetchCustomersData();
         reset();
       } else {

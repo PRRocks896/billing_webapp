@@ -63,6 +63,9 @@ const AddEditBill = ({ tag }) => {
     handlePaymentChange,
     isCardSelect,
     getValues,
+
+    setStaffSelectedHandler,
+    setCustomerSelectedHandler,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -207,7 +210,7 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-
+              {/* --------------------------------------------------- */}
               <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   control={control}
@@ -733,12 +736,14 @@ const AddEditBill = ({ tag }) => {
         isCustomerModalOpen={isCustomerModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
         fetchCustomersData={fetchCustomersData}
+        setCustomerSelectedHandler={setCustomerSelectedHandler}
       />
 
       <AddStaff
         isStaffModalOpen={isStaffModalOpen}
         setIsStaffModalOpen={setIsStaffModalOpen}
         fetchStaffData={fetchStaffData}
+        setStaffSelectedHandler={setStaffSelectedHandler}
       />
     </>
   );

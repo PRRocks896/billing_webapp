@@ -140,7 +140,7 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion>
 
-          {subMenuListArray.length > 0 && (
+          {subMenuListArray?.length > 0 && (
             <Accordion
               expanded={expanded === "panel2"}
               onChange={handleChange("panel2")}

@@ -25,6 +25,7 @@ export const useAddEditCreateBill = (tag) => {
   const [paymentType, setPaymentType] = useState([]);
 
   const [customersOptions, setCustomersOptions] = useState([]);
+  console.log("customersOptions", customersOptions);
   const [customers, setCustomers] = useState([]);
 
   const [staffOptions, setStaffOptions] = useState([]);
@@ -201,6 +202,11 @@ export const useAddEditCreateBill = (tag) => {
     setCustomersOptions([...data]);
   }, [customers]);
 
+  const setCustomerSelectedHandler = (id, phone, name) => {
+    setValue("customerID", { value: id, label: phone });
+    // setValue("Phone", name);
+  };
+
   // get customers list
   const fetchCustomersData = useCallback(async () => {
     try {
@@ -231,6 +237,10 @@ export const useAddEditCreateBill = (tag) => {
     });
     setStaffOptions([...data]);
   }, [staff]);
+
+  const setStaffSelectedHandler = (id, name) => {
+    setValue("staffID", { value: id, label: name });
+  };
 
   // get staff list
   const fetchStaffData = useCallback(async () => {
@@ -759,5 +769,8 @@ export const useAddEditCreateBill = (tag) => {
     getValues,
     handlePaymentChange,
     isCardSelect,
+
+    setStaffSelectedHandler,
+    setCustomerSelectedHandler,
   };
 };

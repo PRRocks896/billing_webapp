@@ -17,10 +17,12 @@ const AddStaff = ({
   isStaffModalOpen,
   setIsStaffModalOpen,
   fetchStaffData,
+  setStaffSelectedHandler,
 }) => {
   const { control, handleSubmit, onSubmit, reset } = useAddStaff(
     setIsStaffModalOpen,
-    fetchStaffData
+    fetchStaffData,
+    setStaffSelectedHandler
   );
 
   return (

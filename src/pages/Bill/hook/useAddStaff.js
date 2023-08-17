@@ -4,7 +4,11 @@ import { createStaff } from "../../../service/staff";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
-export const useAddStaff = (setIsStaffModalOpen, fetchStaffData) => {
+export const useAddStaff = (
+  setIsStaffModalOpen,
+  fetchStaffData,
+  setStaffSelectedHandler
+) => {
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -28,6 +32,7 @@ export const useAddStaff = (setIsStaffModalOpen, fetchStaffData) => {
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         setIsStaffModalOpen();
+        setStaffSelectedHandler(payload.userID, payload.name);
         fetchStaffData();
         reset();
       } else {
