@@ -60,7 +60,7 @@ export const logoutHandler = () => {
   window.location.href = "/login";
 };
 
-export const listPayload = (page, where = {}, rows = 10) => {
+export const listPayload = (page, where = {}, rows = 10, pagination = {}) => {
   return {
     where: {
       isDeleted: false,
@@ -71,6 +71,7 @@ export const listPayload = (page, where = {}, rows = 10) => {
       descending: true,
       rows: rows,
       page: page + 1,
+      ...pagination,
     },
   };
 };

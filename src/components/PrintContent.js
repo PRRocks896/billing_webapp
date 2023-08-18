@@ -25,7 +25,7 @@ const PrintContent = (billData, branchData) => {
     <body>
       <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
        
-          <div style="page-break-after: always; height: 'max-content';">
+          <div style="page-break-after: always; height: 'auto';">
             <p style="text-transform: capitalize;font-size: 24px; font-weight: 600; margin: 0pxl;text-align: center;">${
               branchData.title
             }</p>

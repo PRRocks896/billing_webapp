@@ -7,7 +7,7 @@ import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { listPayload, showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
-import { getBillById } from "../../../service/bill";
+import { getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
 import { Stores, addData, getSingleData, updateData } from "../../../utils/db";
@@ -25,7 +25,6 @@ export const useAddEditCreateBill = (tag) => {
   const [paymentType, setPaymentType] = useState([]);
 
   const [customersOptions, setCustomersOptions] = useState([]);
-  console.log("customersOptions", customersOptions);
   const [customers, setCustomers] = useState([]);
 
   const [staffOptions, setStaffOptions] = useState([]);
@@ -350,18 +349,43 @@ export const useAddEditCreateBill = (tag) => {
         px_staff: { name: data.staffID.label },
       };
 
-      const response =
-        tag === "add"
-          ? await addData(Stores.Bills, {
-              ...payload,
-              createdAt: new Date().toISOString(),
-              createdBy: loggedInUser.id,
-            })
-          : await updateData(Stores.Bills, payload.id, {
-              ...payload,
-              updatedAt: new Date().toISOString(),
-              updatedBy: loggedInUser.id,
-            });
+      let response;
+
+      if (tag === "add") {
+        response = await addData(Stores.Bills, {
+          ...payload,
+          createdAt: new Date().toISOString(),
+          createdBy: loggedInUser.id,
+        });
+      } else {
+        if (id.charAt(0) === "G") {
+          console.log("Edit Index DB");
+          response = await updateData(Stores.Bills, payload.id, {
+            ...payload,
+            updatedAt: new Date().toISOString(),
+            updatedBy: loggedInUser.id,
+          });
+        } else {
+          const payload = {
+            userID: loggedInUser.id,
+            staffID: data.staffID.value,
+            customerID: data.customerID.value,
+            detail: detailData,
+            paymentID: data.paymentID.value,
+            grandTotal: data.grandTotal,
+            roomNo: data.roomNo,
+            phoneNumber: +data.customerID.label,
+            cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
+              ? data.cardNo
+              : "",
+          };
+          console.log("Edit API", payload);
+          response = await updateBill(
+            { ...payload, updatedBy: loggedInUser.id },
+            id
+          );
+        }
+      }
 
       if (response.statusCode === 200) {
         showToast(response.message, true);
@@ -481,11 +505,11 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const removeRow = (index) => {
-    remove(index);
     const grandTotal = getValues(`grandTotal`);
     const rowTotal = getValues(`detail.${index}.total`);
     const total = grandTotal - rowTotal;
     setValue(`grandTotal`, total);
+    remove(index);
   };
 
   const calculateTotal = (index) => {
@@ -528,6 +552,7 @@ export const useAddEditCreateBill = (tag) => {
         } else {
           response = await getBillById(id);
         }
+        console.warn(response);
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
@@ -545,6 +570,7 @@ export const useAddEditCreateBill = (tag) => {
             value: response.data.customerID,
             label: response.data.px_customer.phoneNumber,
           });
+          setValue("Phone", response.data.px_customer.name);
           setValue("grandTotal", response.data.grandTotal);
           editCardNo = response.data.cardNo;
           setValue("cardNo", response.data.cardNo);
@@ -699,35 +725,61 @@ export const useAddEditCreateBill = (tag) => {
         //   showToast(response?.message, false);
         // }
       } else if (tag === "edit") {
-        const payload = {
-          id: getValues("billNo"),
-          billNo: getValues("billNo"),
-          userID: loggedInUser.id,
-          staffID: getValues("staffID").value,
-          customerID: getValues("customerID").value,
-          detail: detailData,
-          paymentID: getValues("paymentID").value,
-          grandTotal: getValues("grandTotal"),
-          roomNo: getValues("roomNo"),
-          phoneNumber: getValues("customerID").label,
-          cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
-            ? getValues("cardNo")
-            : "",
+        console.log("inside edit print");
 
-          px_customer: {
-            name: getValues("Phone"),
-            phoneNumber: +getValues("customerID").label,
-          },
-          px_payment_type: { name: getValues("paymentID").label },
-          px_staff: { name: getValues("staffID").label },
-        };
+        let response;
+        if (id.charAt(0) === "G") {
+          const payload = {
+            id: getValues("billNo"),
+            billNo: getValues("billNo"),
+            userID: loggedInUser.id,
+            staffID: getValues("staffID").value,
+            customerID: getValues("customerID").value,
+            detail: detailData,
+            paymentID: getValues("paymentID").value,
+            grandTotal: getValues("grandTotal"),
+            roomNo: getValues("roomNo"),
+            phoneNumber: getValues("customerID").label,
+            cardNo: getValues("paymentID")
+              ?.label?.toLowerCase()
+              ?.includes("card")
+              ? getValues("cardNo")
+              : "",
 
-        // const response = await updateBill(payload, id);
-        const response = await updateData(Stores.Bills, payload.id, {
-          ...payload,
-          updatedAt: new Date().toISOString(),
-          updatedBy: loggedInUser.id,
-        });
+            px_customer: {
+              name: getValues("Phone"),
+              phoneNumber: +getValues("customerID").label,
+            },
+            px_payment_type: { name: getValues("paymentID").label },
+            px_staff: { name: getValues("staffID").label },
+          };
+          response = await updateData(Stores.Bills, payload.id, {
+            ...payload,
+            updatedAt: new Date().toISOString(),
+            updatedBy: loggedInUser.id,
+          });
+        } else {
+          const payload = {
+            userID: loggedInUser.id,
+            staffID: getValues("staffID").value,
+            customerID: getValues("customerID").value,
+            detail: detailData,
+            paymentID: getValues("paymentID").value,
+            grandTotal: getValues("grandTotal"),
+            roomNo: getValues("roomNo"),
+            phoneNumber: getValues("customerID").label,
+            cardNo: getValues("paymentID")
+              ?.label?.toLowerCase()
+              ?.includes("card")
+              ? getValues("cardNo")
+              : "",
+          };
+          // response = await updateBill(payload, id);
+          response = await updateBill(
+            { ...payload, updatedBy: loggedInUser.id },
+            id
+          );
+        }
 
         if (response?.statusCode === 200) {
           showToast(response?.message, true);

@@ -52,11 +52,16 @@ export const useBill = () => {
             .sort((a, b) => b.id.localeCompare(a.id));
         }
 
-        const body = listPayload(page, {
-          isDeleted: false,
-          searchText: searchValue,
-          userID: loggedInUser.id,
-        });
+        const body = listPayload(
+          page,
+          {
+            isDeleted: false,
+            searchText: searchValue,
+            userID: loggedInUser.id,
+          },
+          10,
+          { sortBy: "billNo" }
+        );
 
         const response = await getBillList(body);
 
