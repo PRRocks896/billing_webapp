@@ -61,6 +61,29 @@ export const addData = function (storeName, data) {
   });
 };
 
+export const getStoreDataPagination = (storeName, pageNumber = 1, pageSize = 10, searchValue = '') => {
+  let totalCount = 0;
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('myDB');
+    request.onsuccess = () => {
+      var db = request.result;
+      const trans = db.transaction(storeName, 'readonly');
+      const store = trans.objectStore(storeName);
+      store.count().onsuccess = event => {
+        totalCount = event.target.result;
+      };
+      const res = searchValue.length > 0 ? store.getAll(searchValue) : store.getAll(null);
+      res.onsuccess = (event) => {
+        const allItems = event.target.result;
+        const startIndex = (pageNumber * pageSize);
+        const endIndex = startIndex + pageSize;
+        const items = allItems.slice(startIndex, endIndex);
+        resolve({ statusCode: 200, data: items, count: totalCount});
+      }
+    }
+  })
+}
+
 export const getStoreData = function (storeName, searchValue = "") {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB");

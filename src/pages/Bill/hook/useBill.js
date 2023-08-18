@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { deleteBill, getBillList } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, deleteData, getStoreData } from "../../../utils/db";
+import { Stores, deleteData, getStoreDataPagination } from "../../../utils/db";
 
 export const useBill = () => {
   window.localStorage.removeItem("billNo");
@@ -42,8 +42,7 @@ export const useBill = () => {
       try {
         dispatch(startLoading());
 
-        const localBillData = await getStoreData(Stores.Bills, searchValue);
-
+        const localBillData = await getStoreDataPagination(Stores.Bills, page, 10, searchValue); //getStoreData(Stores.Bills, searchValue);
         let descendingLocalBillData = [];
 
         if (localBillData.statusCode === 200) {
@@ -59,7 +58,7 @@ export const useBill = () => {
             searchText: searchValue,
             userID: loggedInUser.id,
           },
-          10,
+          (10 - localBillData.count),
           { sortBy: "billNo" }
         );
 
@@ -71,7 +70,7 @@ export const useBill = () => {
             ...response?.data?.rows,
           ];
 
-          setCount(response.data.count + descendingLocalBillData.length);
+          setCount(response.data.count + localBillData.count);
           dispatch(billAction.storeBill(finalPayload));
         } else if (response?.statusCode === 404) {
           const payload = [...descendingLocalBillData];
