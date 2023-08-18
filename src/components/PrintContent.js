@@ -25,13 +25,13 @@ const PrintContent = (billData, branchData) => {
     <body>
       <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
        
-          <div style="page-break-after: always; height: 'auto';">
-            <p style="text-transform: capitalize;font-size: 24px; font-weight: 600; margin: 0pxl;text-align: center;">${
+          <div style="page-break-after: always; border: 0px solid black; min-height: max-content;">
+            <p style="text-transform: capitalize;font-size: 20px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
               branchData.title
             }</p>
-            <p style="text-transform: capitalize;font-size: 16px; margin: 2px 0px 0px 18px; text-align: center;">${
-              branchData.address
-            }</p>
+            <p style="text-transform: capitalize; font-size: 16px; margin: 0px; text-align: center;">
+              ${"branchData.address"}
+            </p>
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
               <div>
                 <p style="text-align: start; margin: 0px; font-size: 12px;">Ph :${
@@ -56,7 +56,7 @@ const PrintContent = (billData, branchData) => {
                 }</p>
               </div>
             </div>
-            <div style="width: 100%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
+            <div style="width: 90%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
             <table style="width: 100%;">
               <thead>
                 <tr style="text-align:center;font-size: 12px;border: 1px solid black;">
@@ -71,12 +71,12 @@ const PrintContent = (billData, branchData) => {
                 ${billData.detail?.map(
                   (row, index) =>
                     `<tr style="text-align:center;font-size: 12px;">
-                    <td>${index + 1}</td>
-                    <td>${row.item}</td>
-                    <td>${row.quantity}</td>
-                    <td>${row.rate}</td>
-                    <td>${row.total}</td>
-                  </tr>`
+                      <td>${index + 1}</td>
+                      <td>${row.item}</td>
+                      <td>${row.quantity}</td>
+                      <td>${row.rate}</td>
+                      <td>${row.total}</td>
+                    </tr>`
                 )}
               </tbody>
             </table>
