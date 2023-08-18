@@ -618,6 +618,7 @@ export const useAddEditCreateBill = (tag) => {
     };
 
     const printWindow = window.open("", "_blank", "popup=yes");
+    // const printWindow = window.open("", "_blank");
     printWindow.document.write(PrintContent(billData, branchData));
     printWindow.document.close();
     printWindow.print();
@@ -657,11 +658,17 @@ export const useAddEditCreateBill = (tag) => {
       detail: getValues("detail").map((row) => {
         return { ...row, item: row.serviceID.label };
       }),
-      billTitle: getValues("billTitle"),
-      address: getValues("address"),
+
       phoneNumber: getValues("phoneNumber"),
-      phoneNumber2: getValues("phoneNumber2"),
-      roleID: getValues("roleID"),
+      // billTitle: getValues("billTitle"),
+      // address: getValues("address"),
+      // phoneNumber2: getValues("phoneNumber2"),
+      // roleID: getValues("roleID"),
+
+      billTitle: loggedInUser.billTitle,
+      address: loggedInUser.address,
+      phoneNumber2: loggedInUser.phoneNumber2,
+      roleID: loggedInUser.roleID,
     };
 
     try {
