@@ -359,7 +359,6 @@ export const useAddEditCreateBill = (tag) => {
         });
       } else {
         if (id.charAt(0) === "G") {
-          console.log("Edit Index DB");
           response = await updateData(Stores.Bills, payload.id, {
             ...payload,
             updatedAt: new Date().toISOString(),
@@ -379,7 +378,6 @@ export const useAddEditCreateBill = (tag) => {
               ? data.cardNo
               : "",
           };
-          console.log("Edit API", payload);
           response = await updateBill(
             { ...payload, updatedBy: loggedInUser.id },
             id

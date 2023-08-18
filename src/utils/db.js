@@ -16,7 +16,7 @@ export const initDB = () => {
 
       // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Bills)) {
-        console.log("Creating Bills store");
+        // console.log("Creating Bills store");
         db.createObjectStore(Stores.Bills, {
           keyPath: "id",
         });
@@ -26,7 +26,7 @@ export const initDB = () => {
     request.onsuccess = () => {
       db = request.result;
       version = db.version;
-      console.log("request.onsuccess - initDB", version);
+      // console.log("request.onsuccess - initDB", version);
       resolve(true);
     };
 
