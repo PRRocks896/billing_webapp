@@ -219,7 +219,7 @@ export const deleteData = function (storeName, key) {
       const res = store.delete(key);
 
       res.onsuccess = function () {
-        resolve({ statusCode: 200, message: "Record Removed Successfully." });
+        resolve({ statusCode: 200, message: "Record Deleted Successfully." });
         // resolve(true);
       };
 
