@@ -552,7 +552,7 @@ export const useAddEditCreateBill = (tag) => {
         } else {
           response = await getBillById(id);
         }
-        console.warn(response);
+        // console.warn(response);
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);

@@ -30,7 +30,7 @@ const PrintContent = (billData, branchData) => {
               branchData.title
             }</p>
             <p style="text-transform: capitalize; font-size: 16px; margin: 0px; text-align: center;">
-              ${"branchData.address"}
+              ${branchData.address}
             </p>
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
               <div>
