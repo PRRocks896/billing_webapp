@@ -36,13 +36,13 @@ export const useAddCustomer = (
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        fetchCustomersData();
         setIsCustomerModalOpen(false);
         setCustomerSelectedHandler(
           payload.userID,
           payload.phoneNumber,
           payload.name
         );
-        fetchCustomersData();
         reset();
       } else {
         showToast(response?.messageCode, false);

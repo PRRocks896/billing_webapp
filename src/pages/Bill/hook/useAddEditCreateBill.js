@@ -108,16 +108,25 @@ export const useAddEditCreateBill = (tag) => {
     setValue("billNo", "G" + billNo);
   }, [billData, setValue]);
 
-  const selectedCus = watch("customerID");
-
-  useEffect(() => {
+  // const selectedCus = watch("customerID");
+  // console.log("watch", selectedCus);
+  // useEffect(() => {
+  //   console.log("inside useEffect");
+  //   setValue(
+  //     "Phone",
+  //     selectedCus === "" || selectedCus === null
+  //       ? ""
+  //       : customers.find((row) => row.id === selectedCus.value)?.name
+  //   );
+  // }, [customers, selectedCus, setValue]);
+  const changeCustomerPhoneHandler = (selectedCus) => {
     setValue(
       "Phone",
       selectedCus === "" || selectedCus === null
         ? ""
         : customers.find((row) => row.id === selectedCus.value)?.name
     );
-  }, [customers, selectedCus, setValue]);
+  };
 
   const newBtnClickHandler = () => {
     if (
@@ -204,7 +213,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const setCustomerSelectedHandler = (id, phone, name) => {
     setValue("customerID", { value: id, label: phone });
-    // setValue("Phone", name);
+    setValue("Phone", name);
   };
 
   // get customers list
@@ -772,5 +781,6 @@ export const useAddEditCreateBill = (tag) => {
 
     setStaffSelectedHandler,
     setCustomerSelectedHandler,
+    changeCustomerPhoneHandler,
   };
 };

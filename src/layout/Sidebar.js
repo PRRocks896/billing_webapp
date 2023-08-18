@@ -63,7 +63,6 @@ const Sidebar = () => {
       });
     }
   }, [accessModules]);
-  console.log("subMenuListArray", subMenuListArray);
 
   const logoutClickHandler = async () => {
     try {

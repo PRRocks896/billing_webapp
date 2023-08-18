@@ -66,6 +66,7 @@ const AddEditBill = ({ tag }) => {
 
     setStaffSelectedHandler,
     setCustomerSelectedHandler,
+    changeCustomerPhoneHandler,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -231,7 +232,10 @@ const AddEditBill = ({ tag }) => {
                           options={customersOptions}
                           value={value}
                           onBlur={onBlur}
-                          onChange={(event, newValue) => onChange(newValue)}
+                          onChange={(event, newValue) => {
+                            changeCustomerPhoneHandler(newValue);
+                            onChange(newValue);
+                          }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
