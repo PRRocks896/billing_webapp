@@ -11,6 +11,7 @@ export const useStaff = () => {
   const { pathname } = useLocation();
   const staffData = useSelector((state) => state.staff.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+
   const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
@@ -39,7 +40,17 @@ export const useStaff = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = listPayload(page, { searchText: searchValue });
+        const userRole = loggedInUser?.px_role?.name?.toLowerCase();
+        let whereCondition = {
+          searchText: searchValue,
+        };
+        if (userRole !== "admin") {
+          whereCondition = {
+            ...whereCondition,
+            createdBy: loggedInUser.id,
+          };
+        }
+        const body = listPayload(page, whereCondition);
         const response = await getStaffList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;
@@ -55,6 +66,7 @@ export const useStaff = () => {
         dispatch(stopLoading());
       }
     },
+    // eslint-disable-next-line
     [dispatch, page]
   );
 

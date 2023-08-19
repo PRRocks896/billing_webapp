@@ -40,7 +40,10 @@ export const useUser = () => {
       try {
         dispatch(startLoading());
 
-        const body = listPayload(page, { searchText: searchValue });
+        const body = listPayload(page, {
+          searchText: searchValue,
+          createdBy: loggedInUser.id,
+        });
         const response = await getUserList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;
@@ -56,6 +59,7 @@ export const useUser = () => {
         dispatch(stopLoading());
       }
     },
+    // eslint-disable-next-line
     [dispatch, page]
   );
 

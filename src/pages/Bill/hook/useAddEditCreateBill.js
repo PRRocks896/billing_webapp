@@ -42,6 +42,8 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
+  const userRole = loggedInUser?.px_role?.name?.toLowerCase();
+
   const {
     control,
     getValues,
@@ -218,7 +220,16 @@ export const useAddEditCreateBill = (tag) => {
   // get customers list
   const fetchCustomersData = useCallback(async () => {
     try {
-      const body = listPayload(0, { isActive: true }, 1000);
+      let whereCondition = {
+        isActive: true,
+      };
+      if (userRole !== "admin") {
+        whereCondition = {
+          ...whereCondition,
+          createdBy: loggedInUser.id,
+        };
+      }
+      const body = listPayload(0, whereCondition, 1000);
 
       const response = await getCustomerList(body);
 
@@ -232,6 +243,7 @@ export const useAddEditCreateBill = (tag) => {
     } catch (error) {
       showToast(error?.message, false);
     }
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -253,7 +265,17 @@ export const useAddEditCreateBill = (tag) => {
   // get staff list
   const fetchStaffData = useCallback(async () => {
     try {
-      const body = listPayload(0, { isActive: true }, 1000);
+      let whereCondition = {
+        isActive: true,
+      };
+      if (userRole !== "admin") {
+        whereCondition = {
+          ...whereCondition,
+          createdBy: loggedInUser.id,
+        };
+      }
+
+      const body = listPayload(0, whereCondition, 1000);
 
       const response = await getStaffList(body);
 
@@ -267,7 +289,8 @@ export const useAddEditCreateBill = (tag) => {
     } catch (error) {
       showToast(error?.message, false);
     }
-  }, []);
+    // eslint-disable-next-line
+  }, [loggedInUser]);
 
   useEffect(() => {
     fetchStaffData();
