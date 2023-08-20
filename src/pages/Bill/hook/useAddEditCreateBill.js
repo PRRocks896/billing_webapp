@@ -2,15 +2,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getPaymentTypeList } from "../../../service/paymentType";
-import { getCustomerList } from "../../../service/customer";
-import { getStaffList } from "../../../service/staff";
-import { getServiceList } from "../../../service/service";
+// import { getCustomerList } from "../../../service/customer";
+// import { getStaffList } from "../../../service/staff";
+// import { getServiceList } from "../../../service/service";
 import { listPayload, showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-import { Stores, addData, getSingleData, updateData } from "../../../utils/db";
+import {
+  Stores,
+  addData,
+  getSingleData,
+  getStoreData,
+  updateData,
+} from "../../../utils/db";
 
 let editCardNo = "";
 
@@ -42,7 +48,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const navigate = useNavigate();
 
-  const userRole = loggedInUser?.px_role?.name?.toLowerCase();
+  // const userRole = loggedInUser?.px_role?.name?.toLowerCase();
 
   const {
     control,
@@ -220,21 +226,22 @@ export const useAddEditCreateBill = (tag) => {
   // get customers list
   const fetchCustomersData = useCallback(async () => {
     try {
-      let whereCondition = {
-        isActive: true,
-      };
-      if (userRole !== "admin") {
-        whereCondition = {
-          ...whereCondition,
-          createdBy: loggedInUser.id,
-        };
-      }
-      const body = listPayload(0, whereCondition, 1000);
+      // let whereCondition = {
+      //   isActive: true,
+      // };
+      // if (userRole !== "admin") {
+      //   whereCondition = {
+      //     ...whereCondition,
+      //     createdBy: loggedInUser.id,
+      //   };
+      // }
+      // const body = listPayload(0, whereCondition, 1000);
 
-      const response = await getCustomerList(body);
+      // const response = await getCustomerList(body);
+      const response = await getStoreData(Stores.Customer);
 
       if (response?.statusCode === 200) {
-        const payload = response?.data?.rows;
+        const payload = response?.data;
         setCustomers(payload);
       } else if (response?.statusCode === 404) {
         const payload = [];
@@ -265,22 +272,23 @@ export const useAddEditCreateBill = (tag) => {
   // get staff list
   const fetchStaffData = useCallback(async () => {
     try {
-      let whereCondition = {
-        isActive: true,
-      };
-      if (userRole !== "admin") {
-        whereCondition = {
-          ...whereCondition,
-          createdBy: loggedInUser.id,
-        };
-      }
+      // let whereCondition = {
+      //   isActive: true,
+      // };
+      // if (userRole !== "admin") {
+      //   whereCondition = {
+      //     ...whereCondition,
+      //     createdBy: loggedInUser.id,
+      //   };
+      // }
 
-      const body = listPayload(0, whereCondition, 1000);
+      // const body = listPayload(0, whereCondition, 1000);
 
-      const response = await getStaffList(body);
+      // const response = await getStaffList(body);
+      const response = await getStoreData(Stores.Staff);
 
       if (response?.statusCode === 200) {
-        const payload = response?.data?.rows;
+        const payload = response?.data;
         setStaff(payload);
       } else if (response?.statusCode === 404) {
         const payload = [];
@@ -318,12 +326,13 @@ export const useAddEditCreateBill = (tag) => {
   useEffect(() => {
     try {
       const fetchServiceData = async () => {
-        const body = listPayload(0, { isActive: true }, 1000);
+        // const body = listPayload(0, { isActive: true }, 1000);
 
-        const response = await getServiceList(body);
+        // const response = await getServiceList(body);
+        const response = await getStoreData(Stores.Service);
 
         if (response?.statusCode === 200) {
-          const payload = response?.data?.rows;
+          const payload = response?.data;
           setService(payload);
         } else if (response?.statusCode === 404) {
           const payload = [];

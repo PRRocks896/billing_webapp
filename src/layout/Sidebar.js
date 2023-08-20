@@ -66,6 +66,10 @@ const Sidebar = () => {
 
   const logoutClickHandler = async () => {
     try {
+      await deleteAllData(Stores.Staff);
+      await deleteAllData(Stores.Customer);
+      await deleteAllData(Stores.Service);
+
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200 && billData.data.length) {
         setBillCount(billData.data.length);
