@@ -69,6 +69,7 @@ const Sidebar = () => {
       await deleteAllData(Stores.Staff);
       await deleteAllData(Stores.Customer);
       await deleteAllData(Stores.Service);
+      await deleteAllData(Stores.Payment);
 
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200 && billData.data.length) {

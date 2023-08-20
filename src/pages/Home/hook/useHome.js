@@ -6,6 +6,7 @@ import { getStaffList } from "../../../service/staff";
 import { Stores, addData } from "../../../utils/db";
 import { getCustomerList } from "../../../service/customer";
 import { getServiceList } from "../../../service/service";
+import { getPaymentTypeList } from "../../../service/paymentType";
 
 const currentDate = () => {
   const currentDate = new Date();
@@ -86,7 +87,7 @@ export const useHome = () => {
       }
       const body = listPayload(0, whereCondition, 1000);
       const response = await getCustomerList(body);
-      console.log("Store custoer indexDB response", response);
+      // console.log("Store custoer indexDB response", response);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
         await addData(Stores.Customer, payload, "bulk");
@@ -113,7 +114,7 @@ export const useHome = () => {
       }
       const body = listPayload(0, whereCondition, 1000);
       const response = await getStaffList(body);
-      console.log("Store staff into indxDB response", response);
+      // console.log("Store staff into indxDB response", response);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
         await addData(Stores.Staff, payload, "bulk");
@@ -130,7 +131,7 @@ export const useHome = () => {
     try {
       const body = listPayload(0, { isActive: true }, 1000);
       const response = await getServiceList(body);
-      console.log("Store service into indxDB response", response);
+      // console.log("Store service into indxDB response", response);
 
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
@@ -144,10 +145,27 @@ export const useHome = () => {
     }
   };
 
+  const fetchPaymentTypeData = async () => {
+    try {
+      const body = listPayload(0, { isActive: true }, 1000);
+      const response = await getPaymentTypeList(body);
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
+        await addData(Stores.Payment, payload, "bulk");
+      } else if (response?.statusCode === 404) {
+        const payload = [];
+        await addData(Stores.Payment, payload, "bulk");
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  };
+
   useLayoutEffect(() => {
     fetchCustomersData();
     fetchStaffData();
     fetchServiceData();
+    fetchPaymentTypeData();
   }, [fetchStaffData, fetchCustomersData]);
 
   return {
