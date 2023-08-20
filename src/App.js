@@ -62,8 +62,8 @@ const App = () => {
   const [billCount] = useState(0);
 
   const handleInitDB = async () => {
-    await initDB();
-    // console.log("initDB", status);
+    const status = await initDB();
+    console.log("initDB", status);
     // setIsDBReady(status);
   };
 

@@ -13,6 +13,7 @@ export const useBill = () => {
   const { pathname } = useLocation();
   const billData = useSelector((state) => state.bill.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+  const userRole = loggedInUser?.px_role?.name?.toLowerCase();
   const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
@@ -42,7 +43,12 @@ export const useBill = () => {
       try {
         dispatch(startLoading());
 
-        const localBillData = await getStoreDataPagination(Stores.Bills, page, 10, searchValue); //getStoreData(Stores.Bills, searchValue);
+        const localBillData = await getStoreDataPagination(
+          Stores.Bills,
+          page,
+          10,
+          searchValue
+        ); //getStoreData(Stores.Bills, searchValue);
         let descendingLocalBillData = [];
 
         if (localBillData.statusCode === 200) {
@@ -50,15 +56,21 @@ export const useBill = () => {
             .slice()
             .sort((a, b) => b.id.localeCompare(a.id));
         }
+        let whereCondition = {
+          isDeleted: false,
+          searchText: searchValue,
+        };
+        if (userRole !== "admin") {
+          whereCondition = {
+            ...whereCondition,
+            userID: loggedInUser.id,
+          };
+        }
 
         const body = listPayload(
           page,
-          {
-            isDeleted: false,
-            searchText: searchValue,
-            userID: loggedInUser.id,
-          },
-          (10 - localBillData.count),
+          whereCondition,
+          10 - localBillData.count,
           { sortBy: "billNo" }
         );
 
@@ -83,7 +95,7 @@ export const useBill = () => {
         dispatch(stopLoading());
       }
     },
-    [dispatch, page, loggedInUser.id]
+    [dispatch, page, userRole, loggedInUser.id]
   );
 
   // search bill

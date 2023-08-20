@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { fetchDashboardDetails } from "../../../service/home";
-import { showToast } from "../../../utils/helper";
+import { listPayload, showToast } from "../../../utils/helper";
+import { useSelector } from "react-redux";
+import { getStaffList } from "../../../service/staff";
+import { Stores, addData } from "../../../utils/db";
+import { getCustomerList } from "../../../service/customer";
+import { getServiceList } from "../../../service/service";
 
 const currentDate = () => {
   const currentDate = new Date();
@@ -12,6 +17,8 @@ const currentDate = () => {
 
 export const useHome = () => {
   const [details, setDetails] = useState();
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  // const userRole = loggedInUser?.px_role?.name?.toLowerCase();
 
   // const handleInitDB = async () => {
   //   const status = await initDB();
@@ -64,6 +71,84 @@ export const useHome = () => {
   //     insertBill();
   //   }, 1000);
   // });
+
+  // get customers list
+  const fetchCustomersData = useCallback(async () => {
+    try {
+      let whereCondition = {
+        isActive: true,
+      };
+      if (loggedInUser?.px_role?.name?.toLowerCase() !== "admin") {
+        whereCondition = {
+          ...whereCondition,
+          createdBy: loggedInUser.id,
+        };
+      }
+      const body = listPayload(0, whereCondition, 1000);
+      const response = await getCustomerList(body);
+      console.log("Store custoer indexDB response", response);
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
+        await addData(Stores.Customer, payload, "bulk");
+      } else if (response?.statusCode === 404) {
+        const payload = [];
+        await addData(Stores.Customer, payload, "bulk");
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }, [loggedInUser]);
+
+  // get staff list
+  const fetchStaffData = useCallback(async () => {
+    try {
+      let whereCondition = {
+        isActive: true,
+      };
+      if (loggedInUser?.px_role?.name?.toLowerCase() !== "admin") {
+        whereCondition = {
+          ...whereCondition,
+          createdBy: loggedInUser.id,
+        };
+      }
+      const body = listPayload(0, whereCondition, 1000);
+      const response = await getStaffList(body);
+      console.log("Store staff into indxDB response", response);
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
+        await addData(Stores.Staff, payload, "bulk");
+      } else if (response?.statusCode === 404) {
+        const payload = [];
+        await addData(Stores.Staff, payload, "bulk");
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }, [loggedInUser]);
+
+  const fetchServiceData = async () => {
+    try {
+      const body = listPayload(0, { isActive: true }, 1000);
+      const response = await getServiceList(body);
+      console.log("Store service into indxDB response", response);
+
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
+        await addData(Stores.Service, payload, "bulk");
+      } else if (response?.statusCode === 404) {
+        const payload = [];
+        await addData(Stores.Service, payload, "bulk");
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  };
+
+  useLayoutEffect(() => {
+    fetchCustomersData();
+    fetchStaffData();
+    fetchServiceData();
+  }, [fetchStaffData, fetchCustomersData]);
 
   return {
     details,
