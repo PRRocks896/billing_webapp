@@ -1,11 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getPaymentTypeList } from "../../../service/paymentType";
-// import { getCustomerList } from "../../../service/customer";
-// import { getStaffList } from "../../../service/staff";
-// import { getServiceList } from "../../../service/service";
-import { listPayload, showToast } from "../../../utils/helper";
+import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -192,12 +188,11 @@ export const useAddEditCreateBill = (tag) => {
   useEffect(() => {
     try {
       const fetchPaymentTypeData = async () => {
-        const body = listPayload(0, { isActive: true }, 1000);
-
-        const response = await getPaymentTypeList(body);
-
+        // const body = listPayload(0, { isActive: true }, 1000);
+        // const response = await getPaymentTypeList(body);
+        const response = await getStoreData(Stores.Payment);
         if (response?.statusCode === 200) {
-          const payload = response?.data?.rows;
+          const payload = response?.data;
           setPaymentType(payload);
         } else if (response?.statusCode === 404) {
           const payload = [];
