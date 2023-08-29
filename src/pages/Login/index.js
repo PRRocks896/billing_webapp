@@ -69,7 +69,7 @@ const Login = () => {
                   sx={{
                     margin: "20px",
                   }}
-                  name="email"
+                  name="login_key"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
@@ -84,7 +84,7 @@ const Login = () => {
                       <TextField
                         label="Username or Email"
                         size="small"
-                        name="email"
+                        name="login_key"
                         value={value}
                         onChange={onChange}
                         onBlur={onBlur}

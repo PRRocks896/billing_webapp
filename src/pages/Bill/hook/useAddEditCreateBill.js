@@ -192,12 +192,11 @@ export const useAddEditCreateBill = (tag) => {
   useEffect(() => {
     try {
       const fetchPaymentTypeData = async () => {
-        const body = listPayload(0, { isActive: true }, 1000);
-
-        const response = await getPaymentTypeList(body);
-
+        // const body = listPayload(0, { isActive: true }, 1000);
+        // const response = await getPaymentTypeList(body);
+        const response = await getStoreData(Stores.Payment);
         if (response?.statusCode === 200) {
-          const payload = response?.data?.rows;
+          const payload = response?.data;
           setPaymentType(payload);
         } else if (response?.statusCode === 404) {
           const payload = [];

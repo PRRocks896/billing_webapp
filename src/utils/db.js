@@ -7,6 +7,7 @@ export const Stores = {
   Staff: "staff",
   Customer: "customer",
   Service: "service",
+  Payment: "payment",
 };
 
 export const initDB = () => {
@@ -35,6 +36,12 @@ export const initDB = () => {
       }
       if (!db.objectStoreNames.contains(Stores.Service)) {
         db.createObjectStore(Stores.Service, {
+          keyPath: "id",
+        });
+      }
+      if (!db.objectStoreNames.contains(Stores.Payment)) {
+        console.log("Creating Payment store");
+        db.createObjectStore(Stores.Payment, {
           keyPath: "id",
         });
       }
