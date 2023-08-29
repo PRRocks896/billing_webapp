@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getPaymentTypeList } from "../../../service/paymentType";
+// import { getPaymentTypeList } from "../../../service/paymentType";
 // import { getCustomerList } from "../../../service/customer";
 // import { getStaffList } from "../../../service/staff";
 // import { getServiceList } from "../../../service/service";
-import { listPayload, showToast } from "../../../utils/helper";
+import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -57,6 +57,7 @@ export const useAddEditCreateBill = (tag) => {
     handleSubmit,
     reset,
     watch,
+    // setError,
     clearErrors,
   } = useForm({
     defaultValues: {
@@ -220,6 +221,8 @@ export const useAddEditCreateBill = (tag) => {
   const setCustomerSelectedHandler = (id, phone, name) => {
     setValue("customerID", { value: id, label: phone });
     setValue("Phone", name);
+    // setError("customerID", { type: "custom", message: "" });
+    clearErrors("customerID");
   };
 
   // get customers list
@@ -266,6 +269,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const setStaffSelectedHandler = (id, name) => {
     setValue("staffID", { value: id, label: name });
+    clearErrors("staffID");
   };
 
   // get staff list
@@ -581,7 +585,7 @@ export const useAddEditCreateBill = (tag) => {
         } else {
           response = await getBillById(id);
         }
-        // console.warn(response);
+        console.warn(response);
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);

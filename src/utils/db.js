@@ -63,7 +63,7 @@ export const addData = function (storeName, data, flag = "single") {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB", version);
     request.onsuccess = function () {
-      db = request.result;
+      db = request?.result;
 
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);

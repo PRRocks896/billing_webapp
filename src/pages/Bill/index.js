@@ -62,21 +62,23 @@ const Bill = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {visibleRows.length ? (
-                visibleRows.map((row) => {
+              {visibleRows?.length ? (
+                visibleRows?.map((row) => {
                   return (
-                    <TableRow key={"bill_" + row.id}>
+                    <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
-                      <TableCell align="left">{row.billNo}</TableCell>
+                      <TableCell align="left">{row?.billNo}</TableCell>
                       <TableCell align="left">
-                        {row.createdAt?.slice(0, 10)}
+                        {row?.createdAt?.slice(0, 10)}
                       </TableCell>
-                      <TableCell align="left">{row.px_customer.name}</TableCell>
-                      <TableCell align="left">{row.px_staff.name}</TableCell>
                       <TableCell align="left">
-                        {row.px_payment_type.name}
+                        {row?.px_customer?.name}
                       </TableCell>
-                      <TableCell align="left">{row.grandTotal}</TableCell>
+                      <TableCell align="left">{row?.px_staff?.name}</TableCell>
+                      <TableCell align="left">
+                        {row?.px_payment_type?.name}
+                      </TableCell>
+                      <TableCell align="left">{row?.grandTotal}</TableCell>
 
                       {(rights.edit || rights.delete) && (
                         <TableCell>
