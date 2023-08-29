@@ -10,6 +10,7 @@ import {
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, addData, updateData } from "../../../utils/db";
 
 export const useAddEditCustomer = (tag, flag = 1) => {
   const navigate = useNavigate();
@@ -43,6 +44,10 @@ export const useAddEditCustomer = (tag, flag = 1) => {
             );
 
       if (response?.statusCode === 200) {
+        tag === "add"
+          ? await addData(Stores.Customer, response.data)
+          : await updateData(Stores.Customer, +id, payload);
+
         showToast(response?.message, true);
         flag === 1 && navigate("/customer");
       } else {

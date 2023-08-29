@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, addData, updateData } from "../../../utils/db";
 
 export const useAddEditStaff = (tag) => {
   const navigate = useNavigate();
@@ -35,6 +36,10 @@ export const useAddEditStaff = (tag) => {
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        tag === "add"
+          ? await await addData(Stores.Staff, response.data)
+          : await updateData(Stores.Staff, +id, payload);
+
         navigate("/staff");
       } else {
         showToast(response?.messageCode, false);

@@ -9,6 +9,7 @@ import {
 } from "../../../service/customer";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, deleteData } from "../../../utils/db";
 
 export const useCustomer = () => {
   const dispatch = useDispatch();
@@ -91,6 +92,7 @@ export const useCustomer = () => {
       const response = await deleteCustomer(deleteId);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        await deleteData(Stores.Customer, +deleteId);
         dispatch(customerActions.removeCustomer({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {

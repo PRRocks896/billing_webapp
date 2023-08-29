@@ -9,6 +9,7 @@ import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { serviceAction } from "../../../redux/service";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, deleteData } from "../../../utils/db";
 
 export const useService = () => {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ export const useService = () => {
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;
           setCount(response?.data?.count);
+
           dispatch(serviceAction.storeServices(payload));
         } else if (response?.statusCode === 404) {
           const payload = [];
@@ -92,6 +94,7 @@ export const useService = () => {
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        await deleteData(Stores.Service, +deleteId);
         dispatch(serviceAction.removeService({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
