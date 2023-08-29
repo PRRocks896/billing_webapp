@@ -16,6 +16,7 @@ export const useCustomer = () => {
   const { pathname } = useLocation();
   const customerData = useSelector((state) => state.customer.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+
   const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
@@ -45,7 +46,7 @@ export const useCustomer = () => {
       try {
         dispatch(startLoading());
         const payload = { searchText: searchValue };
-        if (loggedInUser.roleId !== 1) {
+        if (loggedInUser.roleID !== 1) {
           payload.createdBy = loggedInUser.id;
         }
         const body = listPayload(page, { ...payload });
@@ -65,7 +66,7 @@ export const useCustomer = () => {
         dispatch(stopLoading());
       }
     },
-    [dispatch, loggedInUser.id, loggedInUser.roleId, page]
+    [dispatch, loggedInUser.id, loggedInUser.roleID, page]
   );
 
   const searchCustomerHandler = async (payload) => {

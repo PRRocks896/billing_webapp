@@ -41,17 +41,21 @@ export const useStaff = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const userRole = loggedInUser?.px_role?.name?.toLowerCase();
-        let whereCondition = {
-          searchText: searchValue,
-        };
-        if (userRole !== "admin") {
-          whereCondition = {
-            ...whereCondition,
-            createdBy: loggedInUser.id,
-          };
+        // const userRole = loggedInUser?.px_role?.name?.toLowerCase();
+        // let whereCondition = {
+        //   searchText: searchValue,
+        // };
+        // if (userRole !== "admin") {
+        //   whereCondition = {
+        //     ...whereCondition,
+        //     createdBy: loggedInUser.id,
+        //   };
+        // }
+        const payload = { searchText: searchValue };
+        if (loggedInUser.roleID !== 1) {
+          payload.createdBy = loggedInUser.id;
         }
-        const body = listPayload(page, whereCondition);
+        const body = listPayload(page, { ...payload });
         const response = await getStaffList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;

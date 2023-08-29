@@ -89,6 +89,7 @@ export const useHome = () => {
       const response = await getCustomerList(body);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
+        console.log("payload", payload);
         await addData(Stores.Customer, payload, "bulk");
       } else if (response?.statusCode === 404) {
         const payload = [];

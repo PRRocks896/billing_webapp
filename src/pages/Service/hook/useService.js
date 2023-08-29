@@ -44,7 +44,12 @@ export const useService = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const body = listPayload(page, { searchText: searchValue });
+        const payload = { searchText: searchValue };
+        if (loggedInUser.roleID !== 1) {
+          payload.createdBy = loggedInUser.id;
+        }
+
+        const body = listPayload(page, { ...payload });
 
         const response = await getServiceList(body);
 
@@ -63,7 +68,7 @@ export const useService = () => {
         dispatch(stopLoading());
       }
     },
-    [dispatch, page]
+    [dispatch, loggedInUser.id, loggedInUser.roleID, page]
   );
 
   useEffect(() => {
