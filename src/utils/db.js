@@ -20,31 +20,31 @@ export const initDB = () => {
 
       // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Bills)) {
-        console.log("Creating Bills store");
+        // console.log("Creating Bills store");
         db.createObjectStore(Stores.Bills, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Staff)) {
-        console.log("Creating Staff store");
+        // console.log("Creating Staff store");
         db.createObjectStore(Stores.Staff, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Customer)) {
-        console.log("Creating Customer store");
+        // console.log("Creating Customer store");
         db.createObjectStore(Stores.Customer, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Service)) {
-        console.log("Creating Service store");
+        // console.log("Creating Service store");
         db.createObjectStore(Stores.Service, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Payment)) {
-        console.log("Creating Payment store");
+        // console.log("Creating Payment store");
         db.createObjectStore(Stores.Payment, {
           keyPath: "id",
         });
