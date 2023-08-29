@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getPaymentTypeList } from "../../../service/paymentType";
+// import { getPaymentTypeList } from "../../../service/paymentType";
 // import { getCustomerList } from "../../../service/customer";
 // import { getStaffList } from "../../../service/staff";
 // import { getServiceList } from "../../../service/service";
-import { listPayload, showToast } from "../../../utils/helper";
+import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { getBillById, updateBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
