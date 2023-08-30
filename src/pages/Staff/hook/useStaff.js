@@ -5,6 +5,7 @@ import { staffAction } from "../../../redux/staff";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, deleteData } from "../../../utils/db";
 
 export const useStaff = () => {
   const dispatch = useDispatch();
@@ -40,17 +41,21 @@ export const useStaff = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const userRole = loggedInUser?.px_role?.name?.toLowerCase();
-        let whereCondition = {
-          searchText: searchValue,
-        };
-        if (userRole !== "admin") {
-          whereCondition = {
-            ...whereCondition,
-            createdBy: loggedInUser.id,
-          };
+        // const userRole = loggedInUser?.px_role?.name?.toLowerCase();
+        // let whereCondition = {
+        //   searchText: searchValue,
+        // };
+        // if (userRole !== "admin") {
+        //   whereCondition = {
+        //     ...whereCondition,
+        //     createdBy: loggedInUser.id,
+        //   };
+        // }
+        const payload = { searchText: searchValue };
+        if (loggedInUser.roleID !== 1) {
+          payload.createdBy = loggedInUser.id;
         }
-        const body = listPayload(page, whereCondition);
+        const body = listPayload(page, { ...payload });
         const response = await getStaffList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;
@@ -94,6 +99,7 @@ export const useStaff = () => {
       const response = await deleteStaff(deleteId);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        await deleteData(Stores.Staff, +deleteId);
         dispatch(staffAction.removeStaff({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {

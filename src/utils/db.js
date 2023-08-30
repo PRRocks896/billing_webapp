@@ -20,25 +20,21 @@ export const initDB = () => {
 
       // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Bills)) {
-        console.log("Creating Bills store");
         db.createObjectStore(Stores.Bills, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Staff)) {
-        console.log("Creating Staff store");
         db.createObjectStore(Stores.Staff, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Customer)) {
-        console.log("Creating Customer store");
         db.createObjectStore(Stores.Customer, {
           keyPath: "id",
         });
       }
       if (!db.objectStoreNames.contains(Stores.Service)) {
-        console.log("Creating Service store");
         db.createObjectStore(Stores.Service, {
           keyPath: "id",
         });
@@ -54,7 +50,6 @@ export const initDB = () => {
     request.onsuccess = () => {
       db = request.result;
       version = db.version;
-      // console.log("request.onsuccess - initDB", version);
       resolve(true);
     };
 
@@ -67,9 +62,8 @@ export const initDB = () => {
 export const addData = function (storeName, data, flag = "single") {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB", version);
-
     request.onsuccess = function () {
-      db = request.result;
+      db = request?.result;
 
       const tx = db.transaction(storeName, "readwrite");
       const store = tx.objectStore(storeName);
@@ -81,7 +75,7 @@ export const addData = function (storeName, data, flag = "single") {
       if (flag === "single") {
         store.add(data);
       } else {
-        data.forEach((item) => {
+        data?.forEach((item) => {
           store.put(item);
         });
       }
@@ -254,6 +248,7 @@ export const updateData = function (storeName, key, data) {
       res.onsuccess = function () {
         const oldData = res.result;
         const newData = { ...oldData, ...data };
+
         store.put(newData);
         // resolve(newData);
         resolve({

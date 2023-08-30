@@ -9,12 +9,14 @@ import {
 } from "../../../service/customer";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, deleteData } from "../../../utils/db";
 
 export const useCustomer = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const customerData = useSelector((state) => state.customer.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
+
   const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
@@ -44,7 +46,7 @@ export const useCustomer = () => {
       try {
         dispatch(startLoading());
         const payload = { searchText: searchValue };
-        if (loggedInUser.roleId !== 1) {
+        if (loggedInUser.roleID !== 1) {
           payload.createdBy = loggedInUser.id;
         }
         const body = listPayload(page, { ...payload });
@@ -64,7 +66,7 @@ export const useCustomer = () => {
         dispatch(stopLoading());
       }
     },
-    [dispatch, loggedInUser.id, loggedInUser.roleId, page]
+    [dispatch, loggedInUser.id, loggedInUser.roleID, page]
   );
 
   const searchCustomerHandler = async (payload) => {
@@ -91,6 +93,7 @@ export const useCustomer = () => {
       const response = await deleteCustomer(deleteId);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        await deleteData(Stores.Customer, +deleteId);
         dispatch(customerActions.removeCustomer({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {

@@ -87,9 +87,9 @@ export const useHome = () => {
       }
       const body = listPayload(0, whereCondition, 1000);
       const response = await getCustomerList(body);
-      // console.log("Store custoer indexDB response", response);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
+        console.log("payload", payload);
         await addData(Stores.Customer, payload, "bulk");
       } else if (response?.statusCode === 404) {
         const payload = [];
@@ -114,7 +114,6 @@ export const useHome = () => {
       }
       const body = listPayload(0, whereCondition, 1000);
       const response = await getStaffList(body);
-      // console.log("Store staff into indxDB response", response);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
         await addData(Stores.Staff, payload, "bulk");
@@ -131,7 +130,6 @@ export const useHome = () => {
     try {
       const body = listPayload(0, { isActive: true }, 1000);
       const response = await getServiceList(body);
-      // console.log("Store service into indxDB response", response);
 
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;

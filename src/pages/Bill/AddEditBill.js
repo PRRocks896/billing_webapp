@@ -19,7 +19,7 @@ import {
   FiPlusCircle,
   FiPrinter,
   FiSave,
-  FiTrash2,
+  // FiTrash2,
   FiXCircle,
 } from "react-icons/fi";
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
@@ -40,7 +40,7 @@ const AddEditBill = ({ tag }) => {
     customersOptions,
     staffOptions,
     serviceOptions,
-    reset,
+    // reset,
     addRow,
     onSubmit,
     navigate,
@@ -627,7 +627,7 @@ const AddEditBill = ({ tag }) => {
 
         {/* footer button */}
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
-          {tag === "edit" ? (
+          {/* {tag === "edit" ? (
             ""
           ) : (
             <Grid item xs={1.5}>
@@ -636,13 +636,13 @@ const AddEditBill = ({ tag }) => {
                 <p>New</p>
               </Button>
             </Grid>
-          )}
+          )} */}
           <Grid item xs={1.5}>
             <Button type="submit" className="btn btn-tertiary">
               <FiSave /> &nbsp; <p>Save</p>
             </Button>
           </Grid>
-          {tag === "edit" ? (
+          {/* {tag === "edit" ? (
             ""
           ) : (
             <Grid item xs={1.5}>
@@ -650,7 +650,7 @@ const AddEditBill = ({ tag }) => {
                 <FiTrash2 /> &nbsp; <p>Delete</p>
               </Button>
             </Grid>
-          )}
+          )} */}
           <Grid item xs={1.5}>
             <Button
               className="btn btn-tertiary"
@@ -659,7 +659,7 @@ const AddEditBill = ({ tag }) => {
               <FiPrinter /> &nbsp; <p>Print</p>
             </Button>
           </Grid>
-          <Grid item xs={1.5}>
+          {/* <Grid item xs={1.5}>
             <Button
               size="large"
               className="btn btn-tertiary"
@@ -667,7 +667,7 @@ const AddEditBill = ({ tag }) => {
             >
               <FiPrinter /> &nbsp; <p>Re-Print</p>
             </Button>
-          </Grid>
+          </Grid> */}
           <Grid item xs={1.5}>
             <Button
               onClick={() => navigate("/bill")}

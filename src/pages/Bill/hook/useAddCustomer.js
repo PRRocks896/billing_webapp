@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createCustomer } from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import { Stores, addData } from "../../../utils/db";
 
 export const useAddCustomer = (
   setIsCustomerModalOpen,
@@ -36,6 +37,7 @@ export const useAddCustomer = (
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        await addData(Stores.Customer, response.data);
         fetchCustomersData();
         setIsCustomerModalOpen(false);
         setCustomerSelectedHandler(
