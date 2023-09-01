@@ -224,7 +224,7 @@ const AddEditUser = ({ tag }) => {
               )}
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <Controller
                   name="email"
                   control={control}
@@ -255,36 +255,68 @@ const AddEditUser = ({ tag }) => {
                 />
               </Grid>
               {isNotAdmin && (
-                <Grid item xs={6}>
-                  <Controller
-                    name="billName"
-                    control={control}
-                    render={({
-                      field: { onBlur, onChange, value },
-                      fieldState: { error },
-                    }) => (
-                      <FormControl
-                        size="small"
-                        variant="standard"
-                        className="form-control"
-                      >
-                        <TextField
-                          label="Bill Name*"
+                <>
+                  <Grid item xs={4}>
+                    <Controller
+                      name="billCode"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl
                           size="small"
-                          name="billName"
-                          value={value}
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          error={!!error}
-                          helperText={error?.message}
-                        />
-                      </FormControl>
-                    )}
-                    rules={{
-                      required: "Please Enter Bill Name",
-                    }}
-                  />
-                </Grid>
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            label="Bill Code*"
+                            size="small"
+                            name="billCode"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Please Enter Bill Code",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Controller
+                      name="billName"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            label="Bill Name*"
+                            size="small"
+                            name="billName"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Please Enter Bill Name",
+                      }}
+                    />
+                  </Grid>
+                </>
               )}
             </Grid>
             <Grid container spacing={2}>
