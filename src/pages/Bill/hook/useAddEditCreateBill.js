@@ -19,6 +19,20 @@ import {
 } from "../../../utils/db";
 
 let editCardNo = "";
+const monthsAbbreviated = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
@@ -105,40 +119,58 @@ export const useAddEditCreateBill = (tag) => {
   }, [loggedInUser, setValue]);
 
   useEffect(() => {
-    let MONTH;
+    let MONTH = monthsAbbreviated[new Date().getMonth()].toUpperCase();
     let BILLCODE;
     let BILLNO;
-    const options = { month: "short" };
+    // const options = { month: "short" };
 
     let firstBillNo = 0;
-
+    console.log(billData);
     if (billData.length) {
       firstBillNo = billData[0]?.billNo;
       window.localStorage.setItem("billNo", firstBillNo);
       BILLCODE = loggedInUser?.billCode;
       window.localStorage.setItem("billCode", BILLCODE);
-    } else {
-      firstBillNo = window.localStorage.getItem("billNo");
-      BILLCODE = window.localStorage.getItem("billCode");
-    }
-    MONTH = new Date().toLocaleString("default", options).toUpperCase();
-
-    const matches = firstBillNo?.match(/\d+/);
-    if (matches) {
+      const matches = firstBillNo?.match(/\d+/);
       if (firstBillNo.includes(MONTH)) {
+        console.log("1");
         const extractedNumber = +matches[0] + 1;
         BILLNO = extractedNumber.toString().padStart(4, "0");
       } else {
+        console.log("2", MONTH);
         const extractedNumber = 1;
         BILLNO = extractedNumber.toString().padStart(4, "0");
       }
-
-      // console.log(extractedNumber, month.toUpperCase(), billCode.toUpperCase());
-      const finalBillNumber = `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`;
-      setValue("billNo", finalBillNumber);
     } else {
-      console.log("No numeric part found in the string.");
+      firstBillNo = window.localStorage.getItem("billNo");
+      BILLCODE = window.localStorage.getItem("billCode");
+      console.log(firstBillNo, BILLCODE);
+
+      if (!firstBillNo && !BILLCODE) {
+        BILLCODE = loggedInUser?.billCode;
+        const extractedNumber = 1;
+        BILLNO = extractedNumber.toString().padStart(4, "0");
+        window.localStorage.setItem(
+          "billNo",
+          `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`
+        );
+        window.localStorage.setItem("billCode", BILLCODE);
+      } else {
+        const matches = firstBillNo?.match(/\d+/);
+        if (firstBillNo.includes(MONTH)) {
+          const extractedNumber = +matches[0] + 1;
+          BILLNO = extractedNumber.toString().padStart(4, "0");
+        } else {
+          const extractedNumber = 1;
+          BILLNO = extractedNumber.toString().padStart(4, "0");
+        }
+      }
     }
+    // MONTH = new Date().toLocaleString("default", options).toUpperCase();
+
+    // console.log(extractedNumber, month.toUpperCase(), billCode.toUpperCase());
+    const finalBillNumber = `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`;
+    setValue("billNo", finalBillNumber);
 
     // let billNo = (firstBillNo += 1).toString().padStart(8, "0");
     // setValue("billNo", "G" + 1);
@@ -795,10 +827,37 @@ export const useAddEditCreateBill = (tag) => {
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
           reset();
-          let firstBillNo = +response.data.billNo?.substring(1);
-          window.localStorage.setItem("billNo", firstBillNo);
-          let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-          setValue("billNo", "G" + billNo);
+          window.localStorage.setItem("billNo", response.data.billNo);
+          // let firstBillNo = +response.data.billNo?.substring(1);
+          // window.localStorage.setItem("billNo", firstBillNo);
+          // let billNo = (firstBillNo += 1).toString().padStart(8, "0");
+          // setValue("billNo", "G" + billNo);
+
+          let MONTH;
+          let BILLCODE;
+          let BILLNO;
+          const options = { month: "short" };
+
+          let firstBillNo = 0;
+          firstBillNo = window.localStorage.getItem("billNo");
+          BILLCODE = window.localStorage.getItem("billCode");
+
+          MONTH = new Date().toLocaleString("default", options).toUpperCase();
+
+          const matches = firstBillNo?.match(/\d+/);
+          if (matches) {
+            if (firstBillNo.includes(MONTH)) {
+              const extractedNumber = +matches[0] + 1;
+              BILLNO = extractedNumber.toString().padStart(4, "0");
+            } else {
+              const extractedNumber = 1;
+              BILLNO = extractedNumber.toString().padStart(4, "0");
+            }
+            const finalBillNumber = `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`;
+            setValue("billNo", finalBillNumber);
+          } else {
+            console.log("No numeric part found in the string.");
+          }
           setSubmitedBillData(response.data);
           setPaymentOptionAndCard();
           print(billData);
