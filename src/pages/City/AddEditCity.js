@@ -39,7 +39,7 @@ const AddEditCity = ({ tag }) => {
                         size="small"
                         name="cityName"
                         value={value}
-                        onChange={onChange}
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message}

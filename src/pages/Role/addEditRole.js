@@ -36,7 +36,7 @@ const AddEditRole = ({ tag }) => {
                         size="small"
                         name="name"
                         value={value}
-                        onChange={onChange}
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message}

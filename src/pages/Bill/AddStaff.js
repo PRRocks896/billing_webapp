@@ -50,7 +50,7 @@ const AddStaff = ({
               component="h6"
               className="text-black modal-title"
             >
-              New Customer
+              New Staff
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Box className="modal-body">
@@ -74,7 +74,9 @@ const AddStaff = ({
                               size="small"
                               name="staff_name"
                               value={value}
-                              onChange={onChange}
+                              onChange={(e) =>
+                                onChange(e.target.value.toUpperCase())
+                              }
                               onBlur={onBlur}
                               error={!!error}
                               helperText={error?.message}
