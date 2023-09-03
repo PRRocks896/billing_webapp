@@ -50,7 +50,7 @@ const AddEditUser = ({ tag }) => {
                         name="firstName"
                         value={value}
                         onChange={(e) => {
-                          onChange(e.target.value);
+                          onChange(e.target.value.toUpperCase());
                         }}
                         onBlur={onBlur}
                         error={!!error}
@@ -81,7 +81,9 @@ const AddEditUser = ({ tag }) => {
                         size="small"
                         name="lastName"
                         value={value}
-                        onChange={onChange}
+                        onChange={(e) => {
+                          onChange(e.target.value.toUpperCase());
+                        }}
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message}
@@ -178,7 +180,9 @@ const AddEditUser = ({ tag }) => {
                         size="small"
                         name="branchName"
                         value={value}
-                        onChange={onChange}
+                        onChange={(e) => {
+                          onChange(e.target.value.toUpperCase());
+                        }}
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message}
@@ -306,7 +310,9 @@ const AddEditUser = ({ tag }) => {
                             size="small"
                             name="billName"
                             value={value}
-                            onChange={onChange}
+                            onChange={(e) => {
+                              onChange(e.target.value.toUpperCase());
+                            }}
                             onBlur={onBlur}
                             error={!!error}
                             helperText={error?.message}
@@ -336,6 +342,7 @@ const AddEditUser = ({ tag }) => {
                       className="form-control"
                     >
                       <TextField
+                        type="number"
                         label="Phone*"
                         size="small"
                         name="phoneNumber"
@@ -349,6 +356,10 @@ const AddEditUser = ({ tag }) => {
                   )}
                   rules={{
                     required: "Please Enter Phone",
+                    pattern: {
+                      value: /^\d{10}$/,
+                      message: "please enter at leats 10 digits.",
+                    },
                   }}
                 />
               </Grid>
@@ -405,7 +416,9 @@ const AddEditUser = ({ tag }) => {
                           size="small"
                           name="address"
                           value={value}
-                          onChange={onChange}
+                          onChange={(e) => {
+                            onChange(e.target.value.toUpperCase());
+                          }}
                           onBlur={onBlur}
                           error={!!error}
                           helperText={error?.message}

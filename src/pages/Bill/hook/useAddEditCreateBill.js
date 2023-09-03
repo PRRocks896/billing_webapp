@@ -125,26 +125,22 @@ export const useAddEditCreateBill = (tag) => {
     // const options = { month: "short" };
 
     let firstBillNo = 0;
-    console.log(billData);
     if (billData.length) {
       firstBillNo = billData[0]?.billNo;
       window.localStorage.setItem("billNo", firstBillNo);
       BILLCODE = loggedInUser?.billCode;
       window.localStorage.setItem("billCode", BILLCODE);
       const matches = firstBillNo?.match(/\d+/);
-      if (firstBillNo.includes(MONTH)) {
-        console.log("1");
+      if (firstBillNo?.includes(MONTH)) {
         const extractedNumber = +matches[0] + 1;
         BILLNO = extractedNumber.toString().padStart(4, "0");
       } else {
-        console.log("2", MONTH);
         const extractedNumber = 1;
         BILLNO = extractedNumber.toString().padStart(4, "0");
       }
     } else {
       firstBillNo = window.localStorage.getItem("billNo");
       BILLCODE = window.localStorage.getItem("billCode");
-      console.log(firstBillNo, BILLCODE);
 
       if (!firstBillNo && !BILLCODE) {
         BILLCODE = loggedInUser?.billCode;
@@ -157,7 +153,7 @@ export const useAddEditCreateBill = (tag) => {
         window.localStorage.setItem("billCode", BILLCODE);
       } else {
         const matches = firstBillNo?.match(/\d+/);
-        if (firstBillNo.includes(MONTH)) {
+        if (firstBillNo?.includes(MONTH)) {
           const extractedNumber = +matches[0] + 1;
           BILLNO = extractedNumber.toString().padStart(4, "0");
         } else {
@@ -503,7 +499,7 @@ export const useAddEditCreateBill = (tag) => {
 
           const matches = firstBillNo?.match(/\d+/);
           if (matches) {
-            if (firstBillNo.includes(MONTH)) {
+            if (firstBillNo?.includes(MONTH)) {
               const extractedNumber = +matches[0] + 1;
               BILLNO = extractedNumber.toString().padStart(4, "0");
             } else {
@@ -846,7 +842,7 @@ export const useAddEditCreateBill = (tag) => {
 
           const matches = firstBillNo?.match(/\d+/);
           if (matches) {
-            if (firstBillNo.includes(MONTH)) {
+            if (firstBillNo?.includes(MONTH)) {
               const extractedNumber = +matches[0] + 1;
               BILLNO = extractedNumber.toString().padStart(4, "0");
             } else {
