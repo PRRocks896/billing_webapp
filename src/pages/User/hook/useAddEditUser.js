@@ -116,7 +116,7 @@ export const useAddEditUser = (tag) => {
           branchName: data.branchName,
           userName: data.userName,
           phoneNumber: data.phoneNumber,
-          phoneNumber2: data.phoneNumberSecond,
+          phoneNumber2: data.phoneNumberSecond || null,
           billCode: data.billCode.toUpperCase(),
           billTitle: data.billName,
           address: data.address,
@@ -133,7 +133,7 @@ export const useAddEditUser = (tag) => {
           email: data.email,
         };
       }
-
+      console.log(payload);
       const response =
         tag === "add"
           ? await createUser({

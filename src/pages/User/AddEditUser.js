@@ -373,14 +373,14 @@ const AddEditUser = ({ tag }) => {
                           value={value}
                           onChange={onChange}
                           onBlur={onBlur}
-                          error={!!error}
-                          helperText={error?.message}
+                          // error={!!error}
+                          // helperText={error?.message}
                         />
                       </FormControl>
                     )}
-                    rules={{
-                      required: "Please Enter Phone 2",
-                    }}
+                    // rules={{
+                    //   required: "Please Enter Phone 2",
+                    // }}
                   />
                 </Grid>
               )}
