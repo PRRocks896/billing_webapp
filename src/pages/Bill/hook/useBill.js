@@ -84,7 +84,9 @@ export const useBill = () => {
 
           setCount(response.data.count + localBillData.count);
           dispatch(billAction.storeBill(finalPayload));
-        } else if (response?.statusCode === 404) {
+        }
+        // else if (response?.statusCode === 404) {
+        else {
           const payload = [...descendingLocalBillData];
           setCount(payload?.length);
           dispatch(billAction.storeBill(payload));

@@ -41,7 +41,7 @@ export const useAddCustomer = (
         fetchCustomersData();
         setIsCustomerModalOpen(false);
         setCustomerSelectedHandler(
-          payload.userID,
+          response.data.id,
           payload.phoneNumber,
           payload.name
         );
