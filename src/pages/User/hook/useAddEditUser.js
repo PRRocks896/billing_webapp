@@ -199,6 +199,7 @@ export const useAddEditUser = (tag) => {
             setValue("phoneNumberSecond", response?.data?.phoneNumber2);
             setValue("billName", response?.data?.billTitle);
             setValue("address", response?.data?.address);
+            setValue("billCode", response?.data?.billCode);
           }
         } else {
           showToast(response.message, false);
