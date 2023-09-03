@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -20,6 +20,7 @@ const TopBar = ({
   addPermission = true,
 }) => {
   const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
 
   const debouncedSearch = debounce(async (payload) => {
     try {
@@ -31,7 +32,7 @@ const TopBar = ({
 
   const searchValueHandler = (e) => {
     if (e.target.value.length === 0 || e.target.value.length > 3) {
-      const payload = { searchValue: e.target.value };
+      const payload = { searchValue: e.target.value.toUpperCase() };
       debouncedSearch(payload);
     }
   };
@@ -46,7 +47,11 @@ const TopBar = ({
               <InputBase
                 name={`${inputName}`}
                 placeholder={`Search ${inputName}`}
-                onChange={searchValueHandler}
+                value={searchValue}
+                onChange={(e) => {
+                  setSearchValue(e.target.value.toUpperCase());
+                  searchValueHandler(e);
+                }}
                 endAdornment={
                   <InputAdornment
                     position="end"

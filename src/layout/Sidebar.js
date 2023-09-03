@@ -36,7 +36,9 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          ["User", "Bill", "Report"].includes(row.px_module.name) &&
+          ["user", "bill", "report"].includes(
+            row.px_module.name.toLowerCase()
+          ) &&
           row.view
         ) {
           return row;
@@ -53,7 +55,9 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          !["User", "Bill", "Report"].includes(row.px_module.name) &&
+          !["user", "bill", "report"].includes(
+            row.px_module.name.toLowerCase()
+          ) &&
           row.view
         ) {
           return row;
