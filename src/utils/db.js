@@ -8,6 +8,7 @@ export const Stores = {
   Customer: "customer",
   Service: "service",
   Payment: "payment",
+  BillNo: "billNo",
 };
 
 export const initDB = () => {
@@ -40,8 +41,13 @@ export const initDB = () => {
         });
       }
       if (!db.objectStoreNames.contains(Stores.Payment)) {
-        console.log("Creating Payment store");
         db.createObjectStore(Stores.Payment, {
+          keyPath: "id",
+        });
+      }
+      if (!db.objectStoreNames.contains(Stores.BillNo)) {
+        console.log("Creating BillNo");
+        db.createObjectStore(Stores.BillNo, {
           keyPath: "id",
         });
       }
@@ -108,7 +114,9 @@ export const getStoreDataPagination = (
       const res =
         searchValue.length > 0 ? store.getAll(searchValue) : store.getAll(null);
       res.onsuccess = (event) => {
-        const allItems = event.target.result.slice().sort((a, b) => b.id.localeCompare(a.id));
+        const allItems = event.target.result
+          .slice()
+          .sort((a, b) => b.id.localeCompare(a.id));
         const startIndex = pageNumber * pageSize;
         const endIndex = startIndex + pageSize;
         const items = allItems.slice(startIndex, endIndex);

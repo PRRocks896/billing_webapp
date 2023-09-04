@@ -74,6 +74,7 @@ const Sidebar = () => {
       await deleteAllData(Stores.Customer);
       await deleteAllData(Stores.Service);
       await deleteAllData(Stores.Payment);
+      await deleteAllData(Stores.BillNo);
 
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200 && billData.data.length) {
@@ -103,7 +104,6 @@ const Sidebar = () => {
             isActive: true,
           };
         });
-        console.log(bulkBillPayload);
 
         const response = await createBulkBill(bulkBillPayload);
 
