@@ -108,7 +108,7 @@ export const getStoreDataPagination = (
       const res =
         searchValue.length > 0 ? store.getAll(searchValue) : store.getAll(null);
       res.onsuccess = (event) => {
-        const allItems = event.target.result;
+        const allItems = event.target.result.slice().sort((a, b) => b.id.localeCompare(a.id));
         const startIndex = pageNumber * pageSize;
         const endIndex = startIndex + pageSize;
         const items = allItems.slice(startIndex, endIndex);

@@ -16,7 +16,7 @@ const PrintContent = (billData, branchData) => {
       <title>G${billData.billNo}</title>
       <style>
         *{
-         font-weight: bold; 
+         font-weight: bold;
         }
         @media print {
           @page {
@@ -27,7 +27,7 @@ const PrintContent = (billData, branchData) => {
     </head>
     <body>
       <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
-       
+
           <div style="page-break-after: always; border: 0px solid black; min-height: max-content;">
             <p style="text-transform: capitalize;font-size: 20px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
               branchData.title
@@ -115,7 +115,7 @@ const PrintContent = (billData, branchData) => {
             </p>
             <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
-          
+
           <div style="height: max-content; border: 1px solid black;">
             <table style="font-size: 12px;">
               <tbody>
@@ -135,6 +135,11 @@ const PrintContent = (billData, branchData) => {
                   <td>${billData.customer}</td>
                 </tr>
                 <tr>
+                  <td style="padding: 10px 0;">Room No</td>
+                  <td style="padding: 0px 18px;">:</td>
+                  <td>${billData.roomNo}</td>
+                </tr>
+                <tr>
                   <td style="padding: 10px 0;">Service Name</td>
                   <td style="padding: 0px 18px;">:</td>
                   <td>${billData.detail
@@ -149,7 +154,7 @@ const PrintContent = (billData, branchData) => {
               </tbody>
             </table>
           </div>
-      
+
       </div>
     </body>
   </html>
