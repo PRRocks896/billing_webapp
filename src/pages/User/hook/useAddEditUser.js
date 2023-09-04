@@ -37,8 +37,8 @@ export const useAddEditUser = (tag) => {
   });
 
   useMemo(() => {
-    setValue("branchName", loggedInUser?.branchName);
-  }, [loggedInUser, setValue]);
+    tag === "add" && setValue("branchName", loggedInUser?.branchName);
+  }, [loggedInUser?.branchName, setValue, tag]);
 
   const firstName = watch("firstName");
   const lastName = watch("lastName");
@@ -183,6 +183,7 @@ export const useAddEditUser = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getUserById(id);
+        console.log(response);
         if (response.statusCode === 200) {
           const role = {
             value: response.data.roleID,
@@ -192,6 +193,7 @@ export const useAddEditUser = (tag) => {
           setValue("firstName", response.data.firstName);
           setValue("lastName", response.data.lastName);
           setValue("userName", response.data.userName);
+          setValue("branchName", response.data.branchName);
           setValue("roleID", role);
           setValue("email", response.data.email);
           setValue("phoneNumber", response.data.phoneNumber);

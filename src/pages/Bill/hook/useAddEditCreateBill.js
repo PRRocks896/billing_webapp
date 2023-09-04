@@ -61,6 +61,7 @@ export const useAddEditCreateBill = (tag) => {
   const [submitedBillData, setSubmitedBillData] = useState("");
 
   const navigate = useNavigate();
+  const [editUserId, setEditUserId] = useState("");
 
   // const userRole = loggedInUser?.px_role?.name?.toLowerCase();
 
@@ -439,6 +440,7 @@ export const useAddEditCreateBill = (tag) => {
         px_payment_type: { name: data.paymentID.label },
         px_staff: { name: data.staffID.label },
       };
+      console.log(payload);
 
       let response;
 
@@ -457,7 +459,8 @@ export const useAddEditCreateBill = (tag) => {
           });
         } else {
           const payload = {
-            userID: loggedInUser.id,
+            // userID: loggedInUser.id,
+            userID: editUserId,
             staffID: data.staffID.value,
             customerID: data.customerID.value,
             detail: detailData,
@@ -707,6 +710,8 @@ export const useAddEditCreateBill = (tag) => {
             };
           });
           setValue("detail", items);
+
+          setEditUserId(response.data.userID);
         } else {
           showToast(response?.message, false);
         }

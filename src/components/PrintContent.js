@@ -15,6 +15,9 @@ const PrintContent = (billData, branchData) => {
     <head>
       <title>G${billData.billNo}</title>
       <style>
+        *{
+         font-weight: bold; 
+        }
         @media print {
           @page {
             size: ${billData.detail.length < 4 ? "120mm " : "140mm"};
@@ -113,7 +116,7 @@ const PrintContent = (billData, branchData) => {
             <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
           
-          <div style="height: max-content;">
+          <div style="height: max-content; border: 1px solid black;">
             <table style="font-size: 12px;">
               <tbody>
                 <tr>

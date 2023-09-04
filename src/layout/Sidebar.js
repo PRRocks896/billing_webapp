@@ -96,13 +96,14 @@ const Sidebar = () => {
             grandTotal: row.grandTotal.toString(),
             paymentID: row.paymentID,
             phoneNumber: row.phoneNumber.toString(),
-            roomNo: +row.roomNo,
+            roomNo: row.roomNo,
             staffID: row.staffID,
             userID: row.userID,
             isDeleted: false,
             isActive: true,
           };
         });
+        console.log(bulkBillPayload);
 
         const response = await createBulkBill(bulkBillPayload);
 
