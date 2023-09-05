@@ -19,11 +19,13 @@ import { useNavigate } from "react-router-dom";
 const Bill = () => {
   const {
     isDeleteModalOpen,
+    handleChangeRowsPerPage,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
     searchBillHandler,
     page,
+    rowsPerPage,
     handleChangePage,
     visibleRows,
     count,
@@ -122,9 +124,10 @@ const Bill = () => {
           rowsPerPageOptions={[10]}
           component="div"
           count={count}
-          rowsPerPage={10}
           page={page}
           onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Box>
 

@@ -11,6 +11,7 @@ export const useBill = () => {
   window.localStorage.removeItem("billNo");
   const dispatch = useDispatch();
   const { pathname } = useLocation();
+  // eslint-disable-next-line
   const billData = useSelector((state) => state.bill.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const userRole = loggedInUser?.px_role?.name?.toLowerCase();
@@ -19,17 +20,17 @@ export const useBill = () => {
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // const [localBillList, setLocalBillList] = useState([]);
+  const [combinedData, setCombinedData] = useState([]);
+
   // pagination start
   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
   const visibleRows = useMemo(() => {
-    return billData;
-  }, [billData]);
+    return combinedData; //billData;
+  }, [/*billData*/combinedData]);
 
   // pagination end
 
@@ -42,13 +43,12 @@ export const useBill = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-
         const localBillData = await getStoreDataPagination(
           Stores.Bills,
           page,
-          10,
+          rowsPerPage,
           searchValue
-        ); //getStoreData(Stores.Bills, searchValue);
+        );
         let descendingLocalBillData = [];
 
         if (localBillData.statusCode === 200) {
@@ -70,7 +70,7 @@ export const useBill = () => {
         const body = listPayload(
           page,
           whereCondition,
-          10 - localBillData.count,
+          rowsPerPage,
           { sortBy: "billNo" }
         );
 
@@ -81,11 +81,10 @@ export const useBill = () => {
             ...descendingLocalBillData,
             ...response?.data?.rows,
           ];
-
+          setCombinedData(finalPayload);
           setCount(response.data.count + localBillData.count);
           dispatch(billAction.storeBill(finalPayload));
         }
-        // else if (response?.statusCode === 404) {
         else {
           const payload = [...descendingLocalBillData];
           setCount(payload?.length);
@@ -97,7 +96,7 @@ export const useBill = () => {
         dispatch(stopLoading());
       }
     },
-    [dispatch, page, userRole, loggedInUser.id]
+    [dispatch, page, userRole, loggedInUser.id, rowsPerPage]
   );
 
   // search bill
@@ -146,6 +145,16 @@ export const useBill = () => {
     }
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    console.log(event.target.value);
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return {
     isDeleteModalOpen,
     setIsDeleteModalOpen,
@@ -153,7 +162,9 @@ export const useBill = () => {
     deleteBtnClickHandler,
     searchBillHandler,
     page,
+    rowsPerPage,
     handleChangePage,
+    handleChangeRowsPerPage,
     visibleRows,
     count,
     rights,

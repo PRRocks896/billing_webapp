@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
+import { useDispatch } from "react-redux";
+
 import { Box } from "@mui/material";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
+
+import Header from "./Header";
 import { getAuthToken, showToast } from "../utils/helper";
 import { loggedInUserAction } from "../redux/loggedInUser";
 import { fetchLoggedInUserData } from "../service/loggedInUser";
-import { useDispatch } from "react-redux";
+import { Stores, updateData, getStoreData} from "../utils/db";
 
 const drawerWidth = 300;
 
@@ -79,6 +82,18 @@ const LayoutProvider = () => {
     try {
       const response = await fetchLoggedInUserData();
       if (response.statusCode === 200) {
+        const storedBillsResponse = await getStoreData(Stores.Bills);
+        if(storedBillsResponse.statusCode === 200) {
+          await updateData(Stores.BillNo, 1, {
+            id: 1,
+            latestBillNo: storedBillsResponse.data[(storedBillsResponse.data?.length - 1)]?.billNo,
+          });
+        } else {
+          await updateData(Stores.BillNo, 1, {
+            id: 1,
+            latestBillNo: response.data.latestBillNo,
+          });
+        }
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate(pathname);
       } else {
