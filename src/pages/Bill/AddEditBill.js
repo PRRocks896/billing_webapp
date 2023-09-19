@@ -21,11 +21,13 @@ import {
   FiSave,
   // FiTrash2,
   FiXCircle,
+  FiSearch,
 } from "react-icons/fi";
 import { useAddEditCreateBill } from "./hook/useAddEditCreateBill";
 import { Fade, Modal, Typography } from "@mui/material";
 import AddCustomer from "./AddCustomer";
 import AddStaff from "./AddStaff";
+import CustomerBillData from "../../components/CustomerBillData";
 
 const StyledTableCell = styled(TableCell)({
   padding: 0,
@@ -67,6 +69,9 @@ const AddEditBill = ({ tag }) => {
     setStaffSelectedHandler,
     setCustomerSelectedHandler,
     changeCustomerPhoneHandler,
+
+    isCustomerBillDataModalOpen,
+    setIsCustomerBillDataModalOpen,
   } = useAddEditCreateBill(tag);
 
   return (
@@ -212,7 +217,7 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
               {/* --------------------------------------------------- */}
-              <Grid item xs={12} md={3} sm={6}>
+              <Grid item xs={12} md={4} sm={6}>
                 <Controller
                   control={control}
                   name={`customerID`}
@@ -222,7 +227,10 @@ const AddEditBill = ({ tag }) => {
                   }) => {
                     return (
                       <Box
-                        sx={{ display: "grid", gridTemplateColumns: "5fr 1fr" }}
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: "5fr 1fr 1fr",
+                        }}
                       >
                         <Autocomplete
                           size="small"
@@ -252,6 +260,14 @@ const AddEditBill = ({ tag }) => {
                           onClick={() => setIsCustomerModalOpen(true)}
                         >
                           <FiPlusCircle />
+                        </Button>
+                        <Button
+                          sx={{ padding: "0px" }}
+                          type="button"
+                          className="btn"
+                          onClick={() => setIsCustomerBillDataModalOpen(true)}
+                        >
+                          <FiSearch />
                         </Button>
                       </Box>
                     );
@@ -320,7 +336,7 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} md={3} sm={6}>
+              <Grid item xs={12} md={2} sm={6}>
                 {isCardSelect ? (
                   <FormControl
                     size="small"
@@ -748,6 +764,12 @@ const AddEditBill = ({ tag }) => {
         setIsStaffModalOpen={setIsStaffModalOpen}
         fetchStaffData={fetchStaffData}
         setStaffSelectedHandler={setStaffSelectedHandler}
+      />
+
+      <CustomerBillData
+        customerPhone={getValues("customerID")}
+        isCustomerBillDataModalOpen={isCustomerBillDataModalOpen}
+        setIsCustomerBillDataModalOpen={setIsCustomerBillDataModalOpen}
       />
     </>
   );
