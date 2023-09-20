@@ -265,7 +265,11 @@ const AddEditBill = ({ tag }) => {
                           sx={{ padding: "0px" }}
                           type="button"
                           className="btn"
-                          onClick={() => setIsCustomerBillDataModalOpen(true)}
+                          onClick={() => {
+                            if (getValues("customerID")) {
+                              setIsCustomerBillDataModalOpen(true);
+                            }
+                          }}
                         >
                           <FiSearch />
                         </Button>
@@ -766,11 +770,13 @@ const AddEditBill = ({ tag }) => {
         setStaffSelectedHandler={setStaffSelectedHandler}
       />
 
-      <CustomerBillData
-        customerPhone={getValues("customerID")}
-        isCustomerBillDataModalOpen={isCustomerBillDataModalOpen}
-        setIsCustomerBillDataModalOpen={setIsCustomerBillDataModalOpen}
-      />
+      {isCustomerBillDataModalOpen && (
+        <CustomerBillData
+          customerPhone={getValues("customerID")}
+          isCustomerBillDataModalOpen={isCustomerBillDataModalOpen}
+          setIsCustomerBillDataModalOpen={setIsCustomerBillDataModalOpen}
+        />
+      )}
     </>
   );
 };

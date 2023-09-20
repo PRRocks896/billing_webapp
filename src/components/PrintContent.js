@@ -116,8 +116,8 @@ const PrintContent = (billData, branchData) => {
             <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
 
-          <div style="height: max-content; border: 1px solid black;">
-            <table style="font-size: 12px;">
+          <div style="height: max-content; border: 0px solid black;">
+            <table style="font-size: 16px;">
               <tbody>
                 <tr>
                   <td style="padding: 10px 0;">Date</td>
