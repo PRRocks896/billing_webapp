@@ -10,7 +10,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import { FiEdit3, FiTrash2, FiPrinter } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useBill } from "./hook/useBill";
@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 const Bill = () => {
   const {
+    handlePrint,
     isDeleteModalOpen,
     handleChangeRowsPerPage,
     setIsDeleteModalOpen,
@@ -58,9 +59,7 @@ const Bill = () => {
                 <TableCell>Staff</TableCell>
                 <TableCell>Payment Type</TableCell>
                 <TableCell>Grand Total</TableCell>
-                {(rights.edit || rights.delete) && (
-                  <TableCell>Action</TableCell>
-                )}
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -81,9 +80,8 @@ const Bill = () => {
                         {row?.px_payment_type?.name}
                       </TableCell>
                       <TableCell align="left">{row?.grandTotal}</TableCell>
-
-                      {(rights.edit || rights.delete) && (
-                        <TableCell>
+                      <TableCell>
+                        {(rights.edit || rights.delete) && (
                           <Box className="table-action-btn">
                             {rights.edit && (
                               <Button
@@ -105,8 +103,14 @@ const Bill = () => {
                               </Button>
                             )}
                           </Box>
-                        </TableCell>
-                      )}
+                        )}
+                        <Button
+                          className="btn btn-primary"
+                          onClick={() => handlePrint(row.id)}
+                        >
+                          <FiPrinter size={15}/>
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })

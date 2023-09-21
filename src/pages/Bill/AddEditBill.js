@@ -658,8 +658,11 @@ const AddEditBill = ({ tag }) => {
             </Grid>
           )} */}
           <Grid item xs={1.5}>
-            <Button type="submit" className="btn btn-tertiary">
-              <FiSave /> &nbsp; <p>Save</p>
+            <Button
+              className="btn btn-tertiary"
+              onClick={handleSubmit(onSubmit)}
+            >
+              <FiSave/> &nbsp; <p>Save</p>
             </Button>
           </Grid>
           {/* {tag === "edit" ? (
@@ -673,6 +676,7 @@ const AddEditBill = ({ tag }) => {
           )} */}
           <Grid item xs={1.5}>
             <Button
+              type="submit"
               className="btn btn-tertiary"
               onClick={handleSubmit(printHandler)}
             >

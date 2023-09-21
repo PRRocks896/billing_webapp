@@ -59,7 +59,7 @@ const PrintContent = (billData, branchData) => {
                 }</p>
               </div>
             </div>
-            <div style="width: 90%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
+            <div style="width: 100%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
             <table style="width: 100%;">
               <thead>
                 <tr style="text-align:center;font-size: 12px;border: 1px solid black;">
