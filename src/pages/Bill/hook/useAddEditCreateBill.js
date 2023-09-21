@@ -58,6 +58,9 @@ export const useAddEditCreateBill = (tag) => {
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
 
+  const [isCustomerBillDataModalOpen, setIsCustomerBillDataModalOpen] =
+    useState(false);
+
   // eslint-disable-next-line
   const [submitedBillData, setSubmitedBillData] = useState("");
 
@@ -1027,5 +1030,8 @@ export const useAddEditCreateBill = (tag) => {
     setStaffSelectedHandler,
     setCustomerSelectedHandler,
     changeCustomerPhoneHandler,
+
+    isCustomerBillDataModalOpen,
+    setIsCustomerBillDataModalOpen,
   };
 };
