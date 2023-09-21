@@ -19,23 +19,24 @@ import {
 } from "../../../utils/db";
 
 let editCardNo = "";
-const monthsAbbreviated = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+// const monthsAbbreviated = [
+//   "Jan",
+//   "Feb",
+//   "Mar",
+//   "Apr",
+//   "May",
+//   "Jun",
+//   "Jul",
+//   "Aug",
+//   "Sep",
+//   "Oct",
+//   "Nov",
+//   "Dec",
+// ];
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
+  // eslint-disable-next-line
   const billData = useSelector((state) => state.bill.data);
 
   const { id } = useParams();
@@ -137,6 +138,7 @@ export const useAddEditCreateBill = (tag) => {
   };
   useEffect(() => {
     getNewBillNo();
+    // eslint-disable-next-line
   }, []);
   // useEffect(() => {
   // let MONTH = monthsAbbreviated[new Date().getMonth()].toUpperCase();
@@ -701,7 +703,6 @@ export const useAddEditCreateBill = (tag) => {
         } else {
           response = await getBillById(id);
         }
-        console.warn(response);
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);

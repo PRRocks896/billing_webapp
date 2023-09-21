@@ -24,7 +24,6 @@ const CustomerBillData = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  console.log(data);
 
   useEffect(() => {
     const fetchBillData = async () => {
@@ -87,7 +86,6 @@ const CustomerBillData = ({
             ) : (
               <>
                 {data.map((row) => {
-                  console.log(row);
                   return (
                     <>
                       <Box sx={{ marginBottom: "16px" }}>
@@ -111,7 +109,7 @@ const CustomerBillData = ({
                               return (
                                 <>
                                   <TableRow>
-                                    <TableCell>{item.serviceID}</TableCell>
+                                    <TableCell>{item?.service?.name}</TableCell>
                                     <TableCell>{item.rate}</TableCell>
                                   </TableRow>
                                 </>
