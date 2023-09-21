@@ -34,16 +34,27 @@ export const useUser = () => {
     return rightsAccess(accessModules, pathname);
   }, [accessModules, pathname]);
 
+  const isAdmin = useMemo(() => {
+    return loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? true : false;
+  }, [loggedInUser]);
+
   //  fetch user data
   const fetchUsersData = useCallback(
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
+        let payload = {
+          searchText: searchValue
+        };
 
-        const body = listPayload(page, {
-          searchText: searchValue,
-          createdBy: loggedInUser.id,
-        });
+        if(!isAdmin) {
+          payload = {
+            ...payload,
+            createdBy: loggedInUser.id,
+          }
+        }
+
+        const body = listPayload(page, payload);
         const response = await getUserList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;
@@ -125,6 +136,7 @@ export const useUser = () => {
   };
 
   return {
+    isAdmin,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
-import { billAction } from "../../../redux/bill";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import { deleteBill, getBillList } from "../../../service/bill";
+
+import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
+import { billAction } from "../../../redux/bill";
+import { deleteBill, getBillList, getBillById } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, deleteData, getStoreDataPagination } from "../../../utils/db";
+import { Stores, deleteData, getStoreDataPagination, getSingleData } from "../../../utils/db";
+import PrintContent from "../../../components/PrintContent";
 
 export const useBill = () => {
   window.localStorage.removeItem("billNo");
@@ -155,7 +157,84 @@ export const useBill = () => {
     setPage(0);
   };
 
+  const doPrint = (billData) => {
+    const branchData = {
+      title: billData.billTitle
+        ? billData.billTitle
+        : "green health spa and saloon",
+      address: billData.address
+        ? billData.address
+        : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
+      phone1: billData.phoneNumber,
+      phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+    };
+    const printWindow = window.open("", "_blank", "popup=yes");
+    printWindow.document.write(PrintContent(billData, branchData));
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+  }
+
+  const handlePrint = async (id) => {
+    const response = await getBillById(id);
+    if (response.success) {
+      const body = response.data;
+      const billData = {
+        subTotal: body?.grandTotal,
+        total: body?.grandTotal,
+        billNo: body?.billNo,
+        payment: body?.px_payment_type?.name,
+        cardNo: body?.cardNo,
+        date: new Date(body?.createdAt),
+        customer: body?.px_customer?.name,
+        customerID: body?.customerID,
+        phone: body?.px_customer?.phoneNumber,
+        staff: body?.px_staff?.name,
+        roomNo: body?.roomNo,
+        detail: body?.detail?.map((row) => {
+          return { ...row, item: row.service.name };
+        }),
+        phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
+        billTitle: loggedInUser.billTitle,
+        address: loggedInUser.address,
+        phoneNumber2: loggedInUser.phoneNumber2,
+        roleID: loggedInUser.roleID,
+      };
+      doPrint(billData);
+    } else {
+      const localDBResponse = await getSingleData(Stores.Bills, id);
+      if(localDBResponse.statusCode === 200) {
+        const data = localDBResponse?.data;
+        const billData = {
+          subTotal: data?.grandTotal,
+          total: data?.grandTotal,
+          billNo: data?.billNo,
+          payment: data?.px_payment_type?.name,
+          cardNo: data?.cardNo,
+          date: new Date(data?.createdAt),
+          customer: data?.px_customer?.name,
+          customerID: data?.customerID,
+          phone: data?.px_customer?.phoneNumber,
+          staff: data?.px_staff?.name,
+          roomNo: data?.roomNo,
+          detail: data?.detail?.map((row) => {
+            return { ...row, item: row.service.name };
+          }),
+          phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
+          billTitle: loggedInUser.billTitle,
+          address: loggedInUser.address,
+          phoneNumber2: loggedInUser.phoneNumber2,
+          roleID: loggedInUser.roleID,
+        };
+        doPrint(billData);
+      } else {
+        showToast(response?.message, false);
+      }
+    }
+  }
+
   return {
+    handlePrint,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
