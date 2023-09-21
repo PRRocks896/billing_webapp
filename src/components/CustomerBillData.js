@@ -1,4 +1,14 @@
-import { Box, Fade, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Fade,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { getBillList } from "../service/bill";
 import { listPayload } from "../utils/helper";
@@ -14,6 +24,7 @@ const CustomerBillData = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+  console.log(data);
 
   useEffect(() => {
     const fetchBillData = async () => {
@@ -75,75 +86,40 @@ const CustomerBillData = ({
               </Typography>
             ) : (
               <>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    className="text-black"
-                  >
-                    Bill No
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    className="text-black"
-                  >
-                    Service
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    className="text-black"
-                  >
-                    Amount
-                  </Typography>
-                </Box>
-                <hr />
                 {data.map((row) => {
+                  console.log(row);
                   return (
                     <>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="p"
-                          component="p"
-                          className="text-black"
-                        >
-                          {row.billNo}
+                      <Box sx={{ marginBottom: "16px" }}>
+                        <Typography variant="h6" className="text-black">
+                          Bill No: {row.billNo}
                         </Typography>
-                        {row.detail.map((service) => {
-                          return (
-                            <>
-                              <Typography
-                                variant="p"
-                                component="p"
-                                className="text-black"
-                              >
-                                {service.serviceID}
-                              </Typography>
-                              <Typography
-                                variant="p"
-                                component="p"
-                                className="text-black"
-                              >
-                                {service.rate}
-                              </Typography>
-                            </>
-                          );
-                        })}
+
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>
+                                <strong>Service</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Amount</strong>
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {row.detail.map((item) => {
+                              return (
+                                <>
+                                  <TableRow>
+                                    <TableCell>{item.serviceID}</TableCell>
+                                    <TableCell>{item.rate}</TableCell>
+                                  </TableRow>
+                                </>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
                       </Box>
-                      <hr />
                     </>
                   );
                 })}
