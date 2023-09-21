@@ -81,7 +81,7 @@ const Bill = () => {
                       </TableCell>
                       <TableCell align="left">{row?.grandTotal}</TableCell>
                       <TableCell>
-                        {(rights.edit || rights.delete) && (
+                        {/* {(rights.edit || rights.delete) && ( */}
                           <Box className="table-action-btn">
                             {rights.edit && (
                               <Button
@@ -102,14 +102,14 @@ const Bill = () => {
                                 <FiTrash2 size={15} />
                               </Button>
                             )}
+                            <Button
+                              className="btn btn-primary"
+                              onClick={() => handlePrint(row.id)}
+                            >
+                              <FiPrinter size={15}/>
+                            </Button>
                           </Box>
-                        )}
-                        <Button
-                          className="btn btn-primary"
-                          onClick={() => handlePrint(row.id)}
-                        >
-                          <FiPrinter size={15}/>
-                        </Button>
+                        {/* )} */}
                       </TableCell>
                     </TableRow>
                   );
