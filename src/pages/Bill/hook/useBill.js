@@ -6,7 +6,12 @@ import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { billAction } from "../../../redux/bill";
 import { deleteBill, getBillList, getBillById } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, deleteData, getStoreDataPagination, getSingleData } from "../../../utils/db";
+import {
+  Stores,
+  deleteData,
+  getStoreDataPagination,
+  getSingleData,
+} from "../../../utils/db";
 import PrintContent from "../../../components/PrintContent";
 
 export const useBill = () => {
@@ -32,7 +37,7 @@ export const useBill = () => {
 
   const visibleRows = useMemo(() => {
     return combinedData; //billData;
-  }, [/*billData*/combinedData]);
+  }, [/*billData*/ combinedData]);
 
   // pagination end
 
@@ -69,12 +74,9 @@ export const useBill = () => {
           };
         }
 
-        const body = listPayload(
-          page,
-          whereCondition,
-          rowsPerPage,
-          { sortBy: "billNo" }
-        );
+        const body = listPayload(page, whereCondition, rowsPerPage, {
+          sortBy: "createdAt",
+        });
 
         const response = await getBillList(body);
 
@@ -86,8 +88,7 @@ export const useBill = () => {
           setCombinedData(finalPayload);
           setCount(response.data.count + localBillData.count);
           dispatch(billAction.storeBill(finalPayload));
-        }
-        else {
+        } else {
           const payload = [...descendingLocalBillData];
           setCount(payload?.length);
           dispatch(billAction.storeBill(payload));
@@ -173,7 +174,7 @@ export const useBill = () => {
     printWindow.document.close();
     printWindow.print();
     printWindow.close();
-  }
+  };
 
   const handlePrint = async (id) => {
     const response = await getBillById(id);
@@ -203,7 +204,7 @@ export const useBill = () => {
       doPrint(billData);
     } else {
       const localDBResponse = await getSingleData(Stores.Bills, id);
-      if(localDBResponse.statusCode === 200) {
+      if (localDBResponse.statusCode === 200) {
         const data = localDBResponse?.data;
         const billData = {
           subTotal: data?.grandTotal,
@@ -231,7 +232,7 @@ export const useBill = () => {
         showToast(response?.message, false);
       }
     }
-  }
+  };
 
   return {
     handlePrint,

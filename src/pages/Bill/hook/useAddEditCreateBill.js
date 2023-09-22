@@ -104,6 +104,7 @@ export const useAddEditCreateBill = (tag) => {
       address: "",
       phoneNumber: "",
       phoneNumber2: "",
+      referenceBy: "",
     },
     mode: "onBlur",
   });
@@ -461,7 +462,9 @@ export const useAddEditCreateBill = (tag) => {
         },
         px_payment_type: { name: data.paymentID.label },
         px_staff: { name: data.staffID.label },
+        referenceBy: data.referenceBy,
       };
+      console.log(payload);
 
       let response;
 
@@ -492,6 +495,7 @@ export const useAddEditCreateBill = (tag) => {
             cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
               ? data.cardNo
               : "",
+            referenceBy: data.referenceBy,
           };
           response = await updateBill(
             { ...payload, updatedBy: loggedInUser.id },
@@ -703,6 +707,7 @@ export const useAddEditCreateBill = (tag) => {
         } else {
           response = await getBillById(id);
         }
+        console.log(response);
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
@@ -724,6 +729,7 @@ export const useAddEditCreateBill = (tag) => {
           setValue("grandTotal", response.data.grandTotal);
           editCardNo = response.data.cardNo;
           setValue("cardNo", response.data.cardNo);
+          setValue("referenceBy", response.data.referenceBy);
 
           const items = response.data.detail.map((item) => {
             return {
@@ -847,6 +853,7 @@ export const useAddEditCreateBill = (tag) => {
           },
           px_payment_type: { name: getValues("paymentID").label },
           px_staff: { name: getValues("staffID").label },
+          referenceBy: getValues("referenceBy"),
         };
 
         const response = await addData(Stores.Bills, {
@@ -948,6 +955,7 @@ export const useAddEditCreateBill = (tag) => {
             },
             px_payment_type: { name: getValues("paymentID").label },
             px_staff: { name: getValues("staffID").label },
+            referenceBy: getValues("referenceBy"),
           };
           response = await updateData(Stores.Bills, payload.id, {
             ...payload,
@@ -969,6 +977,7 @@ export const useAddEditCreateBill = (tag) => {
               ?.includes("card")
               ? getValues("cardNo")
               : "",
+            referenceBy: getValues("referenceBy"),
           };
           // response = await updateBill(payload, id);
           response = await updateBill(

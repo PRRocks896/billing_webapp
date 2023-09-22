@@ -642,6 +642,30 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
             </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3}>
+                <Controller
+                  name="referenceBy"
+                  control={control}
+                  render={({ field: { onBlur, onChange, value } }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Reference By"
+                        size="small"
+                        name="referenceBy"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                      />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+            </Grid>
           </FormGroup>
         </Box>
 
@@ -662,7 +686,7 @@ const AddEditBill = ({ tag }) => {
               className="btn btn-tertiary"
               onClick={handleSubmit(onSubmit)}
             >
-              <FiSave/> &nbsp; <p>Save</p>
+              <FiSave /> &nbsp; <p>Save</p>
             </Button>
           </Grid>
           {/* {tag === "edit" ? (

@@ -41,7 +41,7 @@ const CustomerBillData = ({
         }
 
         const body = listPayload(0, whereCondition, 1000, {
-          sortBy: "billNo",
+          sortBy: "createdAt",
         });
 
         const response = await getBillList(body);

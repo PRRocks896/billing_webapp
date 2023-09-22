@@ -102,11 +102,11 @@ const Sidebar = () => {
             userID: row.userID,
             isDeleted: false,
             isActive: true,
+            referenceBy: row.referenceBy,
           };
         });
 
         const response = await createBulkBill(bulkBillPayload);
-
         if (response.statusCode === 200) {
           const deleteAll = await deleteAllData(Stores.Bills);
           if (deleteAll.statusCode === 200) {
