@@ -15,6 +15,7 @@ import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useBill } from "./hook/useBill";
 import { useNavigate } from "react-router-dom";
+import SyncModal from "../../components/SyncModal";
 
 const Bill = () => {
   const {
@@ -31,6 +32,10 @@ const Bill = () => {
     visibleRows,
     count,
     rights,
+
+    isSyncModalOpen,
+    setIsSyncModalOpen,
+    billCount,
   } = useBill();
 
   const navigate = useNavigate();
@@ -82,33 +87,30 @@ const Bill = () => {
                       <TableCell align="left">{row?.grandTotal}</TableCell>
                       <TableCell>
                         {/* {(rights.edit || rights.delete) && ( */}
-                          <Box className="table-action-btn">
-                            {rights.edit && (
-                              <Button
-                                className="btn btn-primary"
-                                onClick={() => navigate(`/edit-bill/${row.id}`)}
-                              >
-                                <FiEdit3 size={15} />
-                              </Button>
-                            )}
-                            {rights.delete && (
-                              <Button
-                                className="btn btn-primary"
-                                onClick={deleteBtnClickHandler.bind(
-                                  null,
-                                  row.id
-                                )}
-                              >
-                                <FiTrash2 size={15} />
-                              </Button>
-                            )}
+                        <Box className="table-action-btn">
+                          {rights.edit && (
                             <Button
                               className="btn btn-primary"
-                              onClick={() => handlePrint(row.id)}
+                              onClick={() => navigate(`/edit-bill/${row.id}`)}
                             >
-                              <FiPrinter size={15}/>
+                              <FiEdit3 size={15} />
                             </Button>
-                          </Box>
+                          )}
+                          {rights.delete && (
+                            <Button
+                              className="btn btn-primary"
+                              onClick={deleteBtnClickHandler.bind(null, row.id)}
+                            >
+                              <FiTrash2 size={15} />
+                            </Button>
+                          )}
+                          <Button
+                            className="btn btn-primary"
+                            onClick={() => handlePrint(row.id)}
+                          >
+                            <FiPrinter size={15} />
+                          </Button>
+                        </Box>
                         {/* )} */}
                       </TableCell>
                     </TableRow>
@@ -141,6 +143,14 @@ const Bill = () => {
           setIsDeleteModalOpen={setIsDeleteModalOpen}
           title="payment type"
           deleteHandler={deleteHandler}
+        />
+      )}
+
+      {isSyncModalOpen && (
+        <SyncModal
+          isSyncModalOpen={isSyncModalOpen}
+          count={billCount}
+          setIsSyncModalOpen={setIsSyncModalOpen}
         />
       )}
     </>

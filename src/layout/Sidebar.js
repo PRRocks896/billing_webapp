@@ -9,20 +9,15 @@ import React, { useMemo, useState } from "react";
 import { FiChevronRight, FiLogOut, FiGrid, FiSquare } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
-import { logoutHandler, showToast } from "../utils/helper";
 import { useSelector } from "react-redux";
-import { Stores, deleteAllData, getStoreData } from "../utils/db";
-import SyncModal from "../components/SyncModal";
-import { createBulkBill } from "../service/bill";
+import { Stores, deleteAllData } from "../utils/db";
 
 const Sidebar = () => {
   let panelNo = 3;
-  const { accessModules, id } = useSelector((state) => state.loggedInUser);
+  const { accessModules } = useSelector((state) => state.loggedInUser);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-  const [billCount, setBillCount] = useState(0);
 
   // sidebar menu accordion
   const [expanded, setExpanded] = useState(false);
@@ -75,55 +70,8 @@ const Sidebar = () => {
       await deleteAllData(Stores.Service);
       await deleteAllData(Stores.Payment);
       await deleteAllData(Stores.BillNo);
-
-      const billData = await getStoreData(Stores.Bills);
-      if (billData.statusCode === 200 && billData.data.length) {
-        setBillCount(billData.data.length);
-        setIsSyncModalOpen(true);
-
-        const bulkBillPayload = billData.data.map((row) => {
-          return {
-            cardNo: row.cardNo,
-            createdAt: row.createdAt,
-            createdBy: id,
-            customerID: row.customerID,
-            detail: row.detail.map((item) => ({
-              discount: item.discount,
-              quantity: item.quantity,
-              rate: item.rate,
-              serviceID: item.serviceID,
-              total: item.total,
-            })),
-            grandTotal: row.grandTotal.toString(),
-            paymentID: row.paymentID,
-            phoneNumber: row.phoneNumber.toString(),
-            roomNo: row.roomNo,
-            staffID: row.staffID,
-            userID: row.userID,
-            isDeleted: false,
-            isActive: true,
-            referenceBy: row.referenceBy,
-          };
-        });
-
-        const response = await createBulkBill(bulkBillPayload);
-        if (response.statusCode === 200) {
-          const deleteAll = await deleteAllData(Stores.Bills);
-          if (deleteAll.statusCode === 200) {
-            showToast(response.message, true);
-            setIsSyncModalOpen(false);
-            logoutHandler();
-          }
-        } else {
-          logoutHandler();
-        }
-      } else {
-        logoutHandler();
-      }
     } catch (error) {
       console.log(error);
-    } finally {
-      setIsSyncModalOpen(false);
     }
   };
 
@@ -245,10 +193,6 @@ const Sidebar = () => {
           </Accordion>
         </div>
       </Box>
-
-      {isSyncModalOpen && (
-        <SyncModal isSyncModalOpen={isSyncModalOpen} count={billCount} />
-      )}
     </>
   );
 };

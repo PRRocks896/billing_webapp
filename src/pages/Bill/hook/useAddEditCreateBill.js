@@ -464,7 +464,6 @@ export const useAddEditCreateBill = (tag) => {
         px_staff: { name: data.staffID.label },
         referenceBy: data.referenceBy,
       };
-      console.log(payload);
 
       let response;
 
