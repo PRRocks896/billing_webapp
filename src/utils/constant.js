@@ -11,6 +11,7 @@ export const CREATE_CUSTOMER_API = "api/customer";
 export const GET_SINGLE_CUSTOMER_API = "api/customer/";
 export const UPDATE_CUSTOMER_API = "api/customer/";
 export const DELETE_CUSTOMER_API = "api/customer/";
+export const CREATE_BULK_CUSTOMER_API = "api/customer/bulk-create";
 
 // staff apis
 export const STAFF_LIST_API = "api/staff/list";

@@ -1,22 +1,52 @@
 import { Box, Button, Fade, Grid, Modal, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import "../assets/styles/loader.scss";
 import { Stores, deleteAllData, getStoreData } from "../utils/db";
 import { createBulkBill } from "../service/bill";
 import { showToast } from "../utils/helper";
 import { useSelector } from "react-redux";
+import { createBulkCustomer } from "../service/customer";
 
 const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const { id } = loggedInUser;
+  const [isLoading, setIsLoading] = useState(false);
 
   const syncDataHandler = async () => {
     try {
-      const billData = await getStoreData(Stores.Bills);
-      if (billData.statusCode === 200 && billData.data.length) {
-        const lastRecord = billData.data[billData.data.length - 1];
-        if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
-          const bulkBillPayload = billData.data.map((row) => {
+      setIsLoading(true);
+      const custData = await getStoreData(Stores.Customer);
+      const syncCustomerData1 = custData.data.filter(
+        (row) => typeof row.id === "string"
+      );
+      const syncCustomerData = syncCustomerData1.map((row) => {
+        let data = { ...row, customerNo: row.id };
+        delete data.id;
+        return data;
+      });
+
+      const response = await createBulkCustomer(syncCustomerData);
+      console.log(response);
+      if (response.statusCode === 200) {
+        const customerData = response.data;
+        const billData = await getStoreData(Stores.Bills);
+
+        if (billData.statusCode === 200 && billData.data.length) {
+          // const lastRecord = billData.data[billData.data.length - 1];
+
+          const syncBillData = billData.data.map((row) => {
+            const cust = customerData.find(
+              (item) => item.customerNo === row.px_customer.customerNo
+            );
+            if (cust) {
+              return { ...row, customerID: cust.id };
+            } else {
+              return { ...row };
+            }
+          });
+          console.log(syncBillData);
+
+          const bulkBillPayload = syncBillData.map((row) => {
             return {
               cardNo: row.cardNo,
               createdAt: row.createdAt,
@@ -40,7 +70,6 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
               referenceBy: row.referenceBy,
             };
           });
-
           const response = await createBulkBill(bulkBillPayload);
           if (response.statusCode === 200) {
             const deleteAll = await deleteAllData(Stores.Bills);
@@ -54,6 +83,9 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
+      setIsSyncModalOpen(false);
     }
   };
   return (
@@ -95,7 +127,7 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
                     className="btn btn-tertiary"
                     onClick={syncDataHandler}
                   >
-                    Sync
+                    {isLoading ? "Loading..." : "Sync"}
                   </Button>
                 </Grid>
               </Grid>

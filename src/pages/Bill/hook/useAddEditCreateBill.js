@@ -429,7 +429,6 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(typeof data.customerID.value);
     const detailData = data.detail.map((item) => {
       return {
         serviceID: +item.serviceID.value,
@@ -446,7 +445,6 @@ export const useAddEditCreateBill = (tag) => {
         Stores.Customer,
         data.customerID.value
       );
-      console.log(singleCustomer);
 
       const payload = {
         id: getValues("billNo"),

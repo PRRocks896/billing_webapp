@@ -249,10 +249,10 @@ export const useBill = () => {
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200 && billData.data.length) {
         const lastRecord = billData.data[billData.data.length - 1];
-        if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
-          setBillCount(billData.data.length);
-          setIsSyncModalOpen(true);
-        }
+        // if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
+        setBillCount(billData.data.length);
+        setIsSyncModalOpen(true);
+        // }
 
         // const bulkBillPayload = billData.data.map((row) => {
         //   return {

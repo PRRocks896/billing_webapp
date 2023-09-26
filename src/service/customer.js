@@ -1,4 +1,5 @@
 import {
+  CREATE_BULK_CUSTOMER_API,
   CREATE_CUSTOMER_API,
   CUSTOMER_LIST_API,
   DELETE_CUSTOMER_API,
@@ -32,5 +33,10 @@ export const getCustomerById = async (id) => {
 export const updateCustomer = async (payload, id) => {
   const newUrl = await attachId(UPDATE_CUSTOMER_API, id);
   const response = await put(newUrl, payload);
+  return response;
+};
+
+export const createBulkCustomer = async (body) => {
+  const response = await post(CREATE_BULK_CUSTOMER_API, body);
   return response;
 };
