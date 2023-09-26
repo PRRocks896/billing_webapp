@@ -36,6 +36,10 @@ export const useLogin = () => {
           latestBillNo: response.data.latestBillNo,
         });
         setAuthToken(authToken);
+        localStorage.setItem(
+          "latestCustomerNo",
+          response.data.latestCustomerNo
+        );
         dispatch(loggedInUserAction.storeLoggedInUserData(response?.data));
         navigate("/", { replace: true });
       } else {

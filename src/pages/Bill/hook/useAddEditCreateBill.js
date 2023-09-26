@@ -429,6 +429,7 @@ export const useAddEditCreateBill = (tag) => {
   }, []);
 
   const onSubmit = async (data) => {
+    console.log(typeof data.customerID.value);
     const detailData = data.detail.map((item) => {
       return {
         serviceID: +item.serviceID.value,
@@ -441,12 +442,21 @@ export const useAddEditCreateBill = (tag) => {
     });
     try {
       dispatch(startLoading());
+      const singleCustomer = await getSingleData(
+        Stores.Customer,
+        data.customerID.value
+      );
+      console.log(singleCustomer);
+
       const payload = {
         id: getValues("billNo"),
         billNo: getValues("billNo"),
         userID: loggedInUser.id,
         staffID: data.staffID.value,
-        customerID: data.customerID.value,
+        customerID:
+          typeof data.customerID.value === "string"
+            ? null
+            : data.customerID.value,
         detail: detailData,
         paymentID: data.paymentID.value,
         grandTotal: data.grandTotal,
@@ -459,6 +469,8 @@ export const useAddEditCreateBill = (tag) => {
         px_customer: {
           name: data.Phone,
           phoneNumber: +data.customerID.label,
+          customerNo:
+            singleCustomer?.data?.customerNo || singleCustomer?.data?.id,
         },
         px_payment_type: { name: data.paymentID.label },
         px_staff: { name: data.staffID.label },

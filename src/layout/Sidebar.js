@@ -11,6 +11,7 @@ import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Stores, deleteAllData } from "../utils/db";
+import { logoutHandler } from "../utils/helper";
 
 const Sidebar = () => {
   let panelNo = 3;
@@ -70,6 +71,7 @@ const Sidebar = () => {
       await deleteAllData(Stores.Service);
       await deleteAllData(Stores.Payment);
       await deleteAllData(Stores.BillNo);
+      logoutHandler();
     } catch (error) {
       console.log(error);
     }

@@ -9,7 +9,7 @@ import Header from "./Header";
 import { getAuthToken, showToast } from "../utils/helper";
 import { loggedInUserAction } from "../redux/loggedInUser";
 import { fetchLoggedInUserData } from "../service/loggedInUser";
-import { Stores, updateData, getStoreData} from "../utils/db";
+import { Stores, updateData, getStoreData } from "../utils/db";
 
 const drawerWidth = 300;
 
@@ -83,10 +83,12 @@ const LayoutProvider = () => {
       const response = await fetchLoggedInUserData();
       if (response.statusCode === 200) {
         const storedBillsResponse = await getStoreData(Stores.Bills);
-        if(storedBillsResponse.statusCode === 200) {
+        if (storedBillsResponse.statusCode === 200) {
           await updateData(Stores.BillNo, 1, {
             id: 1,
-            latestBillNo: storedBillsResponse.data[(storedBillsResponse.data?.length - 1)]?.billNo,
+            latestBillNo:
+              storedBillsResponse.data[storedBillsResponse.data?.length - 1]
+                ?.billNo,
           });
         } else {
           await updateData(Stores.BillNo, 1, {
@@ -94,6 +96,10 @@ const LayoutProvider = () => {
             latestBillNo: response.data.latestBillNo,
           });
         }
+        localStorage.setItem(
+          "latestCustomerNo",
+          response.data.latestCustomerNo
+        );
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate(pathname);
       } else {

@@ -26,7 +26,19 @@ export const useAddCustomer = (
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
+
+      const inputString = localStorage.getItem("latestCustomerNo");
+      const numericPart = inputString.match(/\d+/)[0];
+      const incrementedNumericPart = String(Number(numericPart) + 1).padStart(
+        numericPart.length,
+        "0"
+      );
+      const resultString = inputString.replace(/\d+/, incrementedNumericPart);
+      console.log(resultString);
+      const newID = resultString;
+
       const payload = {
+        id: newID,
         userID: loggedInUser.id,
         phoneNumber: data.phone,
         gender: data.gender,
@@ -42,6 +54,7 @@ export const useAddCustomer = (
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         // await addData(Stores.Customer, response.data);
+        localStorage.setItem("latestCustomerNo", newID);
         fetchCustomersData();
         setIsCustomerModalOpen(false);
         setCustomerSelectedHandler(
