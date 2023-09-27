@@ -298,8 +298,8 @@ export const useAddEditCreateBill = (tag) => {
     setCustomersOptions([...data]);
   }, [customers]);
 
-  const setCustomerSelectedHandler = (id, phone, name) => {
-    setValue("customerID", { value: id, label: phone });
+  const setCustomerSelectedHandler = (id, phone, name, custNo) => {
+    setValue("customerID", { value: id, label: phone, customerNo: custNo });
     setValue("Phone", name);
     // setError("customerID", { type: "custom", message: "" });
     clearErrors("customerID");

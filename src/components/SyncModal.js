@@ -26,7 +26,7 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
       });
 
       const response = await createBulkCustomer(syncCustomerData);
-      console.log(response);
+      // console.log(response);
       if (response.statusCode === 200) {
         const customerData = response.data;
         const billData = await getStoreData(Stores.Bills);
@@ -35,16 +35,14 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
           // const lastRecord = billData.data[billData.data.length - 1];
 
           const syncBillData = billData.data.map((row) => {
-            const cust = customerData.find(
-              (item) => item.customerNo === row.px_customer.customerNo
-            );
+            const cust = customerData.find((item) => item.customerNo === row.px_customer.customerNo);
             if (cust) {
               return { ...row, customerID: cust.id };
             } else {
               return { ...row };
             }
           });
-          console.log(syncBillData);
+          // console.log(syncBillData);
 
           const bulkBillPayload = syncBillData.map((row) => {
             return {
