@@ -60,7 +60,8 @@ export const useAddCustomer = (
         setCustomerSelectedHandler(
           response.data.id,
           payload.phoneNumber,
-          payload.name
+          payload.name,
+          response.data.customerNo
         );
         reset();
       } else {
