@@ -73,98 +73,63 @@ export const useHome = () => {
   //   }, 1000);
   // });
 
-  // get customers list
-  const fetchCustomersData = useCallback(async () => {
-    try {
-      let whereCondition = {
-        isActive: true,
-      };
-      if (loggedInUser?.px_role?.name?.toLowerCase() !== "admin") {
-        whereCondition = {
-          ...whereCondition,
-          createdBy: loggedInUser.id,
+  useEffect(() => {
+    if(loggedInUser && loggedInUser?.id) {
+      async function fetchCommonindexDBData() {
+        let whereCondition = {
+          isActive: true,
         };
+        if (loggedInUser?.px_role?.name?.toLowerCase() !== "admin") {
+          whereCondition = {
+            ...whereCondition,
+            createdBy: loggedInUser.id,
+          };
+        }
+        const customeStaffbody = listPayload(0, whereCondition, 1000);
+        const servicePaymentbody = listPayload(0, { isActive: true }, 1000);
+        const [
+          customerRepsonse,
+          staffResponse,
+          serviceResponse,
+          paymentResponse
+        ] = await Promise.all([
+          getCustomerList(customeStaffbody),
+          getStaffList(customeStaffbody),
+          getServiceList(servicePaymentbody),
+          getPaymentTypeList(servicePaymentbody)
+        ]);
+        if (customerRepsonse?.statusCode === 200) {
+          const payload = customerRepsonse?.data?.rows;
+          await addData(Stores.Customer, payload, "bulk");
+        } else if (customerRepsonse?.statusCode === 404) {
+          const payload = [];
+          await addData(Stores.Customer, payload, "bulk");
+        }
+        if (staffResponse?.statusCode === 200) {
+          const payload = staffResponse?.data?.rows;
+          await addData(Stores.Staff, payload, "bulk");
+        } else if (staffResponse?.statusCode === 404) {
+          const payload = [];
+          await addData(Stores.Staff, payload, "bulk");
+        }
+        if (serviceResponse?.statusCode === 200) {
+          const payload = serviceResponse?.data?.rows;
+          await addData(Stores.Service, payload, "bulk");
+        } else if (serviceResponse?.statusCode === 404) {
+          const payload = [];
+          await addData(Stores.Service, payload, "bulk");
+        }
+        if (paymentResponse?.statusCode === 200) {
+          const payload = paymentResponse?.data?.rows;
+          await addData(Stores.Payment, payload, "bulk");
+        } else if (paymentResponse?.statusCode === 404) {
+          const payload = [];
+          await addData(Stores.Payment, payload, "bulk");
+        }
       }
-      const body = listPayload(0, whereCondition, 1000);
-      const response = await getCustomerList(body);
-      if (response?.statusCode === 200) {
-        const payload = response?.data?.rows;
-        await addData(Stores.Customer, payload, "bulk");
-      } else if (response?.statusCode === 404) {
-        const payload = [];
-        await addData(Stores.Customer, payload, "bulk");
-      }
-    } catch (error) {
-      showToast(error?.message, false);
+      fetchCommonindexDBData();
     }
-  }, [loggedInUser]);
-
-  // get staff list
-  const fetchStaffData = useCallback(async () => {
-    try {
-      let whereCondition = {
-        isActive: true,
-      };
-      if (loggedInUser?.px_role?.name?.toLowerCase() !== "admin") {
-        whereCondition = {
-          ...whereCondition,
-          createdBy: loggedInUser.id,
-        };
-      }
-      const body = listPayload(0, whereCondition, 1000);
-      const response = await getStaffList(body);
-      if (response?.statusCode === 200) {
-        const payload = response?.data?.rows;
-        await addData(Stores.Staff, payload, "bulk");
-      } else if (response?.statusCode === 404) {
-        const payload = [];
-        await addData(Stores.Staff, payload, "bulk");
-      }
-    } catch (error) {
-      showToast(error?.message, false);
-    }
-  }, [loggedInUser]);
-
-  const fetchServiceData = async () => {
-    try {
-      const body = listPayload(0, { isActive: true }, 1000);
-      const response = await getServiceList(body);
-
-      if (response?.statusCode === 200) {
-        const payload = response?.data?.rows;
-        await addData(Stores.Service, payload, "bulk");
-      } else if (response?.statusCode === 404) {
-        const payload = [];
-        await addData(Stores.Service, payload, "bulk");
-      }
-    } catch (error) {
-      showToast(error?.message, false);
-    }
-  };
-
-  const fetchPaymentTypeData = async () => {
-    try {
-      const body = listPayload(0, { isActive: true }, 1000);
-      const response = await getPaymentTypeList(body);
-      if (response?.statusCode === 200) {
-        const payload = response?.data?.rows;
-        await addData(Stores.Payment, payload, "bulk");
-      } else if (response?.statusCode === 404) {
-        const payload = [];
-        await addData(Stores.Payment, payload, "bulk");
-      }
-    } catch (error) {
-      showToast(error?.message, false);
-    }
-  };
-
-  useLayoutEffect(() => {
-    fetchCustomersData();
-    fetchStaffData();
-    fetchServiceData();
-    fetchPaymentTypeData();
-  }, [fetchStaffData, fetchCustomersData]);
-
+  }, [loggedInUser])
   return {
     details,
   };
