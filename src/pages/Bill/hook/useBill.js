@@ -67,7 +67,6 @@ export const useBill = () => {
           rowsPerPage,
           searchValue
         );
-        console.log(localBillData);
         let descendingLocalBillData = [];
 
         if (localBillData.statusCode === 200) {
@@ -91,7 +90,6 @@ export const useBill = () => {
         });
 
         const response = await getBillList(body);
-        console.log(response);
 
         if (response?.statusCode === 200) {
           const finalPayload = [
@@ -252,10 +250,10 @@ export const useBill = () => {
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200 && billData.data.length) {
         const lastRecord = billData.data[billData.data.length - 1];
-        // if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
-        setBillCount(billData.data.length);
-        setIsSyncModalOpen(true);
-        // }
+        if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
+          setBillCount(billData.data.length);
+          setIsSyncModalOpen(true);
+        }
 
         // const bulkBillPayload = billData.data.map((row) => {
         //   return {
@@ -314,5 +312,7 @@ export const useBill = () => {
     isSyncModalOpen,
     setIsSyncModalOpen,
     billCount,
+
+    fetchBillData,
   };
 };

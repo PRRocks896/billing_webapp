@@ -1,16 +1,47 @@
 import { Box, Button, Fade, Grid, Modal, Typography } from "@mui/material";
 import React, { useState } from "react";
 import "../assets/styles/loader.scss";
-import { Stores, deleteAllData, getStoreData } from "../utils/db";
+import { Stores, addData, deleteAllData, getStoreData } from "../utils/db";
 import { createBulkBill } from "../service/bill";
-import { showToast } from "../utils/helper";
+import { listPayload, showToast } from "../utils/helper";
 import { useSelector } from "react-redux";
-import { createBulkCustomer } from "../service/customer";
+import { createBulkCustomer, getCustomerList } from "../service/customer";
 
-const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
+const SyncModal = ({
+  isSyncModalOpen,
+  count,
+  setIsSyncModalOpen,
+  fetchBillData,
+}) => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const { id } = loggedInUser;
   const [isLoading, setIsLoading] = useState(false);
+
+  const fetchCustomerData = async () => {
+    try {
+      let whereCondition = {
+        isActive: true,
+      };
+      if (loggedInUser?.px_role?.name?.toLowerCase() !== "admin") {
+        whereCondition = {
+          ...whereCondition,
+          createdBy: loggedInUser.id,
+        };
+      }
+      const customebody = listPayload(0, whereCondition, 1000);
+
+      const customerRepsonse = await getCustomerList(customebody);
+      if (customerRepsonse?.statusCode === 200) {
+        const payload = customerRepsonse?.data?.rows;
+        await addData(Stores.Customer, payload, "bulk");
+      } else if (customerRepsonse?.statusCode === 404) {
+        const payload = [];
+        await addData(Stores.Customer, payload, "bulk");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const syncDataHandler = async () => {
     try {
@@ -24,6 +55,7 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
         delete data.id;
         return data;
       });
+      // console.log(syncCustomerData);
 
       const response = await createBulkCustomer(syncCustomerData);
       // console.log(response);
@@ -35,7 +67,9 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
           // const lastRecord = billData.data[billData.data.length - 1];
 
           const syncBillData = billData.data.map((row) => {
-            const cust = customerData.find((item) => item.customerNo === row.px_customer.customerNo);
+            const cust = customerData.find(
+              (item) => item.customerNo === row.px_customer.customerNo
+            );
             if (cust) {
               return { ...row, customerID: cust.id };
             } else {
@@ -70,9 +104,15 @@ const SyncModal = ({ isSyncModalOpen, count, setIsSyncModalOpen }) => {
           });
           const response = await createBulkBill(bulkBillPayload);
           if (response.statusCode === 200) {
-            const deleteAll = await deleteAllData(Stores.Bills);
-            if (deleteAll.statusCode === 200) {
+            const deleteAllBill = await deleteAllData(Stores.Bills);
+            const deleteAllCustomer = await deleteAllData(Stores.Customer);
+            if (
+              deleteAllBill.statusCode === 200 ||
+              deleteAllCustomer.statusCode === 200
+            ) {
               showToast(response.message, true);
+              fetchCustomerData();
+              fetchBillData();
               setIsSyncModalOpen(false);
             }
           } else {

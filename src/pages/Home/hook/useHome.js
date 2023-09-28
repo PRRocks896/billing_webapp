@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchDashboardDetails } from "../../../service/home";
 import { listPayload, showToast } from "../../../utils/helper";
 import { useSelector } from "react-redux";
@@ -74,7 +74,7 @@ export const useHome = () => {
   // });
 
   useEffect(() => {
-    if(loggedInUser && loggedInUser?.id) {
+    if (loggedInUser && loggedInUser?.id) {
       async function fetchCommonindexDBData() {
         let whereCondition = {
           isActive: true,
@@ -91,12 +91,12 @@ export const useHome = () => {
           customerRepsonse,
           staffResponse,
           serviceResponse,
-          paymentResponse
+          paymentResponse,
         ] = await Promise.all([
           getCustomerList(customeStaffbody),
           getStaffList(customeStaffbody),
           getServiceList(servicePaymentbody),
-          getPaymentTypeList(servicePaymentbody)
+          getPaymentTypeList(servicePaymentbody),
         ]);
         if (customerRepsonse?.statusCode === 200) {
           const payload = customerRepsonse?.data?.rows;
@@ -129,7 +129,7 @@ export const useHome = () => {
       }
       fetchCommonindexDBData();
     }
-  }, [loggedInUser])
+  }, [loggedInUser]);
   return {
     details,
   };

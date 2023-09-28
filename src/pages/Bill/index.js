@@ -36,6 +36,8 @@ const Bill = () => {
     isSyncModalOpen,
     setIsSyncModalOpen,
     billCount,
+
+    fetchBillData,
   } = useBill();
 
   const navigate = useNavigate();
@@ -151,6 +153,7 @@ const Bill = () => {
           isSyncModalOpen={isSyncModalOpen}
           count={billCount}
           setIsSyncModalOpen={setIsSyncModalOpen}
+          fetchBillData={fetchBillData}
         />
       )}
     </>
