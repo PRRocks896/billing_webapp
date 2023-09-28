@@ -35,7 +35,7 @@ export const useBill = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // const [localBillList, setLocalBillList] = useState([]);
-  const [combinedData, setCombinedData] = useState([]);
+  // const [combinedData, setCombinedData] = useState([]);
 
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [billCount, setBillCount] = useState(0);
@@ -46,8 +46,9 @@ export const useBill = () => {
   const [count, setCount] = useState(0);
 
   const visibleRows = useMemo(() => {
-    return combinedData; //billData;
-  }, [/*billData*/ combinedData]);
+    // return combinedData;
+    return billData;
+  }, [billData]);
 
   // pagination end
 
@@ -66,6 +67,7 @@ export const useBill = () => {
           rowsPerPage,
           searchValue
         );
+        console.log(localBillData);
         let descendingLocalBillData = [];
 
         if (localBillData.statusCode === 200) {
@@ -89,18 +91,19 @@ export const useBill = () => {
         });
 
         const response = await getBillList(body);
+        console.log(response);
 
         if (response?.statusCode === 200) {
           const finalPayload = [
             ...descendingLocalBillData,
             ...response?.data?.rows,
           ];
-          setCombinedData(finalPayload);
+          // setCombinedData(finalPayload);
           setCount(response.data.count + localBillData.count);
           dispatch(billAction.storeBill(finalPayload));
         } else {
           const payload = [...descendingLocalBillData];
-          setCount(payload?.length);
+          setCount(localBillData?.count);
           dispatch(billAction.storeBill(payload));
         }
       } catch (error) {
@@ -249,10 +252,10 @@ export const useBill = () => {
       const billData = await getStoreData(Stores.Bills);
       if (billData.statusCode === 200 && billData.data.length) {
         const lastRecord = billData.data[billData.data.length - 1];
-        // if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
-        setBillCount(billData.data.length);
-        setIsSyncModalOpen(true);
-        // }
+        if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
+          setBillCount(billData.data.length);
+          setIsSyncModalOpen(true);
+        }
 
         // const bulkBillPayload = billData.data.map((row) => {
         //   return {

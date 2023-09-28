@@ -9,8 +9,9 @@ const billSlice = createSlice({
   initialState,
   reducers: {
     storeBill(state, action) {
-      // console.log("inside reducer store bill ", action.payload);
-      return { data: action.payload };
+      console.log("inside reducer store bill ", action.payload);
+      // return { data: action.payload };
+      state.data = action.payload;
     },
     removeBill(state, action) {
       // console.log(action.payload);

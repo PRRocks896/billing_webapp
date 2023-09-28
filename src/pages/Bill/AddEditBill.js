@@ -658,7 +658,7 @@ const AddEditBill = ({ tag }) => {
                         size="small"
                         name="referenceBy"
                         value={value}
-                        onChange={onChange}
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
                         onBlur={onBlur}
                       />
                     </FormControl>
