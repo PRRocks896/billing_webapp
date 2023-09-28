@@ -99,7 +99,8 @@ export const getStoreDataPagination = (
   storeName,
   pageNumber = 1,
   pageSize = 10,
-  searchValue = ""
+  searchValue = "",
+  sort = false
 ) => {
   let totalCount = 0;
   return new Promise((resolve, reject) => {
@@ -114,9 +115,14 @@ export const getStoreDataPagination = (
       const res =
         searchValue.length > 0 ? store.getAll(searchValue) : store.getAll(null);
       res.onsuccess = (event) => {
-        const allItems = event.target.result
-          .slice()
-          .sort((a, b) => b.id.localeCompare(a.id));
+        let allItems;
+        if (sort) {
+          allItems = event.target.result
+            .slice()
+            .sort((a, b) => b.id.localeCompare(a.id));
+        } else {
+          allItems = event.target.result;
+        }
         const startIndex = pageNumber * pageSize;
         const endIndex = startIndex + pageSize;
         const items = allItems.slice(startIndex, endIndex);
@@ -323,58 +329,3 @@ export const deleteAllData = function (storeName) {
     };
   });
 };
-
-// ----------------------------------------------------------
-
-// export const addStaffData = function (storeName, data) {
-//   return new Promise(function (resolve) {
-//     const request = indexedDB.open("myDB", version);
-
-//     request.onsuccess = function () {
-//       db = request.result;
-
-//       const tx = db.transaction(storeName, "readwrite");
-//       const store = tx.objectStore(storeName);
-//       // Make sure data has a valid 'id' property
-//       if (data.id === undefined) {
-//         // You might need to generate a unique id here, depending on your requirements
-//         data.id = Math.random(); // Example: You need to implement this function
-//       }
-//       store.add(data);
-//       resolve({ statusCode: 200, message: "Record Added Successfully.", data });
-//     };
-
-//     request.onerror = function () {
-//       const error = request.error ? request.error.message : "Unknown error";
-//       resolve({ statusCode: 400, error });
-//     };
-//   });
-// };
-
-// export const getStaffData = function (storeName, searchValue = "") {
-//   return new Promise(function (resolve) {
-//     const request = indexedDB.open("myDB");
-
-//     // if (searchValue === "") {
-//     request.onsuccess = function () {
-//       var db = request.result;
-
-//       const tx = db.transaction(storeName, "readonly");
-//       const store = tx.objectStore(storeName);
-//       let res;
-//       if (searchValue === "") {
-//         res = store.getAll();
-//       } else {
-//         res = store.getAll(searchValue);
-//       }
-//       res.onsuccess = function () {
-//         // resolve({ statusCode: 200, data: res.result });
-//         if (res.result.length > 0) {
-//           resolve({ statusCode: 200, data: res.result });
-//         } else {
-//           resolve({ statusCode: 404, data: [], error: "No records found" });
-//         }
-//       };
-//     };
-//   });
-// };

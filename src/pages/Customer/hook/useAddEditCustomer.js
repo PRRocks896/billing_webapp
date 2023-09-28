@@ -2,15 +2,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  createCustomer,
-  getCustomerById,
-  updateCustomer,
-} from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, addData, updateData } from "../../../utils/db";
+import { Stores, addData, getSingleData, updateData } from "../../../utils/db";
+
+const regex = /[a-zA-Z]+.*[0-9]+|[0-9]+.*[a-zA-Z]+/;
 
 export const useAddEditCustomer = (tag, flag = 1) => {
   const navigate = useNavigate();
@@ -31,23 +28,46 @@ export const useAddEditCustomer = (tag, flag = 1) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
+      const inputString = localStorage.getItem("latestCustomerNo");
+      const numericPart = inputString.match(/\d+/)[0];
+      const incrementedNumericPart = String(Number(numericPart) + 1).padStart(
+        numericPart.length,
+        "0"
+      );
+      const resultString = inputString.replace(/\d+/, incrementedNumericPart);
+      const newID = resultString;
+
       const payload = {
         userID: loggedInUser.id,
         ...data,
       };
+      if (tag === "add") {
+        payload.id = newID;
+      }
+      const updateId = regex.test(id) ? id : parseInt(id);
       const response =
         tag === "add"
-          ? await createCustomer({ ...payload, createdBy: loggedInUser.id })
-          : await updateCustomer(
-              { ...payload, updatedBy: loggedInUser.id },
-              id
-            );
+          ? // ? await createCustomer({ ...payload, createdBy: loggedInUser.id })
+            await addData(Stores.Customer, {
+              ...payload,
+              createdBy: loggedInUser.id,
+            })
+          : // : await updateCustomer(
+            //     { ...payload, updatedBy: loggedInUser.id },
+            //     id
+            //   );
+            await updateData(Stores.Customer, updateId, {
+              ...payload,
+              updatedBy: loggedInUser.id,
+            });
 
       if (response?.statusCode === 200) {
-        tag === "add"
-          ? await addData(Stores.Customer, response.data)
-          : await updateData(Stores.Customer, +id, payload);
-
+        // tag === "add"
+        //   ? await addData(Stores.Customer, response.data)
+        //   : await updateData(Stores.Customer, +id, payload);
+        if (tag === "add") {
+          localStorage.setItem("latestCustomerNo", newID);
+        }
         showToast(response?.message, true);
         flag === 1 && navigate("/customer");
       } else {
@@ -64,7 +84,12 @@ export const useAddEditCustomer = (tag, flag = 1) => {
     try {
       if (id) {
         dispatch(startLoading());
-        const response = await getCustomerById(id);
+        // const response = await getCustomerById(id);
+        const response = await getSingleData(
+          Stores.Customer,
+          regex.test(id) ? id : parseInt(id)
+        );
+
         if (response?.statusCode === 200) {
           setValue("name", response.data.name);
           setValue("phoneNumber", response.data.phoneNumber);

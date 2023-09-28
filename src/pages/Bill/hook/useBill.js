@@ -65,7 +65,8 @@ export const useBill = () => {
           Stores.Bills,
           page,
           rowsPerPage,
-          searchValue
+          searchValue,
+          true
         );
         let descendingLocalBillData = [];
 
