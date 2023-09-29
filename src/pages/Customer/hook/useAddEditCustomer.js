@@ -39,6 +39,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
       const payload = {
         userID: loggedInUser.id,
+        isActive: true,
         ...data,
       };
       if (tag === "add") {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { rightsAccess, showToast } from "../../../utils/helper";
 import { customerActions } from "../../../redux/customer";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCustomer, updateCustomer } from "../../../service/customer";
+import { deleteCustomer } from "../../../service/customer";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import {
