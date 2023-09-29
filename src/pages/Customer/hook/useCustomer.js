@@ -5,7 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteCustomer, updateCustomer } from "../../../service/customer";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, deleteData, getStoreDataPagination } from "../../../utils/db";
+import {
+  Stores,
+  deleteData,
+  getStoreDataPagination,
+  updateData,
+} from "../../../utils/db";
+
+const regex = /[a-zA-Z]+.*[0-9]+|[0-9]+.*[a-zA-Z]+/;
 
 export const useCustomer = () => {
   const dispatch = useDispatch();
@@ -111,11 +118,13 @@ export const useCustomer = () => {
 
   const changeStatusHandler = async (e, id) => {
     try {
+      const updateId = regex.test(id) ? id : parseInt(id);
       const payload = {
         isActive: e.target.checked,
         updatedBy: loggedInUser.id,
       };
-      const response = await updateCustomer(payload, id);
+      // const response = await updateCustomer(payload, id);
+      const response = await updateData(Stores.Customer, updateId, payload);
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);

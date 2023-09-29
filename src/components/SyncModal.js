@@ -6,6 +6,7 @@ import { createBulkBill } from "../service/bill";
 import { listPayload, showToast } from "../utils/helper";
 import { useSelector } from "react-redux";
 import { createBulkCustomer, getCustomerList } from "../service/customer";
+import useNoInternet from "../hook/useNoInternet";
 
 const SyncModal = ({
   isSyncModalOpen,
@@ -16,6 +17,7 @@ const SyncModal = ({
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const { id } = loggedInUser;
   const [isLoading, setIsLoading] = useState(false);
+  const { isOnline } = useNoInternet();
 
   const fetchCustomerData = async () => {
     try {
@@ -61,14 +63,13 @@ const SyncModal = ({
       // console.log(syncCustomerData);
 
       const response = await createBulkCustomer(syncCustomerData);
-      // console.log(response);
       if (response.statusCode === 200) {
         const customerData = response.data;
         const billData = await getStoreData(Stores.Bills);
 
         if (billData.statusCode === 200 && billData.data.length) {
           // const lastRecord = billData.data[billData.data.length - 1];
-
+          console.log(customerData, billData);
           const syncBillData = billData.data.map((row) => {
             const cust = customerData.find(
               (item) => item.customerNo === row.px_customer.customerNo
@@ -79,7 +80,7 @@ const SyncModal = ({
               return { ...row };
             }
           });
-          // console.log(syncBillData);
+          console.log(syncBillData);
 
           const bulkBillPayload = syncBillData.map((row) => {
             return {
@@ -105,7 +106,9 @@ const SyncModal = ({
               referenceBy: row.referenceBy,
             };
           });
+          console.log(bulkBillPayload);
           const response = await createBulkBill(bulkBillPayload);
+          console.log(response);
           if (response.statusCode === 200) {
             const deleteAllBill = await deleteAllData(Stores.Bills);
             const deleteAllCustomer = await deleteAllData(Stores.Customer);
@@ -126,7 +129,6 @@ const SyncModal = ({
       console.log(error);
     } finally {
       setIsLoading(false);
-      setIsSyncModalOpen(false);
     }
   };
   return (
@@ -166,9 +168,15 @@ const SyncModal = ({
                 <Grid item md={12} xs={12}>
                   <Button
                     className="btn btn-tertiary"
-                    onClick={syncDataHandler}
+                    onClick={() => {
+                      if (isOnline) syncDataHandler();
+                    }}
                   >
-                    {isLoading ? "Loading..." : "Sync"}
+                    {!isOnline
+                      ? "No Internet connection.."
+                      : isLoading
+                      ? "Loading..."
+                      : "Sync"}
                   </Button>
                 </Grid>
               </Grid>
