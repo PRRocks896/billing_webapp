@@ -84,6 +84,7 @@ const SyncModal = ({
 
           const bulkBillPayload = syncBillData.map((row) => {
             return {
+              billNo: row.billNo,
               cardNo: row.cardNo,
               createdAt: row.createdAt,
               createdBy: id,
