@@ -34,8 +34,13 @@ export const useAddCustomer = (
         "0"
       );
       const resultString = inputString.replace(/\d+/, incrementedNumericPart);
-      console.log(resultString);
       const newID = resultString;
+
+      // const result = await checkCustomerPhoneNumber(
+      //   Stores.Customer,
+      //   data.phone
+      // );
+      // console.log(result);
 
       const payload = {
         id: newID,

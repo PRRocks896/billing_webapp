@@ -448,7 +448,7 @@ const AddEditUser = ({ tag }) => {
         </Box>
 
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
-          {tag === "edit" && (
+          {tag === "edit" && role === "admin" && (
             <Grid item md={3}>
               <Button
                 type="button"
@@ -472,11 +472,13 @@ const AddEditUser = ({ tag }) => {
         </Grid>
       </form>
 
-      <ChangePasswordModal
-        isChangePasswordOpen={isChangePasswordOpen}
-        setIsChangePasswordOpen={setIsChangePasswordOpen}
-        userId={userId}
-      />
+      {isChangePasswordOpen && role === "admin" && (
+        <ChangePasswordModal
+          isChangePasswordOpen={isChangePasswordOpen}
+          setIsChangePasswordOpen={setIsChangePasswordOpen}
+          userId={userId}
+        />
+      )}
     </>
   );
 };

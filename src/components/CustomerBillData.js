@@ -14,6 +14,21 @@ import { getBillList } from "../service/bill";
 import { listPayload } from "../utils/helper";
 import { useSelector } from "react-redux";
 
+const getDate = () => {
+  const originalDate = "2023-10-09T17:43:46.000Z";
+
+  const dateObj = new Date(originalDate);
+
+  const day = dateObj.getUTCDate().toString().padStart(2, "0");
+  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, "0"); // Adding 1 because months are zero-based
+  const year = dateObj.getUTCFullYear();
+
+  const formattedDate = `${day}/${month}/${year}`;
+
+  console.log(formattedDate);
+  return formattedDate;
+};
+
 const CustomerBillData = ({
   customerPhone,
   isCustomerBillDataModalOpen,
@@ -24,6 +39,8 @@ const CustomerBillData = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+  console.log(data);
+  console.log(customerPhone);
 
   useEffect(() => {
     const fetchBillData = async () => {
@@ -85,6 +102,13 @@ const CustomerBillData = ({
               </Typography>
             ) : (
               <>
+                <Typography variant="h6" className="text-black">
+                  Customer: {data[0]?.px_customer?.name}
+                </Typography>
+                <Typography variant="h6" className="text-black">
+                  Phone Number: {customerPhone.label.toString()}
+                </Typography>
+                <hr />
                 {data.map((row) => {
                   return (
                     <>
@@ -96,6 +120,9 @@ const CustomerBillData = ({
                         <Table>
                           <TableHead>
                             <TableRow>
+                              <TableCell>
+                                <strong>Date</strong>
+                              </TableCell>
                               <TableCell>
                                 <strong>Service</strong>
                               </TableCell>
@@ -109,6 +136,9 @@ const CustomerBillData = ({
                               return (
                                 <>
                                   <TableRow>
+                                    <TableCell>
+                                      {getDate(row.createdAt)}
+                                    </TableCell>
                                     <TableCell>{item?.service?.name}</TableCell>
                                     <TableCell>{item.rate}</TableCell>
                                   </TableRow>

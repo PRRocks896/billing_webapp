@@ -34,6 +34,7 @@ export const initDB = () => {
         db.createObjectStore(Stores.Customer, {
           keyPath: "id",
         });
+        // objectStore.createIndex("phoneNumber", "phoneNumber", { unique: true });
       }
       if (!db.objectStoreNames.contains(Stores.Service)) {
         db.createObjectStore(Stores.Service, {
@@ -333,17 +334,19 @@ export const deleteAllData = function (storeName) {
 export const checkCustomerPhoneNumber = function (storeName, phoneNumber) {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB", version);
+
     request.onsuccess = function () {
       const db = request.result;
       const tx = db.transaction(storeName, "readonly");
       const store = tx.objectStore(storeName);
       const index = store.index("phoneNumber"); // Replace "phoneNumber" with the actual name of the index
-
+      console.log(index);
       // Use the .get() method to retrieve the record by phone number
       const getRequest = index.get(phoneNumber);
 
       getRequest.onsuccess = function () {
         const customer = getRequest.result;
+        console.log(customer);
         if (customer) {
           // Customer with the provided phone number exists
           resolve({
