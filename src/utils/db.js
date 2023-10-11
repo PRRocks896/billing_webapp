@@ -329,3 +329,45 @@ export const deleteAllData = function (storeName) {
     };
   });
 };
+
+export const checkCustomerPhoneNumber = function (storeName, phoneNumber) {
+  return new Promise(function (resolve) {
+    const request = indexedDB.open("myDB", version);
+    request.onsuccess = function () {
+      const db = request.result;
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const index = store.index("phoneNumber"); // Replace "phoneNumber" with the actual name of the index
+
+      // Use the .get() method to retrieve the record by phone number
+      const getRequest = index.get(phoneNumber);
+
+      getRequest.onsuccess = function () {
+        const customer = getRequest.result;
+        if (customer) {
+          // Customer with the provided phone number exists
+          resolve({
+            statusCode: 200,
+            message: "Customer Found.",
+            data: customer,
+          });
+        } else {
+          // Customer with the provided phone number does not exist
+          resolve({ statusCode: 404, message: "Customer Not Found." });
+        }
+      };
+
+      getRequest.onerror = function () {
+        const error = getRequest.error
+          ? getRequest.error.message
+          : "Unknown error";
+        resolve({ statusCode: 400, error });
+      };
+    };
+
+    request.onerror = function () {
+      const error = request.error ? request.error.message : "Unknown error";
+      resolve({ statusCode: 400, error });
+    };
+  });
+};

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { useAddEditUser } from "./hook/useAddEditUser";
+import ChangePasswordModal from "../../components/ChangePasswordModal";
 
 const AddEditUser = ({ tag }) => {
   const {
@@ -20,6 +21,10 @@ const AddEditUser = ({ tag }) => {
     cancelHandler,
     role,
     isNotAdmin,
+
+    isChangePasswordOpen,
+    setIsChangePasswordOpen,
+    userId,
   } = useAddEditUser(tag);
 
   return (
@@ -443,6 +448,17 @@ const AddEditUser = ({ tag }) => {
         </Box>
 
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
+          {tag === "edit" && (
+            <Grid item md={3}>
+              <Button
+                type="button"
+                className="btn btn-tertiary"
+                onClick={() => setIsChangePasswordOpen(true)}
+              >
+                Change password
+              </Button>
+            </Grid>
+          )}
           <Grid item md={1.5}>
             <Button type="submit" className="btn btn-tertiary">
               {tag === "add" ? "Save" : "Update"}
@@ -455,6 +471,12 @@ const AddEditUser = ({ tag }) => {
           </Grid>
         </Grid>
       </form>
+
+      <ChangePasswordModal
+        isChangePasswordOpen={isChangePasswordOpen}
+        setIsChangePasswordOpen={setIsChangePasswordOpen}
+        userId={userId}
+      />
     </>
   );
 };

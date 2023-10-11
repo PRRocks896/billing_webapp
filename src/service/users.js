@@ -4,6 +4,7 @@ import {
   USER_LIST_API,
   UPDATE_USER_API,
   DELETE_USER_API,
+  CHANGE_PASSWORD_API,
 } from "../utils/constant";
 import { attachId, get, post, remove, put } from "./webRequest";
 
@@ -32,5 +33,10 @@ export const updateUser = async (payload, id) => {
 export const deleteUser = async (id) => {
   const newUrl = await attachId(DELETE_USER_API, id);
   const response = await remove(newUrl);
+  return response;
+};
+
+export const changePassword = async (payload) => {
+  const response = await post(CHANGE_PASSWORD_API, payload);
   return response;
 };

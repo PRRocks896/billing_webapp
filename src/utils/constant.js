@@ -61,6 +61,7 @@ export const GET_SINGLE_USER_API = "api/user/";
 export const USER_LIST_API = "api/user/list";
 export const UPDATE_USER_API = "api/user/";
 export const DELETE_USER_API = "api/user/";
+export const CHANGE_PASSWORD_API = "api/auth/change-password";
 
 // role apis
 export const CREATE_ROLE_API = "api/role";

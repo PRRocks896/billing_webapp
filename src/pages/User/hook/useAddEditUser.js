@@ -15,6 +15,8 @@ export const useAddEditUser = (tag) => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+
   const [roles, setRoles] = useState([]);
   const [isNotAdmin, setIsNotAdmin] = useState(true);
 
@@ -133,7 +135,6 @@ export const useAddEditUser = (tag) => {
           email: data.email,
         };
       }
-      console.log(payload);
       const response =
         tag === "add"
           ? await createUser({
@@ -183,7 +184,6 @@ export const useAddEditUser = (tag) => {
       if (id) {
         dispatch(startLoading());
         const response = await getUserById(id);
-        console.log(response);
         if (response.statusCode === 200) {
           const role = {
             value: response.data.roleID,
@@ -230,5 +230,9 @@ export const useAddEditUser = (tag) => {
     cancelHandler,
     role: loggedInUser?.px_role?.name.toLowerCase(),
     isNotAdmin,
+
+    isChangePasswordOpen,
+    setIsChangePasswordOpen,
+    userId: id,
   };
 };
