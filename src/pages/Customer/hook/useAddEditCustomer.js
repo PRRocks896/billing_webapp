@@ -5,7 +5,13 @@ import { useParams } from "react-router-dom";
 import { showToast } from "../../../utils/helper";
 import { useCallback, useEffect } from "react";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, addData, getSingleData, updateData } from "../../../utils/db";
+import {
+  Stores,
+  addData,
+  getSingleData,
+  searchPhoneNumber,
+  updateData,
+} from "../../../utils/db";
 
 const regex = /[a-zA-Z]+.*[0-9]+|[0-9]+.*[a-zA-Z]+/;
 
@@ -27,7 +33,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
   const onSubmit = async (data) => {
     try {
-      dispatch(startLoading());
+      // dispatch(startLoading());
       const inputString = localStorage.getItem("latestCustomerNo");
       const numericPart = inputString.match(/\d+/)[0];
       const incrementedNumericPart = String(Number(numericPart) + 1).padStart(
@@ -46,6 +52,15 @@ export const useAddEditCustomer = (tag, flag = 1) => {
         payload.id = newID;
       }
       const updateId = regex.test(id) ? id : parseInt(id);
+
+      if (tag === "add") {
+        const result = await searchPhoneNumber(data.phoneNumber);
+        if (result.statusCode === 200) {
+          showToast("Customer already exist", false);
+          return;
+        }
+      }
+
       const response =
         tag === "add"
           ? // ? await createCustomer({ ...payload, createdBy: loggedInUser.id })

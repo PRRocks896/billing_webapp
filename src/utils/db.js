@@ -16,8 +16,9 @@ export const initDB = () => {
     // open the connection
     request = indexedDB.open("myDB");
 
-    request.onupgradeneeded = () => {
-      db = request.result;
+    request.onupgradeneeded = (event) => {
+      // db = request.result;
+      db = event.target.result;
 
       // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Bills)) {
@@ -30,11 +31,22 @@ export const initDB = () => {
           keyPath: "id",
         });
       }
+      // if (!db.objectStoreNames.contains(Stores.Customer)) {
+      //   db.createObjectStore(Stores.Customer, {
+      //     keyPath: "id",
+      //   });
+      //   // objectStore.createIndex("phoneNumber", "phoneNumber", { unique: true });
+      // }
+      // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Customer)) {
-        db.createObjectStore(Stores.Customer, {
+        const customerStore = db.createObjectStore(Stores.Customer, {
           keyPath: "id",
         });
-        // objectStore.createIndex("phoneNumber", "phoneNumber", { unique: true });
+
+        // Create an index on the "phoneNumber" field
+        customerStore.createIndex("phoneNumberIndex", "phoneNumber", {
+          unique: false,
+        });
       }
       if (!db.objectStoreNames.contains(Stores.Service)) {
         db.createObjectStore(Stores.Service, {
@@ -331,46 +343,40 @@ export const deleteAllData = function (storeName) {
   });
 };
 
-export const checkCustomerPhoneNumber = function (storeName, phoneNumber) {
+export const searchPhoneNumber = (phoneNumber) => {
   return new Promise(function (resolve) {
     const request = indexedDB.open("myDB", version);
 
-    request.onsuccess = function () {
+    request.onsuccess = () => {
       const db = request.result;
-      const tx = db.transaction(storeName, "readonly");
-      const store = tx.objectStore(storeName);
-      const index = store.index("phoneNumber"); // Replace "phoneNumber" with the actual name of the index
-      console.log(index);
-      // Use the .get() method to retrieve the record by phone number
-      const getRequest = index.get(phoneNumber);
 
-      getRequest.onsuccess = function () {
-        const customer = getRequest.result;
-        console.log(customer);
+      const transaction = db.transaction(["customer"], "readonly");
+      const objectStore = transaction.objectStore("customer");
+      const phoneNumberIndex = objectStore.index("phoneNumberIndex"); // Use the index name you defined
+
+      // Perform a search using the index
+      const searchRequest = phoneNumberIndex.get(phoneNumber);
+
+      searchRequest.onsuccess = (event) => {
+        const customer = event.target.result;
         if (customer) {
-          // Customer with the provided phone number exists
           resolve({
             statusCode: 200,
             message: "Customer Found.",
             data: customer,
           });
         } else {
-          // Customer with the provided phone number does not exist
           resolve({ statusCode: 404, message: "Customer Not Found." });
         }
       };
 
-      getRequest.onerror = function () {
-        const error = getRequest.error
-          ? getRequest.error.message
-          : "Unknown error";
-        resolve({ statusCode: 400, error });
+      searchRequest.onerror = (event) => {
+        resolve({ statusCode: 500, error: event.target.error });
       };
     };
 
-    request.onerror = function () {
-      const error = request.error ? request.error.message : "Unknown error";
-      resolve({ statusCode: 400, error });
+    request.onerror = (event) => {
+      resolve({ statusCode: 500, error: event.target.error });
     };
   });
 };

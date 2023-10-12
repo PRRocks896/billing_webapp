@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { createCustomer } from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, addData } from "../../../utils/db";
+import { Stores, addData, searchPhoneNumber } from "../../../utils/db";
 
 export const useAddCustomer = (
   setIsCustomerModalOpen,
@@ -50,6 +50,13 @@ export const useAddCustomer = (
         name: data.customer_name,
         createdBy: loggedInUser.id,
       };
+
+      const result = await searchPhoneNumber(data.phone);
+      if (result.statusCode === 200) {
+        showToast("Customer already exist", false);
+        return;
+      }
+
       // const response = await createCustomer(payload);
       const response = await addData(Stores.Customer, {
         ...payload,
