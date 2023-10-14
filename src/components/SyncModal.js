@@ -57,7 +57,8 @@ const SyncModal = ({
         delete data.id;
         return data;
       });
-      const data2 = custData.data.filter((row) => typeof row.id === "number");
+      // const data2 = custData.data.filter((row) => typeof row.id === "number");
+      const data2 = custData.data.filter((row) => row.flag === 1);
 
       const syncCustomerData = [...data2, ...data1];
       // console.log(syncCustomerData);
@@ -69,7 +70,7 @@ const SyncModal = ({
 
         if (billData.statusCode === 200 && billData.data.length) {
           // const lastRecord = billData.data[billData.data.length - 1];
-          console.log(customerData, billData);
+          // console.log(customerData, billData);
           const syncBillData = billData.data.map((row) => {
             const cust = customerData.find(
               (item) => item.customerNo === row.px_customer.customerNo
@@ -80,7 +81,7 @@ const SyncModal = ({
               return { ...row };
             }
           });
-          console.log(syncBillData);
+          // console.log(syncBillData);
 
           const bulkBillPayload = syncBillData.map((row) => {
             return {
@@ -107,9 +108,9 @@ const SyncModal = ({
               referenceBy: row.referenceBy,
             };
           });
-          console.log(bulkBillPayload);
+          // console.log(bulkBillPayload);
           const response = await createBulkBill(bulkBillPayload);
-          console.log(response);
+          // console.log(response);
           if (response.statusCode === 200) {
             const deleteAllBill = await deleteAllData(Stores.Bills);
             const deleteAllCustomer = await deleteAllData(Stores.Customer);

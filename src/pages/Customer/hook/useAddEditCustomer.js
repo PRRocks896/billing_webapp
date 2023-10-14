@@ -66,6 +66,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
           ? // ? await createCustomer({ ...payload, createdBy: loggedInUser.id })
             await addData(Stores.Customer, {
               ...payload,
+              flag: 0,
               createdBy: loggedInUser.id,
             })
           : // : await updateCustomer(
@@ -74,6 +75,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
             //   );
             await updateData(Stores.Customer, updateId, {
               ...payload,
+              flag: 1,
               updatedBy: loggedInUser.id,
             });
 

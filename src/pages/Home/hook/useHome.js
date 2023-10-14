@@ -99,7 +99,10 @@ export const useHome = () => {
           getPaymentTypeList(servicePaymentbody),
         ]);
         if (customerRepsonse?.statusCode === 200) {
-          const payload = customerRepsonse?.data?.rows;
+          const payload = customerRepsonse?.data?.rows?.map((row) => ({
+            ...row,
+            flag: 0,
+          }));
           await addData(Stores.Customer, payload, "bulk");
         } else if (customerRepsonse?.statusCode === 404) {
           const payload = [];
