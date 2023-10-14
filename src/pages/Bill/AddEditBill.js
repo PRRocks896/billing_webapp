@@ -74,6 +74,7 @@ const AddEditBill = ({ tag }) => {
     setIsCustomerBillDataModalOpen,
   } = useAddEditCreateBill(tag);
 
+  console.log("customersOptions", customersOptions);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -238,6 +239,7 @@ const AddEditBill = ({ tag }) => {
                           id="customerID"
                           label="customerID"
                           options={customersOptions}
+                          getOptionLabel={(option) => option.label || ""}
                           value={value}
                           onBlur={onBlur}
                           onChange={(event, newValue) => {

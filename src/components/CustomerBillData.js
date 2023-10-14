@@ -25,7 +25,6 @@ const getDate = () => {
 
   const formattedDate = `${day}/${month}/${year}`;
 
-  console.log(formattedDate);
   return formattedDate;
 };
 
@@ -39,8 +38,6 @@ const CustomerBillData = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  console.log(data);
-  console.log(customerPhone);
 
   useEffect(() => {
     const fetchBillData = async () => {
