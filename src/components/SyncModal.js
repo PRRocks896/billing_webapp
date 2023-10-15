@@ -56,14 +56,14 @@ const SyncModal = ({
         (row) => typeof row.id === "string"
       );
       const data1 = syncCustomerData1.map((row) => {
-        let data = { ...row, customerNo: row.id };
-        delete data.id;
+        let data = { ...row, customerNo: row.id, id: null };
+        // delete data.id;
         return data;
       });
       // const data2 = custData.data.filter((row) => typeof row.id === "number");
       const data2 = custData.data.filter((row) => row.flag === 1);
 
-      const syncCustomerData = [...data2, ...data1];
+      const syncCustomerData = [...data1, ...data2];
       // console.log(syncCustomerData);
 
       const response = await createBulkCustomer(syncCustomerData);
