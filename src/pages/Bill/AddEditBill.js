@@ -74,7 +74,6 @@ const AddEditBill = ({ tag }) => {
     setIsCustomerBillDataModalOpen,
   } = useAddEditCreateBill(tag);
 
-  console.log("customersOptions", customersOptions);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
