@@ -240,12 +240,20 @@ const AddEditBill = ({ tag }) => {
                           label="customerID"
                           options={customersOptions}
                           getOptionLabel={(option) => option.label || ""}
+                          isOptionEqualToValue={(option, value) => {
+                            return value?.value === option?.value;
+                          }}
                           value={value}
                           onBlur={onBlur}
                           onChange={(event, newValue) => {
                             changeCustomerPhoneHandler(newValue);
                             onChange(newValue);
                           }}
+                          renderOption={(props, option) => (
+                            <li {...props} key={option.value}>
+                              {option.label}
+                            </li>
+                          )}
                           renderInput={(params) => (
                             <TextField
                               {...params}
