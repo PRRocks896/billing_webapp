@@ -441,10 +441,12 @@ export const useAddEditCreateBill = (tag) => {
     });
     try {
       dispatch(startLoading());
+      console.log(data.customerID);
       const singleCustomer = await getSingleData(
         Stores.Customer,
         data.customerID.value
       );
+      console.log(singleCustomer);
 
       const payload = {
         id: getValues("billNo"),
@@ -731,7 +733,7 @@ export const useAddEditCreateBill = (tag) => {
             label: response.data.px_staff.name,
           });
           setValue("customerID", {
-            value: response.data.customerID,
+            value: response.data.customerID || response.data.px_customer.customerNo,
             label: response.data.px_customer.phoneNumber,
           });
           setValue("Phone", response.data.px_customer.name);
