@@ -3,7 +3,7 @@ import { fetchDashboardDetails } from "../../../service/home";
 import { listPayload, showToast } from "../../../utils/helper";
 import { useSelector } from "react-redux";
 import { getStaffList } from "../../../service/staff";
-import { Stores, addData } from "../../../utils/db";
+import { Stores, addData, getStoreData } from "../../../utils/db";
 import { getCustomerList } from "../../../service/customer";
 import { getServiceList } from "../../../service/service";
 import { getPaymentTypeList } from "../../../service/paymentType";
@@ -34,8 +34,22 @@ export const useHome = () => {
   const fetchDashboardData = async () => {
     try {
       const params = { currentDate: currentDate() };
-      const response = await fetchDashboardDetails(params);
-      setDetails(response?.data);
+      const {success, message, data} = await fetchDashboardDetails(params);
+      const storedBillsRes = await getStoreData(Stores.Bills);
+      const storedCustomerRes = await getStoreData(Stores.Customer);
+      const indexDBCustomerLength = storedCustomerRes.statusCode === 200 ? storedCustomerRes.data?.filter((item) => typeof item.id === 'string').length : 0;
+      if(success) {
+        setDetails({
+          counts: {
+            customerCount: indexDBCustomerLength !== 0 ? (parseFloat(indexDBCustomerLength) + parseFloat(data.counts.customerCount)) : data.counts.customerCount,
+            staffCount: data.counts.staffCount,
+            serviceCount: data.counts.serviceCount,
+            billCount: storedBillsRes.statusCode === 200 ? (parseFloat(storedBillsRes.data.length) + parseFloat(data.counts.billCount)) : data.counts.billCount,
+          }
+        });
+      } else {
+        showToast(message, false);
+      }
 
       // const data = await getStoreData(Stores.Bills);
       // console.log("Bill data retriwing", data);

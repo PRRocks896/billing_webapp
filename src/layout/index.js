@@ -96,13 +96,12 @@ const LayoutProvider = () => {
             latestBillNo: response.data.latestBillNo,
           });
         }
-        const storedCustomerResponse = await getStoreData(Stores.Customer);
         let latestCustomerNo = response.data.latestCustomerNo;
-        if(storedCustomerResponse.statusCode === 200) {
-          const { data } = storedCustomerResponse;
-          if(data && data.length > 0) {
-            latestCustomerNo = data[data.length - 1]?.id;
-          }
+
+        const storedCustomerResponse = await getStoreData(Stores.Customer);
+        const indexDBCustomer = storedCustomerResponse.statusCode === 200 ? storedCustomerResponse.data?.filter((item) => typeof item.id === 'string') : [];
+        if(indexDBCustomer.length > 0) {
+          latestCustomerNo = indexDBCustomer[indexDBCustomer.length - 1]?.id;
         }
         localStorage.setItem("latestCustomerNo", latestCustomerNo);
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
