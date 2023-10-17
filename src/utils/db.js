@@ -22,8 +22,12 @@ export const initDB = () => {
 
       // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Bills)) {
-        db.createObjectStore(Stores.Bills, {
+        const billStore = db.createObjectStore(Stores.Bills, {
           keyPath: "id",
+        });
+        // Create an index on the "phoneNumber" field
+        billStore.createIndex("phoneNumberIndex", "phoneNumber", {
+          unique: false,
         });
       }
       if (!db.objectStoreNames.contains(Stores.Staff)) {
@@ -113,26 +117,42 @@ export const getStoreDataPagination = (
   pageNumber = 1,
   pageSize = 10,
   searchValue = "",
-  sort = false
+  sort = false,
+  isPhone = false
 ) => {
+  // console.log(searchValue);
   let totalCount = 0;
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("myDB");
     request.onsuccess = () => {
       var db = request.result;
-      const trans = db.transaction(storeName, "readonly");
+      const trans = db.transaction([storeName], "readonly");
       const store = trans.objectStore(storeName);
       store.count().onsuccess = (event) => {
         totalCount = event.target.result;
       };
-      const res =
-        searchValue.length > 0 ? store.getAll(searchValue) : store.getAll(null);
+
+      let res;
+      if (isPhone) {
+        // console.log("if");
+        const phoneNumberIndex = store.index("phoneNumberIndex");
+        res = phoneNumberIndex.getAll(searchValue);
+        // console.log(res);
+      } else {
+        // console.log("else");
+        res =
+          searchValue.length > 0
+            ? store.getAll(searchValue)
+            : store.getAll(null);
+      }
+
       res.onsuccess = (event) => {
+        // console.log(event);
         let allItems;
         if (sort) {
-          allItems = event.target.result
-            .slice()
-            .sort((a, b) => b.id.localeCompare(a.id));
+          allItems = event?.target?.result
+            ?.slice()
+            ?.sort((a, b) => b.id.localeCompare(a.id));
         } else {
           allItems = event.target.result;
         }

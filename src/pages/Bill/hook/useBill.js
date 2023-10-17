@@ -61,12 +61,20 @@ export const useBill = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
+        const isPhone =
+          searchValue.includes("G") || searchValue === "" ? false : true;
+        const sValue =
+          searchValue.includes("G") || searchValue === ""
+            ? searchValue
+            : parseInt(searchValue);
+
         const localBillData = await getStoreDataPagination(
           Stores.Bills,
           page,
           rowsPerPage,
-          searchValue,
-          true
+          sValue,
+          true,
+          isPhone
         );
         let descendingLocalBillData = [];
 
@@ -102,6 +110,7 @@ export const useBill = () => {
           dispatch(billAction.storeBill(finalPayload));
         } else {
           const payload = [...descendingLocalBillData];
+          // console.log("00", payload);
           setCount(localBillData?.count);
           dispatch(billAction.storeBill(payload));
         }
