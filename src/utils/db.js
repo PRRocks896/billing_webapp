@@ -63,7 +63,6 @@ export const initDB = () => {
         });
       }
       if (!db.objectStoreNames.contains(Stores.BillNo)) {
-        console.log("Creating BillNo");
         db.createObjectStore(Stores.BillNo, {
           keyPath: "id",
         });
@@ -120,7 +119,6 @@ export const getStoreDataPagination = (
   sort = false,
   isPhone = false
 ) => {
-  // console.log(searchValue);
   let totalCount = 0;
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("myDB");
@@ -134,12 +132,9 @@ export const getStoreDataPagination = (
 
       let res;
       if (isPhone) {
-        // console.log("if");
         const phoneNumberIndex = store.index("phoneNumberIndex");
         res = phoneNumberIndex.getAll(searchValue);
-        // console.log(res);
       } else {
-        // console.log("else");
         res =
           searchValue.length > 0
             ? store.getAll(searchValue)
@@ -147,7 +142,6 @@ export const getStoreDataPagination = (
       }
 
       res.onsuccess = (event) => {
-        // console.log(event);
         let allItems;
         if (sort) {
           allItems = event?.target?.result

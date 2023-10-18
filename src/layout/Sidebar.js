@@ -73,7 +73,7 @@ const Sidebar = () => {
       await deleteAllData(Stores.BillNo);
       logoutHandler();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

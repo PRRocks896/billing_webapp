@@ -63,7 +63,7 @@ const CustomerBillData = ({
           setData(response.data.rows);
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       } finally {
         setIsLoading(false);
       }
