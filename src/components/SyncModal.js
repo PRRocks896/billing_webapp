@@ -76,7 +76,8 @@ const SyncModal = ({
           // console.log(customerData, billData);
           const syncBillData = billData.data.map((row) => {
             const cust = customerData.find(
-              (item) => item.customerNo === row.px_customer.customerNo
+              (item) => (item.customerNo === row.px_customer.customerNo || item.customerNo === row.customerID)
+
             );
             if (cust) {
               return { ...row, customerID: cust.id };
