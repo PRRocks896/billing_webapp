@@ -44,7 +44,7 @@ const SyncModal = ({
         await addData(Stores.Customer, payload, "bulk");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
