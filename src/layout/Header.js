@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import Sidebar from "./Sidebar";
@@ -12,6 +12,8 @@ import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Clock from "../components/Clock";
+import { Stores, getStoreData } from "../utils/db";
+import SyncModal from "../components/SyncModal";
 
 const drawerWidth = 300;
 
@@ -58,6 +60,31 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   }
   pageTitle = pageTitle.toUpperCase();
 
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  const { id } = loggedInUser;
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [billCount, setBillCount] = useState(0);
+
+  // check syncing
+  const checkBillDataExist = async (flag = 0) => {
+    const billData = await getStoreData(Stores.Bills);
+    if (billData.statusCode === 200 && billData.data.length) {
+      const lastRecord = billData.data[billData.data.length - 1];
+      if (flag === 0) {
+        if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
+          setBillCount(billData.data.length);
+          setIsSyncModalOpen(true);
+        }
+      } else {
+        setBillCount(billData.data.length);
+        setIsSyncModalOpen(true);
+      }
+    }
+  };
+  useEffect(() => {
+    checkBillDataExist();
+  }, [id]);
+
   return (
     <>
       <AppBar position="fixed" open={open} className="header">
@@ -99,8 +126,17 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
         <DrawerHeader className="site-logo">
           <img src={SiteLogo} alt="Sitelogo" width={140} height={80} />
         </DrawerHeader>
-        <Sidebar />
+        <Sidebar checkBillDataExist={checkBillDataExist} />
       </Drawer>
+
+      {isSyncModalOpen && (
+        <SyncModal
+          isSyncModalOpen={isSyncModalOpen}
+          count={billCount}
+          setIsSyncModalOpen={setIsSyncModalOpen}
+          // fetchBillData={fetchBillData}
+        />
+      )}
     </>
   );
 };

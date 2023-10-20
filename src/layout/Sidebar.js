@@ -11,9 +11,10 @@ import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Stores, deleteAllData } from "../utils/db";
+import { GoSync } from "react-icons/go";
 import { logoutHandler } from "../utils/helper";
 
-const Sidebar = () => {
+const Sidebar = ({ checkBillDataExist }) => {
   let panelNo = 3;
   const { accessModules } = useSelector((state) => state.loggedInUser);
 
@@ -177,11 +178,29 @@ const Sidebar = () => {
             );
           })}
         </div>
-        <div onClick={logoutClickHandler}>
+
+        <div>
           <Accordion
             expanded={expanded === "panel6"}
             onChange={handleChange("panel6")}
             className="menu-list"
+            onClick={() => checkBillDataExist(1)}
+          >
+            <AccordionSummary
+              className="menu-title"
+              aria-controls="panel5bh-content"
+              id="panel5bh-header"
+            >
+              <Typography>
+                <GoSync /> Sync Data
+              </Typography>
+            </AccordionSummary>
+          </Accordion>
+          <Accordion
+            expanded={expanded === "panel7"}
+            onChange={handleChange("panel7")}
+            className="menu-list"
+            onClick={logoutClickHandler}
           >
             <AccordionSummary
               className="menu-title"

@@ -15,7 +15,6 @@ import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useBill } from "./hook/useBill";
 import { useNavigate } from "react-router-dom";
-import SyncModal from "../../components/SyncModal";
 
 const Bill = () => {
   const {
@@ -33,11 +32,11 @@ const Bill = () => {
     count,
     rights,
 
-    isSyncModalOpen,
-    setIsSyncModalOpen,
-    billCount,
+    // isSyncModalOpen,
+    // setIsSyncModalOpen,
+    // billCount,
 
-    fetchBillData,
+    // fetchBillData,
   } = useBill();
 
   const navigate = useNavigate();
@@ -148,14 +147,14 @@ const Bill = () => {
         />
       )}
 
-      {isSyncModalOpen && (
+      {/* {isSyncModalOpen && (
         <SyncModal
           isSyncModalOpen={isSyncModalOpen}
           count={billCount}
           setIsSyncModalOpen={setIsSyncModalOpen}
           fetchBillData={fetchBillData}
         />
-      )}
+      )} */}
     </>
   );
 };

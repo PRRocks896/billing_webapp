@@ -12,7 +12,7 @@ const SyncModal = ({
   isSyncModalOpen,
   count,
   setIsSyncModalOpen,
-  fetchBillData,
+  // fetchBillData,
 }) => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const { id } = loggedInUser;
@@ -76,8 +76,9 @@ const SyncModal = ({
           // console.log(customerData, billData);
           const syncBillData = billData.data.map((row) => {
             const cust = customerData.find(
-              (item) => (item.customerNo === row.px_customer.customerNo || item.customerNo === row.customerID)
-
+              (item) =>
+                item.customerNo === row.px_customer.customerNo ||
+                item.customerNo === row.customerID
             );
             if (cust) {
               return { ...row, customerID: cust.id };
@@ -124,7 +125,7 @@ const SyncModal = ({
             ) {
               showToast(response.message, true);
               fetchCustomerData();
-              fetchBillData();
+              // fetchBillData();
               setIsSyncModalOpen(false);
             }
           } else {

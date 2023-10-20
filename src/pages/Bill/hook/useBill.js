@@ -16,7 +16,6 @@ import {
   deleteData,
   getStoreDataPagination,
   getSingleData,
-  getStoreData,
   // deleteAllData,
 } from "../../../utils/db";
 import PrintContent from "../../../components/PrintContent";
@@ -29,7 +28,7 @@ export const useBill = () => {
   const billData = useSelector((state) => state.bill.data);
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const userRole = loggedInUser?.px_role?.name?.toLowerCase();
-  const { accessModules, id } = loggedInUser;
+  const { accessModules } = loggedInUser;
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -37,8 +36,8 @@ export const useBill = () => {
   // const [localBillList, setLocalBillList] = useState([]);
   // const [combinedData, setCombinedData] = useState([]);
 
-  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-  const [billCount, setBillCount] = useState(0);
+  // const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  // const [billCount, setBillCount] = useState(0);
 
   // pagination start
   const [page, setPage] = useState(0);
@@ -255,55 +254,55 @@ export const useBill = () => {
   };
 
   // check syncing
-  useEffect(() => {
-    const checkBillDataExist = async () => {
-      const billData = await getStoreData(Stores.Bills);
-      if (billData.statusCode === 200 && billData.data.length) {
-        const lastRecord = billData.data[billData.data.length - 1];
-        if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
-          setBillCount(billData.data.length);
-          setIsSyncModalOpen(true);
-        }
+  // useEffect(() => {
+  //   const checkBillDataExist = async () => {
+  //     const billData = await getStoreData(Stores.Bills);
+  //     if (billData.statusCode === 200 && billData.data.length) {
+  //       const lastRecord = billData.data[billData.data.length - 1];
+  //       if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
+  //         setBillCount(billData.data.length);
+  //         setIsSyncModalOpen(true);
+  //       }
 
-        // const bulkBillPayload = billData.data.map((row) => {
-        //   return {
-        //     cardNo: row.cardNo,
-        //     createdAt: row.createdAt,
-        //     createdBy: id,
-        //     customerID: row.customerID,
-        //     detail: row.detail.map((item) => ({
-        //       discount: item.discount,
-        //       quantity: item.quantity,
-        //       rate: item.rate,
-        //       serviceID: item.serviceID,
-        //       total: item.total,
-        //     })),
-        //     grandTotal: row.grandTotal.toString(),
-        //     paymentID: row.paymentID,
-        //     phoneNumber: row.phoneNumber.toString(),
-        //     roomNo: row.roomNo,
-        //     staffID: row.staffID,
-        //     userID: row.userID,
-        //     isDeleted: false,
-        //     isActive: true,
-        //     referenceBy: row.referenceBy,
-        //   };
-        // });
+  //       // const bulkBillPayload = billData.data.map((row) => {
+  //       //   return {
+  //       //     cardNo: row.cardNo,
+  //       //     createdAt: row.createdAt,
+  //       //     createdBy: id,
+  //       //     customerID: row.customerID,
+  //       //     detail: row.detail.map((item) => ({
+  //       //       discount: item.discount,
+  //       //       quantity: item.quantity,
+  //       //       rate: item.rate,
+  //       //       serviceID: item.serviceID,
+  //       //       total: item.total,
+  //       //     })),
+  //       //     grandTotal: row.grandTotal.toString(),
+  //       //     paymentID: row.paymentID,
+  //       //     phoneNumber: row.phoneNumber.toString(),
+  //       //     roomNo: row.roomNo,
+  //       //     staffID: row.staffID,
+  //       //     userID: row.userID,
+  //       //     isDeleted: false,
+  //       //     isActive: true,
+  //       //     referenceBy: row.referenceBy,
+  //       //   };
+  //       // });
 
-        // const response = await createBulkBill(bulkBillPayload);
-        // if (response.statusCode === 200) {
-        //   const deleteAll = await deleteAllData(Stores.Bills);
-        //   if (deleteAll.statusCode === 200) {
-        //     showToast(response.message, true);
-        //     setIsSyncModalOpen(false);
-        //   }
-        // } else {
-        // }
-      }
-    };
+  //       // const response = await createBulkBill(bulkBillPayload);
+  //       // if (response.statusCode === 200) {
+  //       //   const deleteAll = await deleteAllData(Stores.Bills);
+  //       //   if (deleteAll.statusCode === 200) {
+  //       //     showToast(response.message, true);
+  //       //     setIsSyncModalOpen(false);
+  //       //   }
+  //       // } else {
+  //       // }
+  //     }
+  //   };
 
-    checkBillDataExist();
-  }, [id]);
+  //   checkBillDataExist();
+  // }, [id]);
 
   return {
     handlePrint,
@@ -319,10 +318,10 @@ export const useBill = () => {
     visibleRows,
     count,
     rights,
-    isSyncModalOpen,
-    setIsSyncModalOpen,
-    billCount,
+    // isSyncModalOpen,
+    // setIsSyncModalOpen,
+    // billCount,
 
-    fetchBillData,
+    // fetchBillData,
   };
 };
