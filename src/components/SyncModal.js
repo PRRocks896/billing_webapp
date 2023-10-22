@@ -65,71 +65,72 @@ const SyncModal = ({
 
       const syncCustomerData = [...data1, ...data2];
       // console.log(syncCustomerData);
+      let customerData = [];
+      if (syncCustomerData.length) {
+        const response = await createBulkCustomer(syncCustomerData);
+        if (response.statusCode === 200) {
+          customerData = response.data;
+        }
+      }
 
-      const response = await createBulkCustomer(syncCustomerData);
-      if (response.statusCode === 200) {
-        const customerData = response.data;
-        const billData = await getStoreData(Stores.Bills);
+      const billData = await getStoreData(Stores.Bills);
 
-        if (billData.statusCode === 200 && billData.data.length) {
-          // const lastRecord = billData.data[billData.data.length - 1];
-          // console.log(customerData, billData);
-          const syncBillData = billData.data.map((row) => {
-            const cust = customerData.find(
-              (item) =>
-                item.customerNo === row.px_customer.customerNo ||
-                item.customerNo === row.customerID
-            );
-            if (cust) {
-              return { ...row, customerID: cust.id };
-            } else {
-              return { ...row };
-            }
-          });
-          // console.log(syncBillData);
-
-          const bulkBillPayload = syncBillData.map((row) => {
-            return {
-              billNo: row.billNo,
-              cardNo: row.cardNo,
-              createdAt: row.createdAt,
-              createdBy: id,
-              customerID: row.customerID,
-              detail: row.detail.map((item) => ({
-                discount: item.discount,
-                quantity: item.quantity,
-                rate: item.rate,
-                serviceID: item.serviceID,
-                total: item.total,
-              })),
-              grandTotal: row.grandTotal.toString(),
-              paymentID: row.paymentID,
-              phoneNumber: row.phoneNumber.toString(),
-              roomNo: row.roomNo,
-              staffID: row.staffID,
-              userID: row.userID,
-              isDeleted: false,
-              isActive: true,
-              referenceBy: row.referenceBy,
-            };
-          });
-          // console.log(bulkBillPayload);
-          const response = await createBulkBill(bulkBillPayload);
-          // console.log(response);
-          if (response.statusCode === 200) {
-            const deleteAllBill = await deleteAllData(Stores.Bills);
-            const deleteAllCustomer = await deleteAllData(Stores.Customer);
-            if (
-              deleteAllBill.statusCode === 200 ||
-              deleteAllCustomer.statusCode === 200
-            ) {
-              showToast(response.message, true);
-              fetchCustomerData();
-              // fetchBillData();
-              setIsSyncModalOpen(false);
-            }
+      if (billData.statusCode === 200 && billData.data.length) {
+        // const lastRecord = billData.data[billData.data.length - 1];
+        // console.log(customerData, billData);
+        const syncBillData = billData.data.map((row) => {
+          const cust = customerData?.find(
+            (item) =>
+              item.customerNo === row.px_customer.customerNo ||
+              item.customerNo === row.customerID
+          );
+          if (cust) {
+            return { ...row, customerID: cust.id };
           } else {
+            return { ...row };
           }
+        });
+
+        const bulkBillPayload = syncBillData.map((row) => {
+          return {
+            billNo: row.billNo,
+            cardNo: row.cardNo,
+            createdAt: row.createdAt,
+            createdBy: id,
+            customerID: row.customerID,
+            detail: row.detail.map((item) => ({
+              discount: item.discount,
+              quantity: item.quantity,
+              rate: item.rate,
+              serviceID: item.serviceID,
+              total: item.total,
+            })),
+            grandTotal: row.grandTotal.toString(),
+            paymentID: row.paymentID,
+            phoneNumber: row.phoneNumber.toString(),
+            roomNo: row.roomNo,
+            staffID: row.staffID,
+            userID: row.userID,
+            isDeleted: false,
+            isActive: true,
+            referenceBy: row.referenceBy,
+          };
+        });
+
+        const response = await createBulkBill(bulkBillPayload);
+
+        if (response.statusCode === 200) {
+          const deleteAllBill = await deleteAllData(Stores.Bills);
+          const deleteAllCustomer = await deleteAllData(Stores.Customer);
+          if (
+            deleteAllBill.statusCode === 200 ||
+            deleteAllCustomer.statusCode === 200
+          ) {
+            showToast(response.message, true);
+            fetchCustomerData();
+            setIsSyncModalOpen(false);
+          }
+        } else {
         }
       }
     } catch (error) {
