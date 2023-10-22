@@ -68,7 +68,7 @@ const Sidebar = ({ checkBillDataExist }) => {
   const logoutClickHandler = async () => {
     try {
       await deleteAllData(Stores.Staff);
-      await deleteAllData(Stores.Customer);
+      // await deleteAllData(Stores.Customer);
       await deleteAllData(Stores.Service);
       await deleteAllData(Stores.Payment);
       await deleteAllData(Stores.BillNo);
