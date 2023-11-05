@@ -76,7 +76,7 @@ const Bill = () => {
                       <TableCell align="left">{(index += 1)}</TableCell>
                       <TableCell align="left">{row?.billNo}</TableCell>
                       <TableCell align="left">
-                        {row?.createdAt?.slice(0, 10)}
+                        {new Date(row?.createdAt).toISOString()?.slice(0, 10)}
                       </TableCell>
                       <TableCell align="left">
                         {row?.px_customer?.name}

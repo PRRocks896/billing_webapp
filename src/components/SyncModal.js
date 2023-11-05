@@ -61,7 +61,7 @@ const SyncModal = ({
         return data;
       });
       // const data2 = custData.data.filter((row) => typeof row.id === "number");
-      const data2 = custData.data.filter((row) => row.flag === 1);
+      const data2 = custData.data.filter((row) => (row.flag === 1 && typeof row.id === 'number'));
 
       const syncCustomerData = [...data1, ...data2];
       // console.log(syncCustomerData);
@@ -95,7 +95,7 @@ const SyncModal = ({
           return {
             billNo: row.billNo,
             cardNo: row.cardNo,
-            createdAt: row.createdAt,
+            createdAt: new Date(row.createdAt),
             createdBy: id,
             customerID: row.customerID,
             detail: row.detail.map((item) => ({

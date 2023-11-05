@@ -480,14 +480,14 @@ export const useAddEditCreateBill = (tag) => {
       if (tag === "add") {
         response = await addData(Stores.Bills, {
           ...payload,
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(),
           createdBy: loggedInUser.id,
         });
       } else {
         if (id.charAt(0) === "G") {
           response = await updateData(Stores.Bills, payload.id, {
             ...payload,
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date(),
             updatedBy: loggedInUser.id,
           });
         } else {
@@ -867,7 +867,7 @@ export const useAddEditCreateBill = (tag) => {
 
         const response = await addData(Stores.Bills, {
           ...payload,
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(), //.toISOString(),
           createdBy: loggedInUser.id,
         });
 

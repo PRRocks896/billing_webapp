@@ -60,7 +60,7 @@ export const useAddCustomer = (
       // const response = await createCustomer(payload);
       const response = await addData(Stores.Customer, {
         ...payload,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),//.toISOString(),
       });
 
       if (response?.statusCode === 200) {
