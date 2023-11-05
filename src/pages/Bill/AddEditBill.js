@@ -14,6 +14,7 @@ import TableBody from "@mui/material/TableBody";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { Controller } from "react-hook-form";
+import moment from 'moment';
 import {
   FiMinusCircle,
   FiPlusCircle,
@@ -113,8 +114,7 @@ const AddEditBill = ({ tag }) => {
                   name="date"
                   control={control}
                   render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
+                    field: { value },
                   }) => (
                     <FormControl
                       size="small"
@@ -123,21 +123,13 @@ const AddEditBill = ({ tag }) => {
                     >
                       <TextField
                         disabled
-                        type="date"
                         label="Date"
                         size="small"
                         name="date"
-                        pattern="\d{2}-\d{2}-\d{4}"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        error={!!error}
-                      />
+                        value={moment(value).format('DD/MM/yyyy')}
+                        />
                     </FormControl>
                   )}
-                  rules={{
-                    required: "Please Select Date",
-                  }}
                 />
               </Grid>
 

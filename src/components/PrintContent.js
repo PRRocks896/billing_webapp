@@ -1,21 +1,30 @@
+import moment from 'moment';
+
 const PrintContent = (billData, branchData) => {
-  const date = new Date().toLocaleDateString("en-GB", {
+  console.log(billData);
+  const date = moment(billData.date || new Date()).format('DD/MM/yyyy');
+  /*new Date(billData?.date).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  });
-  const time = new Date().toLocaleTimeString("en-US", {
+  });*/
+  const time = moment(billData.date || new Date()).format('hh:mm:ss A');
+  /*new Date(billData?.date).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-  });
+  });*/
 
   return `
   <html>
     <head>
       <title>G${billData.billNo}</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
       <style>
         *{
+          font-family: 'Poppins', sans-serif;
          font-weight: bold;
         }
         @media print {
@@ -32,29 +41,29 @@ const PrintContent = (billData, branchData) => {
             <p style="text-transform: capitalize;font-size: 20px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
               branchData.title
             }</p>
-            <p style="text-transform: capitalize; font-size: 16px; margin: 0px; text-align: center;">
+            <p style="text-transform: capitalize; font-size: 12px; margin: 0px; text-align: center;">
               ${branchData.address}
             </p>
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">Ph :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph :${
                   branchData.phone1
                 }, ${branchData.phone2}  </p>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">Bill No :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Bill No :${
                   billData.billNo
                 }</p>
               </div>
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">Date :${date}</p>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">Time :${time}</p>
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Date :${date}</p>
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Time :${time}</p>
               </div>
             </div>
             <div style="width: 100%;display: flex;margin-top: 7px;">
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">Name :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Name :${
                   billData.customer
                 }</p>
-                <p style="text-align: start; margin: 0px; font-size: 12px;">Ph :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph :${
                   billData.phone
                 }</p>
               </div>
@@ -62,7 +71,7 @@ const PrintContent = (billData, branchData) => {
             <div style="width: 100%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
             <table style="width: 100%;">
               <thead>
-                <tr style="text-align:center;font-size: 12px;border: 1px solid black;">
+                <tr style="text-align:center;font-size: 14px;border: 1px solid black;">
                   <td>SR</td>
                   <td>Item Name</td>
                   <td>Qty</td>
@@ -73,7 +82,7 @@ const PrintContent = (billData, branchData) => {
               <tbody>
                 ${billData.detail?.map(
                   (row, index) =>
-                    `<tr style="text-align:center;font-size: 12px;">
+                    `<tr style="text-align:center;font-size: 14px;">
                       <td>${index + 1}</td>
                       <td>${row.item}</td>
                       <td>${row.quantity}</td>
@@ -95,7 +104,7 @@ const PrintContent = (billData, branchData) => {
                 billData.total
               }</p>
             </div>
-            <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start; flex-direction: column; font-size: 12px;">
+            <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start; flex-direction: column; font-size: 14px;">
               <div>
                 ${
                   billData.payment.toLowerCase().includes("card")
@@ -117,7 +126,7 @@ const PrintContent = (billData, branchData) => {
           </div>
 
           <div style="height: max-content; border: 0px solid black;">
-            <table style="font-size: 16px;">
+            <table style="font-size: 20px;">
               <tbody>
                 <tr>
                   <td style="padding: 10px 0;">Date</td>

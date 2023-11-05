@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { getBillList } from "../service/bill";
 import { listPayload } from "../utils/helper";
 import { useSelector } from "react-redux";
+import moment from 'moment';
 
 const getDate = () => {
   const originalDate = "2023-10-09T17:43:46.000Z";
@@ -88,7 +89,7 @@ const CustomerBillData = ({
         }}
       >
         <Fade in={isCustomerBillDataModalOpen}>
-          <Box className="modal-wrapper modal-bg">
+          <Box className="modal-wrapper modal-lg modal-bg">
             {isLoading ? (
               <Typography
                 variant="h5"
@@ -121,7 +122,19 @@ const CustomerBillData = ({
                                 <strong>Date</strong>
                               </TableCell>
                               <TableCell>
+                                <strong>Therapist</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Reference By</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Paid By</strong>
+                              </TableCell>
+                              <TableCell>
                                 <strong>Service</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Qty</strong>
                               </TableCell>
                               <TableCell>
                                 <strong>Amount</strong>
@@ -134,9 +147,16 @@ const CustomerBillData = ({
                                 <>
                                   <TableRow>
                                     <TableCell>
-                                      {getDate(row.createdAt)}
+                                      {moment(row.createdAt).format('DD/MM/yyyy hh:mm A')}
+                                      {/* {getDate(row.createdAt)} */}
                                     </TableCell>
+                                    <TableCell>{row?.px_staff?.name}</TableCell>
+                                    <TableCell>{row?.referenceBy}</TableCell>
+                                    <TableCell>{
+                                      row?.px_payment_type?.name === 'Card' ? `${row?.px_payment_type?.name} - ${row?.cardNo}` : row?.px_payment_type?.name
+                                    }</TableCell>
                                     <TableCell>{item?.service?.name}</TableCell>
+                                    <TableCell>{item?.quantity}</TableCell>
                                     <TableCell>{item.rate}</TableCell>
                                   </TableRow>
                                 </>

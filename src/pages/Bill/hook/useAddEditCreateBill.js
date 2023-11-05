@@ -82,7 +82,7 @@ export const useAddEditCreateBill = (tag) => {
     defaultValues: {
       billNo: "",
       paymentID: "",
-      date: new Date().toISOString().split("T")[0],
+      date: new Date(),
       customerID: "",
       Phone: "",
       staffID: "",
@@ -792,7 +792,7 @@ export const useAddEditCreateBill = (tag) => {
     printWindow.close();
   };
 
-  const printHandler = async () => {
+  const printHandler = async (info) => {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {

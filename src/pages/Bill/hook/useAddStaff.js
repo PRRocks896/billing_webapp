@@ -34,7 +34,7 @@ export const useAddStaff = (
         showToast(response?.message, true);
         await addData(Stores.Staff, response.data);
         setIsStaffModalOpen();
-        setStaffSelectedHandler(payload.userID, payload.name);
+        setStaffSelectedHandler(response.data?.id, response.data?.name);
         fetchStaffData();
         reset();
       } else {
