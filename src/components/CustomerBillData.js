@@ -15,19 +15,19 @@ import { listPayload } from "../utils/helper";
 import { useSelector } from "react-redux";
 import moment from 'moment';
 
-const getDate = () => {
-  const originalDate = "2023-10-09T17:43:46.000Z";
+// const getDate = () => {
+//   const originalDate = "2023-10-09T17:43:46.000Z";
 
-  const dateObj = new Date(originalDate);
+//   const dateObj = new Date(originalDate);
 
-  const day = dateObj.getUTCDate().toString().padStart(2, "0");
-  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, "0"); // Adding 1 because months are zero-based
-  const year = dateObj.getUTCFullYear();
+//   const day = dateObj.getUTCDate().toString().padStart(2, "0");
+//   const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, "0"); // Adding 1 because months are zero-based
+//   const year = dateObj.getUTCFullYear();
 
-  const formattedDate = `${day}/${month}/${year}`;
+//   const formattedDate = `${day}/${month}/${year}`;
 
-  return formattedDate;
-};
+//   return formattedDate;
+// };
 
 const CustomerBillData = ({
   customerPhone,

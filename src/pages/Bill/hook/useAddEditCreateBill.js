@@ -229,11 +229,13 @@ export const useAddEditCreateBill = (tag) => {
       setIsSaveModalOpen(true);
     } else {
       reset();
+      setValue('date', new Date());
     }
   };
 
   const dontSaveHandler = () => {
     reset();
+    setValue('date', new Date());
     setIsSaveModalOpen(false);
   };
 
@@ -524,6 +526,7 @@ export const useAddEditCreateBill = (tag) => {
           };
           await updateData(Stores.BillNo, latestBillNoId, payload);
           reset();
+          setValue('date', new Date());
 
           getNewBillNo();
 
@@ -814,7 +817,7 @@ export const useAddEditCreateBill = (tag) => {
         (row) => row.id === getValues("paymentID").value
       )?.name,
       cardNo: getValues("cardNo"),
-      date: getValues("date"),
+      date: new Date(), //getValues("date"),
       customer: customers.find(
         (row) => row.id === getValues("customerID").value
       )?.name,
@@ -882,6 +885,7 @@ export const useAddEditCreateBill = (tag) => {
           };
           await updateData(Stores.BillNo, latestBillNoId, payload);
           reset();
+          setValue('date', new Date());
 
           getNewBillNo();
 
