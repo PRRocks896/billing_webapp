@@ -61,6 +61,7 @@ const Customer = () => {
                 <TableCell>No</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Phone</TableCell>
+                <TableCell>DOB</TableCell>
                 <TableCell>Gender</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
@@ -76,6 +77,7 @@ const Customer = () => {
                       <TableCell align="left">{(index += 1)}</TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.phoneNumber}</TableCell>
+                      <TableCell align="left">{row.dob || 'N/A'}</TableCell>
                       <TableCell align="left">{row.gender}</TableCell>
                       {rights.edit && (
                         <TableCell>

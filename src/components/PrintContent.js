@@ -1,7 +1,6 @@
 import moment from 'moment';
 
 const PrintContent = (billData, branchData) => {
-  console.log(billData);
   const date = moment(billData.date || new Date()).format('DD/MM/yyyy');
   /*new Date(billData?.date).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -58,7 +57,7 @@ const PrintContent = (billData, branchData) => {
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Time :${time}</p>
               </div>
             </div>
-            <div style="width: 100%;display: flex;margin-top: 7px;">
+            <div style="width: 100%;display: flex;justify-content: space-between;margin-top: 7px;">
               <div>
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Name :${
                   billData.customer
@@ -67,6 +66,11 @@ const PrintContent = (billData, branchData) => {
                   billData.phone
                 }</p>
               </div>
+              ${billData.isShowGst ?
+                `<div>
+                  <p style="text-align: start; margin: 0px; font-size: 14px;">Gst: <br/>${billData.gstNo}</p>
+                </div>`
+              : ''}
             </div>
             <div style="width: 100%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
             <table style="width: 100%;">

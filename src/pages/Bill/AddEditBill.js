@@ -56,7 +56,8 @@ const AddEditBill = ({ tag }) => {
 
     isCustomerModalOpen,
     setIsCustomerModalOpen,
-    fetchCustomersData,
+    searchCustomer,
+    // fetchCustomersData,
 
     isStaffModalOpen,
     setIsStaffModalOpen,
@@ -240,6 +241,7 @@ const AddEditBill = ({ tag }) => {
                             changeCustomerPhoneHandler(newValue);
                             onChange(newValue);
                           }}
+                          onInputChange={(event, value, reason) => searchCustomer(value)}
                           renderOption={(props, option) => (
                             <li {...props} key={option.value}>
                               {option.label}
@@ -251,6 +253,7 @@ const AddEditBill = ({ tag }) => {
                               label="Customer Ph No."
                               error={!!error}
                               helperText={error?.message}
+                              // onChange={(e) => searchCustomer(e.target.value)}
                             />
                           )}
                         />
@@ -667,6 +670,38 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
             </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={3}>
+              <Controller
+                  name="managerName"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Manager Name"
+                        size="small"
+                        name="managerName"
+                        value={value}
+                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: 'Please Enter Manager Name'
+                  }}
+                />
+              </Grid>
+            </Grid>
           </FormGroup>
         </Box>
 
@@ -788,7 +823,6 @@ const AddEditBill = ({ tag }) => {
       <AddCustomer
         isCustomerModalOpen={isCustomerModalOpen}
         setIsCustomerModalOpen={setIsCustomerModalOpen}
-        fetchCustomersData={fetchCustomersData}
         setCustomerSelectedHandler={setCustomerSelectedHandler}
       />
 

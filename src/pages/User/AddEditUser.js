@@ -5,6 +5,8 @@ import {
   Button,
   FormControl,
   FormGroup,
+  FormControlLabel,
+  Switch,
   Grid,
   TextField,
 } from "@mui/material";
@@ -443,6 +445,58 @@ const AddEditUser = ({ tag }) => {
                   />
                 </Grid>
               )}
+              <Grid item xs={6}>
+                <Controller
+                  control={control}
+                  name="gstNo"
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Gst*"
+                        size="small"
+                        name="gst"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value.toUpperCase());
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Gst",
+                    pattern: {
+                      value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+                      message: 'Enter Invalid Gst Number'
+                    }
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="isShowGst"
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <FormControlLabel control={<Switch checked={value} onChange={onChange} onBlur={onBlur} />} label="Show Gst" />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
             </Grid>
           </FormGroup>
         </Box>

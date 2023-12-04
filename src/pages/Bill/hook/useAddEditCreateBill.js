@@ -1,38 +1,18 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCallback, useEffect, useMemo, useState } from "react";
-// import { getPaymentTypeList } from "../../../service/paymentType";
-// import { getCustomerList } from "../../../service/customer";
-// import { getStaffList } from "../../../service/staff";
-// import { getServiceList } from "../../../service/service";
-import { showToast } from "../../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
-import { getBillById, updateBill } from "../../../service/bill";
+
+import { getPaymentTypeList } from "../../../service/paymentType";
+import { getCustomerList } from "../../../service/customer";
+import { getStaffList } from "../../../service/staff";
+import { getServiceList } from "../../../service/service";
+import { listPayload, showToast } from "../../../utils/helper";
+import { getBillById, updateBill, createBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-import {
-  Stores,
-  addData,
-  getSingleData,
-  getStoreData,
-  updateData,
-} from "../../../utils/db";
 
 let editCardNo = "";
-// const monthsAbbreviated = [
-//   "Jan",
-//   "Feb",
-//   "Mar",
-//   "Apr",
-//   "May",
-//   "Jun",
-//   "Jul",
-//   "Aug",
-//   "Sep",
-//   "Oct",
-//   "Nov",
-//   "Dec",
-// ];
 
 export const useAddEditCreateBill = (tag) => {
   const dispatch = useDispatch();
@@ -65,7 +45,7 @@ export const useAddEditCreateBill = (tag) => {
   const [submitedBillData, setSubmitedBillData] = useState("");
 
   const navigate = useNavigate();
-  const [editUserId, setEditUserId] = useState("");
+  // const [editUserId, setEditUserId] = useState("");
 
   // const userRole = loggedInUser?.px_role?.name?.toLowerCase();
 
@@ -105,6 +85,7 @@ export const useAddEditCreateBill = (tag) => {
       phoneNumber: "",
       phoneNumber2: "",
       referenceBy: "",
+      managerName: ""
     },
     mode: "onBlur",
   });
@@ -125,9 +106,9 @@ export const useAddEditCreateBill = (tag) => {
   }, [loggedInUser, setValue]);
 
   const getNewBillNo = async () => {
-    const response = await getStoreData(Stores.BillNo);
-    const latestBillNo = response.data[0].latestBillNo;
-
+    // const response = await getStoreData(Stores.BillNo);
+    // const latestBillNo = response.data[0].latestBillNo;
+    const latestBillNo = localStorage.getItem('latestBillNo');
     const numericPart = latestBillNo.match(/\d+$/)[0];
     const incrementedNumber = parseInt(numericPart, 10) + 1;
     const formattedNumber = incrementedNumber
@@ -141,72 +122,30 @@ export const useAddEditCreateBill = (tag) => {
     getNewBillNo();
     // eslint-disable-next-line
   }, []);
-  // useEffect(() => {
-  // let MONTH = monthsAbbreviated[new Date().getMonth()].toUpperCase();
-  // let BILLCODE;
-  // let BILLNO;
-  // // const options = { month: "short" };
 
-  // let firstBillNo = 0;
-  // if (billData.length) {
-  //   firstBillNo = billData[0]?.billNo;
-  //   window.localStorage.setItem("billNo", firstBillNo);
-  //   BILLCODE = loggedInUser?.billCode;
-  //   window.localStorage.setItem("billCode", BILLCODE);
-  //   const matches = firstBillNo?.match(/\d+/);
-  //   if (firstBillNo?.includes(MONTH)) {
-  //     const extractedNumber = +matches[0] + 1;
-  //     BILLNO = extractedNumber.toString().padStart(4, "0");
-  //   } else {
-  //     const extractedNumber = 1;
-  //     BILLNO = extractedNumber.toString().padStart(4, "0");
-  //   }
-  // } else {
-  //   firstBillNo = window.localStorage.getItem("billNo");
-  //   BILLCODE = window.localStorage.getItem("billCode");
+  const searchCustomer = async (customerPhone) => {
+    try {
+      if(customerPhone.length > 2) {
+        const whereCondition = {
+          searchText: customerPhone,
+          isActive: true,
+          isDeleted: false
+        };
+        const payload = listPayload(0, whereCondition, 1000000);
+        const { success, data } = await getCustomerList(payload);
+        if(success) {
+          setCustomers(data?.rows);
+        } else {
+          setCustomers([]);
+        }
+      } else if(customerPhone.length === 0) {
+        setCustomers([]);
+      }
+    } catch(err) {
+      showToast(err?.message, false);
+    }
+  }
 
-  //   if (!firstBillNo && !BILLCODE) {
-  //     BILLCODE = loggedInUser?.billCode;
-  //     const extractedNumber = 1;
-  //     BILLNO = extractedNumber.toString().padStart(4, "0");
-  //     window.localStorage.setItem(
-  //       "billNo",
-  //       `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`
-  //     );
-  //     window.localStorage.setItem("billCode", BILLCODE);
-  //   } else {
-  //     const matches = firstBillNo?.match(/\d+/);
-  //     if (firstBillNo?.includes(MONTH)) {
-  //       const extractedNumber = +matches[0] + 1;
-  //       BILLNO = extractedNumber.toString().padStart(4, "0");
-  //     } else {
-  //       const extractedNumber = 1;
-  //       BILLNO = extractedNumber.toString().padStart(4, "0");
-  //     }
-  //   }
-  // }
-  // MONTH = new Date().toLocaleString("default", options).toUpperCase();
-
-  // console.log(extractedNumber, month.toUpperCase(), billCode.toUpperCase());
-  // const finalBillNumber = `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`;
-
-  // setValue("billNo", finalBillNumber);
-
-  // let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-  // setValue("billNo", "G" + 1);
-  // }, [billData, loggedInUser?.billCode, setValue]);
-
-  // const selectedCus = watch("customerID");
-  // console.log("watch", selectedCus);
-  // useEffect(() => {
-  //   console.log("inside useEffect");
-  //   setValue(
-  //     "Phone",
-  //     selectedCus === "" || selectedCus === null
-  //       ? ""
-  //       : customers.find((row) => row.id === selectedCus.value)?.name
-  //   );
-  // }, [customers, selectedCus, setValue]);
   const changeCustomerPhoneHandler = (selectedCus) => {
     setValue(
       "Phone",
@@ -224,7 +163,8 @@ export const useAddEditCreateBill = (tag) => {
       getValues("grandTotal") ||
       getValues("detail.0.quantity") ||
       getValues("detail.0.serviceID") ||
-      getValues("roomNo")
+      getValues("roomNo") ||
+      getValues("managerName")
     ) {
       setIsSaveModalOpen(true);
     } else {
@@ -271,25 +211,40 @@ export const useAddEditCreateBill = (tag) => {
     }
   };
 
-  // get payment type list
   useEffect(() => {
-    try {
-      const fetchPaymentTypeData = async () => {
-        // const body = listPayload(0, { isActive: true }, 1000);
-        // const response = await getPaymentTypeList(body);
-        const response = await getStoreData(Stores.Payment);
-        if (response?.statusCode === 200) {
-          const payload = response?.data;
-          setPaymentType(payload);
-        } else if (response?.statusCode === 404) {
-          const payload = [];
-          setPaymentType(payload);
-        }
+    const fetchDropDownList = async () => {
+      const whereCondition = {
+        isActive: true,
+        isDeleted: false
       };
-      fetchPaymentTypeData();
-    } catch (error) {
-      showToast(error?.message, false);
+      const payload = listPayload(0, whereCondition, 100000);
+      const [
+        staffResponse,
+        serviceResponse,
+        paymentResponse,
+      ] = await Promise.all([
+        getStaffList(listPayload(0, loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? whereCondition : {...whereCondition, createdBy: loggedInUser.id}, 100000)),
+        getServiceList(payload),
+        getPaymentTypeList(payload)
+      ]);
+      if(staffResponse?.statusCode === 200 && staffResponse?.success) {
+        setStaff(staffResponse.data?.rows);
+      } else {
+        setStaff([]);
+      }
+      if(serviceResponse?.statusCode === 200 && serviceResponse?.success) {
+        setService(serviceResponse.data?.rows);
+      } else {
+        setService([]);
+      }
+      if(paymentResponse?.statusCode === 200 && paymentResponse?.success) {
+        setPaymentType(paymentResponse.data?.rows);
+      } else {
+        setPaymentType([]);
+      }
     }
+    fetchDropDownList();
+    // eslint-disable-next-line
   }, []);
 
   // genrate customer options for drop down
@@ -303,43 +258,8 @@ export const useAddEditCreateBill = (tag) => {
   const setCustomerSelectedHandler = (id, phone, name, custNo) => {
     setValue("customerID", { value: id, label: phone, customerNo: custNo });
     setValue("Phone", name);
-    // setError("customerID", { type: "custom", message: "" });
     clearErrors("customerID");
   };
-
-  // get customers list
-  const fetchCustomersData = useCallback(async () => {
-    try {
-      // let whereCondition = {
-      //   isActive: true,
-      // };
-      // if (userRole !== "admin") {
-      //   whereCondition = {
-      //     ...whereCondition,
-      //     createdBy: loggedInUser.id,
-      //   };
-      // }
-      // const body = listPayload(0, whereCondition, 1000);
-
-      // const response = await getCustomerList(body);
-      const response = await getStoreData(Stores.Customer);
-
-      if (response?.statusCode === 200) {
-        const payload = response?.data;
-        setCustomers(payload);
-      } else if (response?.statusCode === 404) {
-        const payload = [];
-        setCustomers(payload);
-      }
-    } catch (error) {
-      showToast(error?.message, false);
-    }
-    // eslint-disable-next-line
-  }, []);
-
-  useEffect(() => {
-    fetchCustomersData();
-  }, [fetchCustomersData]);
 
   // genrate staff options for drop down
   useEffect(() => {
@@ -353,41 +273,6 @@ export const useAddEditCreateBill = (tag) => {
     setValue("staffID", { value: id, label: name });
     clearErrors("staffID");
   };
-
-  // get staff list
-  const fetchStaffData = useCallback(async () => {
-    try {
-      // let whereCondition = {
-      //   isActive: true,
-      // };
-      // if (userRole !== "admin") {
-      //   whereCondition = {
-      //     ...whereCondition,
-      //     createdBy: loggedInUser.id,
-      //   };
-      // }
-
-      // const body = listPayload(0, whereCondition, 1000);
-
-      // const response = await getStaffList(body);
-      const response = await getStoreData(Stores.Staff);
-
-      if (response?.statusCode === 200) {
-        const payload = response?.data;
-        setStaff(payload);
-      } else if (response?.statusCode === 404) {
-        const payload = [];
-        setStaff(payload);
-      }
-    } catch (error) {
-      showToast(error?.message, false);
-    }
-    // eslint-disable-next-line
-  }, [loggedInUser]);
-
-  useEffect(() => {
-    fetchStaffData();
-  }, [fetchStaffData]);
 
   // genrate service options for drop down
   useEffect(() => {
@@ -407,29 +292,6 @@ export const useAddEditCreateBill = (tag) => {
     // eslint-disable-next-line
   }, [watch("paymentID"), getValues]);
 
-  // get service list
-  useEffect(() => {
-    try {
-      const fetchServiceData = async () => {
-        // const body = listPayload(0, { isActive: true }, 1000);
-
-        // const response = await getServiceList(body);
-        const response = await getStoreData(Stores.Service);
-
-        if (response?.statusCode === 200) {
-          const payload = response?.data;
-          setService(payload);
-        } else if (response?.statusCode === 404) {
-          const payload = [];
-          setService(payload);
-        }
-      };
-      fetchServiceData();
-    } catch (error) {
-      showToast(error?.message, false);
-    }
-  }, []);
-
   const onSubmit = async (data) => {
     const detailData = data.detail.map((item) => {
       return {
@@ -443,215 +305,51 @@ export const useAddEditCreateBill = (tag) => {
     });
     try {
       dispatch(startLoading());
-      const singleCustomer = await getSingleData(
-        Stores.Customer,
-        data.customerID.value
-      );
-
       const payload = {
-        id: getValues("billNo"),
-        billNo: getValues("billNo"),
+        id: tag === 'add' ? null : id,
+        // billNo: getValues("billNo"),
         userID: loggedInUser.id,
         staffID: data.staffID.value,
-        customerID:
-          typeof data.customerID.value === "string"
-            ? null
-            : data.customerID.value,
+        customerID: data.customerID.value,
         detail: detailData,
         paymentID: data.paymentID.value,
         grandTotal: data.grandTotal,
         phoneNumber: +data.customerID.label,
         roomNo: data.roomNo,
-        cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
-          ? data.cardNo
-          : "",
-
-        px_customer: {
-          name: data.Phone,
-          phoneNumber: +data.customerID.label,
-          customerNo:
-            singleCustomer?.data?.customerNo || singleCustomer?.data?.id,
-        },
+        cardNo: data.paymentID?.label?.toLowerCase()?.includes("card") ? data.cardNo : "",
+        px_customer: { name: data.Phone, phoneNumber: +data.customerID.label,},
         px_payment_type: { name: data.paymentID.label },
         px_staff: { name: data.staffID.label },
         referenceBy: data.referenceBy,
+        managerName: data.managerName
       };
-
-      let response;
-
-      if (tag === "add") {
-        response = await addData(Stores.Bills, {
+      const response = tag === 'add' ?
+        await createBill({
           ...payload,
-          createdAt: new Date(),
           createdBy: loggedInUser.id,
-        });
-      } else {
-        if (id.charAt(0) === "G") {
-          response = await updateData(Stores.Bills, payload.id, {
-            ...payload,
-            updatedAt: new Date(),
-            updatedBy: loggedInUser.id,
-          });
-        } else {
-          const payload = {
-            // userID: loggedInUser.id,
-            userID: editUserId,
-            staffID: data.staffID.value,
-            customerID: data.customerID.value,
-            detail: detailData,
-            paymentID: data.paymentID.value,
-            grandTotal: data.grandTotal,
-            roomNo: data.roomNo,
-            phoneNumber: +data.customerID.label,
-            cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
-              ? data.cardNo
-              : "",
-            referenceBy: data.referenceBy,
-          };
-          response = await updateBill(
-            { ...payload, updatedBy: loggedInUser.id },
-            id
-          );
-        }
-      }
-
+        })
+      :
+        await updateBill({
+          ...payload,
+          updatedBy: loggedInUser.id,
+        }, id);
       if (response.statusCode === 200) {
         showToast(response.message, true);
         if (tag === "add") {
-          const response = await getStoreData(Stores.BillNo);
-          const latestBillNoId = response.data[0].id;
-
-          const payload = {
-            latestBillNo: getValues("billNo"),
-          };
-          await updateData(Stores.BillNo, latestBillNoId, payload);
+          const latestBillNo = response.data?.billNo;
+          localStorage.setItem('latestBillNo', latestBillNo);
           reset();
           setValue('date', new Date());
-
+          setValue('billNo', latestBillNo);
           getNewBillNo();
-
-          // window.localStorage.setItem("billNo", response.data.billNo);
-          // let firstBillNo = +response.data.billNo?.substring(1);
-          // window.localStorage.setItem("billNo", firstBillNo);
-          // let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-          // setValue("billNo", "G" + billNo);
-
-          // let MONTH;
-          // let BILLCODE;
-          // let BILLNO;
-          // // const options = { month: "short" };
-
-          // let firstBillNo = 0;
-          // firstBillNo = window.localStorage.getItem("billNo");
-          // BILLCODE = window.localStorage.getItem("billCode");
-
-          // MONTH = monthsAbbreviated[new Date().getMonth()].toUpperCase();
-
-          // const matches = firstBillNo?.match(/\d+/);
-          // if (matches) {
-          //   if (firstBillNo?.includes(MONTH)) {
-          //     const extractedNumber = +matches[0] + 1;
-          //     BILLNO = extractedNumber.toString().padStart(4, "0");
-          //   } else {
-          //     const extractedNumber = 1;
-          //     BILLNO = extractedNumber.toString().padStart(4, "0");
-          //   }
-          //   const finalBillNumber = `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`;
-          //   setValue("billNo", finalBillNumber);
-          // } else {
-          //   console.log("No numeric part found in the string.");
-          // }
-
           setSubmitedBillData(response.data);
           setPaymentOptionAndCard();
         } else {
-          window.localStorage.removeItem("billNo");
           navigate("/bill");
         }
       } else {
         showToast(response.message, false);
       }
-      // ------------------
-      // const response =
-      //   tag === "add"
-      //     ? await createBill({ ...payload, createdBy: loggedInUser.id })
-      //     : await updateBill({ ...payload, updatedBy: loggedInUser.id }, id);
-
-      // if (response.statusCode === 200) {
-      //   showToast(response.message, true);
-      //   if (tag === "add") {
-      //     reset();
-      //     let firstBillNo = +response.data.billNo?.substring(1);
-      //     window.localStorage.setItem("billNo", firstBillNo);
-      //     let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-      //     setValue("billNo", "G" + billNo);
-      //     setSubmitedBillData(response.data);
-      //     setPaymentOptionAndCard();
-      //   } else {
-      //     window.localStorage.removeItem("billNo");
-      //     navigate("/bill");
-      //   }
-      // } else {
-      //   showToast(response.messageCode, false);
-      // }
-      // ------------------
-      // if (tag === "add") {
-      //   const payload = {
-      //     userID: loggedInUser.id,
-      //     staffID: data.staffID.value,
-      //     customerID: data.customerID.value,
-      //     detail: detailData,
-      //     paymentID: data.paymentID.value,
-      //     grandTotal: data.grandTotal,
-      //     phoneNumber: +data.customerID.label,
-      //     roomNo: data.roomNo,
-      //     cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
-      //       ? data.cardNo
-      //       : "",
-      //     createdBy: loggedInUser.id,
-      //   };
-      //   console.log("payload", payload);
-      //   const response = await createBill(payload);
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     reset();
-      //     let firstBillNo = +response.data.billNo?.substring(1);
-      //     window.localStorage.setItem("billNo", firstBillNo);
-      //     let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-      //     setValue("billNo", "G" + billNo);
-      //     setSubmitedBillData(response.data);
-      //     setPaymentOptionAndCard();
-      //     // navigate("/bill");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // } else if (tag === "edit") {
-      //   const payload = {
-      //     userID: loggedInUser.id,
-      //     staffID: data.staffID.value,
-      //     customerID: data.customerID.value,
-      //     detail: detailData,
-      //     paymentID: data.paymentID.value,
-      //     grandTotal: data.grandTotal,
-      //     roomNo: data.roomNo,
-      //     phoneNumber: +data.customerID.label,
-      //     cardNo: data.paymentID?.label?.toLowerCase()?.includes("card")
-      //       ? data.cardNo
-      //       : "",
-      //     updatedBy: loggedInUser.id,
-      //   };
-      //   console.log("Edit", payload);
-      //   const response = await updateBill(payload, id);
-
-      //   if (response.statusCode === 200) {
-      //     showToast(response.message, true);
-      //     window.localStorage.removeItem("billNo");
-      //     navigate("/bill");
-      //   } else {
-      //     showToast(response.messageCode, false);
-      //   }
-      // }
-      dispatch(stopLoading());
     } catch (error) {
       showToast(error?.message, false);
     } finally {
@@ -713,12 +411,7 @@ export const useAddEditCreateBill = (tag) => {
     try {
       if (id) {
         dispatch(startLoading());
-        let response;
-        if (id.charAt(0) === "G") {
-          response = await getSingleData(Stores.Bills, id);
-        } else {
-          response = await getBillById(id);
-        }
+        const response = await getBillById(id);
         if (response?.statusCode === 200) {
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
@@ -734,7 +427,7 @@ export const useAddEditCreateBill = (tag) => {
           });
           setValue("customerID", {
             value:
-              response.data.customerID || response.data.px_customer.customerNo,
+              response.data.customerID,
             label: response.data.px_customer.phoneNumber,
           });
           setValue("Phone", response.data.px_customer.name);
@@ -742,7 +435,7 @@ export const useAddEditCreateBill = (tag) => {
           editCardNo = response.data.cardNo;
           setValue("cardNo", response.data.cardNo);
           setValue("referenceBy", response.data.referenceBy);
-
+          setValue("managerName", response.data.managerName);
           const items = response.data.detail.map((item) => {
             return {
               id: item.id,
@@ -759,7 +452,7 @@ export const useAddEditCreateBill = (tag) => {
           });
           setValue("detail", items);
 
-          setEditUserId(response.data.userID);
+          // setEditUserId(response.data.userID);
         } else {
           showToast(response?.message, false);
         }
@@ -828,25 +521,21 @@ export const useAddEditCreateBill = (tag) => {
       detail: getValues("detail").map((row) => {
         return { ...row, item: row.serviceID.label };
       }),
-
       phoneNumber: getValues("phoneNumber"),
-      // billTitle: getValues("billTitle"),
-      // address: getValues("address"),
-      // phoneNumber2: getValues("phoneNumber2"),
-      // roleID: getValues("roleID"),
-
       billTitle: loggedInUser.billTitle,
       address: loggedInUser.address,
       phoneNumber2: loggedInUser.phoneNumber2,
       roleID: loggedInUser.roleID,
+      gstNo: loggedInUser.gstNo,
+      isShowGst: loggedInUser.isShowGst
     };
 
     try {
       dispatch(startLoading());
       if (tag === "add") {
         const payload = {
-          id: getValues("billNo"),
-          billNo: getValues("billNo"),
+          id: null, //getValues("billNo"),
+          // billNo: getValues("billNo"),
           userID: loggedInUser.id,
           staffID: getValues("staffID").value,
           customerID: getValues("customerID").value,
@@ -866,9 +555,10 @@ export const useAddEditCreateBill = (tag) => {
           px_payment_type: { name: getValues("paymentID").label },
           px_staff: { name: getValues("staffID").label },
           referenceBy: getValues("referenceBy"),
+          managerName: getValues('managerName')
         };
 
-        const response = await addData(Stores.Bills, {
+        const response = await createBill({
           ...payload,
           createdAt: new Date(), //.toISOString(),
           createdBy: loggedInUser.id,
@@ -876,129 +566,36 @@ export const useAddEditCreateBill = (tag) => {
 
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
-
-          const response2 = await getStoreData(Stores.BillNo);
-          const latestBillNoId = response2.data[0].id;
-
-          const payload = {
-            latestBillNo: getValues("billNo"),
-          };
-          await updateData(Stores.BillNo, latestBillNoId, payload);
+          const latestBillNo = response.data?.billNo;
+          localStorage.setItem('latestBillNo', latestBillNo);
           reset();
           setValue('date', new Date());
-
           getNewBillNo();
-
-          // window.localStorage.setItem("billNo", response.data.billNo);
-          // let firstBillNo = +response.data.billNo?.substring(1);
-          // window.localStorage.setItem("billNo", firstBillNo);
-          // let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-          // setValue("billNo", "G" + billNo);
-
-          // let MONTH;
-          // let BILLCODE;
-          // let BILLNO;
-          // // const options = { month: "short" };
-
-          // let firstBillNo = 0;
-          // firstBillNo = window.localStorage.getItem("billNo");
-          // BILLCODE = window.localStorage.getItem("billCode");
-
-          // MONTH = monthsAbbreviated[new Date().getMonth()].toUpperCase();
-
-          // const matches = firstBillNo?.match(/\d+/);
-          // if (matches) {
-          //   if (firstBillNo?.includes(MONTH)) {
-          //     const extractedNumber = +matches[0] + 1;
-          //     BILLNO = extractedNumber.toString().padStart(4, "0");
-          //   } else {
-          //     const extractedNumber = 1;
-          //     BILLNO = extractedNumber.toString().padStart(4, "0");
-          //   }
-          //   const finalBillNumber = `G${BILLCODE.toUpperCase()}${MONTH.toUpperCase()}${BILLNO}`;
-          //   setValue("billNo", finalBillNumber);
-          // } else {
-          //   console.log("No numeric part found in the string.");
-          // }
-
           setSubmitedBillData(response.data);
           setPaymentOptionAndCard();
           print(billData);
         } else {
           showToast(response?.message, false);
         }
-
-        // const response = await createBill(payload);
-        // if (response?.statusCode === 200) {
-        //   showToast(response?.message, true);
-        //   reset();
-        //   let firstBillNo = +response.data.billNo?.substring(1);
-        //   window.localStorage.setItem("billNo", firstBillNo);
-        //   let billNo = (firstBillNo += 1).toString().padStart(8, "0");
-        //   setValue("billNo", "G" + billNo);
-        //   setSubmitedBillData(response.data);
-        //   setPaymentOptionAndCard();
-        //   print(billData);
-        // } else {
-        //   showToast(response?.message, false);
-        // }
       } else if (tag === "edit") {
-        let response;
-        if (id.charAt(0) === "G") {
-          const payload = {
-            id: getValues("billNo"),
-            billNo: getValues("billNo"),
-            userID: loggedInUser.id,
-            staffID: getValues("staffID").value,
-            customerID: getValues("customerID").value,
-            detail: detailData,
-            paymentID: getValues("paymentID").value,
-            grandTotal: getValues("grandTotal"),
-            roomNo: getValues("roomNo"),
-            phoneNumber: getValues("customerID").label,
-            cardNo: getValues("paymentID")
-              ?.label?.toLowerCase()
-              ?.includes("card")
-              ? getValues("cardNo")
-              : "",
-
-            px_customer: {
-              name: getValues("Phone"),
-              phoneNumber: +getValues("customerID").label,
-            },
-            px_payment_type: { name: getValues("paymentID").label },
-            px_staff: { name: getValues("staffID").label },
-            referenceBy: getValues("referenceBy"),
-          };
-          response = await updateData(Stores.Bills, payload.id, {
-            ...payload,
-            updatedAt: new Date().toISOString(),
-            updatedBy: loggedInUser.id,
-          });
-        } else {
-          const payload = {
-            userID: loggedInUser.id,
-            staffID: getValues("staffID").value,
-            customerID: getValues("customerID").value,
-            detail: detailData,
-            paymentID: getValues("paymentID").value,
-            grandTotal: getValues("grandTotal"),
-            roomNo: getValues("roomNo"),
-            phoneNumber: getValues("customerID").label,
-            cardNo: getValues("paymentID")
-              ?.label?.toLowerCase()
-              ?.includes("card")
-              ? getValues("cardNo")
-              : "",
-            referenceBy: getValues("referenceBy"),
-          };
-          // response = await updateBill(payload, id);
-          response = await updateBill(
-            { ...payload, updatedBy: loggedInUser.id },
-            id
-          );
-        }
-
+        const payload = {
+          userID: loggedInUser.id,
+          staffID: getValues("staffID").value,
+          customerID: getValues("customerID").value,
+          detail: detailData,
+          paymentID: getValues("paymentID").value,
+          grandTotal: getValues("grandTotal"),
+          roomNo: getValues("roomNo"),
+          phoneNumber: getValues("customerID").label,
+          cardNo: getValues("paymentID")
+            ?.label?.toLowerCase()
+            ?.includes("card")
+            ? getValues("cardNo")
+            : "",
+          referenceBy: getValues("referenceBy"),
+          managerName: getValues("managerName")
+        };
+        const response = await updateBill({ ...payload, updatedBy: loggedInUser.id }, id);
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
           print(billData);
@@ -1007,7 +604,6 @@ export const useAddEditCreateBill = (tag) => {
           showToast(response?.message, false);
         }
       }
-      dispatch(stopLoading());
     } catch (error) {
       showToast(error?.message, false);
     } finally {
@@ -1037,11 +633,12 @@ export const useAddEditCreateBill = (tag) => {
 
     isCustomerModalOpen,
     setIsCustomerModalOpen,
-    fetchCustomersData,
+    searchCustomer,
+    // fetchCustomersData,
 
     isStaffModalOpen,
     setIsStaffModalOpen,
-    fetchStaffData,
+    // fetchStaffData,
 
     setQtyRateValuesHandler,
     printHandler,

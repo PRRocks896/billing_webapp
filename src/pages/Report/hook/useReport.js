@@ -1,20 +1,11 @@
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from 'moment';
+
 import { getReportList } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { useCallback, useEffect, useState } from "react";
 import { getUserList } from "../../../service/users";
-
-function formatDate(date) {
-  const isoDate = date.toISOString();
-
-  const year = isoDate.slice(0, 4);
-  const month = isoDate.slice(5, 7);
-  const day = isoDate.slice(8, 10);
-
-  const formattedDate = `${year}-${month}-${day}`;
-  return formattedDate;
-}
 
 export const useReport = () => {
   const dispatch = useDispatch();
@@ -42,7 +33,7 @@ export const useReport = () => {
           value: row.id,
           label: row.branchName,
         }));
-        setBranchOptions(branchOption);
+        setBranchOptions([{value: null, label: 'All'}].concat(branchOption));
       } else if (response?.statusCode === 404) {
         const payload = [];
         setBranchOptions(payload);
@@ -65,13 +56,11 @@ export const useReport = () => {
 
       const body = {
         userID: user.roleID !== 1 ? user.id : branch.value,
-        startDate: formatDate(dateRange[0]),
-        endDate: formatDate(dateRange[1]),
+        startDate: moment(dateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
+        endDate: moment(dateRange[1]).format('yyyy-MM-DD') //formatDate(dateRange[1]),
       };
-      if (body.userID) {
-        const response = await getReportList(body);
-        setPdfData(response);
-      }
+      const response = await getReportList(body);
+      setPdfData(response);
     } catch (error) {
       showToast("No report found", false);
     } finally {

@@ -1,13 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-// import { createCustomer } from "../../../service/customer";
+import { createCustomer } from "../../../service/customer";
 import { showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, addData, searchPhoneNumber } from "../../../utils/db";
 
 export const useAddCustomer = (
   setIsCustomerModalOpen,
-  fetchCustomersData,
   setCustomerSelectedHandler
 ) => {
   const dispatch = useDispatch();
@@ -26,24 +24,7 @@ export const useAddCustomer = (
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-
-      const inputString = localStorage.getItem("latestCustomerNo");
-      const numericPart = inputString.match(/\d+/)[0];
-      const incrementedNumericPart = String(Number(numericPart) + 1).padStart(
-        numericPart.length,
-        "0"
-      );
-      const resultString = inputString.replace(/\d+/, incrementedNumericPart);
-      const newID = resultString;
-
-      // const result = await checkCustomerPhoneNumber(
-      //   Stores.Customer,
-      //   data.phone
-      // );
-      // console.log(result);
-
       const payload = {
-        id: newID,
         userID: loggedInUser.id,
         phoneNumber: data.phone,
         gender: data.gender,
@@ -51,23 +32,9 @@ export const useAddCustomer = (
         createdBy: loggedInUser.id,
       };
 
-      const result = await searchPhoneNumber(data.phone);
-      if (result.statusCode === 200) {
-        showToast("Customer already exist", false);
-        return;
-      }
-
-      // const response = await createCustomer(payload);
-      const response = await addData(Stores.Customer, {
-        ...payload,
-        createdAt: new Date(),//.toISOString(),
-      });
-
+      const response = await createCustomer(payload);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
-        // await addData(Stores.Customer, response.data);
-        localStorage.setItem("latestCustomerNo", newID);
-        fetchCustomersData();
         setIsCustomerModalOpen(false);
         setCustomerSelectedHandler(
           response.data.id,

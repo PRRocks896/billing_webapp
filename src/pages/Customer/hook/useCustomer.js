@@ -1,18 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { rightsAccess, showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { customerActions } from "../../../redux/customer";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCustomer } from "../../../service/customer";
+import { getCustomerList, updateCustomer, deleteCustomer } from "../../../service/customer";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import {
-  Stores,
-  deleteData,
-  getStoreDataPagination,
-  updateData,
-} from "../../../utils/db";
-
-const regex = /[a-zA-Z]+.*[0-9]+|[0-9]+.*[a-zA-Z]+/;
 
 export const useCustomer = () => {
   const dispatch = useDispatch();
@@ -48,23 +40,14 @@ export const useCustomer = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        // const payload = { searchText: searchValue };
-        // if (loggedInUser.roleID !== 1) {
-        //   payload.createdBy = loggedInUser.id;
-        // }
-        // const body = listPayload(page, { ...payload });
+        const payload = { searchText: searchValue };
+        const body = listPayload(page, { ...payload });
 
-        // const response = await getCustomerList(body);
-        const response = await getStoreDataPagination(
-          Stores.Customer,
-          page,
-          10,
-          searchValue
-        );
+        const response = await getCustomerList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data;
-          setCount(response?.count);
-          dispatch(customerActions.storeCustomer(payload));
+          setCount(payload?.count);
+          dispatch(customerActions.storeCustomer(payload.rows));
         } else if (response?.statusCode === 404) {
           const payload = [];
           dispatch(customerActions.storeCustomer(payload));
@@ -97,12 +80,11 @@ export const useCustomer = () => {
 
   const deleteHandler = async () => {
     try {
-      setIsDeleteModalOpen(false);
+      // setIsDeleteModalOpen(false);
       dispatch(startLoading());
       const response = await deleteCustomer(deleteId);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
-        await deleteData(Stores.Customer, +deleteId);
         dispatch(customerActions.removeCustomer({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {
@@ -118,16 +100,15 @@ export const useCustomer = () => {
 
   const changeStatusHandler = async (e, id) => {
     try {
-      const updateId = regex.test(id) ? id : parseInt(id);
       const payload = {
         isActive: e.target.checked,
         updatedBy: loggedInUser.id,
       };
-      // const response = await updateCustomer(payload, id);
-      const response = await updateData(Stores.Customer, updateId, payload);
+      const response = await updateCustomer(payload, id);
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
+        // fetchCustomerData();
         const payload2 = { id, status: payload.isActive };
         dispatch(customerActions.changeCustomerStatus(payload2));
       } else {

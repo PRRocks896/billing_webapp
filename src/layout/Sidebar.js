@@ -10,11 +10,9 @@ import { FiChevronRight, FiLogOut, FiGrid, FiSquare } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Stores, deleteAllData } from "../utils/db";
-import { GoSync } from "react-icons/go";
 import { logoutHandler } from "../utils/helper";
 
-const Sidebar = ({ checkBillDataExist }) => {
+const Sidebar = () => {
   let panelNo = 3;
   const { accessModules } = useSelector((state) => state.loggedInUser);
 
@@ -67,11 +65,6 @@ const Sidebar = ({ checkBillDataExist }) => {
 
   const logoutClickHandler = async () => {
     try {
-      await deleteAllData(Stores.Staff);
-      // await deleteAllData(Stores.Customer);
-      await deleteAllData(Stores.Service);
-      await deleteAllData(Stores.Payment);
-      await deleteAllData(Stores.BillNo);
       logoutHandler();
     } catch (error) {
       // console.log(error);
@@ -180,22 +173,6 @@ const Sidebar = ({ checkBillDataExist }) => {
         </div>
 
         <div>
-          <Accordion
-            expanded={expanded === "panel6"}
-            onChange={handleChange("panel6")}
-            className="menu-list"
-            onClick={() => checkBillDataExist(1)}
-          >
-            <AccordionSummary
-              className="menu-title"
-              aria-controls="panel5bh-content"
-              id="panel5bh-header"
-            >
-              <Typography>
-                <GoSync /> Sync Data
-              </Typography>
-            </AccordionSummary>
-          </Accordion>
           <Accordion
             expanded={expanded === "panel7"}
             onChange={handleChange("panel7")}

@@ -4,7 +4,6 @@ import { login } from "../../../service/login";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loggedInUserAction } from "../../../redux/loggedInUser";
-import { Stores, addData } from "../../../utils/db";
 
 const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
@@ -31,15 +30,9 @@ export const useLogin = () => {
       const response = await login(payload);
       if (response?.statusCode === 200) {
         const authToken = response?.data?.token;
-        await addData(Stores.BillNo, {
-          id: 1,
-          latestBillNo: response.data.latestBillNo,
-        });
         setAuthToken(authToken);
-        localStorage.setItem(
-          "latestCustomerNo",
-          response.data.latestCustomerNo
-        );
+        localStorage.setItem("latestBillNo", response.data.latestBillNo);
+        localStorage.setItem("latestCustomerNo", response.data.latestCustomerNo);
         dispatch(loggedInUserAction.storeLoggedInUserData(response?.data));
         navigate("/", { replace: true });
       } else {

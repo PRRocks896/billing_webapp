@@ -9,7 +9,6 @@ import Header from "./Header";
 import { getAuthToken, showToast } from "../utils/helper";
 import { loggedInUserAction } from "../redux/loggedInUser";
 import { fetchLoggedInUserData } from "../service/loggedInUser";
-import { Stores, updateData, getStoreData } from "../utils/db";
 
 const drawerWidth = 300;
 
@@ -82,32 +81,9 @@ const LayoutProvider = () => {
     try {
       const response = await fetchLoggedInUserData();
       if (response.statusCode === 200) {
-        const storedBillsResponse = await getStoreData(Stores.Bills);
-        if (storedBillsResponse.statusCode === 200) {
-          await updateData(Stores.BillNo, 1, {
-            id: 1,
-            latestBillNo:
-              storedBillsResponse.data[storedBillsResponse.data?.length - 1]
-                ?.billNo,
-          });
-        } else {
-          await updateData(Stores.BillNo, 1, {
-            id: 1,
-            latestBillNo: response.data.latestBillNo,
-          });
-        }
-        let latestCustomerNo = response.data.latestCustomerNo;
-
-        const storedCustomerResponse = await getStoreData(Stores.Customer);
-        const indexDBCustomer =
-          storedCustomerResponse.statusCode === 200
-            ? storedCustomerResponse.data?.filter(
-                (item) => typeof item.id === "string"
-              )
-            : [];
-        if (indexDBCustomer.length > 0) {
-          latestCustomerNo = indexDBCustomer[indexDBCustomer.length - 1]?.id;
-        }
+        const latestBillNo = response.data.latestBillNo;
+        const latestCustomerNo = response.data.latestCustomerNo;
+        localStorage.setItem('latestBillNo', latestBillNo);
         localStorage.setItem("latestCustomerNo", latestCustomerNo);
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate(pathname);

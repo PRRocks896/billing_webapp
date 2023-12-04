@@ -34,6 +34,8 @@ export const useAddEditUser = (tag) => {
       phoneNumberSecond: "",
       address: "",
       email: "",
+      gstNo: "",
+      isShowGst: false,
     },
     mode: "onBlur",
   });
@@ -123,6 +125,8 @@ export const useAddEditUser = (tag) => {
           billTitle: data.billName,
           address: data.address,
           email: data.email,
+          gstNo: data.gstNo,
+          isShowGst: data.isShowGst
         };
       } else {
         payload = {
@@ -133,6 +137,8 @@ export const useAddEditUser = (tag) => {
           userName: data.userName,
           phoneNumber: data.phoneNumber,
           email: data.email,
+          gstNo: data.gstNo,
+          isShowGst: data.isShowGst
         };
       }
       const response =
@@ -197,6 +203,8 @@ export const useAddEditUser = (tag) => {
           setValue("roleID", role);
           setValue("email", response.data.email);
           setValue("phoneNumber", response.data.phoneNumber);
+          setValue("gstNo", response.data.gstNo);
+          setValue("isShowGst", response.data.isShowGst);
           if (response.data.roleID !== 1) {
             setValue("phoneNumberSecond", response?.data?.phoneNumber2);
             setValue("billName", response?.data?.billTitle);

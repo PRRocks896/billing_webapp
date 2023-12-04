@@ -20,7 +20,7 @@ const AddCustomer = ({ tag }) => {
         <Box className="card">
           <FormGroup className="form-field">
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <Controller
                   name="name"
                   control={control}
@@ -51,7 +51,7 @@ const AddCustomer = ({ tag }) => {
                 />
               </Grid>
               {/*  */}
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <Controller
                   name="phoneNumber"
                   control={control}
@@ -89,6 +89,37 @@ const AddCustomer = ({ tag }) => {
                     },
                   }}
                 />
+              </Grid>
+              <Grid item xs={4}>
+                  <Controller
+                    name="dob"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
+                        <TextField
+                          type="date"
+                          label="DOB"
+                          size="small"
+                          name="name"
+                          value={value}
+                          onChange={(e) => onChange(e.target.value.toUpperCase())}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      </FormControl>
+                    )}
+                    rules={{
+                      required: "Customer Date of Birth field required",
+                    }}
+                  />
               </Grid>
               {/*  */}
               <Grid item xs={6}>

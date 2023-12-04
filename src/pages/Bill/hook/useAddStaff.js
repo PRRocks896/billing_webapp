@@ -3,7 +3,6 @@ import { showToast } from "../../../utils/helper";
 import { createStaff } from "../../../service/staff";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, addData } from "../../../utils/db";
 
 export const useAddStaff = (
   setIsStaffModalOpen,
@@ -32,7 +31,6 @@ export const useAddStaff = (
       const response = await createStaff(payload);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
-        await addData(Stores.Staff, response.data);
         setIsStaffModalOpen();
         setStaffSelectedHandler(response.data?.id, response.data?.name);
         fetchStaffData();

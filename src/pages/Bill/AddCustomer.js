@@ -17,12 +17,10 @@ import { useAddCustomer } from "./hook/useAddCustomer";
 const AddCustomer = ({
   isCustomerModalOpen,
   setIsCustomerModalOpen,
-  fetchCustomersData,
   setCustomerSelectedHandler,
 }) => {
   const { control, handleSubmit, onSubmit, reset } = useAddCustomer(
     setIsCustomerModalOpen,
-    fetchCustomersData,
     setCustomerSelectedHandler
   );
 

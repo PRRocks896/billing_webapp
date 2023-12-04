@@ -5,7 +5,6 @@ import { staffAction } from "../../../redux/staff";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, deleteData } from "../../../utils/db";
 
 export const useStaff = () => {
   const dispatch = useDispatch();
@@ -99,7 +98,6 @@ export const useStaff = () => {
       const response = await deleteStaff(deleteId);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
-        await deleteData(Stores.Staff, +deleteId);
         dispatch(staffAction.removeStaff({ id: deleteId }));
         setCount((prev) => prev - 1);
       } else {

@@ -1,4 +1,6 @@
 import React from "react";
+import moment from "moment";
+
 import {
   Box,
   Button,
@@ -31,12 +33,7 @@ const Bill = () => {
     visibleRows,
     count,
     rights,
-
-    // isSyncModalOpen,
-    // setIsSyncModalOpen,
-    // billCount,
-
-    // fetchBillData,
+    userRole
   } = useBill();
 
   const navigate = useNavigate();
@@ -59,6 +56,9 @@ const Bill = () => {
             <TableHead>
               <TableRow>
                 <TableCell>No</TableCell>
+                {userRole === 'admin' &&
+                  <TableCell>Branch Name</TableCell>
+                }
                 <TableCell>Bill No</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Customer</TableCell>
@@ -74,12 +74,15 @@ const Bill = () => {
                   return (
                     <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
+                      {userRole === 'admin' &&
+                        <TableCell>{`${row?.px_user?.firstName} - ${row?.px_user?.lastName}`}</TableCell>
+                      }
                       <TableCell align="left">{row?.billNo}</TableCell>
                       <TableCell align="left">
-                        {new Date(row?.createdAt).toISOString()?.slice(0, 10)}
+                        {moment(row?.createdAt).format('yyyy-MM-DD hh:mm A')}
                       </TableCell>
                       <TableCell align="left">
-                        {row?.px_customer?.name}
+                        {row?.px_customer?.name}<br/>{row?.px_customer?.phoneNumber}
                       </TableCell>
                       <TableCell align="left">{row?.px_staff?.name}</TableCell>
                       <TableCell align="left">
@@ -142,19 +145,10 @@ const Bill = () => {
         <ConfirmationModal
           isDeleteModalOpen={isDeleteModalOpen}
           setIsDeleteModalOpen={setIsDeleteModalOpen}
-          title="payment type"
+          title="bill"
           deleteHandler={deleteHandler}
         />
       )}
-
-      {/* {isSyncModalOpen && (
-        <SyncModal
-          isSyncModalOpen={isSyncModalOpen}
-          count={billCount}
-          setIsSyncModalOpen={setIsSyncModalOpen}
-          fetchBillData={fetchBillData}
-        />
-      )} */}
     </>
   );
 };

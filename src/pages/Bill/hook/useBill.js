@@ -11,17 +11,9 @@ import {
   // createBulkBill,
 } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import {
-  Stores,
-  deleteData,
-  getStoreDataPagination,
-  getSingleData,
-  // deleteAllData,
-} from "../../../utils/db";
 import PrintContent from "../../../components/PrintContent";
 
 export const useBill = () => {
-  window.localStorage.removeItem("billNo");
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   // eslint-disable-next-line
@@ -32,12 +24,6 @@ export const useBill = () => {
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  // const [localBillList, setLocalBillList] = useState([]);
-  // const [combinedData, setCombinedData] = useState([]);
-
-  // const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
-  // const [billCount, setBillCount] = useState(0);
 
   // pagination start
   const [page, setPage] = useState(0);
@@ -60,28 +46,6 @@ export const useBill = () => {
     async (searchValue = "") => {
       try {
         dispatch(startLoading());
-        const isPhone =
-          searchValue.includes("G") || searchValue === "" ? false : true;
-        const sValue =
-          searchValue.includes("G") || searchValue === ""
-            ? searchValue
-            : parseInt(searchValue);
-
-        const localBillData = await getStoreDataPagination(
-          Stores.Bills,
-          page,
-          rowsPerPage,
-          sValue,
-          true,
-          isPhone
-        );
-        let descendingLocalBillData = [];
-
-        if (localBillData.statusCode === 200) {
-          descendingLocalBillData = localBillData.data
-            .slice()
-            .sort((a, b) => b.id.localeCompare(a.id));
-        }
         let whereCondition = {
           isDeleted: false,
           searchText: searchValue,
@@ -102,16 +66,13 @@ export const useBill = () => {
 
         if (response?.statusCode === 200) {
           const finalPayload = [
-            ...descendingLocalBillData,
             ...response?.data?.rows,
           ];
-          // setCombinedData(finalPayload);
-          setCount(response.data.count + localBillData.count);
+          setCount(response.data.count);
           dispatch(billAction.storeBill(finalPayload));
         } else {
-          const payload = [...descendingLocalBillData];
-          // console.log("00", payload);
-          setCount(localBillData?.count);
+          const payload = [];
+          setCount(0);
           dispatch(billAction.storeBill(payload));
         }
       } catch (error) {
@@ -145,14 +106,9 @@ export const useBill = () => {
   // delete bill
   const deleteHandler = async () => {
     try {
-      setIsDeleteModalOpen(false);
       dispatch(startLoading());
-      let response;
-      if (typeof deleteId === "string") {
-        response = await deleteData(Stores.Bills, deleteId);
-      } else {
-        response = await deleteBill(deleteId);
-      }
+
+      const response = await deleteBill(deleteId);
 
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
@@ -198,7 +154,7 @@ export const useBill = () => {
 
   const handlePrint = async (id) => {
     const response = await getBillById(id);
-    if (response.success) {
+    if (response?.success) {
       const body = response.data;
       const billData = {
         subTotal: body?.grandTotal,
@@ -220,90 +176,14 @@ export const useBill = () => {
         address: loggedInUser.address,
         phoneNumber2: loggedInUser.phoneNumber2,
         roleID: loggedInUser.roleID,
+        gstNo: body?.px_user?.gstNo,
+        isShowGst: body?.px_user?.isShowGst
       };
       doPrint(billData);
     } else {
-      const localDBResponse = await getSingleData(Stores.Bills, id);
-      if (localDBResponse.statusCode === 200) {
-        const data = localDBResponse?.data;
-        const billData = {
-          subTotal: data?.grandTotal,
-          total: data?.grandTotal,
-          billNo: data?.billNo,
-          payment: data?.px_payment_type?.name,
-          cardNo: data?.cardNo,
-          date: new Date(data?.createdAt),
-          customer: data?.px_customer?.name,
-          customerID: data?.customerID,
-          phone: data?.px_customer?.phoneNumber,
-          staff: data?.px_staff?.name,
-          roomNo: data?.roomNo,
-          detail: data?.detail?.map((row) => {
-            return { ...row, item: row.service.name };
-          }),
-          phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
-          billTitle: loggedInUser.billTitle,
-          address: loggedInUser.address,
-          phoneNumber2: loggedInUser.phoneNumber2,
-          roleID: loggedInUser.roleID,
-        };
-        doPrint(billData);
-      } else {
-        showToast(response?.message, false);
-      }
+      showToast(response?.message, false);
     }
   };
-
-  // check syncing
-  // useEffect(() => {
-  //   const checkBillDataExist = async () => {
-  //     const billData = await getStoreData(Stores.Bills);
-  //     if (billData.statusCode === 200 && billData.data.length) {
-  //       const lastRecord = billData.data[billData.data.length - 1];
-  //       if (new Date(lastRecord.createdAt).getDate() !== new Date().getDate()) {
-  //         setBillCount(billData.data.length);
-  //         setIsSyncModalOpen(true);
-  //       }
-
-  //       // const bulkBillPayload = billData.data.map((row) => {
-  //       //   return {
-  //       //     cardNo: row.cardNo,
-  //       //     createdAt: row.createdAt,
-  //       //     createdBy: id,
-  //       //     customerID: row.customerID,
-  //       //     detail: row.detail.map((item) => ({
-  //       //       discount: item.discount,
-  //       //       quantity: item.quantity,
-  //       //       rate: item.rate,
-  //       //       serviceID: item.serviceID,
-  //       //       total: item.total,
-  //       //     })),
-  //       //     grandTotal: row.grandTotal.toString(),
-  //       //     paymentID: row.paymentID,
-  //       //     phoneNumber: row.phoneNumber.toString(),
-  //       //     roomNo: row.roomNo,
-  //       //     staffID: row.staffID,
-  //       //     userID: row.userID,
-  //       //     isDeleted: false,
-  //       //     isActive: true,
-  //       //     referenceBy: row.referenceBy,
-  //       //   };
-  //       // });
-
-  //       // const response = await createBulkBill(bulkBillPayload);
-  //       // if (response.statusCode === 200) {
-  //       //   const deleteAll = await deleteAllData(Stores.Bills);
-  //       //   if (deleteAll.statusCode === 200) {
-  //       //     showToast(response.message, true);
-  //       //     setIsSyncModalOpen(false);
-  //       //   }
-  //       // } else {
-  //       // }
-  //     }
-  //   };
-
-  //   checkBillDataExist();
-  // }, [id]);
 
   return {
     handlePrint,
@@ -319,10 +199,6 @@ export const useBill = () => {
     visibleRows,
     count,
     rights,
-    // isSyncModalOpen,
-    // setIsSyncModalOpen,
-    // billCount,
-
-    // fetchBillData,
+    userRole,
   };
 };

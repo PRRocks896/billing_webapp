@@ -11,7 +11,6 @@ import {
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { Stores, addData, updateData } from "../../../utils/db";
 
 export const useAddEditService = (tag) => {
   const navigate = useNavigate();
@@ -45,10 +44,6 @@ export const useAddEditService = (tag) => {
           : await updateService({ ...payload, updatedBy: loggedInUser.id }, id);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
-        tag === "add"
-          ? await addData(Stores.Service, response.data)
-          : await updateData(Stores.Service, +id, payload);
-
         navigate("/service");
       } else {
         showToast(response?.messageCode, false);

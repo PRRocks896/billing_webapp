@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React from "react";
 import {
   Navigate,
   RouterProvider,
@@ -48,28 +48,11 @@ import Report from "./pages/Report";
 import NotFound from "./components/NotFound";
 import NoConnection from "./components/NoConnection";
 import useNoInternet from "./hook/useNoInternet";
-import { initDB } from "./utils/db";
-// import { Stores, deleteAllData, getStoreData } from "./utils/db";
-// import { createBulkBill } from "./service/bill";
-import SyncModal from "./components/SyncModal";
 
 const token = getAuthToken();
 
 const App = () => {
   const { isOnline, pathname } = useNoInternet();
-
-  const [isSyncModalOpen] = useState(false);
-  const [billCount] = useState(0);
-
-  const handleInitDB = async () => {
-    await initDB();
-    // console.log("initDB", status);
-    // setIsDBReady(status);
-  };
-
-  useLayoutEffect(() => {
-    handleInitDB();
-  }, []);
 
   const routes2 = createBrowserRouter([
     {
@@ -462,9 +445,6 @@ const App = () => {
     <>
       <ToastContainer />
       <Loader />
-      {isSyncModalOpen && (
-        <SyncModal isSyncModalOpen={isSyncModalOpen} count={billCount} />
-      )}
       <RouterProvider router={routes2} />
     </>
   );
