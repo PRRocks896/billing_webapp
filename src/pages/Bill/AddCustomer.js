@@ -127,6 +127,31 @@ const AddCustomer = ({
                         }}
                       />
                     </Grid>
+                    <Grid item xs={6}>
+                      <Controller
+                        name="dob"
+                        control={control}
+                        render={({
+                          field: { onBlur, onChange, value }
+                        }) => (
+                          <FormControl
+                            size="small"
+                            variant="standard"
+                            className="form-control"
+                          >
+                            <TextField
+                              type="date"
+                              label="DOB"
+                              size="small"
+                              name="name"
+                              value={value}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </Grid>
                     {/*  */}
                     <Grid item xs={6}>
                       <FormControl variant="standard" className="form-control">

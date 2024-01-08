@@ -59,7 +59,7 @@ export const useBill = () => {
         }
 
         const body = listPayload(page, whereCondition, rowsPerPage, {
-          sortBy: "createdAt",
+          sortBy: "id",
         });
 
         const response = await getBillList(body);

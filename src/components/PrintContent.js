@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const PrintContent = (billData, branchData) => {
+const PrintContent = (billData, branchData, isShowSecondPage = true) => {
   const date = moment(billData.date || new Date()).format('DD/MM/yyyy');
   /*new Date(billData?.date).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -128,46 +128,46 @@ const PrintContent = (billData, branchData) => {
             </p>
             <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
-
-          <div style="height: max-content; border: 0px solid black;">
-            <table style="font-size: 20px;">
-              <tbody>
-                <tr>
-                  <td style="padding: 10px 0;">Date</td>
-                  <td style="padding: 0px 18px;">:</td>
-                  <td>${date}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 0;">Time</td>
-                  <td style="padding: 0px 18px;">:</td>
-                  <td>${time}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 0;">Customer</td>
-                  <td style="padding: 0px 18px;">:</td>
-                  <td>${billData.customer}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 0;">Room No</td>
-                  <td style="padding: 0px 18px;">:</td>
-                  <td>${billData.roomNo}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 0;">Service Name</td>
-                  <td style="padding: 0px 18px;">:</td>
-                  <td>${billData.detail
-                    ?.map((row, index) => row.item)
-                    .join(", ")}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px 0;">Therapists Name</td>
-                  <td style="padding: 0px 18px;">:</td>
-                  <td>${billData.staff}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
+          ${isShowSecondPage ?
+            `<div style="height: max-content; border: 0px solid black;">
+              <table style="font-size: 20px;">
+                <tbody>
+                  <tr>
+                    <td style="padding: 10px 0;">Date</td>
+                    <td style="padding: 0px 18px;">:</td>
+                    <td>${date}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0;">Time</td>
+                    <td style="padding: 0px 18px;">:</td>
+                    <td>${time}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0;">Customer</td>
+                    <td style="padding: 0px 18px;">:</td>
+                    <td>${billData.customer}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0;">Room No</td>
+                    <td style="padding: 0px 18px;">:</td>
+                    <td>${billData.roomNo}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0;">Service Name</td>
+                    <td style="padding: 0px 18px;">:</td>
+                    <td>${billData.detail
+                      ?.map((row, index) => row.item)
+                      .join(", ")}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0;">Therapists Name</td>
+                    <td style="padding: 0px 18px;">:</td>
+                    <td>${billData.staff}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>`
+          : ''}
       </div>
     </body>
   </html>

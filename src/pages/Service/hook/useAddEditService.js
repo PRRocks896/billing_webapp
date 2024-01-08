@@ -25,6 +25,7 @@ export const useAddEditService = (tag) => {
       name: "",
       amount: "",
       category: "",
+      minutes: ""
     },
     mode: "onBlur",
   });
@@ -36,6 +37,7 @@ export const useAddEditService = (tag) => {
         name: data.name,
         service_category_id: data.category.value,
         amount: data.amount,
+        minutes: data.minutes
       };
 
       const response =
@@ -72,6 +74,7 @@ export const useAddEditService = (tag) => {
           setValue("name", response.data.name);
           setValue("amount", response.data.amount);
           setValue("category", category);
+          setValue("minutes", response.data.minutes);
         } else {
           showToast(response?.message, false);
         }

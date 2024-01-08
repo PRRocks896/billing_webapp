@@ -107,6 +107,24 @@ export const put = async (url, data) => {
     });
 };
 
+export const getXlsx = async (url, data, fileName = `Green_Day_Sales_Report_${new Date().toDateString()}.xlsx`) => {
+  return axiosInstance.post(`${baseUrl}${url}`, data, {
+    responseType: "blob", //Force to receive data in a Blob Format
+    headers: {
+      "x-api-key": "05646635804321276",
+      Authorization: localStorage.getItem("token"),
+    }
+  }).then((response) => {
+    //Create a Blob from the PDF Stream
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+  });
+}
+
 export const getPDF = async (url, data) => {
   return axiosInstance
     .post(`${baseUrl}${url}`, data, {
@@ -118,8 +136,15 @@ export const getPDF = async (url, data) => {
     })
     .then((response) => {
       //Create a Blob from the PDF Stream
-      const file = new Blob([response?.data], { type: "application/pdf" });
-      return URL.createObjectURL(file);
+      // const file = new Blob([response?.data], { type: "application/pdf" });
+      // return URL.createObjectURL(file);
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Green_Day_Sales_Report_${new Date().toDateString()}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
       //Build a URL from the file
       // const fileURL = URL.createObjectURL(file);
       //Open the URL on new Window

@@ -95,8 +95,7 @@ const AddCustomer = ({ tag }) => {
                     name="dob"
                     control={control}
                     render={({
-                      field: { onBlur, onChange, value },
-                      fieldState: { error },
+                      field: { onBlur, onChange, value }
                     }) => (
                       <FormControl
                         size="small"
@@ -109,16 +108,11 @@ const AddCustomer = ({ tag }) => {
                           size="small"
                           name="name"
                           value={value}
-                          onChange={(e) => onChange(e.target.value.toUpperCase())}
+                          onChange={(e) => onChange(e.target.value)}
                           onBlur={onBlur}
-                          error={!!error}
-                          helperText={error?.message}
                         />
                       </FormControl>
                     )}
-                    rules={{
-                      required: "Customer Date of Birth field required",
-                    }}
                   />
               </Grid>
               {/*  */}

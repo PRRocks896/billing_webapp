@@ -58,6 +58,7 @@ export const useAddEditCreateBill = (tag) => {
     watch,
     // setError,
     clearErrors,
+    formState: {isSubmitting}
   } = useForm({
     defaultValues: {
       billNo: "",
@@ -293,6 +294,7 @@ export const useAddEditCreateBill = (tag) => {
   }, [watch("paymentID"), getValues]);
 
   const onSubmit = async (data) => {
+    if(!isSubmitting) {
     const detailData = data.detail.map((item) => {
       return {
         serviceID: +item.serviceID.value,
@@ -308,7 +310,6 @@ export const useAddEditCreateBill = (tag) => {
       const payload = {
         id: tag === 'add' ? null : id,
         // billNo: getValues("billNo"),
-        userID: loggedInUser.id,
         staffID: data.staffID.value,
         customerID: data.customerID.value,
         detail: detailData,
@@ -326,6 +327,7 @@ export const useAddEditCreateBill = (tag) => {
       const response = tag === 'add' ?
         await createBill({
           ...payload,
+          userID: loggedInUser.id,
           createdBy: loggedInUser.id,
         })
       :
@@ -354,6 +356,7 @@ export const useAddEditCreateBill = (tag) => {
       showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
+    }
     }
   };
 
@@ -489,6 +492,7 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const printHandler = async (info) => {
+    if(!isSubmitting) {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {
@@ -609,11 +613,13 @@ export const useAddEditCreateBill = (tag) => {
     } finally {
       dispatch(stopLoading());
     }
+    }
   };
 
   return {
     control,
     fields,
+    isSubmitting,
     paymentTypeOptions,
     customersOptions,
     staffOptions,

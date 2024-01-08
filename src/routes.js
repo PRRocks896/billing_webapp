@@ -27,6 +27,10 @@ import Rights from "./pages/Rights";
 import AddEditBill from "./pages/Bill/AddEditBill";
 import Bill from "./pages/Bill";
 import Report from "./pages/Report";
+import MembershipPlan from "./pages/MembershipPlan";
+import AddEditMembershipPlan from "./pages/MembershipPlan/addEditMembershipPlan";
+import Membership from "./pages/Membership";
+import AddEditMembership from "./pages/Membership/addEditMembership";
 
 const token = getAuthToken();
 
@@ -37,6 +41,14 @@ const routes = createBrowserRouter([
     loader: checkIsAuthenticated,
     children: [
       { index: true, element: <Home /> },
+
+      { path: "membership", element: <Membership /> },
+      { path: "add-membership-plan", element: <AddEditMembership /> },
+      { path: "edit-membership-plan/:id", element: <AddEditMembership /> },
+
+      { path: "membership-plan", element: <MembershipPlan /> },
+      { path: "add-membership-plan", element: <AddEditMembershipPlan tag="add" /> },
+      { path: "edit-membership-plan/:id", element: <AddEditMembershipPlan tag="edit" /> },
 
       { path: "customer", element: <Customer /> },
       { path: "add-customer", element: <AddCustomer tag="add" /> },

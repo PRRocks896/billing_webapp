@@ -48,6 +48,10 @@ import Report from "./pages/Report";
 import NotFound from "./components/NotFound";
 import NoConnection from "./components/NoConnection";
 import useNoInternet from "./hook/useNoInternet";
+import MembershipPlan from "./pages/MembershipPlan";
+import AddEditMembershipPlan from "./pages/MembershipPlan/addEditMembershipPlan";
+import Membership from "./pages/Membership";
+import AddEditMembership from "./pages/Membership/addEditMembership";
 
 const token = getAuthToken();
 
@@ -66,6 +70,68 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: isOnline ? <Home /> : <NoConnection /> },
+        {
+          path: 'membership',
+          element: (
+            <ProtectedRoute
+              path="membership"
+              Component={isOnline ? <Membership/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: "add-membership",
+          element: (
+            <ProtectedRoute
+              path="add-membership"
+              Component={
+                isOnline ? <AddEditMembership tag="add" /> : <NoConnection />
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-membership/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-membership/:id"
+              Component={
+                isOnline ? <AddEditMembership tag="edit" /> : <NoConnection />
+              }
+            />
+          ),
+        },
+        {
+          path: 'membership-plan',
+          element: (
+            <ProtectedRoute
+              path="membership-plan"
+              Component={isOnline ? <MembershipPlan/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: "add-membership-plan",
+          element: (
+            <ProtectedRoute
+              path="add-membership-plan"
+              Component={
+                isOnline ? <AddEditMembershipPlan tag="add" /> : <NoConnection />
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-membership-plan/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-membership-plan/:id"
+              Component={
+                isOnline ? <AddEditMembershipPlan tag="edit" /> : <NoConnection />
+              }
+            />
+          ),
+        },
         {
           path: "customer",
           element: (

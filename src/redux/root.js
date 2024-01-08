@@ -13,6 +13,8 @@ import RoleReducer from "./role";
 import ModuleReducer from "./module";
 import BillReducer from "./bill";
 import ReportReducer from "./report";
+import MembershipPlanReducer from "./membershipPlan";
+import MembershipReducer from './membership';
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -29,6 +31,8 @@ const rootReducer = combineReducers({
   module: ModuleReducer,
   bill: BillReducer,
   report: ReportReducer,
+  membershipPlan: MembershipPlanReducer,
+  membership: MembershipReducer
 });
 
 export default rootReducer;

@@ -35,7 +35,7 @@ const AddEditModule = ({ tag }) => {
                         size="small"
                         name="name"
                         value={value}
-                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onChange={(e) => onChange(e.target.value)}
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message}

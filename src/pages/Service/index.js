@@ -63,6 +63,7 @@ const Service = () => {
                 <TableCell>No</TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Minutes</TableCell>
                 <TableCell>Amount</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
@@ -80,6 +81,7 @@ const Service = () => {
                         {row.px_service_category?.name}
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="left">{row?.mintues || 'N/A'}</TableCell>
                       <TableCell align="left">{row.amount}</TableCell>
                       {rights.edit && (
                         <TableCell>

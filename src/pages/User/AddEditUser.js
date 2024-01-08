@@ -335,7 +335,7 @@ const AddEditUser = ({ tag }) => {
               )}
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <Controller
                   name="phoneNumber"
                   control={control}
@@ -371,7 +371,7 @@ const AddEditUser = ({ tag }) => {
                 />
               </Grid>
               {isNotAdmin && (
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <Controller
                     name="phoneNumberSecond"
                     control={control}
@@ -407,6 +407,38 @@ const AddEditUser = ({ tag }) => {
                   />
                 </Grid>
               )}
+              <Grid item xs={4}>
+                <Controller
+                  control={control}
+                  name="feedbackUrl"
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Feedback URL*"
+                        size="small"
+                        name="gst"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value);
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Feedback URL"
+                  }}
+                />
+              </Grid>
             </Grid>
             <Grid container spacing={2}>
               {isNotAdmin && (

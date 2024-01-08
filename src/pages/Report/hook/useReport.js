@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
@@ -49,7 +49,7 @@ export const useReport = () => {
     }
   }, [user.roleID]);
 
-  const fetchReportDate = useCallback(async () => {
+  const fetchReportDate = async () => {
     try {
       setPdfData(null);
       dispatch(startLoading());
@@ -66,11 +66,11 @@ export const useReport = () => {
     } finally {
       dispatch(stopLoading());
     }
-  }, [branch, dateRange, dispatch, user.id, user.roleID]);
+  };
 
-  useEffect(() => {
-    fetchReportDate();
-  }, [fetchReportDate]);
+  // useEffect(() => {
+  //   fetchReportDate();
+  // }, [fetchReportDate]);
 
   return {
     pdfData,
@@ -80,5 +80,6 @@ export const useReport = () => {
     branchOptions,
     branch,
     handleBranchChange,
+    fetchReportDate
   };
 };

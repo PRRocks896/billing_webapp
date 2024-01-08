@@ -44,7 +44,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
         showToast(response?.messageCode || response?.messageCode, true);
         navigate("/customer");
       } else {
-        showToast(response?.messageCode || response?.messageCode, false);
+        showToast(response?.message || response?.messageCode, false);
       }
     } catch (error) {
       showToast(error?.message, false);
@@ -62,6 +62,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
           setValue("name", response.data.name);
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("gender", response.data.gender);
+          setValue("dob", response.data.dob);
         } else {
           showToast(response?.message, false);
         }

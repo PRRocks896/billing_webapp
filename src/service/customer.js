@@ -5,8 +5,18 @@ import {
   DELETE_CUSTOMER_API,
   GET_SINGLE_CUSTOMER_API,
   UPDATE_CUSTOMER_API,
+  SENT_MEMBERHSIP_OTP,
+  VERIFY_MEMBERSHIP_OTP
 } from "../utils/constant";
 import { attachId, post, put, remove, get } from "./webRequest";
+
+export const verifyMembershipOtp = async (payload) => {
+  return await post(VERIFY_MEMBERSHIP_OTP, payload);
+}
+
+export const sendMembershipOtp = async (payload) => {
+  return await post(SENT_MEMBERHSIP_OTP, payload);
+}
 
 export const getCustomerList = async (body) => {
   const response = await post(CUSTOMER_LIST_API, body);

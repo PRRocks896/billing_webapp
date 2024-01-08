@@ -8,7 +8,6 @@ const ProtectedRoute = ({ path, Component }) => {
   const isAccessible = useMemo(() => {
     // Split path and get only name
     const mainPath = path.split("/")[0];
-
     if (accessModules && accessModules.length > 0) {
       return accessModules
         .map((res) => {
@@ -40,6 +39,7 @@ const ProtectedRoute = ({ path, Component }) => {
       return false;
     }
   }, [accessModules, path]);
+
 
   useEffect(() => {
     // Not Found access return false and redirect to dashboard

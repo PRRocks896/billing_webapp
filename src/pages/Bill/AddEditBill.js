@@ -39,6 +39,7 @@ const AddEditBill = ({ tag }) => {
   const {
     fields,
     control,
+    isSubmitting,
     paymentTypeOptions,
     customersOptions,
     staffOptions,
@@ -721,6 +722,7 @@ const AddEditBill = ({ tag }) => {
             <Button
               className="btn btn-tertiary"
               onClick={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
             >
               <FiSave /> &nbsp; <p>Save</p>
             </Button>
@@ -739,6 +741,7 @@ const AddEditBill = ({ tag }) => {
               type="submit"
               className="btn btn-tertiary"
               onClick={handleSubmit(printHandler)}
+              disabled={isSubmitting}
             >
               <FiPrinter /> &nbsp; <p>Print</p>
             </Button>

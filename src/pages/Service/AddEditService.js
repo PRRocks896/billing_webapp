@@ -83,7 +83,7 @@ const AddEditService = ({ tag }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Controller
                   name="category"
                   control={control}
@@ -117,6 +117,37 @@ const AddEditService = ({ tag }) => {
                   )}
                   rules={{
                     required: "Please select service category",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Controller
+                  name="minutes"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        type="number"
+                        label="Minutes"
+                        size="small"
+                        name="minutes"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Minutes field required.",
                   }}
                 />
               </Grid>

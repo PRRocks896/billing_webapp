@@ -36,6 +36,7 @@ export const useAddEditUser = (tag) => {
       email: "",
       gstNo: "",
       isShowGst: false,
+      feedbackUrl: ""
     },
     mode: "onBlur",
   });
@@ -126,7 +127,8 @@ export const useAddEditUser = (tag) => {
           address: data.address,
           email: data.email,
           gstNo: data.gstNo,
-          isShowGst: data.isShowGst
+          isShowGst: data.isShowGst,
+          feedbackUrl: data.feedbackUrl
         };
       } else {
         payload = {
@@ -205,6 +207,7 @@ export const useAddEditUser = (tag) => {
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("gstNo", response.data.gstNo);
           setValue("isShowGst", response.data.isShowGst);
+          setValue("feedbackUrl", response.data.feedbackUrl);
           if (response.data.roleID !== 1) {
             setValue("phoneNumberSecond", response?.data?.phoneNumber2);
             setValue("billName", response?.data?.billTitle);

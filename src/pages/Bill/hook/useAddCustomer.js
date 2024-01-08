@@ -16,6 +16,7 @@ export const useAddCustomer = (
     defaultValues: {
       customer_name: "",
       phone: "",
+      dob: "",
       gender: "male",
     },
     mode: "onBlur",
@@ -29,6 +30,7 @@ export const useAddCustomer = (
         phoneNumber: data.phone,
         gender: data.gender,
         name: data.customer_name,
+        dob: data.dob,
         createdBy: loggedInUser.id,
       };
 
@@ -44,7 +46,7 @@ export const useAddCustomer = (
         );
         reset();
       } else {
-        showToast(response?.messageCode, false);
+        showToast(response?.message || response?.messageCode, false);
       }
     } catch (error) {
       showToast(error?.message, false);
