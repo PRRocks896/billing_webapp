@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -29,6 +30,7 @@ export const useAddEditMembership = (tag) => {
     const { id } = useParams();
     const loggedInUser = useSelector((state) => state.loggedInUser);
 
+    const [ currentDate, setCurrentDate] = useState(moment(new Date()).format('DD/MM/yyyy'));
     const [paymentType, setPaymentType] = useState([]);
     const [customer, setCustomer] = useState([]);
     const [membershipPlan, setMembershipPlan] = useState([]);
@@ -60,7 +62,6 @@ export const useAddEditMembership = (tag) => {
             dispatch(startLoading());
             const selectedMemberShipPlan = membershipPlan.find(item => item.id === data.membershipPlanID);
             const totalMinutes = (selectedMemberShipPlan.hours + parseInt(data.extraHours)) * 60 || 0;
-            console.log(totalMinutes);
             const payload = {
                 ...data,
                 billDetail: {
@@ -142,15 +143,22 @@ export const useAddEditMembership = (tag) => {
         try {
             if (id) {
                 dispatch(startLoading());
-                const response = await getMembershipById(id);
+                const { success, message, data } = await getMembershipById(id);
 
-                if (response?.statusCode === 200) {
-                    console.log(response?.data);
-                    // setValue("planName", response.data.planName);
-                    // setValue("hours", response.data.hours);
-                    // setValue("price", response.data.price);
+                if (success) {
+                    console.log(data);
+                    searchCustomer(data.px_customer?.phoneNumber);
+                    setValue('customerID', data.customerID);
+                    setValue('paymentID', data.paymentID);
+                    setValue('membershipPlanID', data.membershipPlanID);
+                    setValue('extraHours', '' + data.extraHours);
+                    setValue('validity', data.validity);
+                    setValue('managerName', data.managerName);
+                    setValue('billNo', data.billNo);
+                    setValue('cardNo', data.cardNo);
+                    setCurrentDate(moment(data.createdAt).format('DD/MM/yyyy'))
                 } else {
-                    showToast(response?.message, false);
+                    showToast(message, false);
                 }
             }
         } catch (error) {
@@ -158,7 +166,7 @@ export const useAddEditMembership = (tag) => {
         } finally {
           dispatch(stopLoading());
         }
-    }, [id, dispatch]);
+    }, [id, dispatch, setCurrentDate, setValue]);
 
     const searchCustomer = async (customerPhone) => {
         try {
@@ -308,6 +316,7 @@ export const useAddEditMembership = (tag) => {
         control,
         customer,
         isOtpSend,
+        currentDate,
         verifiedOtp,
         paymentType,
         isSubmitting,

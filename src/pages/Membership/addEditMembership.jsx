@@ -1,6 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import moment from "moment";
+
 import { FiPlusCircle, FiMinusCircle} from "react-icons/fi";
 
 import Autocomplete from "@mui/material/Autocomplete";
@@ -29,6 +29,7 @@ const AddEditMembership = ({tag}) => {
         customer,
         isOtpSend,
         paymentType,
+        currentDate,
         verifiedOtp,
         disabledButton,
         isCardSelected,
@@ -41,6 +42,7 @@ const AddEditMembership = ({tag}) => {
         onSubmit,
         verifyOtp,
         setIsOtpSend,
+        cancelHandler,
         handleSubmit,
         setVerifiedOtp,
         searchCustomer,
@@ -90,7 +92,7 @@ const AddEditMembership = ({tag}) => {
                                                 label="Date"
                                                 size="small"
                                                 name="date"
-                                                value={moment(new Date()).format('DD/MM/yyyy')}
+                                                value={currentDate}
                                                 />
                                         </FormControl>
                                     </Grid>
@@ -162,7 +164,7 @@ const AddEditMembership = ({tag}) => {
                                                     <Select
                                                         labelId="membership"
                                                         id="membership-select"
-                                                        value={value}
+                                                        value={value || ""}
                                                         label="Membership Plan"
                                                         onChange={onChange}
                                                         onBlur={onBlur}
@@ -421,7 +423,7 @@ const AddEditMembership = ({tag}) => {
                         </Grid>
                     </CardContent>
                     <CardActions>
-                        <Button className="btn btn-tertiary" variant="contained" type="button" onClick={() => {}}>Back</Button>
+                        <Button className="btn btn-tertiary" variant="contained" type="button" onClick={cancelHandler}>Back</Button>
                         <Button disabled={disabledButton} className="btn btn-tertiary" variant="contained" type="submit">
                             {verifyCustomerMembership ? 'Save' : 'Verify'}
                         </Button>

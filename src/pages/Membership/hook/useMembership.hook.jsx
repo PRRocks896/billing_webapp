@@ -61,7 +61,6 @@ const useMembershipPlanHooks = () => {
     }, [dispatch, page]);
 
     const deleteBtnClickHandler = (id) => {
-      console.log(id);
       setDeleteId(id);
       setIsDeleteModalOpen(true);
     };

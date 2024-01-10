@@ -31,7 +31,7 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          ["user", "bill", "report"].includes(
+          ["user", "bill", "report", "membership"].includes(
             row.px_module.name.toLowerCase()
           ) &&
           row.view
