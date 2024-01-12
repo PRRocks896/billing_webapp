@@ -15,6 +15,7 @@ import BillReducer from "./bill";
 import ReportReducer from "./report";
 import MembershipPlanReducer from "./membershipPlan";
 import MembershipReducer from './membership';
+import MembershipRedeemReducer from './membershipRedeem';
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -32,7 +33,8 @@ const rootReducer = combineReducers({
   bill: BillReducer,
   report: ReportReducer,
   membershipPlan: MembershipPlanReducer,
-  membership: MembershipReducer
+  membership: MembershipReducer,
+  membershipRedeem: MembershipRedeemReducer
 });
 
 export default rootReducer;

@@ -15,6 +15,8 @@ export const DELETE_CUSTOMER_API = "api/customer/";
 export const CREATE_BULK_CUSTOMER_API = "api/customer/bulk-create";
 export const SENT_MEMBERHSIP_OTP = "api/customer/membership-otp";
 export const VERIFY_MEMBERSHIP_OTP = "api/customer/membership-verify-otp";
+export const SEND_MEMBERHSIP_REDEEM_OTP = "api/customer/membership-redeem-otp";
+export const VERIFY_MEMBERSHIP_REDEEM_OTP = "api/customer/membership-redeem-verify-otp";
 
 // staff apis
 export const STAFF_LIST_API = "api/staff/list";
@@ -101,5 +103,6 @@ export const UPDATE_RIGHT_API = "api/right/";
 export const REPORT_LIST_API = "api/report";
 
 // Membership Plan apis
-export const MEMBERSHIP_PLAN = "api/membership-plan";
 export const MEMBERSHIP = 'api/membership'
+export const MEMBERSHIP_PLAN = "api/membership-plan";
+export const MEMBERSHIP_REDEEM = "api/membership-redeem";

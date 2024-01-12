@@ -6,9 +6,20 @@ import {
   GET_SINGLE_CUSTOMER_API,
   UPDATE_CUSTOMER_API,
   SENT_MEMBERHSIP_OTP,
-  VERIFY_MEMBERSHIP_OTP
+  VERIFY_MEMBERSHIP_OTP,
+  SEND_MEMBERHSIP_REDEEM_OTP,
+  VERIFY_MEMBERSHIP_REDEEM_OTP
 } from "../utils/constant";
 import { attachId, post, put, remove, get } from "./webRequest";
+
+export const verifyMembershipRedeemOtp = async (payload) => {
+  return await post(VERIFY_MEMBERSHIP_REDEEM_OTP, payload);
+}
+
+export const sendMembershipRedeemOtp = async (payload) => {
+  return await post(SEND_MEMBERHSIP_REDEEM_OTP, payload);
+}
+
 
 export const verifyMembershipOtp = async (payload) => {
   return await post(VERIFY_MEMBERSHIP_OTP, payload);

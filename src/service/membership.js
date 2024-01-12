@@ -7,6 +7,11 @@ export const addExtraHours = async (payload) => {
     return await post(`${MEMBERSHIP}/extra-hours-otp`, payload);
 }
 
+export const getMembership = async (body) => {
+    const response = await post(`${MEMBERSHIP}/get`, body);
+    return response;
+}
+
 export const getMembershipList = async (body) => {
     const response = await post(`${MEMBERSHIP}/list`, body);
     return response;

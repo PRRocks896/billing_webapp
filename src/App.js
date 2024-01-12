@@ -52,6 +52,8 @@ import MembershipPlan from "./pages/MembershipPlan";
 import AddEditMembershipPlan from "./pages/MembershipPlan/addEditMembershipPlan";
 import Membership from "./pages/Membership";
 import AddEditMembership from "./pages/Membership/addEditMembership";
+import MemberShipRedeem from "./pages/MembershipRedeem";
+import AddEditMembershipRedeem from "./pages/MembershipRedeem/addEditMembershipRedeem";
 
 const token = getAuthToken();
 
@@ -70,6 +72,33 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: isOnline ? <Home /> : <NoConnection /> },
+        {
+          path: 'membership-redeem',
+          element: (
+            <ProtectedRoute
+              path="membership-redeem"
+              Component={isOnline ? <MemberShipRedeem/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-membership-redeem',
+          element: (
+            <ProtectedRoute
+              path="add-membership-redeem"
+              Component={isOnline ? <AddEditMembershipRedeem tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-membership-redeem/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-membership-redeem"
+              Component={isOnline ? <AddEditMembershipRedeem tag="edit" /> : <NoConnection/>}
+            />
+          )
+        },
         {
           path: 'membership',
           element: (
