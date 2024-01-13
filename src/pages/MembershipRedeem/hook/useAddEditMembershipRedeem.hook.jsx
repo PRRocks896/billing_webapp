@@ -69,7 +69,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                     isDeleted: false
                 };
                 const payload = listPayload(0, whereCondition, 1000000);
-                const { success, data } = await getCustomerList(payload);
+                const { success, message, data } = await getCustomerList(payload);
                 if (success) {
                     setCustomer(data?.rows[0]);
                     const customerID = data?.rows[0]?.id;
@@ -77,13 +77,16 @@ export const useAddEditMembershipRedeem = (tag) => {
                     if (takenMemberShipResponse.success) {
                         if(takenMemberShipResponse.data?.rows?.length === 1) {
                             setValue('membershipID', takenMemberShipResponse.data?.rows[0])
+                            fetchMembershipRedeemHistory();
                         }
                         setMembership(takenMemberShipResponse.data?.rows);
                     } else {
                         setMembership([]);
+                        showToast(takenMemberShipResponse.message, false);
                     }
                 } else {
                     setCustomer(null);
+                    showToast(message, false);
                 }
             } else if (customerPhone.length === 0) {
                 setCustomer(null);
@@ -98,6 +101,10 @@ export const useAddEditMembershipRedeem = (tag) => {
 
     const handleSendOtpFormMembershipRedeem = async (info) => {
         try {
+            if(info.membershipID?.minutes === 0) {
+                showToast(`Minutes not Available`, false);
+                return;
+            }
             if(parseInt(info.minutes) > info.membershipID?.minutes) {
                 showToast(`Only ${info.membershipID?.minutes} Minutes Available`, false);
                 return;
@@ -130,9 +137,11 @@ export const useAddEditMembershipRedeem = (tag) => {
                 customerID: customer?.id
             });
             if (success) {
+                setOtp(null);
                 setVerifiedOtp(true);
                 setOpenVerifyMembershipModal(false);
-                showToast('Verified, You can Redeem', true);
+                onSubmit(getValues());
+                // showToast('Verified, You can Redeem', true);
             } else {
                 showToast(message, false);
             }
@@ -178,17 +187,10 @@ export const useAddEditMembershipRedeem = (tag) => {
                     createdBy: loggedInUser.id,
                 }
             }
-            // if(tag !== 'add') {
-            //     delete payload['createdBy'];
-            //     delete payload['billDetail'];
-            // }
             const { success, message, data } = await createMembershipRedeem(payload)
-                // tag === "add"
-                // ? await createMembershipRedeem(payload)
-                // : await updateMembershipRedeem(payload, id);
             if (success) {
-                handlePrint(data?.id);
                 showToast(message, true);
+                handlePrint(data?.id);
                 const loginUserResponse = await fetchLoggedInUserData();
                 if (success) {
                     const latestBillNo = loginUserResponse.data.latestBillNo;
@@ -196,9 +198,11 @@ export const useAddEditMembershipRedeem = (tag) => {
                     localStorage.setItem('latestBillNo', latestBillNo);
                     localStorage.setItem("latestCustomerNo", latestCustomerNo);
                     dispatch(loggedInUserAction.storeLoggedInUserData(loginUserResponse.data));
+                    setValue('billNo', latestBillNo);
                 }
                 reset();
                 setMembership([]);
+                setVerifiedOtp(false);
                 setMembershipRedeemList([]);
             } else {
                 showToast(message, false);
@@ -225,7 +229,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                     customerID: data?.customerID,
                     phone: data?.px_customer?.phoneNumber,
                     staff: data?.px_staff?.name,
-                    roomNo: getValues('roomNo'),
+                    roomNo: getValues('roomNo') || '',
                     detail: [{
                         item: data?.px_service?.name,
                         quantity: 1,
@@ -288,7 +292,6 @@ export const useAddEditMembershipRedeem = (tag) => {
             const { success, message, data } = await getMembershipRedeemList(payload);
             if(success) {
                 setMembershipRedeemList(data?.rows)
-                console.log(data);
             } 
         } catch(err) {
             showToast(err?.message, false);
@@ -363,6 +366,7 @@ export const useAddEditMembershipRedeem = (tag) => {
         isOtpSend,
         membership,
         verifiedOtp,
+        loggedInUser,
         isSubmitting,
         filterService,
         isSelectedMembership,

@@ -9,10 +9,11 @@ import { listPayload, showToast } from "../../../utils/helper";
 
 import {
     addExtraHours,
-    createMembership,
-    updateMembership,
     getMembershipById,
 } from "../../../service/membership";
+import {
+    createRenewPlan
+} from "../../../service/renewPlan";
 import {
     fetchLoggedInUserData
 } from "../../../service/loggedInUser";
@@ -20,21 +21,21 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 import { loggedInUserAction } from "../../../redux/loggedInUser";
 
 import { verifyOTP } from "../../../service/login";
-import { getCustomerList, sendMembershipOtp, verifyMembershipOtp } from "../../../service/customer";
+import { sendMembershipOtp, verifyMembershipOtp } from "../../../service/customer";
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { getMembershipPlanList } from "../../../service/membershipPlan";
 
-export const useAddEditMembership = (tag) => {
+export const useRenewPlan = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const { membershipID, customerID } = useParams();
     const loggedInUser = useSelector((state) => state.loggedInUser);
+
+    const [membershipDetail, setMembershipDetail] = useState(null);
 
     const [ currentDate, setCurrentDate] = useState(moment(new Date()).format('DD/MM/yyyy'));
     const [paymentType, setPaymentType] = useState([]);
-    const [customer, setCustomer] = useState([]);
     const [membershipPlan, setMembershipPlan] = useState([]);
-    const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
     const [isOtpSend, setIsOtpSend] = useState(false);
     const [otp, setOtp] = useState(null);
     const [verifiedOtp, setVerifiedOtp] = useState(false);
@@ -44,7 +45,8 @@ export const useAddEditMembership = (tag) => {
     const { setValue, control, handleSubmit, watch, getValues, formState: { isSubmitting } } = useForm({
         defaultValues: {
             userID: loggedInUser.id,
-            customerID: "",
+            customerID: customerID,
+            membershipID: membershipID,
             paymentID: "",
             membershipPlanID: "",
             managerName: "",
@@ -64,6 +66,7 @@ export const useAddEditMembership = (tag) => {
             const totalMinutes = (selectedMemberShipPlan.hours + parseInt(data.extraHours)) * 60 || 0;
             const payload = {
                 ...data,
+                membershipID: parseInt(membershipID),
                 billDetail: {
                     billNo: localStorage.getItem('latestBillNo'),
                     staffID: 1,
@@ -83,10 +86,11 @@ export const useAddEditMembership = (tag) => {
                     createdBy: loggedInUser.id,
                 },
                 minutes: totalMinutes,
+                updatedMembershipMinutes: (membershipDetail.minutes + totalMinutes),
+                createdBy: loggedInUser?.id,
+                // updatedBy: loggedInUser?.id,
             };
-            const response = tag === "add"
-                ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id })
-                : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
+            const response = await createRenewPlan(payload);
             if (response?.statusCode === 200) {
                 const { success, data} = await fetchLoggedInUserData();
                 if (success) {
@@ -141,22 +145,20 @@ export const useAddEditMembership = (tag) => {
 
     const fetchEditMembershipData = useCallback(async () => {
         try {
-            if (id) {
+            if (membershipID) {
                 dispatch(startLoading());
-                const { success, message, data } = await getMembershipById(id);
-
+                const { success, message, data } = await getMembershipById(membershipID);
                 if (success) {
-                    console.log(data);
-                    searchCustomer(data.px_customer?.phoneNumber);
+                    setMembershipDetail(data);
                     setValue('customerID', data.customerID);
-                    setValue('paymentID', data.paymentID);
-                    setValue('membershipPlanID', data.membershipPlanID);
-                    setValue('extraHours', '' + data.extraHours);
-                    setValue('validity', data.validity);
-                    setValue('managerName', data.managerName);
-                    setValue('billNo', data.billNo);
-                    setValue('cardNo', data.cardNo);
-                    setCurrentDate(moment(data.createdAt).format('DD/MM/yyyy'))
+                    // setValue('paymentID', data.paymentID);
+                    // setValue('membershipPlanID', data.membershipPlanID);
+                    // setValue('extraHours', '' + data.extraHours);
+                    // setValue('validity', data.validity);
+                    // setValue('managerName', data.managerName);
+                    // setValue('billNo', data.billNo);
+                    // setValue('cardNo', data.cardNo);
+                    // setCurrentDate(moment(data.createdAt).format('DD/MM/yyyy'))
                 } else {
                     showToast(message, false);
                 }
@@ -166,34 +168,7 @@ export const useAddEditMembership = (tag) => {
         } finally {
           dispatch(stopLoading());
         }
-    }, [id, dispatch, setCurrentDate, setValue]);
-
-    const searchCustomer = async (customerPhone) => {
-        try {
-            startLoading();
-            if(customerPhone.length === 10) {
-                const whereCondition = {
-                    searchText: customerPhone,
-                    isActive: true,
-                    isDeleted: false
-                };
-                const payload = listPayload(0, whereCondition, 1000000);
-                const { success, data } = await getCustomerList(payload);
-                if(success) {
-                    setCustomer(data?.rows);
-                } else {
-                    setCustomer([]);
-                    showToast('Customer Not Found', false)
-                }
-            } else if(customerPhone.length === 0) {
-                setCustomer([]);
-            }
-        } catch(err) {
-          showToast(err?.message, false);
-        } finally {
-            stopLoading();
-        }
-    }
+    }, [membershipID, dispatch, setCurrentDate, setValue]);
 
     const getOtp = async () => {
         try {
@@ -242,7 +217,6 @@ export const useAddEditMembership = (tag) => {
 
     const setCustomerSelectedHandler = (id, phone, name, custNo) => {
         setValue('customerID', id);
-        searchCustomer(phone);
     };
 
     const handleSendOtpForMembership = async (info) => {
@@ -276,8 +250,7 @@ export const useAddEditMembership = (tag) => {
             if(success) {
                 setOpenVerifyMembershipModal(false);
                 setVerifyCustomerMembership(true);
-                onSubmit(getValues());
-                // showToast('Verified, You can Save', true);
+                showToast('Verified, You can Save', true);
             } else {
                 showToast(message, false);
             }
@@ -302,8 +275,8 @@ export const useAddEditMembership = (tag) => {
     }, [watch('extraHours'), isSubmitting, isOtpSend, verifiedOtp]);
 
     useEffect(() => {
-        tag === "edit" && fetchEditMembershipData();
-    }, [tag, fetchEditMembershipData]);
+        fetchEditMembershipData();
+    }, [membershipID, fetchEditMembershipData]);
 
     useEffect(() => {
         fetchDropDownList();
@@ -315,7 +288,6 @@ export const useAddEditMembership = (tag) => {
     return {
         otp,
         control,
-        customer,
         isOtpSend,
         currentDate,
         verifiedOtp,
@@ -324,7 +296,7 @@ export const useAddEditMembership = (tag) => {
         disabledButton,
         isCardSelected,
         membershipPlan,
-        isCustomerModalOpen,
+        membershipDetail,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         getOtp,
@@ -335,9 +307,7 @@ export const useAddEditMembership = (tag) => {
         handleSubmit,
         cancelHandler,
         setVerifiedOtp,
-        searchCustomer,
         handleVerifyMembership,
-        setIsCustomerModalOpen,
         setCustomerSelectedHandler,
         handleSendOtpForMembership,
         setOpenVerifyMembershipModal,

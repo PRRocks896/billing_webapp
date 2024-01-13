@@ -66,12 +66,13 @@ const MembershipPlan = () => {
                                 <TableCell>Customer Name</TableCell>
                                 <TableCell>Phone No</TableCell>
                                 <TableCell>Plan</TableCell>
+                                <TableCell>Minutes</TableCell>
                                 <TableCell>Paid By</TableCell>
                                 <TableCell>Manager</TableCell>
                                 {rights.edit && <TableCell>Status</TableCell>}
-                                {(rights.edit || rights.delete) && (
+                                {/* {(rights.edit || rights.delete) && ( */}
                                     <TableCell>Action</TableCell>
-                                )}
+                                {/* )} */}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -83,6 +84,7 @@ const MembershipPlan = () => {
                                             <TableCell align="left">{row?.px_customer?.name}</TableCell>
                                             <TableCell align="left">{row?.px_customer?.phoneNumber}</TableCell>
                                             <TableCell align="left">{row?.px_membership_plan?.planName}</TableCell>
+                                            <TableCell align="left">{row?.minutes}</TableCell>
                                             <TableCell align="left">{row?.px_payment_type?.name}</TableCell>
                                             <TableCell align="left">{row.managerName}</TableCell>
                                             {rights.edit && (
@@ -94,7 +96,7 @@ const MembershipPlan = () => {
                                                     />
                                                 </TableCell>
                                             )}
-                                            {(rights.edit || rights.delete) && (
+                                            {/* {(rights.edit || rights.delete) && ( */}
                                                 <TableCell>
                                                     <Box className="table-action-btn">
                                                         {rights.edit && (
@@ -125,8 +127,20 @@ const MembershipPlan = () => {
                                                             <FiPrinter size={15} />
                                                         </Button>
                                                     </Box>
+                                                    {row?.minutes === 0 &&
+                                                        <Button
+                                                            sx={{ marginTop: 2}}
+                                                            className="btn btn-primary"
+                                                            onClick={() =>
+                                                                navigate(`/renew-plan/${row.id}/${row.customerID}`)
+                                                            }
+                                                        >
+                                                            Renew Plan
+                                                            {/* <FiEdit3 size={15} /> */}
+                                                        </Button>
+                                                    }
                                                 </TableCell>
-                                            )}
+                                            {/* )} */}
                                         </TableRow>
                                     );
                                 })

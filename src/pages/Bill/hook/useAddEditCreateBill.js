@@ -126,7 +126,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const searchCustomer = async (customerPhone) => {
     try {
-      if(customerPhone.length > 2) {
+      if(customerPhone.length === 10) {
         const whereCondition = {
           searchText: customerPhone,
           isActive: true,

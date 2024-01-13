@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -17,6 +17,11 @@ const VerifyOtp = ({
     handleEnterOtp
 }) => {
     const [otp, setOtp] = useState(null);
+    useEffect(() => {
+        if(isOpen) {
+            setOtp(null);
+        }
+    }, [isOpen]);
     return (
         <>
             <Modal

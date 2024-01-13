@@ -54,6 +54,7 @@ import Membership from "./pages/Membership";
 import AddEditMembership from "./pages/Membership/addEditMembership";
 import MemberShipRedeem from "./pages/MembershipRedeem";
 import AddEditMembershipRedeem from "./pages/MembershipRedeem/addEditMembershipRedeem";
+import RenewPlan from "./pages/RenewPlan";
 
 const token = getAuthToken();
 
@@ -72,6 +73,15 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: isOnline ? <Home /> : <NoConnection /> },
+        {
+          path: 'renew-plan/:membershipID/:customerID',
+          element: (
+            <ProtectedRoute
+              path="renew-plan/:membershipID/:customerID"
+              Component={isOnline ? <RenewPlan /> : <NoConnection/>}
+            />
+          )
+        },
         {
           path: 'membership-redeem',
           element: (

@@ -22,8 +22,8 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import React from "react";
-
 import { Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import moment from 'moment';
 
 import VerifyOtp from "../../components/VerifyOTPModel";
@@ -36,6 +36,7 @@ const StyledTableCell = styled(TableCell)({
 });
 
 const AddEditMembershipRedeem = ({ tag }) => {
+    const navigate = useNavigate();
     const {
         otp,
         staff,
@@ -45,6 +46,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
         isOtpSend,
         membership,
         verifiedOtp,
+        loggedInUser,
         isSubmitting,
         filterService,
         isSelectedMembership,
@@ -173,7 +175,14 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                                 <TableCell>{item?.px_membership_plan?.planName}</TableCell>
                                                                 <TableCell>{item?.extraHours}</TableCell>
                                                                 <TableCell>{item?.minutes}</TableCell>
-                                                                <TableCell></TableCell>
+                                                                <TableCell>
+                                                                    {/* {item.minutes === 0 ? */}
+                                                                    {(item.userID === loggedInUser.id || membership.length === 1) ?
+                                                                        <Button className="btn btn-primary" onClick={() => navigate(`/renew-plan/${item.id}/${item.customerID}`)}>
+                                                                            Renew Plan
+                                                                        </Button>
+                                                                    : null}
+                                                                </TableCell>
                                                             </TableRow>
                                                         )
                                                     }
@@ -190,9 +199,13 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                         <TableCell>{item?.extraHours}</TableCell>
                                                         <TableCell>{item?.minutes}</TableCell>
                                                         <TableCell>
-                                                            {item.minutes > 0 ?
-                                                                <Button className="btn btn-tertiary" sx={{ marginRight: 4 }} variant="contained" type="button" onClick={() => [setValue('membershipID', item), fetchMembershipRedeemHistory()]}>Redeem</Button> 
-                                                            : null}
+                                                            
+                                                            <Button className="btn btn-tertiary" sx={{ marginRight: 4 }} variant="contained" type="button" onClick={() => [setValue('membershipID', item), fetchMembershipRedeemHistory()]}>Redeem</Button> 
+                                                            {/* {item.minutes === 0 &&
+                                                                <Button sx={{ marginTop: 2}} className="btn btn-primary" onClick={() => navigate(`/renew-plan/${item.id}/${item.customerID}`)}>
+                                                                    Renew Plan
+                                                                </Button>
+                                                            } */}
                                                         </TableCell>
                                                     </TableRow>
                                                 ))}

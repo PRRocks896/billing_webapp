@@ -106,3 +106,5 @@ export const REPORT_LIST_API = "api/report";
 export const MEMBERSHIP = 'api/membership'
 export const MEMBERSHIP_PLAN = "api/membership-plan";
 export const MEMBERSHIP_REDEEM = "api/membership-redeem";
+
+export const RENEWPLAN = 'api/renew-plan';
