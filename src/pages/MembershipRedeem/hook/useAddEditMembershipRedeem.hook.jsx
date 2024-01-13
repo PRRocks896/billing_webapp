@@ -1,15 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import moment from "moment";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { listPayload, showToast } from "../../../utils/helper";
 
 import {
     createMembershipRedeem,
-    updateMembershipRedeem,
     getMembershipRedeemById,
     getMembershipRedeemList
 } from "../../../service/membershipRedeem";
@@ -26,7 +23,6 @@ import PrintContent from "../../../components/PrintContent";
 export const useAddEditMembershipRedeem = (tag) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { id } = useParams();
     const loggedInUser = useSelector((state) => state.loggedInUser);
 
     const [isOtpSend, setIsOtpSend] = useState(false);
@@ -272,11 +268,13 @@ export const useAddEditMembershipRedeem = (tag) => {
             return true;
         }
         return false;
+        // eslint-disable-next-line
     }, [watch('membershipID')]);
 
     const filterService = useMemo(() => {
         const selectedMinutes = parseInt(getValues('minutes'));
         return service?.filter((item) => item.minutes === selectedMinutes);
+        // eslint-disable-next-line
     }, [service, watch('minutes')]);
 
     const fetchMembershipRedeemHistory = async () => {
@@ -289,7 +287,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                 isDeleted: false
             };
             const payload = listPayload(0, whereCondition, 100000);
-            const { success, message, data } = await getMembershipRedeemList(payload);
+            const { success, data } = await getMembershipRedeemList(payload);
             if(success) {
                 setMembershipRedeemList(data?.rows)
             } 
@@ -351,6 +349,7 @@ export const useAddEditMembershipRedeem = (tag) => {
             }
         };
         fetchDropDownList();
+        // eslint-disable-next-line
     }, [tag]);
 
     const cancelHandler = () => {

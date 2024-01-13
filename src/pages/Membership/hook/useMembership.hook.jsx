@@ -62,6 +62,7 @@ const useMembershipPlanHooks = () => {
       } finally {
         dispatch(stopLoading());
       }
+      // eslint-disable-next-line
     }, [dispatch, page]);
 
     const deleteBtnClickHandler = (id) => {

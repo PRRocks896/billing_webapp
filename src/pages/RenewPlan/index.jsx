@@ -3,7 +3,6 @@ import { Controller } from "react-hook-form";
 
 import { FiPlusCircle, FiMinusCircle} from "react-icons/fi";
 
-import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -45,7 +44,6 @@ const RenewPlan = () => {
         handleSubmit,
         setVerifiedOtp,
         handleVerifyMembership,
-        setCustomerSelectedHandler,
         handleSendOtpForMembership,
         setOpenVerifyMembershipModal,
     } = useRenewPlan();
@@ -111,7 +109,7 @@ const RenewPlan = () => {
                                                         label="Customer"
                                                         size="small"
                                                         name="customer"
-                                                        value={membershipDetail?.px_customer?.name || ''}
+                                                        value={membershipDetail && membershipDetail?.px_customer ? `${membershipDetail?.px_customer?.name} (${membershipDetail?.px_customer?.phoneNumber})` : ''}
                                                     />
                                                 </FormControl>
                                             )}

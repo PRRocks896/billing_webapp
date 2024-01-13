@@ -52,7 +52,6 @@ import MembershipPlan from "./pages/MembershipPlan";
 import AddEditMembershipPlan from "./pages/MembershipPlan/addEditMembershipPlan";
 import Membership from "./pages/Membership";
 import AddEditMembership from "./pages/Membership/addEditMembership";
-import MemberShipRedeem from "./pages/MembershipRedeem";
 import AddEditMembershipRedeem from "./pages/MembershipRedeem/addEditMembershipRedeem";
 import RenewPlan from "./pages/RenewPlan";
 

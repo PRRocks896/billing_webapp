@@ -15,7 +15,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import { styled } from "@mui/material/styles";
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -30,20 +29,11 @@ import VerifyOtp from "../../components/VerifyOTPModel";
 
 import { useAddEditMembershipRedeem } from "./hook/useAddEditMembershipRedeem.hook";
 
-const StyledTableCell = styled(TableCell)({
-    padding: 0,
-    margin: 0,
-});
-
 const AddEditMembershipRedeem = ({ tag }) => {
     const navigate = useNavigate();
     const {
-        otp,
         staff,
         control,
-        service,
-        customer,
-        isOtpSend,
         membership,
         verifiedOtp,
         loggedInUser,
@@ -52,7 +42,6 @@ const AddEditMembershipRedeem = ({ tag }) => {
         isSelectedMembership,
         membershipRedeemList,
         openVerifyMembershipModal,
-        setOtp,
         onSubmit,
         setValue,
         getValues,
@@ -185,6 +174,8 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                                 </TableCell>
                                                             </TableRow>
                                                         )
+                                                    } else {
+                                                        return null;
                                                     }
                                                 })}
                                             </>
