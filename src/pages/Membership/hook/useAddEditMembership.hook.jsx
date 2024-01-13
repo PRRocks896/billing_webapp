@@ -17,6 +17,7 @@ import {
     fetchLoggedInUserData
 } from "../../../service/loggedInUser";
 import { startLoading, stopLoading } from "../../../redux/loader";
+import PrintContent from "../../../components/PrintContent";
 import { loggedInUserAction } from "../../../redux/loggedInUser";
 
 import { verifyOTP } from "../../../service/login";
@@ -30,7 +31,7 @@ export const useAddEditMembership = (tag) => {
     const { id } = useParams();
     const loggedInUser = useSelector((state) => state.loggedInUser);
 
-    const [ currentDate, setCurrentDate] = useState(moment(new Date()).format('DD/MM/yyyy'));
+    const [currentDate, setCurrentDate] = useState(moment(new Date()).format('DD/MM/yyyy'));
     const [paymentType, setPaymentType] = useState([]);
     const [customer, setCustomer] = useState([]);
     const [membershipPlan, setMembershipPlan] = useState([]);
@@ -88,7 +89,8 @@ export const useAddEditMembership = (tag) => {
                 ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id })
                 : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
             if (response?.statusCode === 200) {
-                const { success, data} = await fetchLoggedInUserData();
+                tag === "add" && handlePrint(response.data?.id)
+                const { success, data } = await fetchLoggedInUserData();
                 if (success) {
                     const latestBillNo = data.latestBillNo;
                     const latestCustomerNo = data.latestCustomerNo;
@@ -110,6 +112,60 @@ export const useAddEditMembership = (tag) => {
         }
     };
 
+    const handlePrint = async (id) => {
+        try {
+            startLoading()
+            const { success, message, data } = await getMembershipById(id);
+            if (success) {
+                const billData = {
+                    subTotal: data?.px_membership_plan?.price,
+                    total: data?.px_membership_plan?.price,
+                    billNo: data?.billNo,
+                    payment: data?.px_payment_type?.name,
+                    cardNo: data?.cardNo,
+                    date: new Date(data?.createdAt),
+                    customer: data?.px_customer?.name,
+                    customerID: data?.customerID,
+                    phone: data?.px_customer?.phoneNumber,
+                    detail: [{
+                        item: data?.px_membership_plan?.planName,
+                        quantity: 1,
+                        rate: data?.px_membership_plan?.price,
+                        total: data?.px_membership_plan?.price
+                    }],
+                    phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
+                    billTitle: loggedInUser.billTitle,
+                    address: loggedInUser.address,
+                    phoneNumber2: loggedInUser.phoneNumber2,
+                    roleID: loggedInUser.roleID,
+                    gstNo: loggedInUser?.gstNo,
+                    isShowGst: loggedInUser?.isShowGst
+                }
+                const branchData = {
+                    title: billData.billTitle
+                        ? billData.billTitle
+                        : "green health spa and saloon",
+                    address: billData.address
+                        ? billData.address
+                        : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
+                    phone1: billData.phoneNumber,
+                    phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+                };
+                const printWindow = window.open("", "_blank", "popup=yes");
+                printWindow.document.write(PrintContent(billData, branchData, false));
+                printWindow.document.close();
+                printWindow.print();
+                printWindow.close();
+            } else {
+                showToast(message, false);
+            }
+        } catch (error) {
+            showToast(error.message, false);
+        } finally {
+            stopLoading()
+        }
+    }
+
     const fetchDropDownList = async () => {
         try {
             const whereCondition = {
@@ -124,17 +180,17 @@ export const useAddEditMembership = (tag) => {
                 getPaymentTypeList(payload),
                 getMembershipPlanList(payload)
             ]);
-            if(paymentResponse.success) {
+            if (paymentResponse.success) {
                 setPaymentType(paymentResponse.data?.rows);
             } else {
                 setPaymentType([]);
             }
-            if(membershipPlanResponse.success) {
+            if (membershipPlanResponse.success) {
                 setMembershipPlan(membershipPlanResponse.data?.rows);
             } else {
                 setMembershipPlan([])
             }
-        } catch(err) {
+        } catch (err) {
             showToast(err?.message, false);
         }
     }
@@ -162,16 +218,16 @@ export const useAddEditMembership = (tag) => {
                 }
             }
         } catch (error) {
-          showToast(error?.message, false);
+            showToast(error?.message, false);
         } finally {
-          dispatch(stopLoading());
+            dispatch(stopLoading());
         }
     }, [id, dispatch, setCurrentDate, setValue]);
 
     const searchCustomer = async (customerPhone) => {
         try {
             startLoading();
-            if(customerPhone.length === 10) {
+            if (customerPhone.length === 10) {
                 const whereCondition = {
                     searchText: customerPhone,
                     isActive: true,
@@ -179,17 +235,17 @@ export const useAddEditMembership = (tag) => {
                 };
                 const payload = listPayload(0, whereCondition, 1000000);
                 const { success, data } = await getCustomerList(payload);
-                if(success) {
+                if (success) {
                     setCustomer(data?.rows);
                 } else {
                     setCustomer([]);
                     showToast('Customer Not Found', false)
                 }
-            } else if(customerPhone.length === 0) {
+            } else if (customerPhone.length === 0) {
                 setCustomer([]);
             }
-        } catch(err) {
-          showToast(err?.message, false);
+        } catch (err) {
+            showToast(err?.message, false);
         } finally {
             stopLoading();
         }
@@ -201,12 +257,12 @@ export const useAddEditMembership = (tag) => {
             const { success, message } = await addExtraHours({
                 extraHours: getValues('extraHours')
             });
-            if(success) {
+            if (success) {
                 setIsOtpSend(true);
             } else {
                 showToast(message, true);
             }
-        } catch(err) {
+        } catch (err) {
             showToast(err?.message, false);
         } finally {
             stopLoading();
@@ -220,14 +276,14 @@ export const useAddEditMembership = (tag) => {
                 phoneNumber: loggedInUser.phoneNumber,
                 otp: otp
             });
-            if(success) {
+            if (success) {
                 setIsOtpSend(false);
                 setVerifiedOtp(true);
                 setOtp(null);
             } else {
                 showToast(message, false);
             }
-        } catch(err) {
+        } catch (err) {
             showToast(err?.message, false);
         } finally {
             stopLoading();
@@ -254,12 +310,12 @@ export const useAddEditMembership = (tag) => {
                 validity: info.validity,
                 extraHours: info.extraHours || 0
             });
-            if(success) {
+            if (success) {
                 setOpenVerifyMembershipModal(true);
             } else {
                 showToast(message, false);
             }
-        } catch(err) {
+        } catch (err) {
             showToast(err?.message, false);
         } finally {
             stopLoading();
@@ -273,7 +329,7 @@ export const useAddEditMembership = (tag) => {
                 otp: otp,
                 customerID: getValues('customerID')
             });
-            if(success) {
+            if (success) {
                 setOpenVerifyMembershipModal(false);
                 setVerifyCustomerMembership(true);
                 onSubmit(getValues());
@@ -281,7 +337,7 @@ export const useAddEditMembership = (tag) => {
             } else {
                 showToast(message, false);
             }
-        } catch(err) {
+        } catch (err) {
             showToast(err?.message, false);
         } finally {
             stopLoading();
@@ -289,16 +345,16 @@ export const useAddEditMembership = (tag) => {
     }
 
     const disabledButton = useMemo(() => {
-        if(isSubmitting) {
+        if (isSubmitting) {
             return true;
         }
         const extraHours = parseInt(getValues('extraHours'));
-        if(extraHours > 0 && !verifiedOtp) {
+        if (extraHours > 0 && !verifiedOtp) {
             return true;
         } else {
             return false;
         }
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [watch('extraHours'), isSubmitting, isOtpSend, verifiedOtp]);
 
     useEffect(() => {
