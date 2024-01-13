@@ -81,11 +81,11 @@ export const useAddEditMembership = (tag) => {
                     grandTotal: selectedMemberShipPlan.price,
                     managerName: data.managerName,
                     createdBy: loggedInUser.id,
-                    minutes: totalMinutes,
-                }
+                },
+                minutes: totalMinutes,
             };
             const response = tag === "add"
-                ? await createMembership({ ...payload, createdBy: loggedInUser.id })
+                ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id })
                 : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
             if (response?.statusCode === 200) {
                 const { success, data} = await fetchLoggedInUserData();

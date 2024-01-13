@@ -43,7 +43,11 @@ const useMembershipPlanHooks = () => {
     const fetchMembershipData = useCallback(async (searchValue = '') => {
       try {
         dispatch(startLoading());
-        const body = listPayload(page, { searchText: searchValue });
+        let payload = { searchText: searchValue };
+        if (loggedInUser.roleID !== 1) {
+          payload.createdBy = loggedInUser.id;
+        }
+        const body = listPayload(page, payload);
         const response = await getMembershipList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;

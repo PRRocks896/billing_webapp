@@ -16,7 +16,13 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import { styled } from "@mui/material/styles";
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import React from "react";
+
 import { Controller } from "react-hook-form";
 import moment from 'moment';
 
@@ -34,18 +40,25 @@ const AddEditMembershipRedeem = ({ tag }) => {
         otp,
         staff,
         control,
+        service,
         customer,
         isOtpSend,
         membership,
         verifiedOtp,
         isSubmitting,
+        filterService,
+        isSelectedMembership,
+        membershipRedeemList,
         openVerifyMembershipModal,
         setOtp,
         onSubmit,
+        setValue,
+        getValues,
         handleSubmit,
         cancelHandler,
         searchCustomer,
         handleVerifyMembership,
+        fetchMembershipRedeemHistory,
         setOpenVerifyMembershipModal,
         handleSendOtpFormMembershipRedeem,
     } = useAddEditMembershipRedeem(tag);
@@ -131,7 +144,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                         </Grid>
                     </FormGroup>
                     <br/>
-                    {membership &&
+                    {membership && membership.length > 0 &&
                         <FormGroup className="form-field">
                             <TableContainer>
                                 <Table>
@@ -143,17 +156,48 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                             <TableCell>Plan Name</TableCell>
                                             <TableCell>Extra Hours</TableCell>
                                             <TableCell>Total Minutes</TableCell>
+                                            <TableCell>Action</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>{moment(membership?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
-                                            <TableCell>{membership?.px_user?.branchName}</TableCell>
-                                            <TableCell>{membership?.billNo}</TableCell>
-                                            <TableCell>{membership?.px_membership_plan?.planName}</TableCell>
-                                            <TableCell>{membership?.extraHours}</TableCell>
-                                            <TableCell>{membership?.minutes}</TableCell>
-                                        </TableRow>
+                                        {(typeof getValues('membershipID') === 'object') ? 
+                                            <>
+                                            {/* item.id === getValues('membershipID')?.id === item.id */}
+                                                {membership?.map((item, index) => {
+                                                    if(item.id === getValues('membershipID')?.id) {
+                                                        return (
+                                                            <TableRow key={`membership_${index}`}>
+                                                                <TableCell>{moment(item?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
+                                                                <TableCell>{item?.px_user?.branchName}</TableCell>
+                                                                <TableCell>{item?.billNo}</TableCell>
+                                                                <TableCell>{item?.px_membership_plan?.planName}</TableCell>
+                                                                <TableCell>{item?.extraHours}</TableCell>
+                                                                <TableCell>{item?.minutes}</TableCell>
+                                                                <TableCell></TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    }
+                                                })}
+                                            </>
+                                        :
+                                            <>
+                                                {membership?.map((item, index) => (
+                                                    <TableRow key={`membership_${index}`}>
+                                                        <TableCell>{moment(item?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
+                                                        <TableCell>{item?.px_user?.branchName}</TableCell>
+                                                        <TableCell>{item?.billNo}</TableCell>
+                                                        <TableCell>{item?.px_membership_plan?.planName}</TableCell>
+                                                        <TableCell>{item?.extraHours}</TableCell>
+                                                        <TableCell>{item?.minutes}</TableCell>
+                                                        <TableCell>
+                                                            {item.minutes > 0 ?
+                                                                <Button className="btn btn-tertiary" sx={{ marginRight: 4 }} variant="contained" type="button" onClick={() => [setValue('membershipID', item), fetchMembershipRedeemHistory()]}>Redeem</Button> 
+                                                            : null}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </>
+                                        }
                                     </TableBody>
                                 </Table>
                             </TableContainer>
@@ -161,213 +205,250 @@ const AddEditMembershipRedeem = ({ tag }) => {
                     }
                 </Box>
                 <br/>
-                {/* {membership &&
+                {membershipRedeemList && membershipRedeemList.length > 0 &&
+                    <>
+                        <Box className="card">
+                            <FormGroup className="form-field">
+                                <Accordion>
+                                    <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                                        Redeem History
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <TableContainer>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Date</TableCell>
+                                                        <TableCell>Branch Name</TableCell>
+                                                        <TableCell>Bill No</TableCell>
+                                                        <TableCell>Service Name</TableCell>
+                                                        <TableCell>Total Minutes</TableCell>
+                                                        <TableCell>Therapist Name</TableCell>
+                                                        <TableCell>Manager Name</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {membershipRedeemList?.map((item, index) => (
+                                                        <TableRow key={`redeem_history_${index}`}>
+                                                            <TableCell>{moment(item?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
+                                                            <TableCell>{item?.px_user?.branchName}</TableCell>
+                                                            <TableCell>{item?.billNo}</TableCell>
+                                                            <TableCell>{item?.px_service?.name}</TableCell>
+                                                            <TableCell>{item?.minutes}</TableCell>
+                                                            <TableCell>{item?.px_staff?.name}</TableCell>
+                                                            <TableCell>{item?.managerName}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </AccordionDetails>
+                                </Accordion>
+                            </FormGroup>
+                        </Box>
+                        <br/>
+                    </>
+                }
+                {isSelectedMembership &&
+                <>
                     <Box className="card">
                         <FormGroup className="form-field">
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Date</TableCell>
-                                            <TableCell>Branch Name</TableCell>
-                                            <TableCell>Bill No</TableCell>
-                                            <TableCell>Plan Name</TableCell>
-                                            <TableCell>Extra Hours</TableCell>
-                                            <TableCell>Total Minutes</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell>{moment(membership?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
-                                            <TableCell>{membership?.px_user?.branchName}</TableCell>
-                                            <TableCell>{membership?.billNo}</TableCell>
-                                            <TableCell>{membership?.px_membership_plan?.planName}</TableCell>
-                                            <TableCell>{membership?.extraHours}</TableCell>
-                                            <TableCell>{membership?.minutes}</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </FormGroup>
-                    </Box>
-                } */}
-                <Box className="card">
-                    <FormGroup className="form-field">
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="serviceName"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl size="small" fullWidth>
-                                            <TextField
-                                                label="Service name"
-                                                size="small"
-                                                name="name"
-                                                value={value}
-                                                onChange={(e) => onChange(e.target.value.toUpperCase())}
-                                                onBlur={onBlur}
-                                                error={!!error}
-                                                helperText={error?.message}
-                                            />
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: 'Service Name Required'
-                                    }}
-                                />
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={4}>
+                                    <Controller
+                                        name="minutes"
+                                        control={control}
+                                        render={({
+                                            field: { onBlur, onChange, value },
+                                            fieldState: { error },
+                                        }) => (
+                                            <FormControl size="small" fullWidth>
+                                                <InputLabel id="minutes">Minutes*</InputLabel>
+                                                <Select 
+                                                    labelId="minutes"
+                                                    label="Minutes*"
+                                                    value={value || ""} 
+                                                    onChange={(e) => {
+                                                        onChange(e.target.value);
+                                                        setValue('serviceID', "");
+                                                    }} 
+                                                    onBlur={onBlur}
+                                                >
+                                                    <MenuItem value={'60'}>60 Minutes</MenuItem>
+                                                    <MenuItem value={'120'}>120 Minutes</MenuItem>
+                                                </Select>
+                                                {error && error.message &&
+                                                    <FormHelperText error={true}>{error.message}</FormHelperText>
+                                                }
+                                            </FormControl>
+                                        )}
+                                        rules={{
+                                            required: 'Minutes Required'
+                                        }}
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <br/>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="minutes"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl size="small" fullWidth>
-                                            <InputLabel id="minutes">Minutes</InputLabel>
-                                            <Select 
-                                                labelId="minutes"
-                                                label="Minutes"
-                                                value={value || ""} 
-                                                onChange={onChange} 
+                            <br/>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={4}>
+                                    <Controller
+                                        name="serviceID"
+                                        control={control}
+                                        render={({
+                                            field: { onBlur, onChange, value },
+                                            fieldState: { error },
+                                        }) => (
+                                            <Autocomplete
+                                                size="small"
+                                                freeSolo
+                                                id="serviceID"
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option?.id === value?.id
+                                                }
+                                                getOptionLabel={(option) => option?.name ?? ''}
+                                                options={filterService || []}
+                                                value={filterService?.find((option) => option.id === value) ?? ''}
                                                 onBlur={onBlur}
+                                                onChange={(event, newValue) => onChange(newValue?.id)}
+                                                renderOption={(props, option) => {
+                                                    return (
+                                                        <li {...props} key={option.id}>
+                                                            {option.name}
+                                                        </li>
+                                                    );
+                                                }}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Service*"
+                                                        error={!!error}
+                                                        helperText={error?.message}
+                                                    />
+                                                )}
+                                            />
+                                        )}
+                                        rules={{
+                                            required: 'Service Name Required'
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <br/>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={4}>
+                                    <Controller
+                                        name="roomNo"
+                                        control={control}
+                                        render={({
+                                            field: { onBlur, onChange, value },
+                                            fieldState: { error },
+                                        }) => (
+                                            <FormControl
+                                                size="small"
+                                                variant="standard"
+                                                className="form-control"
                                             >
-                                                <MenuItem value={'60'}>60 Minutes</MenuItem>
-                                                <MenuItem value={'120'}>120 Minutes</MenuItem>
-                                            </Select>
-                                            {error && error.message &&
-                                                <FormHelperText error={true}>{error.message}</FormHelperText>
-                                            }
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: 'Service Name Required'
-                                    }}
-                                />
-                            </Grid>
-                        </Grid>
-                        <br/>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="roomNo"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl
-                                            size="small"
-                                            variant="standard"
-                                            className="form-control"
-                                        >
-                                            <TextField
-                                                label="Room No*"
-                                                size="small"
-                                                name="roomNo"
-                                                value={value}
-                                                onChange={(e) => onChange(e.target.value.toUpperCase())}
-                                                onBlur={onBlur}
-                                                error={!!error}
-                                                helperText={error?.message}
-                                            />
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: "Please enter Room No",
-                                    }}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    control={control}
-                                    name={`staffID`}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <Autocomplete
-                                            size="small"
-                                            freeSolo
-                                            id="staffID"
-                                            isOptionEqualToValue={(option, value) =>
-                                                option?.id === value?.id
-                                            }
-                                            getOptionLabel={(option) => option?.name ?? ''}
-                                            options={staff || []}
-                                            value={staff?.find((option) => option.id === value) ?? ''}
-                                            onBlur={onBlur}
-                                            onChange={(event, newValue) => onChange(newValue)}
-                                            renderOption={(props, option) => {
-                                                return (
-                                                    <li {...props} key={option.id}>
-                                                        {option.name}
-                                                    </li>
-                                                );
-                                            }}
-                                            renderInput={(params) => (
                                                 <TextField
-                                                    {...params}
-                                                    label="Staff Person"
+                                                    label="Room No*"
+                                                    size="small"
+                                                    name="roomNo"
+                                                    value={value}
+                                                    onChange={(e) => onChange(e.target.value.toUpperCase())}
+                                                    onBlur={onBlur}
                                                     error={!!error}
                                                     helperText={error?.message}
                                                 />
-                                            )}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: "Please Select Staff Person",
-                                    }}
-                                />
+                                            </FormControl>
+                                        )}
+                                        rules={{
+                                            required: "Please enter Room No",
+                                        }}
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        <br/>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="managerName"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl size="small" fullWidth>
-                                            <TextField
-                                                label="Manager name"
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={4}>
+                                    <Controller
+                                        control={control}
+                                        name={`staffID`}
+                                        render={({
+                                            field: { onBlur, onChange, value },
+                                            fieldState: { error },
+                                        }) => (
+                                            <Autocomplete
                                                 size="small"
-                                                name="name"
-                                                value={value}
-                                                onChange={(e) => onChange(e.target.value.toUpperCase())}
+                                                freeSolo
+                                                id="staffID"
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option?.id === value?.id
+                                                }
+                                                getOptionLabel={(option) => option?.name ?? ''}
+                                                options={staff || []}
+                                                value={staff?.find((option) => option.id === value) ?? ''}
                                                 onBlur={onBlur}
-                                                error={!!error}
-                                                helperText={error?.message}
+                                                onChange={(event, newValue) => onChange(newValue?.id)}
+                                                renderOption={(props, option) => {
+                                                    return (
+                                                        <li {...props} key={option.id}>
+                                                            {option.name}
+                                                        </li>
+                                                    );
+                                                }}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Staff Person*"
+                                                        error={!!error}
+                                                        helperText={error?.message}
+                                                    />
+                                                )}
                                             />
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: 'Manager Name Required'
-                                    }}
-                                />
+                                        )}
+                                        rules={{
+                                            required: "Please Select Staff Person",
+                                        }}
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </FormGroup>
-                </Box>
-                <Box className="card">
-                    <Button className="btn btn-tertiary" sx={{ marginRight: 4}} variant="contained" type="button" onClick={cancelHandler}>Back</Button>
-                    <Button disabled={isSubmitting} className="btn btn-tertiary" variant="contained" type="submit">
-                        {verifiedOtp ? 'Redeem' : 'Verify'}
-                    </Button>
-                </Box>
+                            <br/>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={4}>
+                                    <Controller
+                                        name="managerName"
+                                        control={control}
+                                        render={({
+                                            field: { onBlur, onChange, value },
+                                            fieldState: { error },
+                                        }) => (
+                                            <FormControl size="small" fullWidth>
+                                                <TextField
+                                                    label="Manager name*"
+                                                    size="small"
+                                                    name="name"
+                                                    value={value}
+                                                    onChange={(e) => onChange(e.target.value.toUpperCase())}
+                                                    onBlur={onBlur}
+                                                    error={!!error}
+                                                    helperText={error?.message}
+                                                />
+                                            </FormControl>
+                                        )}
+                                        rules={{
+                                            required: 'Manager Name Required'
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </FormGroup>
+                    </Box>
+                    <Box className="card">
+                        <Button className="btn btn-tertiary" sx={{ marginRight: 4}} variant="contained" type="button" onClick={cancelHandler}>Back</Button>
+                        <Button disabled={isSubmitting} className="btn btn-tertiary" variant="contained" type="submit">
+                            {verifiedOtp ? 'Redeem' : 'Verify'}
+                        </Button>
+                    </Box>
+                </>
+                }
             </form>
             <VerifyOtp
                 isOpen={openVerifyMembershipModal}

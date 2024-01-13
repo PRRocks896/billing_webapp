@@ -92,7 +92,7 @@ const Bill = () => {
                       <TableCell>
                         {/* {(rights.edit || rights.delete) && ( */}
                         <Box className="table-action-btn">
-                          {rights.edit && (
+                          {rights.edit && row.detail[0]?.service && (
                             <Button
                               className="btn btn-primary"
                               onClick={() => navigate(`/edit-bill/${row.id}`)}

@@ -134,7 +134,7 @@ export const useBill = () => {
     setPage(0);
   };
 
-  const doPrint = (billData) => {
+  const doPrint = (billData, isShowSecond = true) => {
     const branchData = {
       title: billData.billTitle
         ? billData.billTitle
@@ -146,7 +146,7 @@ export const useBill = () => {
       phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
     };
     const printWindow = window.open("", "_blank", "popup=yes");
-    printWindow.document.write(PrintContent(billData, branchData));
+    printWindow.document.write(PrintContent(billData, branchData, isShowSecond));
     printWindow.document.close();
     printWindow.print();
     printWindow.close();
@@ -169,7 +169,7 @@ export const useBill = () => {
         staff: body?.px_staff?.name,
         roomNo: body?.roomNo,
         detail: body?.detail?.map((row) => {
-          return { ...row, item: row.service.name };
+          return { ...row, item: row.serviceID ? row.service?.name : row.membershipPlan?.planName };
         }),
         phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
         billTitle: loggedInUser.billTitle,
@@ -179,7 +179,7 @@ export const useBill = () => {
         gstNo: body?.px_user?.gstNo,
         isShowGst: body?.px_user?.isShowGst
       };
-      doPrint(billData);
+      doPrint(billData, billData.detail[0]?.membershipPlan ? false : true);
     } else {
       showToast(response?.message, false);
     }

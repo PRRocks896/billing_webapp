@@ -77,28 +77,29 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="membership-redeem"
-              Component={isOnline ? <MemberShipRedeem/> : <NoConnection/>}
-            />
-          )
-        },
-        {
-          path: 'add-membership-redeem',
-          element: (
-            <ProtectedRoute
-              path="add-membership-redeem"
               Component={isOnline ? <AddEditMembershipRedeem tag="add" /> : <NoConnection/>}
+              // Component={isOnline ? <MemberShipRedeem/> : <NoConnection/>}
             />
           )
         },
-        {
-          path: 'edit-membership-redeem/:id',
-          element: (
-            <ProtectedRoute
-              path="edit-membership-redeem"
-              Component={isOnline ? <AddEditMembershipRedeem tag="edit" /> : <NoConnection/>}
-            />
-          )
-        },
+        // {
+        //   path: 'add-membership-redeem',
+        //   element: (
+        //     <ProtectedRoute
+        //       path="add-membership-redeem"
+        //       Component={isOnline ? <AddEditMembershipRedeem tag="add" /> : <NoConnection/>}
+        //     />
+        //   )
+        // },
+        // {
+        //   path: 'edit-membership-redeem/:id',
+        //   element: (
+        //     <ProtectedRoute
+        //       path="edit-membership-redeem"
+        //       Component={isOnline ? <AddEditMembershipRedeem tag="edit" /> : <NoConnection/>}
+        //     />
+        //   )
+        // },
         {
           path: 'membership',
           element: (

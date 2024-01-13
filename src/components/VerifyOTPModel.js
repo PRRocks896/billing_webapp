@@ -64,7 +64,7 @@ const VerifyOtp = ({
                             <Grid container spacing={3}>
                                 <Grid item md={6} xs={12}>
                                     <Button className="btn btn-tertiary" onClick={() => handleEnterOtp(otp)}>
-                                        Save
+                                        Verify
                                     </Button>
                                 </Grid>
                                 <Grid item md={6} xs={12}>
