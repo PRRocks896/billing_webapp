@@ -16,11 +16,9 @@ import React from "react";
 import { Controller } from "react-hook-form";
 import moment from 'moment';
 import {
-  FiMinusCircle,
   FiPlusCircle,
   FiPrinter,
   FiSave,
-  // FiTrash2,
   FiXCircle,
   FiSearch,
 } from "react-icons/fi";
@@ -44,22 +42,16 @@ const AddEditBill = ({ tag }) => {
     customersOptions,
     staffOptions,
     serviceOptions,
-    // reset,
-    addRow,
     onSubmit,
     navigate,
-    removeRow,
     handleSubmit,
     calculateTotal,
     isSaveModalOpen,
     setIsSaveModalOpen,
     dontSaveHandler,
-
     isCustomerModalOpen,
     setIsCustomerModalOpen,
     searchCustomer,
-    // fetchCustomersData,
-
     isStaffModalOpen,
     setIsStaffModalOpen,
     fetchStaffData,
