@@ -15,6 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import Typography from "@mui/material/Typography";
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -60,7 +61,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                 <Box className="card">
                     <FormGroup className="form-field">
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={3} sm={6}>
+                            <Grid item xs={12} md={2} sm={6}>
                                 <Controller
                                     name="billNo"
                                     control={control}
@@ -84,7 +85,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3} sm={6}>
+                            <Grid item xs={12} md={2} sm={6}>
                                 <FormControl size="small" fullWidth>
                                     <TextField
                                         disabled
@@ -129,8 +130,12 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3} sm={6}>
-                                <Button className="btn btn-tertiary" variant="contained" type="button" onClick={searchCustomer}>Find Membership</Button>
+                            <Grid item xs={12} md={2} sm={6}>
+                                <Button className="btn btn-tertiary" variant="contained" type="button" onClick={searchCustomer}>
+                                    <Typography variant="subtitle2">
+                                        Find Membership
+                                    </Typography>
+                                </Button>
                             </Grid>
                         </Grid>
                     </FormGroup>
@@ -143,6 +148,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                         <TableRow>
                                             <TableCell>Date</TableCell>
                                             <TableCell>Branch Name</TableCell>
+                                            <TableCell>Customer</TableCell>
                                             <TableCell>Bill No</TableCell>
                                             <TableCell>Plan Name</TableCell>
                                             <TableCell>Extra Hours</TableCell>
@@ -160,6 +166,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                             <TableRow key={`membership_${index}`}>
                                                                 <TableCell>{moment(item?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
                                                                 <TableCell>{item?.px_user?.branchName}</TableCell>
+                                                                <TableCell>{item?.px_customer?.name}</TableCell>
                                                                 <TableCell>{item?.billNo}</TableCell>
                                                                 <TableCell>{item?.px_membership_plan?.planName}</TableCell>
                                                                 <TableCell>{item?.extraHours}</TableCell>
@@ -185,6 +192,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                     <TableRow key={`membership_${index}`}>
                                                         <TableCell>{moment(item?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
                                                         <TableCell>{item?.px_user?.branchName}</TableCell>
+                                                        <TableCell>{item?.px_customer?.name}</TableCell>
                                                         <TableCell>{item?.billNo}</TableCell>
                                                         <TableCell>{item?.px_membership_plan?.planName}</TableCell>
                                                         <TableCell>{item?.extraHours}</TableCell>
