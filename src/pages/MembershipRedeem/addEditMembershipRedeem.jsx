@@ -40,6 +40,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
         loggedInUser,
         isSubmitting,
         filterService,
+        filterMembershipList,
         isSelectedMembership,
         membershipRedeemList,
         openVerifyMembershipModal,
@@ -140,7 +141,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                         </Grid>
                     </FormGroup>
                     <br/>
-                    {membership && membership.length > 0 &&
+                    {filterMembershipList && filterMembershipList.length > 0 &&
                         <FormGroup className="form-field">
                             <TableContainer>
                                 <Table>
@@ -160,7 +161,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                         {(typeof getValues('membershipID') === 'object') ? 
                                             <>
                                             {/* item.id === getValues('membershipID')?.id === item.id */}
-                                                {membership?.map((item, index) => {
+                                                {filterMembershipList?.map((item, index) => {
                                                     if(item.id === getValues('membershipID')?.id) {
                                                         return (
                                                             <TableRow key={`membership_${index}`}>
@@ -188,7 +189,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                             </>
                                         :
                                             <>
-                                                {membership?.map((item, index) => (
+                                                {filterMembershipList?.map((item, index) => (
                                                     <TableRow key={`membership_${index}`}>
                                                         <TableCell>{moment(item?.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
                                                         <TableCell>{item?.px_user?.branchName}</TableCell>

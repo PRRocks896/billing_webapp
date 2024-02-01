@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { listPayload, showToast } from "../../../utils/helper";
@@ -21,7 +21,7 @@ import { loggedInUserAction } from "../../../redux/loggedInUser";
 import PrintContent from "../../../components/PrintContent";
 
 export const useAddEditMembershipRedeem = (tag) => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useDispatch();
     const loggedInUser = useSelector((state) => state.loggedInUser);
 
@@ -69,7 +69,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                 if (success) {
                     setCustomer(data?.rows[0]);
                     const customerID = data?.rows[0]?.id;
-                    const takenMemberShipResponse = await getMembershipList(listPayload(0, { customerID: customerID, isActive: true, isDeleted: false }, 1000000));
+                    const takenMemberShipResponse = await getMembershipList(listPayload(0, { customerID: customerID, isActive: true, isDeleted: false }, 1000000, {}, false));
                     if (takenMemberShipResponse.success) {
                         if(takenMemberShipResponse.data?.rows?.length === 1) {
                             setValue('membershipID', takenMemberShipResponse.data?.rows[0])
@@ -353,8 +353,27 @@ export const useAddEditMembershipRedeem = (tag) => {
     }, [tag]);
 
     const cancelHandler = () => {
-        navigate('/membership-redeem');
+        // navigate('/membership-redeem');
+        searchCustomer();
     }
+
+    const filterMembershipList = useMemo(() => {
+        const filterData = [];
+        let isMinutesZero = false;
+        membership.forEach((item) => {
+            if(item.userID === loggedInUser.id) {
+                if(item.minutes > 0) {
+                    filterData.push(item);
+                } else {
+                    isMinutesZero = true;
+                }
+            }
+            if(isMinutesZero) {
+                filterData.push(item);
+            }
+        })
+        return filterData;
+    }, [loggedInUser, membership]);
 
     return {
         otp,
@@ -368,6 +387,7 @@ export const useAddEditMembershipRedeem = (tag) => {
         loggedInUser,
         isSubmitting,
         filterService,
+        filterMembershipList,
         isSelectedMembership,
         membershipRedeemList,
         openVerifyMembershipModal,

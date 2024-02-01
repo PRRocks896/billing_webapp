@@ -76,7 +76,7 @@ const AddEditBill = ({ tag }) => {
           {/* bill no, payment type, customer, sales person selection */}
           <FormGroup className="form-field">
             <Grid container spacing={2}>
-              <Grid item xs={12} md={2} sm={6}>
+              <Grid item xs={12} md={4} sm={6}>
                 <Controller
                   name="billNo"
                   control={control}
@@ -103,7 +103,7 @@ const AddEditBill = ({ tag }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={2} sm={6}>
+              <Grid item xs={12} md={4} sm={6}>
                 <Controller
                   name="date"
                   control={control}
@@ -126,6 +126,8 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid>
+            </Grid>
+            <Grid container spacing={2}>
               {/* --------------------------------------------------- */}
               <Grid item xs={12} md={4} sm={6}>
                 <Controller
@@ -202,7 +204,7 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} md={3} sm={6}>
+              <Grid item xs={12} md={4} sm={6}>
                 <Controller
                   name="Phone"
                   control={control}

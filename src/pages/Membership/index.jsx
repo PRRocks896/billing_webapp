@@ -63,6 +63,7 @@ const MembershipPlan = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Bill No</TableCell>
+                                <TableCell>Branch Name</TableCell>
                                 <TableCell>Customer Name</TableCell>
                                 <TableCell>Phone No</TableCell>
                                 <TableCell>Plan</TableCell>
@@ -81,6 +82,7 @@ const MembershipPlan = () => {
                                     return (
                                         <TableRow key={"membership_" + row.id}>
                                             <TableCell align="left">{row.billNo}</TableCell>
+                                            <TableCell align="left">{row?.px_user?.branchName}</TableCell>
                                             <TableCell align="left">{row?.px_customer?.name}</TableCell>
                                             <TableCell align="left">{row?.px_customer?.phoneNumber}</TableCell>
                                             <TableCell align="left">{row?.px_membership_plan?.planName}</TableCell>

@@ -109,6 +109,7 @@ const AddEditMembership = ({tag}) => {
                                                         freeSolo
                                                         size="small"
                                                         id="customerID"
+                                                        disabled={disabledButton}
                                                         options={customer || []}
                                                         getOptionLabel={(option) => option.name ? `${option.name}-(${option.phoneNumber})` : ''}
                                                         isOptionEqualToValue={(option, value) => option?.id === value?.id}
@@ -168,7 +169,6 @@ const AddEditMembership = ({tag}) => {
                                                         label="Membership Plan"
                                                         onChange={onChange}
                                                         onBlur={onBlur}
-
                                                     >
                                                         {membershipPlan?.map((res, ind) => (
                                                             <MenuItem style={{ textTransform: "capitalize" }} key={`membership_${ind}`} value={res.id}>

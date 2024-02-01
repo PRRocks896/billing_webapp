@@ -16,7 +16,7 @@ export const useAddCustomer = (
     defaultValues: {
       customer_name: "",
       phone: "",
-      dob: "",
+      dob: new Date(),
       gender: "male",
     },
     mode: "onBlur",
