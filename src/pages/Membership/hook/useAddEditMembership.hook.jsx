@@ -41,6 +41,7 @@ export const useAddEditMembership = (tag) => {
     const [verifiedOtp, setVerifiedOtp] = useState(false);
     const [verifyCustomerMembership, setVerifyCustomerMembership] = useState(false);
     const [openVerifyMembershipModal, setOpenVerifyMembershipModal] = useState(false);
+    const [openVerifyMembershipByMerchantModal, setOpenVerifyMembershipByMerchantModal] = useState(false);
 
     const { setValue, control, handleSubmit, watch, getValues, formState: { isSubmitting } } = useForm({
         defaultValues: {
@@ -255,10 +256,14 @@ export const useAddEditMembership = (tag) => {
         try {
             startLoading();
             const { success, message } = await addExtraHours({
-                extraHours: getValues('extraHours')
+                customerID: getValues('customerID'),
+                membershipPlanID: getValues('membershipPlanID'),
+                validity: getValues('validity'),
+                extraHours: getValues('extraHours') || 0
             });
             if (success) {
                 setIsOtpSend(true);
+                setOpenVerifyMembershipByMerchantModal(true);
             } else {
                 showToast(message, true);
             }
@@ -269,7 +274,7 @@ export const useAddEditMembership = (tag) => {
         }
     }
 
-    const verifyOtp = async () => {
+    const verifyOtp = async (otp) => {
         try {
             startLoading();
             const { success, message } = await verifyOTP({
@@ -277,9 +282,17 @@ export const useAddEditMembership = (tag) => {
                 otp: otp
             });
             if (success) {
+                handleSendOtpForMembership({
+                    customerID: getValues('customerID'),
+                    membershipPlanID: getValues('membershipPlanID'),
+                    validity: getValues('validity'),
+                    extraHours: getValues('extraHours') || 0
+                })
                 setIsOtpSend(false);
                 setVerifiedOtp(true);
                 setOtp(null);
+                setOpenVerifyMembershipByMerchantModal(false);
+                setOpenVerifyMembershipModal(true);
             } else {
                 showToast(message, false);
             }
@@ -348,12 +361,12 @@ export const useAddEditMembership = (tag) => {
         if (isSubmitting) {
             return true;
         }
-        const extraHours = parseInt(getValues('extraHours'));
-        if (extraHours > 0 && !verifiedOtp) {
-            return true;
-        } else {
+        // const extraHours = parseInt(getValues('extraHours'));
+        // if (extraHours > 0 && !verifiedOtp) {
+        //     return true;
+        // } else {
             return false;
-        }
+        // }
         // eslint-disable-next-line
     }, [watch('extraHours'), isSubmitting, isOtpSend, verifiedOtp]);
 
@@ -383,6 +396,7 @@ export const useAddEditMembership = (tag) => {
         isCustomerModalOpen,
         verifyCustomerMembership,
         openVerifyMembershipModal,
+        openVerifyMembershipByMerchantModal,
         getOtp,
         setOtp,
         onSubmit,
@@ -397,5 +411,6 @@ export const useAddEditMembership = (tag) => {
         setCustomerSelectedHandler,
         handleSendOtpForMembership,
         setOpenVerifyMembershipModal,
+        setOpenVerifyMembershipByMerchantModal
     }
 }

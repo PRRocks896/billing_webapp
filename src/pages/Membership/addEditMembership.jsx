@@ -16,15 +16,19 @@ import FormHelpText from "@mui/material/FormHelperText";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+
+// import Typography from "@mui/material/Typography";
 
 import { useAddEditMembership } from "./hook/useAddEditMembership.hook";
 import AddCustomer from "../Bill/AddCustomer";
 import VerifyOtp from "../../components/VerifyOTPModel";
+import VerifyOtpMerchant from "../../components/VerifyOTPMerchantModel";
 
 const AddEditMembership = ({tag}) => {
     const {
-        otp,
+
+        // otp,
+        
         control,
         customer,
         isOtpSend,
@@ -37,6 +41,7 @@ const AddEditMembership = ({tag}) => {
         isCustomerModalOpen,
         verifyCustomerMembership,
         openVerifyMembershipModal,
+        openVerifyMembershipByMerchantModal,
         setOtp,
         getOtp,
         onSubmit,
@@ -51,10 +56,11 @@ const AddEditMembership = ({tag}) => {
         setCustomerSelectedHandler,
         handleSendOtpForMembership,
         setOpenVerifyMembershipModal,
+        setOpenVerifyMembershipByMerchantModal
     } = useAddEditMembership(tag);
     return (
         <>
-            <form onSubmit={handleSubmit(verifyCustomerMembership ? onSubmit : handleSendOtpForMembership)}>
+            <form onSubmit={handleSubmit(!isOtpSend ? getOtp : verifyCustomerMembership ? onSubmit : handleSendOtpForMembership)}>
                 <Card>
                     <CardContent>
                         <Grid container spacing={2}>
@@ -374,7 +380,7 @@ const AddEditMembership = ({tag}) => {
                                                     >
                                                         <FiMinusCircle/>
                                                     </span>
-                                                    {parseInt(value) > 0 && !verifiedOtp &&
+                                                    {/* {parseInt(value) > 0 && !verifiedOtp &&
                                                         <>
                                                             {isOtpSend ?
                                                                 <Box sx={{ display: 'grid', gridTemplateColumns: '3fr 3fr',  alignItems: 'center'}}>
@@ -405,7 +411,7 @@ const AddEditMembership = ({tag}) => {
                                                         <>
                                                             <Typography variant="subtitle1" sx={{ color: theme => theme.palette.success.main}}>Verified</Typography>
                                                         </>
-                                                    }
+                                                    } */}
                                                 </Box>
                                             )}
                                             rules={{
@@ -434,6 +440,12 @@ const AddEditMembership = ({tag}) => {
                 isCustomerModalOpen={isCustomerModalOpen}
                 setIsCustomerModalOpen={setIsCustomerModalOpen}
                 setCustomerSelectedHandler={setCustomerSelectedHandler}
+            />
+            <VerifyOtpMerchant
+                isOpen={openVerifyMembershipByMerchantModal}
+                setOpen={setOpenVerifyMembershipByMerchantModal}
+                handleEnterOtp={verifyOtp}
+                resendOtp={getOtp}
             />
             <VerifyOtp
                 isOpen={openVerifyMembershipModal}
