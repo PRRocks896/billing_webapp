@@ -3,6 +3,10 @@ import {
 } from "../utils/constant";
 import { get, post, remove, put } from "./webRequest";
 
+export const addPastMembership = async (payload) => {
+    return await post(`${MEMBERSHIP}/past-membership`, payload);
+}
+
 export const addExtraHours = async (payload) => {
     return await post(`${MEMBERSHIP}/extra-hours-otp`, payload);
 }

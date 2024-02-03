@@ -52,6 +52,7 @@ import MembershipPlan from "./pages/MembershipPlan";
 import AddEditMembershipPlan from "./pages/MembershipPlan/addEditMembershipPlan";
 import Membership from "./pages/Membership";
 import AddEditMembership from "./pages/Membership/addEditMembership";
+import AddMembership from "./pages/Membership/addMembership";
 import AddEditMembershipRedeem from "./pages/MembershipRedeem/addEditMembershipRedeem";
 import RenewPlan from "./pages/RenewPlan";
 
@@ -115,6 +116,15 @@ const App = () => {
             <ProtectedRoute
               path="membership"
               Component={isOnline ? <Membership/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'past-membership',
+          element: (
+            <ProtectedRoute
+              path='past-membership'
+              Component={isOnline ? <AddMembership/> : <NoConnection/>}
             />
           )
         },

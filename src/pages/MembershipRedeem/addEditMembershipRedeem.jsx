@@ -322,7 +322,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                 options={filterService || []}
                                                 value={filterService?.find((option) => option.id === value) ?? ''}
                                                 onBlur={onBlur}
-                                                onChange={(event, newValue) => onChange(newValue?.id)}
+                                                onChange={(_event, newValue) => onChange(newValue?.id)}
                                                 renderOption={(props, option) => {
                                                     return (
                                                         <li {...props} key={option.id}>
