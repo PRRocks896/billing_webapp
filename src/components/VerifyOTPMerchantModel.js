@@ -12,8 +12,9 @@ import {
 } from "@mui/material";
 
 const VerifyOtpMerchant = ({
+    title = 'Verify by Merchant',
     isOpen,
-    setOpen,
+    handleCancelVerifyPermission,
     resendOtp,
     handleEnterOtp
 }) => {
@@ -30,7 +31,7 @@ const VerifyOtpMerchant = ({
                 open={isOpen}
                 onClose={() => {
                     setOtp(null)
-                    setOpen(false)
+                    handleCancelVerifyPermission()
                 }}
                 closeAfterTransition
                 slotProps={{
@@ -42,7 +43,7 @@ const VerifyOtpMerchant = ({
                 <Fade in={isOpen}>
                     <Box className="modal-wrapper modal-bg">
                         <Typography variant="h6" component="h6" className="text-black modal-title">
-                            Verify by Merchant
+                            {title}
                         </Typography>
                         <Box className="modal-body">
                             <FormGroup className="form-field">
@@ -82,7 +83,7 @@ const VerifyOtpMerchant = ({
                                     </Button>
                                 </Grid>
                                 <Grid item md={6} xs={12}>
-                                    <Button className="btn btn-cancel" onClick={() => setOpen(false)}>
+                                    <Button className="btn btn-cancel" onClick={handleCancelVerifyPermission}>
                                         Cancel
                                     </Button>
                                 </Grid>

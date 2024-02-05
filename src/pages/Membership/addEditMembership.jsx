@@ -55,8 +55,11 @@ const AddEditMembership = ({tag}) => {
         setIsCustomerModalOpen,
         setCustomerSelectedHandler,
         handleSendOtpForMembership,
+        handleCancelVerifyPermission,
         setOpenVerifyMembershipModal,
-        setOpenVerifyMembershipByMerchantModal
+
+        // setOpenVerifyMembershipByMerchantModal
+        
     } = useAddEditMembership(tag);
     return (
         <>
@@ -442,12 +445,14 @@ const AddEditMembership = ({tag}) => {
                 setCustomerSelectedHandler={setCustomerSelectedHandler}
             />
             <VerifyOtpMerchant
+                title="Verify Extra Hour Permission OTP"
                 isOpen={openVerifyMembershipByMerchantModal}
-                setOpen={setOpenVerifyMembershipByMerchantModal}
+                handleCancelVerifyPermission={handleCancelVerifyPermission/*setOpenVerifyMembershipByMerchantModal*/}
                 handleEnterOtp={verifyOtp}
                 resendOtp={getOtp}
             />
             <VerifyOtp
+                title="Verify Customer OTP"
                 isOpen={openVerifyMembershipModal}
                 setOpen={setOpenVerifyMembershipModal}
                 handleEnterOtp={handleVerifyMembership}

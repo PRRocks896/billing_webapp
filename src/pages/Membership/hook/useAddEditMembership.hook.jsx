@@ -380,6 +380,14 @@ export const useAddEditMembership = (tag) => {
     const cancelHandler = () => {
         navigate("/membership");
     };
+
+    const handleCancelVerifyPermission = () => {
+        setIsOtpSend(false);
+        setVerifiedOtp(false);
+        setOtp(null);
+        setOpenVerifyMembershipByMerchantModal(false);
+        setOpenVerifyMembershipModal(false);
+    }
     return {
         otp,
         control,
@@ -409,6 +417,7 @@ export const useAddEditMembership = (tag) => {
         setIsCustomerModalOpen,
         setCustomerSelectedHandler,
         handleSendOtpForMembership,
+        handleCancelVerifyPermission,
         setOpenVerifyMembershipModal,
         setOpenVerifyMembershipByMerchantModal
     }

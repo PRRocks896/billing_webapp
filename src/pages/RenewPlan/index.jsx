@@ -395,6 +395,7 @@ const RenewPlan = () => {
                 </Card>
             </form>
             <VerifyOtp
+                title="Verify Customer OTP"
                 isOpen={openVerifyMembershipModal}
                 setOpen={setOpenVerifyMembershipModal}
                 handleEnterOtp={handleVerifyMembership}

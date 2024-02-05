@@ -464,6 +464,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                 }
             </form>
             <VerifyOtp
+                title="Verify Customer Redeem OTP"
                 isOpen={openVerifyMembershipModal}
                 setOpen={setOpenVerifyMembershipModal}
                 handleEnterOtp={handleVerifyMembership}

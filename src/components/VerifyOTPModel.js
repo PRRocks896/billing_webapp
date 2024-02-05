@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 const VerifyOtp = ({
+    title = "Verify Membership",
     isOpen,
     setOpen,
     handleEnterOtp
@@ -41,7 +42,7 @@ const VerifyOtp = ({
                 <Fade in={isOpen}>
                     <Box className="modal-wrapper modal-bg">
                         <Typography variant="h6" component="h6" className="text-black modal-title">
-                            Verify Membership
+                            {title}
                         </Typography>
                         <Box className="modal-body">
                             <FormGroup className="form-field">
