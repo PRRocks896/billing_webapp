@@ -10,8 +10,6 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 const ImageUpload = ({ title = 'Image Upload', value, onChange, error }) => {
-    console.log(value);
-    console.log(error);
     const handleFileChange = (event) => {
         onChange(event.target.files[0]);
         // setSelectedFile(event.target.files[0]);

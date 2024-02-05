@@ -6,7 +6,8 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddCustomer = (
   setIsCustomerModalOpen,
-  setCustomerSelectedHandler
+  setCustomerSelectedHandler,
+  userID
 ) => {
   const dispatch = useDispatch();
 
@@ -26,12 +27,12 @@ export const useAddCustomer = (
     try {
       dispatch(startLoading());
       const payload = {
-        userID: loggedInUser.id,
+        userID: userID ? userID : loggedInUser.id,
         phoneNumber: data.phone,
         gender: data.gender,
         name: data.customer_name,
         dob: data.dob,
-        createdBy: loggedInUser.id,
+        createdBy: userID ? userID : loggedInUser.id,
       };
 
       const response = await createCustomer(payload);

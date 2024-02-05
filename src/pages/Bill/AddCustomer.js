@@ -18,10 +18,12 @@ const AddCustomer = ({
   isCustomerModalOpen,
   setIsCustomerModalOpen,
   setCustomerSelectedHandler,
+  userID = null,
 }) => {
   const { control, handleSubmit, onSubmit, reset } = useAddCustomer(
     setIsCustomerModalOpen,
-    setCustomerSelectedHandler
+    setCustomerSelectedHandler,
+    userID
   );
 
   return (

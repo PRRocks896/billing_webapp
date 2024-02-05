@@ -32,6 +32,7 @@ const AddMemberShip = () => {
         isCardSelected,
         isCustomerModalOpen,
         onSubmit,
+        getValues,
         handleSubmit,
         cancelHandler,
         searchCustomer,
@@ -488,6 +489,7 @@ const AddMemberShip = () => {
                 </Card>
             </form>
             <AddCustomer
+                userID={getValues('userID')}
                 isCustomerModalOpen={isCustomerModalOpen}
                 setIsCustomerModalOpen={setIsCustomerModalOpen}
                 setCustomerSelectedHandler={setCustomerSelectedHandler}

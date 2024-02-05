@@ -203,7 +203,6 @@ export const useAddEditMembership = (tag) => {
                 const { success, message, data } = await getMembershipById(id);
 
                 if (success) {
-                    console.log(data);
                     searchCustomer(data.px_customer?.phoneNumber);
                     setValue('customerID', data.customerID);
                     setValue('paymentID', data.paymentID);

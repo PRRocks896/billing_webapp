@@ -186,6 +186,7 @@ export const useAddMembership = () => {
         isCardSelected,
         isCustomerModalOpen,
         onSubmit,
+        getValues,
         handleSubmit,
         cancelHandler,
         searchCustomer,
