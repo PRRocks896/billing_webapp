@@ -12,7 +12,7 @@ export const useReport = () => {
   const [pdfData, setPdfData] = useState(null);
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [branchOptions, setBranchOptions] = useState([]);
-  const [branch, setBranch] = useState("");
+  const [branch, setBranch] = useState([]);
   const user = useSelector((state) => state.loggedInUser);
 
   const handleDateChange = (value) => {
@@ -29,7 +29,7 @@ export const useReport = () => {
       const response = await getUserList(body);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
-        const branchOption = payload.map((row) => ({
+        const branchOption = payload.filter(item => item.roleID !== 1).map((row) => ({
           value: row.id,
           label: row.branchName,
         }));
@@ -55,7 +55,8 @@ export const useReport = () => {
       dispatch(startLoading());
 
       const body = {
-        userID: user.roleID !== 1 ? user.id : branch.value,
+        userID: branch,
+        // userID: user.roleID !== 1 ? user.id : branch.value,
         startDate: moment(dateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
         endDate: moment(dateRange[1]).format('yyyy-MM-DD') //formatDate(dateRange[1]),
       };

@@ -2,6 +2,7 @@ import { Autocomplete, Button, Box, Grid, TextField } from "@mui/material";
 import React from "react";
 import { useReport } from "./hook/useReport";
 import { DateRangePicker } from "rsuite";
+import 'rsuite/dist/rsuite.min.css';
 
 const Report = () => {
   const {
@@ -9,7 +10,9 @@ const Report = () => {
     handleDateChange,
     roleId,
     branchOptions,
-    branch,
+    
+    // branch,
+    
     handleBranchChange,
     fetchReportDate
   } = useReport();
@@ -24,11 +27,14 @@ const Report = () => {
           <Grid item xs={12} sm={3}>
             {roleId === 1 && (
               <Autocomplete
+                freeSolo
                 size="small"
                 disablePortal
+                multiple
                 id="Branch"
-                options={branchOptions}
-                value={branch}
+                options={branchOptions || []}
+                getOptionLabel={(option) => option.label}
+                // value={branch}
                 onChange={(event, newValue) => handleBranchChange(newValue)}
                 renderInput={(params) => (
                   <TextField {...params} label="Branch" />

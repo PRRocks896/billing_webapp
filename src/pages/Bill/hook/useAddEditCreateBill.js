@@ -110,12 +110,12 @@ export const useAddEditCreateBill = (tag) => {
     // const response = await getStoreData(Stores.BillNo);
     // const latestBillNo = response.data[0].latestBillNo;
     const latestBillNo = localStorage.getItem('latestBillNo');
-    const numericPart = latestBillNo.match(/\d+$/)[0];
-    const incrementedNumber = parseInt(numericPart, 10) + 1;
-    const formattedNumber = incrementedNumber
-      .toString()
-      .padStart(numericPart.length, "0");
-    const finalBillNumber = latestBillNo.replace(/\d+$/, formattedNumber);
+    // const numericPart = latestBillNo.match(/\d+$/)[0];
+    // const incrementedNumber = parseInt(numericPart, 10) + 1;
+    // const formattedNumber = incrementedNumber
+    //   .toString()
+    //   .padStart(numericPart.length, "0");
+    const finalBillNumber = latestBillNo; //.replace(/\d+$/, formattedNumber);
 
     setValue("billNo", finalBillNumber);
   };
