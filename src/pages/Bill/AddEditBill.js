@@ -42,6 +42,7 @@ const AddEditBill = ({ tag }) => {
     customersOptions,
     staffOptions,
     serviceOptions,
+    isShowGst,
     onSubmit,
     navigate,
     handleSubmit,
@@ -131,8 +132,8 @@ const AddEditBill = ({ tag }) => {
               {/* --------------------------------------------------- */}
               <Grid item xs={12} md={4} sm={6}>
                 <Controller
-                  control={control}
                   name={`customerID`}
+                  control={control}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
@@ -239,30 +240,18 @@ const AddEditBill = ({ tag }) => {
                 <TableRow>
                   <StyledTableCell width={"3%"}></StyledTableCell>
                   <StyledTableCell width={"2%"}>Sl.</StyledTableCell>
-                  <StyledTableCell width={"53%"}>Item Name</StyledTableCell>
+                  <StyledTableCell width={"40%"}>Item Name</StyledTableCell>
                   <StyledTableCell width={"10%"}>Quantity</StyledTableCell>
-                  <StyledTableCell width={"10%"}>Rate</StyledTableCell>
+                  <StyledTableCell width={"20%"}>Rate</StyledTableCell>
                   <StyledTableCell width={"10%"}>Dis %</StyledTableCell>
-                  <StyledTableCell width={"10%"}>Value</StyledTableCell>
+                  <StyledTableCell width={"20%"}>Value</StyledTableCell>
                   <StyledTableCell width={"2%"}></StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {fields?.map((field, index) => (
                   <TableRow key={field.id}>
-                    <StyledTableCell>
-                      {/* {fields.length === index + 1 && (
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            addRow();
-                            calculateTotal(index);
-                          }}
-                        >
-                          <FiPlusCircle /> &nbsp;
-                        </Button>
-                      )} */}
-                    </StyledTableCell>
+                    <StyledTableCell></StyledTableCell>
                     <StyledTableCell align="center">
                       {index + 1}
                     </StyledTableCell>
@@ -283,7 +272,7 @@ const AddEditBill = ({ tag }) => {
                             onBlur={onBlur}
                             onChange={(event, newValue) => [
                               onChange(newValue),
-                              setQtyRateValuesHandler(newValue.value, index),
+                              setQtyRateValuesHandler(newValue?.value, index),
                             ]}
                             renderInput={(params) => (
                               <TextField
@@ -311,7 +300,7 @@ const AddEditBill = ({ tag }) => {
                           <FormControl
                             size="small"
                             variant="standard"
-                            className="form-control"
+                            fullWidth
                           >
                             <TextField
                               size="small"
@@ -344,7 +333,7 @@ const AddEditBill = ({ tag }) => {
                           <FormControl
                             size="small"
                             variant="standard"
-                            className="form-control"
+                            fullWidth
                           >
                             <TextField
                               size="small"
@@ -374,7 +363,7 @@ const AddEditBill = ({ tag }) => {
                           field: { onBlur, onChange, value },
                           fieldState: { error },
                         }) => (
-                          <FormControl size="small" variant="standard">
+                          <FormControl size="small" variant="standard" fullWidth>
                             <TextField
                               size="small"
                               name="discount"
@@ -412,7 +401,7 @@ const AddEditBill = ({ tag }) => {
                         name={`detail.${index}.total`}
                         control={control}
                         render={({ field: { onBlur, onChange, value } }) => (
-                          <FormControl size="small" variant="standard">
+                          <FormControl size="small" variant="standard" fullWidth>
                             <TextField
                               size="small"
                               name="total"
@@ -423,24 +412,63 @@ const AddEditBill = ({ tag }) => {
                         )}
                       />
                     </TableCell>
-                    <TableCell>
-                      {/* {fields.length !== 1 && (
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            removeRow(index);
-                          }}
-                        >
-                          <FiMinusCircle /> &nbsp;
-                        </Button>
-                      )} */}
-                    </TableCell>
+                    <TableCell></TableCell>
                   </TableRow>
                 ))}
+                {isShowGst &&
+                  <>
+                    <TableRow>
+                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0}}></TableCell>
+                      <TableCell sx={{ padding: 0, margin: 0}}>CGST ({process.env.REACT_APP_CGST}%): </TableCell>
+                      <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0}}>
+                        <Controller
+                          name="csgst"
+                          control={control}
+                          render={({ field: { value } }) => (
+                            <FormControl
+                              size="small"
+                              variant="standard">
+                              <TextField
+                                disabled
+                                size="small"
+                                name="CGST"
+                                value={value}
+                              />
+                            </FormControl>
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0}}></TableCell>
+                      <TableCell sx={{ padding: 0, margin: 0}}>SGST ({process.env.REACT_APP_SGST}%): </TableCell>
+                      <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0}}>
+                        <Controller
+                          name="sgst"
+                          control={control}
+                          render={({ field: { value } }) => (
+                            <FormControl
+                              size="small"
+                              variant="standard">
+                              <TextField
+                                disabled
+                                size="small"
+                                name="SGST"
+                                value={value}
+                              />
+                            </FormControl>
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </>
+                }
                 <TableRow>
-                  <TableCell colSpan={5}></TableCell>
-                  <TableCell>Grand Total: </TableCell>
-                  <TableCell sx={{ textAlign: 'end'}}>
+                  <TableCell colSpan={5} sx={{ padding: 0, margin: 0}}></TableCell>
+                  <TableCell sx={{ padding: 0, margin: 0}}>Grand Total: </TableCell>
+                  <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0}}>
                     <Controller
                       name="grandTotal"
                       control={control}

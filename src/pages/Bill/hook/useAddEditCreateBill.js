@@ -7,10 +7,12 @@ import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
-import { listPayload, showToast } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimal } from "../../../utils/helper";
 import { getBillById, updateBill, createBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
+
+const { REACT_APP_CGST, REACT_APP_SGST} = process.env;
 
 let editCardNo = "";
 
@@ -69,6 +71,8 @@ export const useAddEditCreateBill = (tag) => {
       staffID: "",
       roomNo: "",
       cardNo: "Cash",
+      csgst: 0,
+      sgst: 0,
       grandTotal: 0,
       detail: [
         {
@@ -295,68 +299,68 @@ export const useAddEditCreateBill = (tag) => {
 
   const onSubmit = async (data) => {
     if(!isSubmitting) {
-    const detailData = data.detail.map((item) => {
-      return {
-        serviceID: +item.serviceID.value,
-        service: { name: item.serviceID.label },
-        quantity: +item.quantity,
-        rate: +item.rate,
-        discount: +item.discount,
-        total: +item.total,
-      };
-    });
-    try {
-      dispatch(startLoading());
-      const payload = {
-        id: tag === 'add' ? null : id,
-        // billNo: getValues("billNo"),
-        staffID: data.staffID.value,
-        customerID: data.customerID.value,
-        detail: detailData,
-        paymentID: data.paymentID.value,
-        grandTotal: data.grandTotal,
-        phoneNumber: +data.customerID.label,
-        roomNo: data.roomNo,
-        cardNo: data.paymentID?.label?.toLowerCase()?.includes("card") ? data.cardNo : "",
-        px_customer: { name: data.Phone, phoneNumber: +data.customerID.label,},
-        px_payment_type: { name: data.paymentID.label },
-        px_staff: { name: data.staffID.label },
-        referenceBy: data.referenceBy,
-        managerName: data.managerName
-      };
-      const response = tag === 'add' ?
-        await createBill({
-          ...payload,
-          userID: loggedInUser.id,
-          createdBy: loggedInUser.id,
-        })
-      :
-        await updateBill({
-          ...payload,
-          updatedBy: loggedInUser.id,
-        }, id);
-      if (response.statusCode === 200) {
-        showToast(response.message, true);
-        if (tag === "add") {
-          const latestBillNo = response.data?.billNo;
-          localStorage.setItem('latestBillNo', latestBillNo);
-          reset();
-          setValue('date', new Date());
-          setValue('billNo', latestBillNo);
-          getNewBillNo();
-          setSubmitedBillData(response.data);
-          setPaymentOptionAndCard();
+      const detailData = data.detail.map((item) => {
+        return {
+          serviceID: +item.serviceID.value,
+          service: { name: item.serviceID.label },
+          quantity: +item.quantity,
+          rate: +item.rate,
+          discount: +item.discount,
+          total: +item.total,
+        };
+      });
+      try {
+        dispatch(startLoading());
+        const payload = {
+          id: tag === 'add' ? null : id,
+          // billNo: getValues("billNo"),
+          staffID: data.staffID.value,
+          customerID: data.customerID.value,
+          detail: detailData,
+          paymentID: data.paymentID.value,
+          grandTotal: data.grandTotal,
+          phoneNumber: +data.customerID.label,
+          roomNo: data.roomNo,
+          cardNo: data.paymentID?.label?.toLowerCase()?.includes("card") ? data.cardNo : "",
+          px_customer: { name: data.Phone, phoneNumber: +data.customerID.label,},
+          px_payment_type: { name: data.paymentID.label },
+          px_staff: { name: data.staffID.label },
+          referenceBy: data.referenceBy,
+          managerName: data.managerName
+        };
+        const response = tag === 'add' ?
+          await createBill({
+            ...payload,
+            userID: loggedInUser.id,
+            createdBy: loggedInUser.id,
+          })
+        :
+          await updateBill({
+            ...payload,
+            updatedBy: loggedInUser.id,
+          }, id);
+        if (response.statusCode === 200) {
+          showToast(response.message, true);
+          if (tag === "add") {
+            const latestBillNo = response.data?.billNo;
+            localStorage.setItem('latestBillNo', latestBillNo);
+            reset();
+            setValue('date', new Date());
+            setValue('billNo', latestBillNo);
+            getNewBillNo();
+            setSubmitedBillData(response.data);
+            setPaymentOptionAndCard();
+          } else {
+            navigate("/bill");
+          }
         } else {
-          navigate("/bill");
+          showToast(response.message, false);
         }
-      } else {
-        showToast(response.message, false);
+      } catch (error) {
+        showToast(error?.message, false);
+      } finally {
+        dispatch(stopLoading());
       }
-    } catch (error) {
-      showToast(error?.message, false);
-    } finally {
-      dispatch(stopLoading());
-    }
     }
   };
 
@@ -388,17 +392,34 @@ export const useAddEditCreateBill = (tag) => {
     if (discount > 0) {
       total = total - (total * discount) / 100;
     }
-    setValue(`detail.${index}.total`, total);
-    calculateGrandTotal();
+    if(loggedInUser.isShowGst) {
+      calculateGst(total, index);
+    } else {
+      setValue(`detail.${index}.total`, showTwoDecimal(total.toString()));
+      calculateGrandTotal();
+    }
   };
+
+  const calculateGst = (total, index) => {
+    const cgst = parseFloat(((total * parseFloat(REACT_APP_CGST)) / 100).toFixed(2));
+    const sgst = parseFloat(((total * parseFloat(REACT_APP_SGST)) / 100).toFixed(2));
+    setValue(`detail.${index}.total`, parseFloat((total - cgst - sgst).toFixed(2)));
+    setValue('csgst', cgst);
+    setValue('sgst', sgst);
+    calculateGrandTotal();
+  }
 
   const calculateGrandTotal = () => {
     const detail = getValues("detail");
     let grandTotal = 0;
     detail.forEach((item) => {
-      grandTotal += item.total;
+      if(loggedInUser.isShowGst) {
+        grandTotal = grandTotal + item.total + getValues('csgst') + getValues('sgst');
+      } else {
+        grandTotal = grandTotal + parseFloat(item.total);
+      }
     });
-    setValue(`grandTotal`, grandTotal);
+    setValue(`grandTotal`, showTwoDecimal(grandTotal));
   };
 
   const setQtyRateValuesHandler = (id, index) => {
@@ -435,6 +456,8 @@ export const useAddEditCreateBill = (tag) => {
           });
           setValue("Phone", response.data.px_customer.name);
           setValue("grandTotal", response.data.grandTotal);
+          setValue("csgst", response.data.cgst);
+          setValue("sgst", response.data.sgst);
           editCardNo = response.data.cardNo;
           setValue("cardNo", response.data.cardNo);
           setValue("referenceBy", response.data.referenceBy);
@@ -484,11 +507,12 @@ export const useAddEditCreateBill = (tag) => {
     };
 
     const printWindow = window.open("", "_blank", "popup=yes");
-    // const printWindow = window.open("", "_blank");
-    printWindow.document.write(PrintContent(billData, branchData));
-    printWindow.document.close();
-    printWindow.print();
-    printWindow.close();
+    if(printWindow.document) {
+      printWindow.document.write(PrintContent(billData, branchData));
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    }
   };
 
   const printHandler = async (info) => {
@@ -507,7 +531,7 @@ export const useAddEditCreateBill = (tag) => {
 
     // print Data start
     const billData = {
-      subTotal: getValues("grandTotal"),
+      subTotal: getValues(`detail.${0}.total`),
       total: getValues("grandTotal"),
       billNo: getValues("billNo"),
       payment: paymentType.find(
@@ -531,7 +555,9 @@ export const useAddEditCreateBill = (tag) => {
       phoneNumber2: loggedInUser.phoneNumber2,
       roleID: loggedInUser.roleID,
       gstNo: loggedInUser.gstNo,
-      isShowGst: loggedInUser.isShowGst
+      isShowGst: loggedInUser.isShowGst,
+      cgst: loggedInUser.isShowGst ? getValues('csgst') : 0,
+      sgst: loggedInUser.isShowGst ? getValues('sgst') : 0,
     };
 
     try {
@@ -545,6 +571,8 @@ export const useAddEditCreateBill = (tag) => {
           customerID: getValues("customerID").value,
           detail: detailData,
           paymentID: getValues("paymentID").value,
+          cgst: getValues("csgst"),
+          sgst: getValues("sgst"),
           grandTotal: getValues("grandTotal"),
           phoneNumber: getValues("customerID").label,
           roomNo: getValues("roomNo"),
@@ -561,7 +589,6 @@ export const useAddEditCreateBill = (tag) => {
           referenceBy: getValues("referenceBy"),
           managerName: getValues('managerName')
         };
-
         const response = await createBill({
           ...payload,
           createdAt: new Date(), //.toISOString(),
@@ -588,6 +615,8 @@ export const useAddEditCreateBill = (tag) => {
           customerID: getValues("customerID").value,
           detail: detailData,
           paymentID: getValues("paymentID").value,
+          cgst: getValues("csgst"),
+          sgst: getValues("sgst"),
           grandTotal: getValues("grandTotal"),
           roomNo: getValues("roomNo"),
           phoneNumber: getValues("customerID").label,
@@ -651,6 +680,7 @@ export const useAddEditCreateBill = (tag) => {
     getValues,
     handlePaymentChange,
     isCardSelect,
+    isShowGst: loggedInUser.isShowGst,
 
     setStaffSelectedHandler,
     setCustomerSelectedHandler,

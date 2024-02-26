@@ -1,4 +1,6 @@
 import moment from 'moment';
+import { showTwoDecimal, convertAmountToWords } from '../utils/helper';
+const { REACT_APP_CGST, REACT_APP_SGST } = process.env;
 
 const PrintContent = (billData, branchData, isShowSecondPage = true) => {
   const date = moment(billData.date || new Date()).format('DD/MM/yyyy');
@@ -45,30 +47,30 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
             </p>
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph: ${
                   branchData.phone1
                 }, ${branchData.phone2}  </p>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Bill No :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Bill No: ${
                   billData.billNo
                 }</p>
               </div>
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Date :${date}</p>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Time :${time}</p>
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Date: ${date}</p>
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Time: ${time}</p>
               </div>
             </div>
             <div style="width: 100%;display: flex;justify-content: space-between;margin-top: 7px;">
               <div>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Name :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Name: ${
                   billData.customer
                 }</p>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph :${
+                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph: ${
                   billData.phone
                 }</p>
               </div>
               ${billData.isShowGst ?
                 `<div>
-                  <p style="text-align: start; margin: 0px; font-size: 14px;">Gst: <br/>${billData.gstNo}</p>
+                  <p style="text-align: start; margin: 0px; font-size: 14px;">GST NO: <br/>${billData.gstNo}</p>
                 </div>`
               : ''}
             </div>
@@ -90,23 +92,45 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                       <td>${index + 1}</td>
                       <td>${row.item}</td>
                       <td>${row.quantity}</td>
-                      <td>${row.rate}</td>
-                      <td>${row.total}</td>
+                      <td>${showTwoDecimal(row.total)}</td>
+                      <td>${showTwoDecimal(row.total)}</td>
                     </tr>`
                 )}
               </tbody>
             </table>
             <div style="width: 100%; border-top: 1px dashed black;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 14px;">
-              <p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">Sub Total : </p>
-              <p style="margin: 5px 0px; margin-right: 19px; font-weight: 600;">${
-                billData.subTotal
+              <p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">Sub Total: </p>
+              <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
+                showTwoDecimal(billData.subTotal)
               }</p>
             </div>
+            ${billData.isShowGst ? 
+              `<div style="width: 100%; border-top: 1px dashed black;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 14px;">
+                ${billData.cgst &&
+                  `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">CGST (${REACT_APP_CGST}%): </p>
+                  <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
+                    showTwoDecimal(billData.cgst)
+                  },</p>`
+                }
+                ${billData.sgst &&
+                  `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">SGST (${REACT_APP_SGST}%): </p>
+                  <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
+                    showTwoDecimal(billData.sgst)
+                  }</p>`
+                }
+              </div>`
+            : ''}
             <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 20px;">
-              <p style="margin: 5px 0px; margin-right: 14px; font-weight: 600;">Total : </p>
-              <p style="margin: 5px 0px; margin-right: 22px; font-weight: 600;">${
-                billData.total
+              <p style="margin: 5px 0px; margin-right: 14px; font-weight: 600;">Grand Total : </p>
+              <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
+                showTwoDecimal(billData.total)
               }</p>
+            </div>
+            <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start;font-size: 10px;">
+              <p style="margin: 5px 0px;">Words: </p>
+              <p style="margin: 5px 0px; margin-left: 10px;">${
+                convertAmountToWords(billData.total).toUpperCase()
+              } RUPEES</p>
             </div>
             <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start; flex-direction: column; font-size: 14px;">
               <div>
@@ -119,7 +143,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
               <div style="display: flex;">
                 <p style="margin: 5px 0px; ">${billData.payment}: </p>
                 <p style="margin: 5px 0px; margin-left: 10px;">${
-                  billData.total
+                  showTwoDecimal(billData.total)
                 }</p>
               </div>
             </div>

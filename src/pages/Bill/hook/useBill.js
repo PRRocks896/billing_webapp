@@ -146,10 +146,12 @@ export const useBill = () => {
       phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
     };
     const printWindow = window.open("", "_blank", "popup=yes");
-    printWindow.document.write(PrintContent(billData, branchData, isShowSecond));
-    printWindow.document.close();
-    printWindow.print();
-    printWindow.close();
+    if(printWindow.document) {
+      printWindow.document.write(PrintContent(billData, branchData, isShowSecond));
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    }
   };
 
   const handlePrint = async (id) => {
@@ -157,7 +159,7 @@ export const useBill = () => {
     if (response?.success) {
       const body = response.data;
       const billData = {
-        subTotal: body?.grandTotal,
+        subTotal: body?.detail[0]?.total, //body?.grandTotal,
         total: body?.grandTotal,
         billNo: body?.billNo,
         payment: body?.px_payment_type?.name,
@@ -177,7 +179,9 @@ export const useBill = () => {
         phoneNumber2: loggedInUser.phoneNumber2,
         roleID: loggedInUser.roleID,
         gstNo: body?.px_user?.gstNo,
-        isShowGst: body?.px_user?.isShowGst
+        isShowGst: body?.px_user?.isShowGst,
+        cgst: body?.px_user?.isShowGst ? body?.cgst : 0,
+        sgst: body?.px_user?.isShowGst ? body?.sgst : 0,
       };
       doPrint(billData, billData.detail[0]?.membershipPlan ? false : true);
     } else {

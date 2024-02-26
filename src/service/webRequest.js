@@ -122,7 +122,7 @@ export const getXlsx = async (url, data) => {
     if(userID && userID.length === 1) {
       fileName = `${userID[0].label === 'All' ? 'green day spa all branch' : userID[0].label} sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     } else {
-      fileName = `Green day spa selected branch sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}`.toUpperCase();
+      fileName = `Green day spa selected branch sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     }
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
