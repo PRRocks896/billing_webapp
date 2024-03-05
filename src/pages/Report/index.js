@@ -6,15 +6,17 @@ import 'rsuite/dist/rsuite.min.css';
 
 const Report = () => {
   const {
-    dateRange,
-    handleDateChange,
     roleId,
+    dateRange,
     branchOptions,
+    paymentList,
     
     // branch,
     
+    fetchReportDate,
+    handleDateChange,
     handleBranchChange,
-    fetchReportDate
+    handlePaymentChange,
   } = useReport();
 
   return (
@@ -26,20 +28,46 @@ const Report = () => {
           </Grid>
           <Grid item xs={12} sm={3}>
             {roleId === 1 && (
-              <Autocomplete
-                freeSolo
-                size="small"
-                disablePortal
-                multiple
-                id="Branch"
-                options={branchOptions || []}
-                getOptionLabel={(option) => option.label}
-                // value={branch}
-                onChange={(event, newValue) => handleBranchChange(newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Branch" />
-                )}
-              />
+              <>
+                <Autocomplete
+                  freeSolo
+                  size="small"
+                  disablePortal
+                  multiple
+                  id="Branch"
+                  options={branchOptions || []}
+                  getOptionLabel={(option) => option.label}
+                  // value={branch}
+                  onChange={(event, newValue) => handleBranchChange(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Branch" />
+                  )}
+                />
+              </>
+            )}
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            {roleId === 1 && (
+               <Autocomplete
+               freeSolo
+               size="small"
+               disablePortal
+               multiple
+               id="paymentID"
+               options={paymentList || []}
+               getOptionLabel={(option) => option.label}
+               // value={value}
+               // onBlur={onBlur}
+               onChange={(event, newValue) => {
+                 handlePaymentChange(newValue)
+               }}
+               renderInput={(params) => (
+                 <TextField
+                   {...params}
+                   label="Payment Type"
+                 />
+               )}
+             />
             )}
           </Grid>
           <Grid item xs={12} sm={3}>

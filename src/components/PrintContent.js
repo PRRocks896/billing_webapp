@@ -30,7 +30,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
         }
         @media print {
           @page {
-            size: ${billData.detail.length < 4 ? "120mm " : "140mm"};
+            size: 150mm
           }
         }
       </style>
@@ -59,7 +59,13 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Time: ${time}</p>
               </div>
             </div>
+            <div>
+              <p style="text-align: start; margin: 0px; font-size: 14px;">
+                Customer Name : Cash Customer
+              </p>
+            </div>
             <div style="width: 100%;display: flex;justify-content: space-between;margin-top: 7px;">
+              
               <div>
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Name: ${
                   billData.customer
@@ -127,7 +133,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
               }</p>
             </div>
             <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start;font-size: 10px;">
-              <p style="margin: 5px 0px;">Words: </p>
+              <p style="margin: 5px 0px;">Amount in Words: </p>
               <p style="margin: 5px 0px; margin-left: 10px;">${
                 convertAmountToWords(billData.total).toUpperCase()
               } RUPEES</p>
@@ -147,10 +153,15 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                 }</p>
               </div>
             </div>
-            <p style="text-align: center; margin: 0;font-size: 12px;margin-top: 7px;">
+            <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start; flex-direction: column; font-size: 14px;">
+              <p style="text-align: center; margin: 5px;font-size: 12px;">
+                * Terms and Conditions Apply
+              </p>
+            </div>
+              <p style="text-align: center; margin: 0;font-size: 12px;margin-top: 7px;">
               * AFTER PAID AMOUNT CANNOT BE REFUND
-            </p>
-            <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
+              </p>
+              <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
           ${isShowSecondPage ?
             `<div style="height: max-content; border: 0px solid black;">
