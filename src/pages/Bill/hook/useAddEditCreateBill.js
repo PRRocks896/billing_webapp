@@ -7,6 +7,7 @@ import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
+import { fetchLoggedInUserData } from "../../../service/loggedInUser";
 import { listPayload, showToast, showTwoDecimal } from "../../../utils/helper";
 import { getBillById, updateBill, createBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -342,11 +343,15 @@ export const useAddEditCreateBill = (tag) => {
         if (response.statusCode === 200) {
           showToast(response.message, true);
           if (tag === "add") {
-            const latestBillNo = response.data?.billNo;
-            localStorage.setItem('latestBillNo', latestBillNo);
+            const { success, message, data} = await fetchLoggedInUserData();
+            if (success) {
+              const latestBillNo = data.latestBillNo;
+              localStorage.setItem('latestBillNo', latestBillNo);
+            } else {
+              showToast(message, false);
+            }
             reset();
             setValue('date', new Date());
-            setValue('billNo', latestBillNo);
             getNewBillNo();
             setSubmitedBillData(response.data);
             setPaymentOptionAndCard();
@@ -591,14 +596,19 @@ export const useAddEditCreateBill = (tag) => {
         };
         const response = await createBill({
           ...payload,
-          createdAt: new Date(), //.toISOString(),
+          createdAt: new Date(),
           createdBy: loggedInUser.id,
         });
 
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
-          const latestBillNo = response.data?.billNo;
-          localStorage.setItem('latestBillNo', latestBillNo);
+          const { success, message, data} = await fetchLoggedInUserData();
+          if (success) {
+            const latestBillNo = data.latestBillNo;
+            localStorage.setItem('latestBillNo', latestBillNo);
+          } else {
+            showToast(message, false);
+          }
           reset();
           setValue('date', new Date());
           getNewBillNo();
