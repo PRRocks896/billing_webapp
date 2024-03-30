@@ -5,8 +5,13 @@ import {
   UPDATE_USER_API,
   DELETE_USER_API,
   CHANGE_PASSWORD_API,
+  GET_USER_API
 } from "../utils/constant";
 import { attachId, get, post, remove, put } from "./webRequest";
+
+export const getUserViaPayload = async (payload) => {
+  return await post(GET_USER_API, payload);
+}
 
 export const getUserList = async (body) => {
   const response = await post(USER_LIST_API, body);

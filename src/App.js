@@ -55,6 +55,8 @@ import AddEditMembership from "./pages/Membership/addEditMembership";
 import AddMembership from "./pages/Membership/addMembership";
 import AddEditMembershipRedeem from "./pages/MembershipRedeem/addEditMembershipRedeem";
 import RenewPlan from "./pages/RenewPlan";
+import DailyReport from "./pages/DailyReport";
+import AddEditDailyReport from './pages/DailyReport/addEditDailyReport';
 
 const token = getAuthToken();
 
@@ -149,6 +151,33 @@ const App = () => {
               }
             />
           ),
+        },
+        {
+          path: 'add-daily-report',
+          element: (
+            <ProtectedRoute 
+              path="add-daily-report" 
+              Component={isOnline ? <AddEditDailyReport tag="add"/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-daily-report/:id',
+          element: (
+            <ProtectedRoute 
+              path="edit-daily-report/:id" 
+              Component={isOnline ? <AddEditDailyReport tag="edit"/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'daily-report',
+          element: (
+            <ProtectedRoute 
+              path="daily-report" 
+              Component={isOnline ? <DailyReport/> : <NoConnection/>}
+            />
+          )
         },
         {
           path: 'membership-plan',

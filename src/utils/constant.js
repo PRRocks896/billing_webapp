@@ -66,6 +66,7 @@ export const GET_SINGLE_USER_API = "api/user/";
 export const USER_LIST_API = "api/user/list";
 export const UPDATE_USER_API = "api/user/";
 export const DELETE_USER_API = "api/user/";
+export const GET_USER_API = "api/user/get";
 export const CHANGE_PASSWORD_API = "api/auth/change-password";
 
 // role apis
@@ -108,3 +109,5 @@ export const MEMBERSHIP_PLAN = "api/membership-plan";
 export const MEMBERSHIP_REDEEM = "api/membership-redeem";
 
 export const RENEWPLAN = 'api/renew-plan';
+
+export const DAILYREPORT = 'api/daily-report'
