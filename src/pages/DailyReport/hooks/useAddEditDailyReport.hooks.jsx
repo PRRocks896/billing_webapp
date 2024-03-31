@@ -13,6 +13,9 @@ import {
     getDailyReportById
 } from "../../../service/dailyReport";
 import {
+    hardDeleteExpense
+} from "../../../service/expense";
+import {
     getUserList
 } from "../../../service/users";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -25,7 +28,7 @@ export const useAddEditDailyReportHook = (tag) => {
 
     const [branchList, setBranchList] = useState([]);
     
-    const { control, handleSubmit, setValue, getValues, watch } = useForm({
+    const { control, handleSubmit, setValue, getValues, watch, reset, formState: {dirtyFields, isSubmitting} } = useForm({
         defaultValues: {
             userID: loggedInUser.id,
             dailyReportDate: moment(new Date()).format('yyyy-MM-DD'),
@@ -53,6 +56,7 @@ export const useAddEditDailyReportHook = (tag) => {
             cashInCover: '',
             expense: [{
                 index: 0,
+                exponseID: null,
                 description: '',
                 amount: ''
             }]
@@ -76,6 +80,7 @@ export const useAddEditDailyReportHook = (tag) => {
         const index = getValues('expense').length;
         append({
             index: index,
+            exponseID: null,
             description: '',
             amount: ''
         })
@@ -84,14 +89,46 @@ export const useAddEditDailyReportHook = (tag) => {
     const handleRemoveField = (index) => {
         remove(index);
         handleTotalExpense();
+        const find = getValues('expense')[index];
+        if(find) {
+            hardDeleteExpense(find?.exponseID).then((res) => {
+                if(!res.success) {
+                    showToast(res.message, true);
+                }
+            }).catch((err) => {
+                showToast(err?.message, false);
+            });
+        }
     }
 
     const onSubmit = async (data) => {
         try {
             dispatch(startLoading());
+            const updatedExpese = [];
+            if(tag === "edit") {
+                if(dirtyFields.expense && dirtyFields.expense.map((item) => {
+                    if(item.amount || item.description) {
+                        return true;
+                    }
+                    return false;
+                }).includes(true)) {
+                    data.expense?.forEach((item) => {
+                        updatedExpese.push({
+                            id: item.exponseID || null,
+                            dailyReportID: id,
+                            description: item.description,
+                            amount: item.amount,
+                            createdBy: loggedInUser.id,
+                            updatedBy: loggedInUser.id
+                        })
+                    });
+                    delete data.expense;
+                }
+            }
+            
             const response = tag === "add"
                 ? await createDailyReport({ ...data, createdBy: loggedInUser.id })
-                : await updateDailyReport({ ...data, updatedBy: loggedInUser.id }, id);
+                : await updateDailyReport({ ...data, expense: updatedExpese, updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
@@ -113,10 +150,41 @@ export const useAddEditDailyReportHook = (tag) => {
                 const response = await getDailyReportById(id);
 
                 if (response?.statusCode === 200) {
-                    console.log(response);
-                    // setValue("planName", response.data.planName);
-                    // setValue("hours", response.data.hours);
-                    // setValue("price", response.data.price);
+                    const { data } = response;
+                    reset({
+                        userID: data.userId,
+                        dailyReportDate: moment(new Date(data.dailyReportDate)).format('yyyy-MM-DD'),
+                        managerName: data.managerName,
+                        totalStaffPresent: data.totalStaffPresent,
+                        totalCustomer: data.totalCustomer,
+                        totalMemberGuest: data.totalMemberGuest,
+                        openBalance: data.openBalance,
+                        cashSale: data.cashSale,
+                        cardSale: data.cardSale,
+                        upiSale: data.upiSale,
+                        dealsAppSale: data.dealsAppSale,
+                        totalSales: data.totalSales,
+                        tipsCard: data.tipsCard,
+                        totalCard: data.totalCard,
+                        totalCash: data.totalCash,
+                        nextDayCash: data.nextDayCash,
+                        salonCustomerCash: data.salonCustomerCash,
+                        totalExpenses: data.totalExpenses,
+                        grandCash: data.grandCash,
+                        fiveHundred: data.fiveHundred,
+                        twoHundred: data.twoHundred,
+                        oneHundred: data.oneHundred,
+                        fifty: data.fifty,
+                        cashInCover: data.cashInCover,
+                        expense: data.expense?.map((item, index) => {
+                            return {
+                                index: index,
+                                exponseID: item.id,
+                                description: item.description,
+                                amount: item.amount
+                            }
+                        })
+                    });
                 } else {
                     showToast(response?.message, false);
                 }
@@ -218,6 +286,7 @@ export const useAddEditDailyReportHook = (tag) => {
         isAdmin,
         control,
         branchList,
+        isSubmitting,
         totalCashSalePlusOpeningBalance,
         onSubmit,
         handleSubmit,

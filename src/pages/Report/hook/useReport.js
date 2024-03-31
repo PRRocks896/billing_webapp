@@ -80,7 +80,6 @@ export const useReport = () => {
 
   const fetchReportDate = async () => {
     try {
-      console.log(selectedPayment);
       setPdfData(null);
       dispatch(startLoading());
 

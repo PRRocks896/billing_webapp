@@ -31,7 +31,7 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          ["user", "bill", "report", "membership", "membership redeem"].includes(
+          ["user", "bill", "report", "membership", "membership redeem", 'daily report'].includes(
             row.px_module.name.toLowerCase()
           ) &&
           row.view
@@ -50,7 +50,7 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          !["user", "bill", "report",  "membership", "membership redeem"].includes(
+          !["user", "bill", "report",  "membership", "membership redeem", 'daily report'].includes(
             row.px_module.name.toLowerCase()
           ) &&
           row.view

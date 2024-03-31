@@ -133,7 +133,7 @@ export const getXlsx = async (url, data) => {
   });
 }
 
-export const getPDF = async (url, data) => {
+export const getPDF = async (url, data, title = `Green_Day_Sales_Report_${new Date().toDateString()}.xlsx`) => {
   return axiosInstance
     .post(`${baseUrl}${url}`, data, {
       responseType: "blob", //Force to receive data in a Blob Format
@@ -150,7 +150,7 @@ export const getPDF = async (url, data) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `Green_Day_Sales_Report_${new Date().toDateString()}.xlsx`);
+      link.setAttribute('download', title);
       document.body.appendChild(link);
       link.click();
       //Build a URL from the file
@@ -181,6 +181,17 @@ export const AxiosInterceptor = ({ children }) => {
         setTimeout(() => {
           logoutHandler();
         }, 3000);
+      } else if(err?.response?.data.statusCode === 404) {
+        toast.error(err?.response.data.statusText, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       } else {
         return Promise.reject(err);
       }

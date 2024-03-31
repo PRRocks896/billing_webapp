@@ -2,9 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import * as moment from "moment";
+import { DateRangePicker } from "rsuite";
+import 'rsuite/dist/rsuite.min.css';
 
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import Switch from "@mui/material/Switch"
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,6 +17,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow"
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
+import TextField from "@mui/material/TextField";
 
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
@@ -36,10 +41,15 @@ const DailyReport = () => {
         count,
         rights,
         isAdmin,
+        dateRange,
+        branchList,
         visibleRows,
         isDeleteModalOpen,
+        setDateRange,
         deleteHandler,
+        downloadReport,
         handleChangePage,
+        setSelectedBranch,
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
@@ -47,6 +57,51 @@ const DailyReport = () => {
     } = useDailyReportHooks();
     return (
         <>
+            {isAdmin ?
+                <Box className="card">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={3}>
+                            <DateRangePicker style={{ width: '100%'}} value={dateRange} onChange={(value) => setDateRange(value)} />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <Autocomplete
+                                freeSolo
+                                fullWidth
+                                size="small"
+                                id="userID"
+                                disablePortal
+                                multiple
+                                // isOptionEqualToValue={(option, value) => option?.id === value}
+                                getOptionLabel={(option) => option.branchName ? option.branchName : ''}
+                                options={branchList || []}
+                                // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
+                                onChange={(_event, value) => {
+                                    if(value) {
+                                        setSelectedBranch(value)
+                                    } else {
+                                        setSelectedBranch(null);
+                                    }
+                                }}
+                                renderOption={(props, option) => (
+                                    <li {...props} key={option.id}>
+                                        {option.branchName}
+                                    </li>
+                                )}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Branch"
+                                    />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <Button fullWidth className="btn btn-tertiary" onClick={downloadReport}>Export</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            : null}
+            <br/>
             <TopBar
                 btnTitle={"Add Daily Report"}
                 inputName="dailyReport"
@@ -54,7 +109,6 @@ const DailyReport = () => {
                 callAPI={searchDailyReportHandler}
                 addPermission={rights.add}
             />
-
             {/* state listing */}
             <Box className="card">
                 <TableContainer className="table-wrapper">
@@ -100,7 +154,7 @@ const DailyReport = () => {
                                                             <Button
                                                                 className="btn btn-primary"
                                                                 onClick={() =>
-                                                                    navigate(`/edit-membership-plan/${row.id}`)
+                                                                    navigate(`/edit-daily-report/${row.id}`)
                                                                 }
                                                             >
                                                                 <FiEdit3 size={15} />

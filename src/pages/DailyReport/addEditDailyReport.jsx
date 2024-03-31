@@ -24,6 +24,7 @@ const AddEditDailyReport = ({ tag }) => {
         isAdmin,
         control,
         branchList,
+        isSubmitting,
         totalCashSalePlusOpeningBalance,
         onSubmit,
         handleSubmit,
@@ -36,18 +37,6 @@ const AddEditDailyReport = ({ tag }) => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Box className="card">
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'end',
-                }}>
-                    <Button sx={{ marginRight: '8px'}} type="submit" className="btn btn-tertiary">
-                        {tag === "add" ? "Save" : "Update"}
-                    </Button>
-                    <Button className="btn btn-cancel" onClick={cancelHandler}>
-                        Cancel
-                    </Button>
-                </Box>
-                <br/>
                 <FormGroup className="form-field">
                     <Grid container>
                         <Grid item xs={12} md={6} lg={6} xl={6} sm={12}>
@@ -999,17 +988,17 @@ const AddEditDailyReport = ({ tag }) => {
                         </Grid>
                     </Grid>
                 </FormGroup>
-                {/* <Box sx={{
+                <Box sx={{
                     display: 'flex',
                     justifyContent: 'end',
                 }}>
-                    <Button sx={{ marginRight: '8px'}} type="submit" className="btn btn-tertiary">
+                    <Button sx={{ marginRight: '8px'}} disabled={isSubmitting} type="submit" className="btn btn-tertiary">
                         {tag === "add" ? "Save" : "Update"}
                     </Button>
                     <Button className="btn btn-cancel" onClick={cancelHandler}>
                         Cancel
                     </Button>
-                </Box> */}
+                </Box>
             </Box>
         </form>
     )

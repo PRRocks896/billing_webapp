@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import * as moment from "moment";
 
 import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 
 import {
-    getDailyReportList,
-    updateDailyReport,
-    deleteDailyReport
+  getDailyReportList,
+  updateDailyReport,
+  deleteDailyReport,
+  downloadDailyReport
 } from "../../../service/dailyReport";
+
+import {
+  getUserList
+} from "../../../service/users";
 
 import { dailyReportAction } from "../../../redux/dailyReport";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -22,6 +28,12 @@ const useDailyReportHooks = () => {
 
     const [deleteId, setDeleteId] = useState("");
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+    // const [pdfData, setPdfData] = useState(null);
+    
+    const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+    const [branchList, setBranchList] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState(null);
 
     // pagination start
     const [page, setPage] = useState(0);
@@ -122,8 +134,51 @@ const useDailyReportHooks = () => {
     };
 
     const searchDailyReportHandler = (payload) => {
-        fetchDailyReportData(payload.searchValue);
+      fetchDailyReportData(payload.searchValue);
     };
+
+    const fetchBranch = async () => {
+      try {
+        const body = listPayload(0, {isActive: true, isDeleted: false}, 1000);
+  
+        const response = await getUserList(body);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          const branchOption = payload.filter(item => item.roleID !== 1);
+          setBranchList(branchOption);
+          // setBranchList([{id: null, branchName: 'All'}].concat(branchOption));
+        } else if (response?.statusCode === 404) {
+          const payload = [];
+          setBranchList(payload);
+        }
+      } catch (error) {
+        showToast(error?.message, false);
+      }
+    };
+  
+    const downloadReport = async () => {
+      try {
+        dispatch(startLoading());
+        const payload = {
+          userID: selectedBranch,
+          startDate: moment(dateRange[0]).format('yyyy-MM-DD'),
+          endDate: moment(dateRange[1]).format('yyyy-MM-DD')
+        }
+        console.log(payload);
+        await downloadDailyReport(payload);
+      } catch(err) {
+        console.error(err);
+        showToast(err?.message, false);
+      } finally {
+        dispatch(stopLoading());
+      }
+    }
+
+    useEffect(() => {
+      if(isAdmin) {
+        fetchBranch();
+      }
+    }, [isAdmin]);
   
     useEffect(() => {
         fetchDailyReportData()
@@ -134,10 +189,16 @@ const useDailyReportHooks = () => {
         count,
         rights,
         isAdmin,
+        dateRange,
+        branchList,
         visibleRows,
+        selectedBranch,
         isDeleteModalOpen,
+        setDateRange,
         deleteHandler,
+        downloadReport,
         handleChangePage,
+        setSelectedBranch,
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
