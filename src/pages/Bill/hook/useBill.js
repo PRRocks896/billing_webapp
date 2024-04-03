@@ -54,7 +54,7 @@ export const useBill = () => {
           whereCondition = {
             ...whereCondition,
             userID: loggedInUser.id,
-            createdAt: new Date().toISOString().split('T')[0]
+            createdAt: '2024-03-29' //new Date().toISOString().split('T')[0]
           };
         }
 

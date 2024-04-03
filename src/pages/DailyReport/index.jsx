@@ -2,13 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import * as moment from "moment";
-import { DateRangePicker } from "rsuite";
-import 'rsuite/dist/rsuite.min.css';
 
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import FormControl from "@mui/material/FormControl";
 import Switch from "@mui/material/Switch"
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -61,7 +60,15 @@ const DailyReport = () => {
                 <Box className="card">
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={3}>
-                            <DateRangePicker style={{ width: '100%'}} value={dateRange} onChange={(value) => setDateRange(value)} />
+                            <FormControl fullWidth>
+                                <TextField
+                                    size="small"
+                                    type="date"
+                                    label="Select Date"
+                                    value={dateRange}
+                                    onChange={(e) => setDateRange(e.target.value)}
+                                />
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={3}>
                             <Autocomplete
@@ -70,7 +77,7 @@ const DailyReport = () => {
                                 size="small"
                                 id="userID"
                                 disablePortal
-                                multiple
+                                // multiple
                                 // isOptionEqualToValue={(option, value) => option?.id === value}
                                 getOptionLabel={(option) => option.branchName ? option.branchName : ''}
                                 options={branchList || []}

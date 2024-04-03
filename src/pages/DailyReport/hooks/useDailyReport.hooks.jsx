@@ -31,7 +31,7 @@ const useDailyReportHooks = () => {
 
     // const [pdfData, setPdfData] = useState(null);
     
-    const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+    const [dateRange, setDateRange] = useState(moment(new Date()).format('yyyy-MM-DD'));
     const [branchList, setBranchList] = useState([]);
     const [selectedBranch, setSelectedBranch] = useState(null);
 
@@ -160,11 +160,10 @@ const useDailyReportHooks = () => {
       try {
         dispatch(startLoading());
         const payload = {
-          userID: selectedBranch,
-          startDate: moment(dateRange[0]).format('yyyy-MM-DD'),
-          endDate: moment(dateRange[1]).format('yyyy-MM-DD')
+          userID: selectedBranch?.id,
+          startDate: moment(dateRange).format('yyyy-MM-DD'),
+          endDate: moment(dateRange).format('yyyy-MM-DD')
         }
-        console.log(payload);
         await downloadDailyReport(payload);
       } catch(err) {
         console.error(err);
