@@ -158,6 +158,17 @@ export const getPDF = async (url, data, title = `Green_Day_Sales_Report_${new Da
       //Open the URL on new Window
       // window.open(fileURL);
       // return fileURL;
+    }).catch((err) => {
+      toast.error(err?.response.statusText, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     });
 };
 
@@ -181,18 +192,20 @@ export const AxiosInterceptor = ({ children }) => {
         setTimeout(() => {
           logoutHandler();
         }, 3000);
-      } else if(err?.response?.data.statusCode === 404) {
-        toast.error(err?.response.data.statusText, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } else {
+      } 
+      // else if(err?.response?.data.statusCode === 404) {
+      //   toast.error(err?.response.data.statusText, {
+      //     position: "top-right",
+      //     autoClose: 5000,
+      //     hideProgressBar: true,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     progress: undefined,
+      //     theme: "light",
+      //   });
+      // } 
+      else {
         return Promise.reject(err);
       }
     }
