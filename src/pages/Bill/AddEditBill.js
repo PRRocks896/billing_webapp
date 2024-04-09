@@ -596,7 +596,7 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} md={3} sm={6}>
+              {/* <Grid item xs={12} md={3} sm={6}>
                 <Button sx={{ justifyContent: 'left'}}
                   type="button"
                   className="btn"
@@ -604,7 +604,7 @@ const AddEditBill = ({ tag }) => {
                 >
                   <FiPlusCircle />
                 </Button>
-              </Grid>
+              </Grid> */}
             </Grid>
             {/* <br/> */}
             <Grid container spacing={2}>

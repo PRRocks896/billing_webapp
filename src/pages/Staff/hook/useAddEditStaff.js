@@ -3,9 +3,13 @@ import { showToast } from "../../../utils/helper";
 import { createStaff, getStaffById, updateStaff } from "../../../service/staff";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../../redux/loader";
+
+import {
+  getEmployeeTypePayload
+} from "../../../service/employeeType";
 
 export const useAddEditStaff = (tag) => {
   const navigate = useNavigate();
@@ -14,9 +18,28 @@ export const useAddEditStaff = (tag) => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
-  const { control, handleSubmit, setValue } = useForm({
+  const [employeeTypeList, setEmployeeTypeList] = useState([]);
+
+  const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
+      employeeTypeID: "",
       name: "",
+      nickName: "",
+      phoneNumber: "",
+      fatherName: "",
+      fatherPhone: "",
+      salary: "",
+      pastWorking: "",
+      experience: "",
+      localAddress: "",
+      permanentAddress: "",
+      accountHolderName: "",
+      accountNumber: "",
+      reEnterAccountNumber: "",
+      ifscCode: "",
+      accountType: "saving",
+      refName: "",
+      refPhone: ""
     },
     mode: "onBlur",
   });
@@ -25,9 +48,12 @@ export const useAddEditStaff = (tag) => {
     try {
       dispatch(startLoading());
       const payload = {
-        userID: loggedInUser.id,
         ...data,
+        userID: loggedInUser.id,
+        refName: data && data.refName && data.refName.length > 0 ? data.refName : null,
+        refPhone: data && data.refPhone && data.refPhone.length > 0 ? data.refPhone : null
       };
+      
       const response =
         tag === "add"
           ? await createStaff({ ...payload, createdBy: loggedInUser.id })
@@ -46,6 +72,24 @@ export const useAddEditStaff = (tag) => {
     }
   };
 
+  const fetchEmployeeType = useCallback(async () => {
+    try {
+      dispatch(startLoading());
+      const response = await getEmployeeTypePayload({isActive: true, isDeleted: false});
+      if(response.success) {
+          setEmployeeTypeList(response.data);
+      } else {
+          showToast(response?.message, false)    
+      }
+    } catch(err) {
+      showToast(err?.message, false)
+    } finally {
+      dispatch(stopLoading());
+    }
+    // eslint-disable-next-line
+  }, []);
+
+
   // edit logic - get single record
   const fetchEditStaffData = useCallback(async () => {
     try {
@@ -54,6 +98,23 @@ export const useAddEditStaff = (tag) => {
         const response = await getStaffById(id);
         if (response?.statusCode === 200) {
           setValue("name", response.data.name);
+          setValue("employeeTypeID", response.data.employeeTypeID);
+          setValue("nickName", response.data.nickName);
+          setValue("phoneNumber", response.data.phoneNumber);
+          setValue("fatherName", response.data.fatherName);
+          setValue("fatherPhone", response.data.fatherPhone);
+          setValue("salary", response.data.salary);
+          setValue("pastWorking", response.data.pastWorking);
+          setValue("experience", response.data.experience);
+          setValue("localAddress", response.data.localAddress);
+          setValue("permanentAddress", response.data.permanentAddress);
+          setValue("accountHolderName", response.data.accountHolderName);
+          setValue("accountNumber", response.data.accountNumber);
+          setValue("reEnterAccountNumber", response.data.accountNumber);
+          setValue("ifscCode", response.data.ifscCode);
+          setValue("accountType", response.data.accountType);
+          setValue("refName", response.data.refName);
+          setValue("refPhone", response.data.refPhone);
         } else {
           showToast(response?.message, false);
         }
@@ -66,8 +127,10 @@ export const useAddEditStaff = (tag) => {
   }, [id, dispatch, setValue]);
 
   useEffect(() => {
+    fetchEmployeeType();
     tag === "edit" && fetchEditStaffData();
-  }, [tag, fetchEditStaffData]);
+    // eslint-disable-next-line
+  }, [tag, fetchEditStaffData, fetchEmployeeType]);
 
   const cancelHandler = () => {
     navigate("/staff");
@@ -75,8 +138,10 @@ export const useAddEditStaff = (tag) => {
 
   return {
     control,
-    handleSubmit,
+    employeeTypeList,
     onSubmit,
+    getValues,
+    handleSubmit,
     cancelHandler,
   };
 };

@@ -7,14 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { showToast } from "../../../utils/helper";
 
 import {
-    createMembershipPlan,
-    updateMembershipPlan,
-    getMembershipPlanById
-} from "../../../service/membershipPlan";
-
+    createEmployeeType,
+    updateEmployeeType,
+    getEmployeeTypeById
+} from "../../../service/employeeType";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
-export const useAddEditMembershipPlan = (tag) => {
+export const useAddEditEmployeeType = (tag) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { id } = useParams();
@@ -22,9 +21,7 @@ export const useAddEditMembershipPlan = (tag) => {
 
     const { setValue, control, handleSubmit } = useForm({
         defaultValues: {
-            planName: "",
-            hours: "",
-            price: "",
+            name: "",
         },
         mode: "onBlur",
     });
@@ -33,12 +30,12 @@ export const useAddEditMembershipPlan = (tag) => {
         try {
             dispatch(startLoading());
             const response = tag === "add"
-                ? await createMembershipPlan({ ...data, createdBy: loggedInUser.id })
-                : await updateMembershipPlan({ ...data, updatedBy: loggedInUser.id }, id);
+                ? await createEmployeeType({ ...data, createdBy: loggedInUser.id })
+                : await updateEmployeeType({ ...data, updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
-                navigate("/membership-plan");
+                navigate("/employee-type");
             } else {
                 showToast(response?.messageCode, false);
             }
@@ -49,16 +46,14 @@ export const useAddEditMembershipPlan = (tag) => {
         }
     };
 
-    const fetchEditModuleData = useCallback(async () => {
+    const fetchEditEmployeeTypeData = useCallback(async () => {
         try {
             if (id) {
                 dispatch(startLoading());
-                const response = await getMembershipPlanById(id);
+                const response = await getEmployeeTypeById(id);
 
                 if (response?.statusCode === 200) {
-                    setValue("planName", response.data.planName);
-                    setValue("hours", response.data.hours);
-                    setValue("price", response.data.price);
+                    setValue("name", response.data.name);
                 } else {
                     showToast(response?.message, false);
                 }
@@ -71,11 +66,11 @@ export const useAddEditMembershipPlan = (tag) => {
     }, [id, setValue, dispatch]);
 
     useEffect(() => {
-        tag === "edit" && fetchEditModuleData();
-      }, [tag, fetchEditModuleData]);
+        tag === "edit" && fetchEditEmployeeTypeData();
+      }, [tag, fetchEditEmployeeTypeData]);
 
     const cancelHandler = () => {
-        navigate("/membership-plan");
+        navigate("/employee-type");
     };
     return {
         control,

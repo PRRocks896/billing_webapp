@@ -110,6 +110,8 @@ export const MEMBERSHIP_REDEEM = "api/membership-redeem";
 
 export const RENEWPLAN = 'api/renew-plan';
 
-export const DAILYREPORT = 'api/daily-report'
+export const DAILYREPORT = 'api/daily-report';
 
-export const EXPENSE = 'api/expense'
+export const EXPENSE = 'api/expense';
+
+export const EMPLOYEETYPE = 'api/employee-type';

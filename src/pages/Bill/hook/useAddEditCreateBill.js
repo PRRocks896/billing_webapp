@@ -270,7 +270,7 @@ export const useAddEditCreateBill = (tag) => {
   // genrate staff options for drop down
   useEffect(() => {
     const data = staff.map((item) => {
-      return { value: item.id, label: item.name };
+      return { value: item.id, label: item.nickName };
     });
     setStaffOptions([...data]);
   }, [staff]);

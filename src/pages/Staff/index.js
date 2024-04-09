@@ -62,6 +62,9 @@ const Staff = () => {
               <TableRow>
                 <TableCell>No</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Nick Name</TableCell>
+                <TableCell>Emp. Type</TableCell>
+                <TableCell align="right">salary</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
                   <TableCell>Action</TableCell>
@@ -73,10 +76,13 @@ const Staff = () => {
                 visibleRows.map((row) => {
                   return (
                     <TableRow key={"staff_" + row.id}>
-                      <TableCell align="left">{(index += 1)}</TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell width={25}>{(index += 1)}</TableCell>
+                      <TableCell width={200}>{row.name}</TableCell>
+                      <TableCell width={125}>{row.nickName}</TableCell>
+                      <TableCell width={125}>{row.px_employee_type?.name}</TableCell>
+                      <TableCell width={125} align="right">{row.salary}/-</TableCell>
                       {rights.edit && (
-                        <TableCell>
+                        <TableCell width={50}>
                           <Switch
                             style={switchStyles}
                             checked={row.isActive}
@@ -85,7 +91,7 @@ const Staff = () => {
                         </TableCell>
                       )}
                       {(rights.edit || rights.delete) && (
-                        <TableCell>
+                        <TableCell width={50}>
                           <Box className="table-action-btn">
                             {rights.edit && (
                               <Button
