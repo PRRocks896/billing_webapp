@@ -1,4 +1,5 @@
 import React from "react";
+import * as moment from "moment";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 
 import Autocomplete from "@mui/material/Autocomplete";
@@ -25,6 +26,7 @@ const AddEditDailyReport = ({ tag }) => {
         control,
         branchList,
         isSubmitting,
+        isOpeningBalanceDisable,
         totalCashSalePlusOpeningBalance,
         onSubmit,
         handleSubmit,
@@ -103,6 +105,9 @@ const AddEditDailyReport = ({ tag }) => {
                                                     value={value}
                                                     onChange={(e) => onChange(e.target.value)}
                                                     onBlur={onBlur}
+                                                    inputProps={{
+                                                        max: moment(new Date()).format('yyyy-MM-DD')
+                                                    }}
                                                     error={!!error}
                                                     helperText={error?.message ? error.message : ""}
                                                 />
@@ -244,6 +249,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     value={value}
                                                     onChange={(e) => onChange(e.target.value)}
                                                     onBlur={onBlur}
+                                                    disabled={isOpeningBalanceDisable}
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
                                                 />

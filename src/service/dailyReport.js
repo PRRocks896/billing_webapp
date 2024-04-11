@@ -4,6 +4,7 @@ import {
 import { getPDF, get, post, remove, put } from "./webRequest";
 
 export const downloadDailyReport = async (payload) => {
+    // return await post(`${DAILYREPORT}/download`, payload);
     return await getPDF(`${DAILYREPORT}/download`, payload, `Green_Day_Daily_Report_${new Date().toDateString()}.pdf`);
 }
 
@@ -21,6 +22,10 @@ export const getDailyReportById = async (id) => {
     const response = await get(`${DAILYREPORT}/${id}`);
     return response;
 };
+
+export const getDailyReportByPayload = async (payload) => {
+    return await post(`${DAILYREPORT}/get`, payload);
+}
 
 export const updateDailyReport = async (payload, id) => {
     const response = await put(`${DAILYREPORT}/${id}`, payload);

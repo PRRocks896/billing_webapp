@@ -15,7 +15,7 @@ import {
 import {
   getUserList
 } from "../../../service/users";
-
+// import DailyReportPrint from "../../../components/dailyReport";
 import { dailyReportAction } from "../../../redux/dailyReport";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
@@ -159,6 +159,10 @@ const useDailyReportHooks = () => {
     const downloadReport = async () => {
       try {
         dispatch(startLoading());
+        if(selectedBranch === null) {
+          showToast('Please Select Branch', false);
+          return;
+        }
         const payload = {
           userID: selectedBranch?.id,
           startDate: moment(dateRange).format('yyyy-MM-DD'),

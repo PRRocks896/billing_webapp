@@ -10,7 +10,8 @@ import { listPayload, showToast } from "../../../utils/helper";
 import {
     createDailyReport,
     updateDailyReport,
-    getDailyReportById
+    getDailyReportById,
+    getDailyReportByPayload
 } from "../../../service/dailyReport";
 import {
     hardDeleteExpense
@@ -27,6 +28,8 @@ export const useAddEditDailyReportHook = (tag) => {
     const loggedInUser = useSelector((state) => state.loggedInUser);
 
     const [branchList, setBranchList] = useState([]);
+    const [previousDateReport, setPreviousDateReport] = useState(null);
+    const [isOpeningBalanceDisable, setIsOpeningBalanceDisable] = useState(false);
     
     const { control, handleSubmit, setValue, getValues, watch, reset, formState: {dirtyFields, isSubmitting} } = useForm({
         defaultValues: {
@@ -104,6 +107,9 @@ export const useAddEditDailyReportHook = (tag) => {
     const onSubmit = async (data) => {
         try {
             dispatch(startLoading());
+            if(data.cashInCover !== data.grandCash) {
+                return showToast('Grand Total and Cash in Cover is not Matched. Please Check')
+            }
             const updatedExpese = [];
             if(tag === "edit") {
                 if(dirtyFields.expense && dirtyFields.expense.map((item) => {
@@ -197,8 +203,31 @@ export const useAddEditDailyReportHook = (tag) => {
     // eslint-disable-next-line
     }, [id, setValue, dispatch]);
 
+    const fetchPreviousDateEntry = async () => {
+        const { success, data} = await getDailyReportByPayload({
+            isActive: true,
+            isDeleted: false,
+            userID: loggedInUser.id,
+            dailyReportDate: moment(new Date(getValues('dailyReportDate'))).subtract(1, 'day').format('yyyy-MM-DD')
+        });
+        if(success) {
+            setPreviousDateReport(data);
+            setIsOpeningBalanceDisable(true);
+            setValue('openBalance', data.nextDayCash);
+        } else {
+            setPreviousDateReport(null);
+            showToast(`Please Add Report for ${moment(new Date(getValues('dailyReportDate'))).subtract(1, 'day').format('DD/MM/yyyy')} Date`)
+            setIsOpeningBalanceDisable(false);
+            setValue('openBalance', '');
+        }
+    }
+
     const cancelHandler = () => {
-        navigate("/daily-report");
+        if(isAdmin) {
+            navigate("/daily-report");
+        } else {
+            navigate('/');
+        }
     };
 
     const fetchList = async () => {
@@ -258,11 +287,12 @@ export const useAddEditDailyReportHook = (tag) => {
 
     useEffect(() => {
         const total = (parseFloat(getValues("totalCash")) || 0) -
-                      (parseFloat(getValues("totalExpenses")) || 0) - 
-                      (parseFloat(getValues("nextDayCash")) || 0);
+                      ((parseFloat(getValues("totalCard")) || 0) +
+                      (parseFloat(getValues("totalExpenses")) || 0) + 
+                      (parseFloat(getValues("nextDayCash")) || 0));
         setValue('grandCash', total);
         // eslint-disable-next-line
-    }, [watch('totalCash'), watch('totalExpenses'), watch('nextDayCash')]);
+    }, [watch('tipsCard'), watch('totalCash'), watch('totalExpenses'), watch('nextDayCash')]);
 
     useEffect(() => {
         const totalCard = parseFloat(getValues("tipsCard") || 0) - ((parseFloat(getValues("tipsCard") || 0) * 25) / 100);
@@ -270,9 +300,16 @@ export const useAddEditDailyReportHook = (tag) => {
         // eslint-disable-next-line
     }, [watch('tipsCard')]);
 
+    // useEffect(() => {
+    //     fetchPreviousDateEntry();
+    //     // eslint-disable-next-line
+    // }, [watch('dailyReportDate')]);
+
     useEffect(() => {
         if(isAdmin) {
             fetchList();
+        } else {
+            fetchPreviousDateEntry();
         }
         // eslint-disable-next-line
     }, [isAdmin]);
@@ -287,6 +324,8 @@ export const useAddEditDailyReportHook = (tag) => {
         control,
         branchList,
         isSubmitting,
+        previousDateReport,
+        isOpeningBalanceDisable,
         totalCashSalePlusOpeningBalance,
         onSubmit,
         handleSubmit,

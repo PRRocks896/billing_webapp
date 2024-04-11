@@ -54,6 +54,11 @@ const DailyReport = () => {
         deleteBtnClickHandler,
         searchDailyReportHandler,
     } = useDailyReportHooks();
+
+    if(!isAdmin) {
+        navigate('/add-daily-report')
+    }
+
     return (
         <>
             {isAdmin ?
