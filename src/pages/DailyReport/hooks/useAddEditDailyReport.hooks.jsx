@@ -45,17 +45,17 @@ export const useAddEditDailyReportHook = (tag) => {
             upiSale: '',
             dealsAppSale: '',
             totalSales: '',
-            tipsCard: '',
+            tipsCard: '0',
             totalCard: '',
             totalCash: '',
             nextDayCash: '',
             salonCustomerCash: '0',
-            totalExpenses: '',
+            totalExpenses: '0',
             grandCash: '',
-            fiveHundred: '',
-            twoHundred: '',
-            oneHundred: '',
-            fifty: '',
+            fiveHundred: '0',
+            twoHundred: '0',
+            oneHundred: '0',
+            fifty: '0',
             cashInCover: '',
             expense: [{
                 index: 0,
@@ -204,11 +204,11 @@ export const useAddEditDailyReportHook = (tag) => {
     }, [id, setValue, dispatch]);
 
     const fetchPreviousDateEntry = async () => {
-        const { success, data} = await getDailyReportByPayload({
+        const { success, message, data} = await getDailyReportByPayload({
             isActive: true,
             isDeleted: false,
-            userID: loggedInUser.id,
-            dailyReportDate: moment(new Date(getValues('dailyReportDate'))).subtract(1, 'day').format('yyyy-MM-DD')
+            userID: isAdmin ? getValues('userID') : loggedInUser.id,
+            dailyReportDate: moment(new Date(getValues('dailyReportDate'))).format('yyyy-MM-DD')
         });
         if(success) {
             setPreviousDateReport(data);
@@ -216,7 +216,8 @@ export const useAddEditDailyReportHook = (tag) => {
             setValue('openBalance', data.nextDayCash);
         } else {
             setPreviousDateReport(null);
-            showToast(`Please Add Report for ${moment(new Date(getValues('dailyReportDate'))).subtract(1, 'day').format('DD/MM/yyyy')} Date`)
+            showToast(message, false);
+            // showToast(`Please Add Report for ${moment(new Date(getValues('dailyReportDate'))).subtract(1, 'day').format('DD/MM/yyyy')} Date`)
             setIsOpeningBalanceDisable(false);
             setValue('openBalance', '');
         }
@@ -333,5 +334,6 @@ export const useAddEditDailyReportHook = (tag) => {
         handleAddField,
         handleRemoveField,
         handleTotalExpense,
+        fetchPreviousDateEntry
     }
 }

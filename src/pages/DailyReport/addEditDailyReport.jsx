@@ -33,7 +33,8 @@ const AddEditDailyReport = ({ tag }) => {
         cancelHandler,
         handleAddField,
         handleRemoveField,
-        handleTotalExpense
+        handleTotalExpense,
+        fetchPreviousDateEntry
     } = useAddEditDailyReportHook(tag);
 
     return (
@@ -103,7 +104,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     size="small"
                                                     name="date"
                                                     value={value}
-                                                    onChange={(e) => onChange(e.target.value)}
+                                                    onChange={(e) => [onChange(e.target.value), fetchPreviousDateEntry()]}
                                                     onBlur={onBlur}
                                                     inputProps={{
                                                         max: moment(new Date()).format('yyyy-MM-DD')

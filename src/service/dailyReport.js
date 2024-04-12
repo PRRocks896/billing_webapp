@@ -24,7 +24,7 @@ export const getDailyReportById = async (id) => {
 };
 
 export const getDailyReportByPayload = async (payload) => {
-    return await post(`${DAILYREPORT}/get`, payload);
+    return await post(`${DAILYREPORT}/check-pending`, payload);
 }
 
 export const updateDailyReport = async (payload, id) => {
