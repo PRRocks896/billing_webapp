@@ -168,7 +168,7 @@ const useDailyReportHooks = () => {
           startDate: moment(dateRange).format('yyyy-MM-DD'),
           endDate: moment(dateRange).format('yyyy-MM-DD')
         }
-        await downloadDailyReport(payload);
+        await downloadDailyReport(payload, `Green_Day_Spa_${selectedBranch?.lastName}_${moment(dateRange).format('DD_MM_yyyy')}.pdf`);
       } catch(err) {
         console.error(err);
         showToast(err?.message, false);
