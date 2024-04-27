@@ -7,6 +7,14 @@ import {
 } from "../utils/constant";
 import { attachId, get, post, put, remove } from "./webRequest";
 
+export const sendOtp = async(body) => {
+  return post(`${CREATE_STAFF_API}/send-otp`, body);
+}
+
+export const verifyOtp = async (body) => {
+  return post(`${CREATE_STAFF_API}/verify-otp`, body);
+}
+
 export const getStaffList = async (body) => {
   const response = await post(STAFF_LIST_API, body);
   return response;

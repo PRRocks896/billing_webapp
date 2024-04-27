@@ -1,4 +1,6 @@
 import React from "react";
+import { Controller } from "react-hook-form";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -6,27 +8,37 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
+import Switch from "@mui/material/Switch";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+
+import VerifyOtp from "../../components/VerifyOTPModel";
+
 import { useAddEditStaff } from "./hook/useAddEditStaff";
-import { Controller } from "react-hook-form";
 
 const AddEditStaff = ({ tag }) => {
   const {
     control,
+    verifiedOtp,
+    isShowBankDetail,
     employeeTypeList,
+    openVerifyOtpModal,
     onSubmit,
     getValues,
     handleSubmit,
-    cancelHandler
+    cancelHandler,
+    handleSendOtp,
+    handleVerifyOtp,
+    setIsShowBankDetail,
+    setOpenVerifyOtpModal,
   } =
     useAddEditStaff(tag);
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(verifiedOtp ? onSubmit : handleSendOtp)}>
         <Box className="card">
           <Typography variant="subtitle1" fontWeight={700} fontSize={22}>Basic Detail</Typography>
           <FormGroup className="form-field">
@@ -425,6 +437,15 @@ const AddEditStaff = ({ tag }) => {
         </Box>
         <br/>
         <Box className="card">
+          Is Enter Bank Detail 
+          <Switch
+            checked={isShowBankDetail}
+            onChange={(e) => setIsShowBankDetail(e.target.checked)}
+          />
+        </Box>
+        <br/>
+        {isShowBankDetail &&
+        <Box className="card">
           <Typography variant="subtitle1" fontWeight={700} fontSize={22}>Bank Detail</Typography>
           <FormGroup className="form-field">
             <Grid container spacing={2}>
@@ -587,6 +608,7 @@ const AddEditStaff = ({ tag }) => {
             </Grid>
           </FormGroup>
         </Box>
+        }
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item md={1.5}>
             <Button type="sumit" className="btn btn-tertiary">
@@ -600,6 +622,14 @@ const AddEditStaff = ({ tag }) => {
           </Grid>
         </Grid>
       </form>
+      {openVerifyOtpModal &&
+        <VerifyOtp
+          title="Verify Staff OTP"
+          isOpen={openVerifyOtpModal}
+          setOpen={setOpenVerifyOtpModal}
+          handleEnterOtp={handleVerifyOtp}
+        />
+      }
     </>
   );
 };

@@ -28,10 +28,12 @@ const VerifyOtp = ({
             <Modal
                 disableEscapeKeyDown
                 open={isOpen}
-                onClose={() => {
-                    setOtp(null)
-                    setOpen(false)
-                }}
+                // onClose={(e, reason) => {
+                //     console.log(reason);
+                //     setOtp(null)
+                //     setOpen(false)
+                // }}
+                disableEnforceFocus={true}
                 closeAfterTransition
                 slotProps={{
                     backdrop: {

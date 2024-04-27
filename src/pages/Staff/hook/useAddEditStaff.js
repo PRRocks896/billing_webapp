@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { showToast } from "../../../utils/helper";
-import { createStaff, getStaffById, updateStaff } from "../../../service/staff";
+import { sendOtp, verifyOtp, createStaff, getStaffById, updateStaff } from "../../../service/staff";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
@@ -19,6 +19,10 @@ export const useAddEditStaff = (tag) => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [employeeTypeList, setEmployeeTypeList] = useState([]);
+  const [isShowBankDetail, setIsShowBankDetail] = useState(true);
+
+  const [verifiedOtp, setVerifiedOtp] = useState(false);
+  const [openVerifyOtpModal, setOpenVerifyOtpModal] = useState(false);
 
   const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
@@ -51,7 +55,11 @@ export const useAddEditStaff = (tag) => {
         ...data,
         userID: loggedInUser.id,
         refName: data && data.refName && data.refName.length > 0 ? data.refName : null,
-        refPhone: data && data.refPhone && data.refPhone.length > 0 ? data.refPhone : null
+        refPhone: data && data.refPhone && data.refPhone.length > 0 ? data.refPhone : null,
+        accountType: data && data.accountType && data.accountType.length > 0 ? data.accountType : null,
+        accountNumber: data && data.accountNumber && data.accountNumber.length > 0 ? data.accountNumber : null,
+        accountHolderName: data && data.accountHolderName && data.accountHolderName.length > 0 ? data.accountHolderName : null,
+        ifscCode: data && data.ifscCode && data.ifscCode.length > 0 ? data.ifscCode : null,
       };
       
       const response =
@@ -63,7 +71,7 @@ export const useAddEditStaff = (tag) => {
         showToast(response?.message, true);
         navigate("/staff");
       } else {
-        showToast(response?.messageCode, false);
+        showToast(response?.message || response?.messageCode, false);
       }
     } catch (error) {
       showToast(error?.message, false);
@@ -71,6 +79,46 @@ export const useAddEditStaff = (tag) => {
       dispatch(stopLoading());
     }
   };
+
+  const handleSendOtp = async (info) => {
+    try {
+      dispatch(startLoading());
+      const {success, message} = await sendOtp({
+        staffName: `${info.name} (${employeeTypeList.find((item) => item.id === parseInt(info.employeeTypeID))?.name}), Salary: ${info.salary}`,
+        branchName: `${loggedInUser.lastName}`
+      });
+      if (success) {
+        setOpenVerifyOtpModal(true);
+      } else {
+        showToast(message, false);
+      }
+    } catch(err) {
+      showToast(err?.message, false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
+  const handleVerifyOtp = async (otp) => {
+    try {
+      dispatch(startLoading());
+      const { success, message } = await verifyOtp({
+        otp
+      });
+      if(success) {
+        setVerifiedOtp(true);
+        setOpenVerifyOtpModal(false);
+        onSubmit(getValues());
+        showToast(message);
+      } else {
+        showToast(message, false);
+      }
+    } catch(err) {
+      showToast(err?.message, false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
 
   const fetchEmployeeType = useCallback(async () => {
     try {
@@ -138,10 +186,18 @@ export const useAddEditStaff = (tag) => {
 
   return {
     control,
+    verifiedOtp,
+    isShowBankDetail,
     employeeTypeList,
+    openVerifyOtpModal,
     onSubmit,
     getValues,
     handleSubmit,
     cancelHandler,
+    handleSendOtp,
+    setVerifiedOtp,
+    handleVerifyOtp,
+    setIsShowBankDetail,
+    setOpenVerifyOtpModal,
   };
 };
