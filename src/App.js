@@ -59,6 +59,8 @@ import DailyReport from "./pages/DailyReport";
 import AddEditDailyReport from './pages/DailyReport/addEditDailyReport';
 import EmployeeType from "./pages/EmployeeType";
 import AddEditEmployeeType from "./pages/EmployeeType/addEditEmployeeType";
+import Salary from './pages/Salary';
+import AddEditSalary from './pages/Salary/addEditSalary';
 
 const token = getAuthToken();
 
@@ -153,6 +155,33 @@ const App = () => {
               }
             />
           ),
+        },
+        {
+          path: 'salary',
+          element: (
+            <ProtectedRoute
+              path="salary"
+              Component={isOnline ? <Salary/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-salary',
+          element: (
+            <ProtectedRoute
+              path="add-salary"
+              Component={isOnline ? <AddEditSalary tag="add"/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-salary/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-salary/:id"
+              Component={isOnline ? <AddEditSalary tag="edit"/> : <NoConnection/>}
+            />
+          )
         },
         {
           path: 'employee-type',

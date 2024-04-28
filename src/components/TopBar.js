@@ -43,6 +43,7 @@ const TopBar = ({
       <Box className="top-bar">
         <Grid container justifyContent={"space-between"} alignItems={"center"}>
           <Grid item>
+            {inputName && inputName.length > 0 &&
             <Box className="search-box">
               <InputBase
                 name={`${inputName}`}
@@ -66,7 +67,7 @@ const TopBar = ({
                   </InputAdornment>
                 }
               />
-            </Box>
+            </Box>}
           </Grid>
           {addPermission && (
             <Grid item>

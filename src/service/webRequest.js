@@ -108,6 +108,23 @@ export const put = async (url, data) => {
     });
 };
 
+export const getXlxsWithFile = async (url, data, fileName) => {
+  return axiosInstance.post(`${baseUrl}${url}`, data, {
+    responseType: "blob", //Force to receive data in a Blob Format
+    headers: {
+      "x-api-key": "05646635804321276",
+      Authorization: localStorage.getItem("token"),
+    }
+  }).then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+  });
+}
+
 export const getXlsx = async (url, data) => {
   return axiosInstance.post(`${baseUrl}${url}`, data, {
     responseType: "blob", //Force to receive data in a Blob Format
