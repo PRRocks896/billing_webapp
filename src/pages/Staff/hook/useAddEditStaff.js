@@ -111,7 +111,7 @@ export const useAddEditStaff = (tag) => {
     try {
       dispatch(startLoading());
       const {success, message} = await sendOtp({
-        staffName: `${info.name} (${employeeTypeList.find((item) => item.id === parseInt(info.employeeTypeID))?.name}), Salary: ${info.salary}`,
+        staffName: `${info.nickName} (${employeeTypeList.find((item) => item.id === parseInt(info.employeeTypeID))?.name}), Salary: ${info.salary}/-`,
         branchName: `${loggedInUser.lastName}`
       });
       if (success) {
