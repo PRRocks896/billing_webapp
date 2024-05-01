@@ -332,7 +332,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                 staffResponse,
                 serviceResponse
             ] = await Promise.all([
-                getStaffList(listPayload(0, loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? whereCondition : { ...whereCondition, createdBy: loggedInUser.id }, 100000)),
+                getStaffList(listPayload(0, loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? {...whereCondition, searchText: "THERAPIST"} : { ...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id }, 100000)),
                 getServiceList(payload),
             ]);
             if (staffResponse?.statusCode === 200 && staffResponse?.success) {

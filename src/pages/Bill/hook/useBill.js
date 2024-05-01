@@ -12,6 +12,7 @@ import {
 } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
+import moment from "moment";
 
 export const useBill = () => {
   const dispatch = useDispatch();
@@ -54,7 +55,7 @@ export const useBill = () => {
           whereCondition = {
             ...whereCondition,
             userID: loggedInUser.id,
-            createdAt: '2024-03-29' //new Date().toISOString().split('T')[0]
+            createdAt: moment(new Date()).format('yyyy-MM-DD') //'2024-03-29' //new Date().toISOString().split('T')[0]
           };
         }
 
