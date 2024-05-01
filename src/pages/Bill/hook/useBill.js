@@ -169,7 +169,7 @@ export const useBill = () => {
         customer: body?.px_customer?.name,
         customerID: body?.customerID,
         phone: body?.px_customer?.phoneNumber,
-        staff: body?.px_staff?.name,
+        staff: body?.px_staff?.nickName,
         roomNo: body?.roomNo,
         detail: body?.detail?.map((row) => {
           return { ...row, item: row.serviceID ? row.service?.name : row.membershipPlan?.planName };

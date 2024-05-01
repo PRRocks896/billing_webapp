@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import { FiChevronRight, FiLogOut, FiGrid, FiSquare } from "react-icons/fi";
+import { FiChevronRight, FiLogOut, FiGrid, FiSquare, FiRepeat } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -176,6 +176,22 @@ const Sidebar = () => {
           <Accordion
             expanded={expanded === "panel7"}
             onChange={handleChange("panel7")}
+            className="menu-list"
+            onClick={() => {window.location.reload();}}
+          >
+            <AccordionSummary
+              className="menu-title"
+              aria-controls="panel5bh-content"
+              id="panel5bh-header"
+            >
+              <Typography>
+                <FiRepeat /> Hard Refresh
+              </Typography>
+            </AccordionSummary>
+          </Accordion>
+          <Accordion
+            expanded={expanded === "panel8"}
+            onChange={handleChange("panel8")}
             className="menu-list"
             onClick={logoutClickHandler}
           >

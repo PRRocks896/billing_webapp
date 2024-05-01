@@ -549,7 +549,7 @@ export const useAddEditCreateBill = (tag) => {
       )?.name,
       customerID: getValues("customerID").value,
       phone: getValues("customerID").label,
-      staff: staff.find((row) => row.id === getValues("staffID").value)?.name,
+      staff: staff.find((row) => row.id === getValues("staffID").value)?.nickName,
       roomNo: getValues("roomNo"),
       detail: getValues("detail").map((row) => {
         return { ...row, item: row.serviceID.label };

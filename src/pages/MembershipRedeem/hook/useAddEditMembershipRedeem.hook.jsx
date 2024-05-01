@@ -224,7 +224,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                     customer: data?.px_customer?.name,
                     customerID: data?.customerID,
                     phone: data?.px_customer?.phoneNumber,
-                    staff: data?.px_staff?.name,
+                    staff: data?.px_staff?.nickName,
                     roomNo: getValues('roomNo') || '',
                     detail: [{
                         item: data?.px_service?.name,

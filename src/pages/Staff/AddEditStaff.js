@@ -135,7 +135,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
-                            label="Staff name"
+                            label="Original Name (As per ID)"
                             size="small"
                             name="name"
                             value={value}

@@ -31,8 +31,10 @@ export const useLogin = () => {
       if (response?.statusCode === 200) {
         const authToken = response?.data?.token;
         setAuthToken(authToken);
+        const isLastDailyReportAdded = response.data.isLastDailyReportAdded;
         localStorage.setItem("latestBillNo", response.data.latestBillNo);
         localStorage.setItem("latestCustomerNo", response.data.latestCustomerNo);
+        localStorage.setItem("isLastDailyReportAdded", isLastDailyReportAdded);
         dispatch(loggedInUserAction.storeLoggedInUserData(response?.data));
         navigate("/", { replace: true });
       } else {

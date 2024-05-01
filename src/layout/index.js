@@ -83,8 +83,10 @@ const LayoutProvider = () => {
       if (response.statusCode === 200) {
         const latestBillNo = response.data.latestBillNo;
         const latestCustomerNo = response.data.latestCustomerNo;
+        const isLastDailyReportAdded = response.data.isLastDailyReportAdded;
         localStorage.setItem('latestBillNo', latestBillNo);
         localStorage.setItem("latestCustomerNo", latestCustomerNo);
+        localStorage.setItem("isLastDailyReportAdded", isLastDailyReportAdded);
         dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
         navigate(pathname);
       } else {
