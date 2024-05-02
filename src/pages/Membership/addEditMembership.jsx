@@ -456,6 +456,7 @@ const AddEditMembership = ({tag}) => {
                 isOpen={openVerifyMembershipModal}
                 setOpen={setOpenVerifyMembershipModal}
                 handleEnterOtp={handleVerifyMembership}
+                resendOtp={() => {}}
             />
         </>
     )

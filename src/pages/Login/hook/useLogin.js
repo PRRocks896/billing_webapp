@@ -1,14 +1,18 @@
 import { useForm } from "react-hook-form";
 import { setAuthToken, showToast } from "../../../utils/helper";
 import { login } from "../../../service/login";
-import { useNavigate } from "react-router-dom";
+
+// import { useNavigate } from "react-router-dom";
+
+import {  } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loggedInUserAction } from "../../../redux/loggedInUser";
 
 const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 export const useLogin = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  
   const dispatch = useDispatch();
 
   const { control, handleSubmit } = useForm({
@@ -36,7 +40,9 @@ export const useLogin = () => {
         localStorage.setItem("latestCustomerNo", response.data.latestCustomerNo);
         localStorage.setItem("isLastDailyReportAdded", isLastDailyReportAdded);
         dispatch(loggedInUserAction.storeLoggedInUserData(response?.data));
-        navigate("/", { replace: true });
+        window.location.replace('/');
+        
+        // navigate("/", { replace: true });
       } else {
         showToast(response?.message || response?.messageCode, false);
       }

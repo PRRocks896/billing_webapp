@@ -146,7 +146,7 @@ const DailyReport = () => {
                                         <TableRow key={"daily_report" + row.id}>
                                             <TableCell align="left">{(index += 1)}</TableCell>
                                             <TableCell align="left">{moment(row.dailyReportDate).format('DD/MM/yyyy')}</TableCell>
-                                            {isAdmin && <TableCell>{row.px_user?.branchName}</TableCell>}
+                                            {isAdmin && <TableCell>{row.px_user?.lastName}</TableCell>}
                                             <TableCell align="left">{row.totalStaffPresent}</TableCell>
                                             <TableCell align="left">{row.totalCustomer}</TableCell>
                                             <TableCell align="left">{row.totalExpenses}</TableCell>

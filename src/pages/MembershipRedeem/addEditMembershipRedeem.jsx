@@ -468,6 +468,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                 isOpen={openVerifyMembershipModal}
                 setOpen={setOpenVerifyMembershipModal}
                 handleEnterOtp={handleVerifyMembership}
+                resendOtp={() => {}}
             />
         </>
     )

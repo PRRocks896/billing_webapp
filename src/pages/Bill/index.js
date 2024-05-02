@@ -84,7 +84,7 @@ const Bill = () => {
                       <TableCell align="left">
                         {row?.px_customer?.name}<br/>{row?.px_customer?.phoneNumber}
                       </TableCell>
-                      <TableCell align="left">{row?.px_staff?.name}</TableCell>
+                      <TableCell align="left">{row?.px_staff?.nickName}</TableCell>
                       <TableCell align="left">
                         {row?.px_payment_type?.name}
                       </TableCell>

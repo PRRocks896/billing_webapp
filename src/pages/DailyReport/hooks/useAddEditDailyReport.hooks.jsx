@@ -19,6 +19,8 @@ import {
 import {
     getUserList
 } from "../../../service/users";
+import { loggedInUserAction } from "../../../redux/loggedInUser";
+import { fetchLoggedInUserData } from "../../../service/loggedInUser";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditDailyReportHook = (tag) => {
@@ -57,12 +59,14 @@ export const useAddEditDailyReportHook = (tag) => {
             oneHundred: '0',
             fifty: '0',
             cashInCover: '',
-            expense: [{
-                index: 0,
-                exponseID: null,
-                description: '',
-                amount: ''
-            }]
+            expense: [
+                {
+                    index: 0,
+                    exponseID: null,
+                    description: '',
+                    amount: ''
+                }
+            ]
         },
         mode: "onBlur",
     });
@@ -93,10 +97,10 @@ export const useAddEditDailyReportHook = (tag) => {
         remove(index);
         handleTotalExpense();
         const find = getValues('expense')[index];
-        if(find) {
-            hardDeleteExpense(find?.exponseID).then((res) => {
+        if(find && find.exponseID) {
+            hardDeleteExpense(find.exponseID).then((res) => {
                 if(!res.success) {
-                    showToast(res.message, true);
+                    showToast(res.message, false);
                 }
             }).catch((err) => {
                 showToast(err?.message, false);
@@ -111,6 +115,23 @@ export const useAddEditDailyReportHook = (tag) => {
                 return showToast('Grand Total and Cash in Cover is not Matched. Please Check')
             }
             const updatedExpese = [];
+            if(tag === 'add') {
+                if(dirtyFields.expense && dirtyFields.expense.map((item) => {
+                    if(item.amount && item.description) {
+                        return true;
+                    }
+                    return false;
+                }).includes(true)) {
+                    data.expense?.forEach((item) => {
+                        updatedExpese.push({
+                            id: null,
+                            description: item.description,
+                            amount: item.amount,
+                        });
+                    });
+                    delete data.expense;
+                }
+            }
             if(tag === "edit") {
                 if(dirtyFields.expense && dirtyFields.expense.map((item) => {
                     if(item.amount || item.description) {
@@ -133,10 +154,24 @@ export const useAddEditDailyReportHook = (tag) => {
             }
             
             const response = tag === "add"
-                ? await createDailyReport({ ...data, createdBy: loggedInUser.id })
+                ? await createDailyReport({ ...data, expense: updatedExpese, createdBy: loggedInUser.id })
                 : await updateDailyReport({ ...data, expense: updatedExpese, updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
+                if(tag === "add") {
+                    const response = await fetchLoggedInUserData();
+                    if (response.statusCode === 200) {
+                        const latestBillNo = response.data.latestBillNo;
+                        const latestCustomerNo = response.data.latestCustomerNo;
+                        const isLastDailyReportAdded = response.data.isLastDailyReportAdded;
+                        localStorage.setItem('latestBillNo', latestBillNo);
+                        localStorage.setItem("latestCustomerNo", latestCustomerNo);
+                        localStorage.setItem("isLastDailyReportAdded", isLastDailyReportAdded);
+                        dispatch(loggedInUserAction.storeLoggedInUserData(response.data));
+                    } else {
+                        showToast(response.message, false);
+                    }
+                }
                 showToast(response?.message, true);
                 navigate("/daily-report");
             } else {
@@ -158,7 +193,7 @@ export const useAddEditDailyReportHook = (tag) => {
                 if (response?.statusCode === 200) {
                     const { data } = response;
                     reset({
-                        userID: data.userId,
+                        userID: data.userID,
                         dailyReportDate: moment(new Date(data.dailyReportDate)).format('yyyy-MM-DD'),
                         managerName: data.managerName,
                         totalStaffPresent: data.totalStaffPresent,

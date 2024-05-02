@@ -135,6 +135,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="name"
                             label="Original Name (As per ID)"
                             size="small"
                             name="name"
@@ -161,9 +162,10 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="nickName"
                             label="Nick name"
                             size="small"
-                            name="name"
+                            name="nickName"
                             value={value}
                             onChange={(e) => onChange(e.target.value.toUpperCase())}
                             onBlur={onBlur}
@@ -187,6 +189,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="phoneNumber"
                             type="number"
                             label="Phone"
                             size="small"
@@ -226,9 +229,10 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="fatherName"
                             label="Father name"
                             size="small"
-                            name="name"
+                            name="fatherName"
                             value={value}
                             onChange={(e) => onChange(e.target.value.toUpperCase())}
                             onBlur={onBlur}
@@ -252,10 +256,11 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="fatherPhoneNumber"
                             type="number"
                             label="Father Phone No"
                             size="small"
-                            name="phoneNumber"
+                            name="fatherPhoneNumber"
                             value={value}
                             onChange={(e) => {
                               if(e.target.value.length < 11) {
@@ -291,6 +296,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="salary"
                             type="number"
                             label="Salary"
                             size="small"
@@ -318,9 +324,10 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="pastWorking"
                             label="Past Working"
                             size="small"
-                            name="name"
+                            name="pastWorking"
                             value={value}
                             onChange={(e) => onChange(e.target.value.toUpperCase())}
                             onBlur={onBlur}
@@ -344,6 +351,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="experience"
                             label="Experience"
                             size="small"
                             name="experience"
@@ -370,6 +378,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="localAdd"
                             multiline
                             rows={3}
                             label="Local Address"
@@ -398,6 +407,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="permanentAdd"
                             multiline
                             rows={3}
                             label="Permanent Address"
@@ -426,6 +436,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="refName"
                             label="Reference name"
                             size="small"
                             name="name"
@@ -447,6 +458,7 @@ const AddEditStaff = ({ tag }) => {
                       }) => (
                         <FormControl size="small" fullWidth>
                           <TextField
+                            id="refPhone"
                             type="number"
                             label="Reference Phone No"
                             size="small"
@@ -545,6 +557,7 @@ const AddEditStaff = ({ tag }) => {
                   }) => (
                     <FormControl size="small" fullWidth>
                       <TextField
+                        id="accountNumber"
                         type="password"
                         label="Account Number"
                         size="small"
@@ -573,6 +586,7 @@ const AddEditStaff = ({ tag }) => {
                   }) => (
                     <FormControl size="small" fullWidth>
                       <TextField
+                        id="reAccNo"
                         type="number"
                         label="Re Enter Account Number"
                         size="small"
@@ -605,6 +619,7 @@ const AddEditStaff = ({ tag }) => {
                   }) => (
                     <FormControl size="small" fullWidth>
                       <TextField
+                        id="ifsc"
                         label="IFSC Code"
                         size="small"
                         name="ifscCode"
@@ -635,6 +650,7 @@ const AddEditStaff = ({ tag }) => {
                   }) => (
                     <FormControl size="small" fullWidth>
                       <TextField
+                        id="accholderName"
                         label="Account Holder Name"
                         size="small"
                         name="name"
@@ -667,15 +683,17 @@ const AddEditStaff = ({ tag }) => {
             </Button>
           </Grid>
         </Grid>
+        {openVerifyOtpModal &&
+          <VerifyOtp
+            title="Verify Staff Add Permission OTP"
+            isOpen={openVerifyOtpModal}
+            isShowResend={true}
+            setOpen={setOpenVerifyOtpModal}
+            handleEnterOtp={handleVerifyOtp}
+            resendOtp={handleSubmit(handleSendOtp)}
+          />
+        }
       </form>
-      {openVerifyOtpModal &&
-        <VerifyOtp
-          title="Verify Staff Add Permission OTP"
-          isOpen={openVerifyOtpModal}
-          setOpen={setOpenVerifyOtpModal}
-          handleEnterOtp={handleVerifyOtp}
-        />
-      }
     </>
   );
 };

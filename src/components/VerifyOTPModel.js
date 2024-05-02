@@ -9,18 +9,41 @@ import {
     Modal,
     TextField,
     Typography,
+    Link,
 } from "@mui/material";
 
 const VerifyOtp = ({
     title = "Verify Membership",
     isOpen,
     setOpen,
-    handleEnterOtp
+    isShowResend = false,
+    resendOtp,
+    handleEnterOtp,
 }) => {
     const [otp, setOtp] = useState(null);
+    const [seconds, setSeconds] = useState(30); // Initial countdown time
+    const [canResend, setCanResend] = useState(false);
+    const [attempt, setAttempt] = useState(3);
+    
+    useEffect(() => {
+        let timer;
+    
+        if (seconds > 0 && !canResend) {
+          timer = setInterval(() => {
+            setSeconds((prevSeconds) => prevSeconds - 1);
+          }, 1000);
+        } else {
+          clearInterval(timer);
+          setCanResend(true);
+        }
+    
+        return () => clearInterval(timer);
+      }, [seconds, canResend]);
+
     useEffect(() => {
         if(isOpen) {
             setOtp(null);
+            setAttempt(3);
         }
     }, [isOpen]);
     return (
@@ -66,6 +89,34 @@ const VerifyOtp = ({
                                         </FormControl>
                                     </Grid>
                                 </Grid>
+                                {isShowResend &&
+                                <Box>
+                                    {canResend ? (
+                                        <Typography
+                                            component={Link}
+                                            onClick={() => {
+                                                if(attempt !== 0) {
+                                                    const att = attempt - 1;
+                                                    setAttempt(att);
+                                                    resendOtp()
+                                                    setCanResend(false);
+                                                    setSeconds(30);
+                                                }
+                                            }}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            {attempt !== 0 ?
+                                                'Resend OTP'
+                                            :
+                                                'Please Try After Sometime'
+                                            }
+                                        </Typography>
+                                    ) : (
+                                        <Typography>
+                                            did't not receive OTP Try after 00:{seconds}
+                                        </Typography>
+                                    )}
+                                </Box>}
                             </FormGroup>
                         </Box>
                         <Box className="modal-footer">

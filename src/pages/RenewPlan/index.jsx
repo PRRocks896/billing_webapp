@@ -399,6 +399,7 @@ const RenewPlan = () => {
                 isOpen={openVerifyMembershipModal}
                 setOpen={setOpenVerifyMembershipModal}
                 handleEnterOtp={handleVerifyMembership}
+                resendOtp={() => {}}
             />
         </>
     )
