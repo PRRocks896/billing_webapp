@@ -32,8 +32,8 @@ export const useAddEditSalary = (tag) => {
             year: moment().format('yyyy'),
             workingDays: "",
             weekOff: "",
-            advance: "",
-            expenseCut: "",
+            advance: null,
+            expenseCut: null,
             staffStatus: "Working",
             accountHolderName: "",
             accountNumber: "",
@@ -42,26 +42,6 @@ export const useAddEditSalary = (tag) => {
         },
         mode: "onBlur",
     });
-
-    const onSubmit = async (data) => {
-        try {
-            dispatch(startLoading());
-            const response = tag === "add"
-                ? await createSalary({ ...data, createdBy: loggedInUser.id })
-                : await updateSalary({ ...data, updatedBy: loggedInUser.id }, id);
-
-            if (response?.statusCode === 200) {
-                showToast(response?.message, true);
-                navigate("/salary");
-            } else {
-                showToast(response?.messageCode, false);
-            }
-        } catch (error) {
-            showToast(error?.message, false);
-        } finally {
-            dispatch(stopLoading());
-        }
-    };
 
     const selectedStaff = useMemo(() => {
         const staff = staffList.find((item) => item.id === getValues('staffID'));
@@ -131,6 +111,33 @@ export const useAddEditSalary = (tag) => {
         }
         // eslint-disable-next-line
     }, [id]);
+
+    const onSubmit = async (data) => {
+        try {
+            dispatch(startLoading());
+            const selectedStaff = staffList.find((item) => item.id === data.staffID);
+            if(selectedStaff) {
+                if(totalpayableAmount > selectedStaff.salary) {
+                    showToast(`Salary Should not be Greater then ${selectedStaff.salary}/-`, false);
+                    return;
+                }
+            }
+            const response = tag === "add"
+                ? await createSalary({ ...data, createdBy: loggedInUser.id })
+                : await updateSalary({ ...data, updatedBy: loggedInUser.id }, id);
+
+            if (response?.statusCode === 200) {
+                showToast(response?.message, true);
+                navigate("/salary");
+            } else {
+                showToast(response?.messageCode, false);
+            }
+        } catch (error) {
+            showToast(error?.message, false);
+        } finally {
+            dispatch(stopLoading());
+        }
+    };
 
     useEffect(() => {
         (async () => {

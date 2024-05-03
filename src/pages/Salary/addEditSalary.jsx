@@ -35,6 +35,9 @@ const AddEditSalary = ({ tag }) => {
         handleSubmit, 
         cancelHandler
     } = useAddEditSalary(tag);
+
+    const totalDays = moment(new Date()).subtract(1, 'M').daysInMonth();
+    
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -228,7 +231,7 @@ const AddEditSalary = ({ tag }) => {
                                                 type="number"
                                                 value={value}
                                                 onChange={(e) => {
-                                                    if(e.target.value.length < 3 && e.target.value < (moment(new Date()).subtract(1, 'M').daysInMonth())) {
+                                                    if(e.target.value.length < 3 && e.target.value <= (moment(new Date()).subtract(1, 'M').daysInMonth())) {
                                                         onChange(e);
                                                     }
                                                 }}
@@ -260,7 +263,9 @@ const AddEditSalary = ({ tag }) => {
                                                 type="number"
                                                 value={value}
                                                 onChange={(e) => {
-                                                    if(e.target.value < 5) {
+                                                    const remainingDays = parseInt(totalDays) - parseInt(getValues('workingDays') || '0');
+                                                    const useForCheck = remainingDays <= 4 ? remainingDays : 4;
+                                                    if(e.target.value <= useForCheck) {
                                                         onChange(e);
                                                     }
                                                 }}
@@ -304,7 +309,7 @@ const AddEditSalary = ({ tag }) => {
                                                 size="small"
                                                 name="advance"
                                                 type="number"
-                                                value={value}
+                                                value={value || ''}
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 error={!!error}
@@ -332,7 +337,7 @@ const AddEditSalary = ({ tag }) => {
                                                 size="small"
                                                 name="expenseCut"
                                                 type="number"
-                                                value={value}
+                                                value={value || ''}
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                                 error={!!error}

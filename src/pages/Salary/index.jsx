@@ -179,7 +179,7 @@ const Salary = () => {
                                     return (
                                         <TableRow key={"membership_plan_" + row.id}>
                                             <TableCell align="center">{(index += 1)}</TableCell>
-                                            <TableCell align="center">{row.px_staff?.name}</TableCell>
+                                            <TableCell align="center">{row.px_staff?.nickName}</TableCell>
                                             <TableCell align="center">{row.workingDays}</TableCell>
                                             <TableCell align="center">{row.weekOff}</TableCell>
                                             <TableCell align="center">{row.month}</TableCell>
