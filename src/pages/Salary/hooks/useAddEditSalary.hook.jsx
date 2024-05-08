@@ -32,8 +32,8 @@ export const useAddEditSalary = (tag) => {
             year: moment().format('yyyy'),
             workingDays: "",
             weekOff: "",
-            advance: null,
-            expenseCut: null,
+            advance: '0',
+            expenseCut: '0',
             staffStatus: "Working",
             accountHolderName: "",
             accountNumber: "",
@@ -70,8 +70,8 @@ export const useAddEditSalary = (tag) => {
 
     const totalpayableAmount = useMemo(() => {
         const staff = selectedStaff;
-        const expenseCut = getValues('expenseCut') || 0;
-        const advance = getValues('advance') || 0;
+        const expenseCut = parseInt(getValues('expenseCut') || '0');
+        const advance = parseInt(getValues('advance') || '0');
         const totalDays = moment(new Date()).subtract(1, 'M').daysInMonth();
         if(staff) {
             const perDaySalary = parseInt(staff.salary) / totalDays;
