@@ -2,6 +2,10 @@ import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const showTwoDecimalWithoutRound = (value) => {
+  return `${value?.split('.')[0]}.${value?.split('.')[1]?.slice(0, 2) || 0}`;
+}
+
 export const showTwoDecimal = (value) => {
   return (Math.round(parseFloat(value) * 100) / 100).toFixed(2);
 }

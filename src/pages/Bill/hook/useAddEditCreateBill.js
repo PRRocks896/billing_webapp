@@ -8,12 +8,12 @@ import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { fetchLoggedInUserData } from "../../../service/loggedInUser";
-import { listPayload, showToast, showTwoDecimal } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimal, showTwoDecimalWithoutRound } from "../../../utils/helper";
 import { getBillById, updateBill, createBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
 
-const { REACT_APP_CGST, REACT_APP_SGST} = process.env;
+// const { REACT_APP_CGST, REACT_APP_SGST} = process.env;
 
 let editCardNo = "";
 
@@ -398,17 +398,18 @@ export const useAddEditCreateBill = (tag) => {
       total = total - (total * discount) / 100;
     }
     if(loggedInUser.isShowGst) {
-      calculateGst(total, index);
+      calculateGst(total > 0 ? parseFloat((total / 118) * 100).toString() : total.toString(), index);
     } else {
-      setValue(`detail.${index}.total`, showTwoDecimal(total.toString()));
+      setValue(`detail.${index}.total`, total.toFixed(2));
       calculateGrandTotal();
     }
   };
 
   const calculateGst = (total, index) => {
-    const cgst = parseFloat(((total * parseFloat(REACT_APP_CGST)) / 100).toFixed(2));
-    const sgst = parseFloat(((total * parseFloat(REACT_APP_SGST)) / 100).toFixed(2));
-    setValue(`detail.${index}.total`, parseFloat((total - cgst - sgst).toFixed(2)));
+    const tempTotal = showTwoDecimalWithoutRound(total);
+    const cgst = (parseFloat(tempTotal) * 0.09).toFixed(2); //parseFloat(((total * parseFloat(REACT_APP_CGST)) / 100).toFixed(2));
+    const sgst = (parseFloat(tempTotal) * 0.09).toFixed(2);//parseFloat(((total * parseFloat(REACT_APP_SGST)) / 100).toFixed(2));
+    setValue(`detail.${index}.total`, tempTotal);
     setValue('csgst', cgst);
     setValue('sgst', sgst);
     calculateGrandTotal();
@@ -419,12 +420,13 @@ export const useAddEditCreateBill = (tag) => {
     let grandTotal = 0;
     detail.forEach((item) => {
       if(loggedInUser.isShowGst) {
-        grandTotal = grandTotal + item.total + getValues('csgst') + getValues('sgst');
+
+        grandTotal = grandTotal + parseFloat(item.total) + parseFloat(getValues('csgst')) + parseFloat(getValues('sgst'));
       } else {
         grandTotal = grandTotal + parseFloat(item.total);
       }
     });
-    setValue(`grandTotal`, showTwoDecimal(grandTotal));
+    setValue(`grandTotal`, showTwoDecimal(Math.round(grandTotal)));
   };
 
   const setQtyRateValuesHandler = (id, index) => {

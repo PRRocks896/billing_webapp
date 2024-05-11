@@ -140,6 +140,36 @@ const useSalaryHooks = () => {
       }
     };
 
+    const searchList = async () => {
+      try {
+        dispatch(startLoading());
+        if(year && year.length !== 4) {
+          showToast('Please Enter Correct Year', false);
+          return;
+        }
+        if(selectedBranch === null) {
+          showToast('Please Select Branch', false);
+          return;
+        }
+        const body = listPayload(page, { year: year,
+          month: month,
+          branchId: selectedBranch?.id });
+        const response = await getSalaryList(body);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          setCount(response?.data?.count);
+          dispatch(salaryAction.storeSalary(payload));
+        } else if (response?.statusCode === 404) {
+          const payload = [];
+          dispatch(salaryAction.storeSalary(payload));
+        }
+      } catch(err) {
+        showToast(err?.response?.statusText, false);
+      } finally {
+        dispatch(stopLoading());
+      }
+    }
+
     const download = async () => {
       try {
         dispatch(startLoading());
@@ -188,6 +218,7 @@ const useSalaryHooks = () => {
         setYear,
         setMonth,
         download,
+        searchList,
         deleteHandler,
         handleChangePage,
         setSelectedBranch,

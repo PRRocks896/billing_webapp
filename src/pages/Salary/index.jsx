@@ -50,6 +50,7 @@ const Salary = () => {
         setYear,
         setMonth,
         download,
+        searchList,
         deleteHandler,
         handleChangePage,
         setSelectedBranch,
@@ -68,7 +69,7 @@ const Salary = () => {
         <>
             <Box className="card">
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={2}>
                         <FormControl fullWidth size="small">
                             <InputLabel id="month">Select Month</InputLabel>
                             <Select 
@@ -93,7 +94,7 @@ const Salary = () => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={2}>
                         <FormControl size="small" fullWidth>
                             <TextField
                                 variant="outlined"
@@ -141,8 +142,11 @@ const Salary = () => {
                             )}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={2}>
                         <Button fullWidth className="btn btn-tertiary" onClick={download}>Export</Button>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Button fullWidth className="btn btn-tertiary" onClick={searchList}>Search</Button>
                     </Grid>
                 </Grid>
             </Box>
