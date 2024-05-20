@@ -344,11 +344,16 @@ export const useAddEditDailyReportHook = (tag) => {
     useEffect(() => {
         if(isAdmin) {
             fetchList();
-        } else {
-            fetchPreviousDateEntry();
         }
         // eslint-disable-next-line
     }, [isAdmin]);
+
+    useEffect(() => {
+        if(loggedInUser && loggedInUser.id) {
+            fetchPreviousDateEntry();
+        }
+        // eslint-disable-next-line
+    }, [loggedInUser]);
 
     useEffect(() => {
         tag === "edit" && fetchEditDailyReport();

@@ -59,6 +59,7 @@ const DailyReport = () => {
         navigate('/add-daily-report')
     }
 
+    if(isAdmin) {
     return (
         <>
             {isAdmin ?
@@ -217,6 +218,7 @@ const DailyReport = () => {
             />
         </>
     )
+    }
 }
 
 export default DailyReport;
