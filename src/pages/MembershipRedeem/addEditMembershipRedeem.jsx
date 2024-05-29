@@ -174,7 +174,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                                 <TableCell>{item?.minutes}</TableCell>
                                                                 <TableCell>
                                                                     {/* {item.minutes === 0 ? */}
-                                                                    {(item.userID === loggedInUser.id || membership.length === 1) ?
+                                                                    {(item.userID === loggedInUser.id && membership.length === 1) ?
                                                                         <Button className="btn btn-primary" onClick={() => navigate(`/renew-plan/${item.id}/${item.customerID}`)}>
                                                                             Renew Plan
                                                                         </Button>

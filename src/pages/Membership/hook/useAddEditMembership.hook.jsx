@@ -5,7 +5,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { listPayload, showToast } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimalWithoutRound, showTwoDecimal } from "../../../utils/helper";
 
 import {
     addExtraHours,
@@ -64,6 +64,10 @@ export const useAddEditMembership = (tag) => {
             dispatch(startLoading());
             const selectedMemberShipPlan = membershipPlan.find(item => item.id === data.membershipPlanID);
             const totalMinutes = (selectedMemberShipPlan.hours + parseInt(data.extraHours)) * 60 || 0;
+            const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(parseFloat((selectedMemberShipPlan.price / 118) * 100).toString()) : selectedMemberShipPlan.price;
+            const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0; 
+            const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0;
+            const cardNo = data.cardNo;
             const payload = {
                 ...data,
                 billDetail: {
@@ -75,14 +79,16 @@ export const useAddEditMembership = (tag) => {
                     detail: JSON.stringify([{
                         discount: 0,
                         quantity: 1,
-                        rate: selectedMemberShipPlan.price,
+                        rate: tempTotal,
                         membershipPlanID: selectedMemberShipPlan.id,
-                        total: selectedMemberShipPlan.price
+                        total: tempTotal
                     }]),
                     cardNo: data.cardNo,
-                    grandTotal: selectedMemberShipPlan.price,
+                    grandTotal: showTwoDecimal(Math.round(parseFloat(tempTotal) + parseFloat(cgst) + parseFloat(sgst))),
                     managerName: data.managerName,
                     createdBy: loggedInUser.id,
+                    cgst: cgst,
+                    sgst: sgst,
                 },
                 minutes: totalMinutes,
             };
@@ -90,7 +96,7 @@ export const useAddEditMembership = (tag) => {
                 ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id })
                 : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
             if (response?.statusCode === 200) {
-                tag === "add" && handlePrint(response.data?.id)
+                tag === "add" && handlePrint(response.data?.id, cardNo);
                 const { success, data } = await fetchLoggedInUserData();
                 if (success) {
                     const latestBillNo = data.latestBillNo;
@@ -107,23 +113,27 @@ export const useAddEditMembership = (tag) => {
                 showToast(response?.messageCode, false);
             }
         } catch (error) {
+            console.error(error);
             showToast(error?.message, false);
         } finally {
             dispatch(stopLoading());
         }
     };
 
-    const handlePrint = async (id) => {
+    const handlePrint = async (id, cardNo = 0) => {
         try {
             startLoading()
             const { success, message, data } = await getMembershipById(id);
             if (success) {
+                const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(parseFloat((data?.px_membership_plan?.price / 118) * 100).toString()) : data?.px_membership_plan?.price;
+                const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0; 
+                const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0;
                 const billData = {
-                    subTotal: data?.px_membership_plan?.price,
-                    total: data?.px_membership_plan?.price,
+                    subTotal: tempTotal,
+                    total: loggedInUser?.isShowGst ? parseFloat(tempTotal) + parseFloat(cgst) + parseFloat(sgst) : data?.px_membership_plan?.price,
                     billNo: data?.billNo,
                     payment: data?.px_payment_type?.name,
-                    cardNo: data?.cardNo,
+                    cardNo: cardNo,
                     date: new Date(data?.createdAt),
                     customer: data?.px_customer?.name,
                     customerID: data?.customerID,
@@ -131,8 +141,8 @@ export const useAddEditMembership = (tag) => {
                     detail: [{
                         item: data?.px_membership_plan?.planName,
                         quantity: 1,
-                        rate: data?.px_membership_plan?.price,
-                        total: data?.px_membership_plan?.price
+                        rate: tempTotal,
+                        total: tempTotal
                     }],
                     phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
                     billTitle: loggedInUser.billTitle,
@@ -140,7 +150,9 @@ export const useAddEditMembership = (tag) => {
                     phoneNumber2: loggedInUser.phoneNumber2,
                     roleID: loggedInUser.roleID,
                     gstNo: loggedInUser?.gstNo,
-                    isShowGst: loggedInUser?.isShowGst
+                    isShowGst: loggedInUser?.isShowGst,
+                    cgst: cgst,
+                    sgst: sgst,
                 }
                 const branchData = {
                     title: billData.billTitle
@@ -161,6 +173,7 @@ export const useAddEditMembership = (tag) => {
                 showToast(message, false);
             }
         } catch (error) {
+            console.error(error);
             showToast(error.message, false);
         } finally {
             stopLoading()

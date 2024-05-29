@@ -150,11 +150,13 @@ export const useAddEditMembershipRedeem = (tag) => {
 
     const onSubmit = async (info) => {
         try {
+            // console.log(info);
             dispatch(startLoading());
             const payload = {
                 userID: loggedInUser?.id,
                 customerID: customer?.id,
                 membershipID: info?.membershipID?.id,
+                membershipPurchaseUserID: info?.membershipID?.userID,
                 staffID: info.staffID,
                 serviceID: info.serviceID,
                 billNo: info.billNo,
@@ -238,7 +240,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                     phoneNumber2: loggedInUser.phoneNumber2,
                     roleID: loggedInUser.roleID,
                     gstNo: loggedInUser?.gstNo,
-                    isShowGst: loggedInUser?.isShowGst
+                    isShowGst: false
                 }
                 const branchData = {
                     title: billData.billTitle
@@ -361,19 +363,19 @@ export const useAddEditMembershipRedeem = (tag) => {
         const filterData = [];
         let isMinutesZero = false;
         membership.forEach((item) => {
-            if(item.userID === loggedInUser.id) {
+            // if(item.userID === loggedInUser.id) {
                 if(item.minutes > 0) {
                     filterData.push(item);
                 } else {
                     isMinutesZero = true;
                 }
-            }
+            // }
             if(isMinutesZero) {
                 filterData.push(item);
             }
         })
         return filterData;
-    }, [loggedInUser, membership]);
+    }, [/*loggedInUser,*/ membership]);
 
     return {
         otp,

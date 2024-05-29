@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast, showTwoDecimalWithoutRound } from "../../../utils/helper";
 
 import {
   updateMembership,
@@ -124,9 +124,12 @@ const useMembershipPlanHooks = () => {
         startLoading()
         const { success, message, data } = await getMembershipById(id);
         if(success) {
+          const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(parseFloat((data?.px_membership_plan?.price / 118) * 100).toString()) : data?.px_membership_plan?.price;
+          const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0; 
+          const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0;
           const billData = {
-            subTotal: data?.px_membership_plan?.price,
-            total: data?.px_membership_plan?.price,
+            subTotal: tempTotal,
+            total: loggedInUser?.isShowGst ? parseFloat(tempTotal) + parseFloat(cgst) + parseFloat(sgst) : data?.px_membership_plan?.price,
             billNo: data?.billNo,
             payment: data?.px_payment_type?.name,
             cardNo: data?.cardNo,
@@ -137,8 +140,8 @@ const useMembershipPlanHooks = () => {
             detail: [{
               item: data?.px_membership_plan?.planName,
               quantity: 1,
-              rate: data?.px_membership_plan?.price,
-              total: data?.px_membership_plan?.price
+              rate: tempTotal,
+              total: tempTotal
             }],
             phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
             billTitle: loggedInUser.billTitle,
@@ -146,7 +149,9 @@ const useMembershipPlanHooks = () => {
             phoneNumber2: loggedInUser.phoneNumber2,
             roleID: loggedInUser.roleID,
             gstNo: loggedInUser?.gstNo,
-            isShowGst: loggedInUser?.isShowGst
+            isShowGst: loggedInUser?.isShowGst,
+            cgst: cgst,
+            sgst: sgst,
           }
           const branchData = {
             title: billData.billTitle
