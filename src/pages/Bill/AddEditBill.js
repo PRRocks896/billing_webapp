@@ -5,6 +5,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Grid from "@mui/material/Grid";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import RadioGroup from "@mui/material/RadioGroup";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -616,27 +619,66 @@ const AddEditBill = ({ tag }) => {
                     field: { onBlur, onChange, value },
                     fieldState: { error },
                   }) => (
-                    <Autocomplete
-                      disableClearable
-                      size="small"
-                      disablePortal
-                      id="paymentID"
-                      options={paymentTypeOptions}
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={(event, newValue) => [
-                        onChange(newValue),
-                        handlePaymentChange(newValue),
-                      ]}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Payment Type"
+                    // <Autocomplete
+                    //   disableClearable
+                    //   size="small"
+                    //   disablePortal
+                    //   id="paymentID"
+                    //   options={paymentTypeOptions}
+                    //   value={value}
+                    //   onBlur={onBlur}
+                    //   onChange={(event, newValue) => [
+                    //     onChange(newValue),
+                    //     handlePaymentChange(newValue),
+                    //   ]}
+                    //   renderInput={(params) => (
+                    //     <TextField
+                    //       {...params}
+                    //       label="Payment Type"
+                    //       error={!!error}
+                    //       helperText={error?.message}
+                    //     />
+                    //   )}
+                    // />
+                    <>
+                      <FormControl>
+                        <Typography variant="subtitle1" fontWeight={500} fontSize={16}>Payment Type:</Typography>
+                        <RadioGroup
+                          sx={{ display: 'block'}}
+                          name="radio-buttons-group"
+                          value={value}
+                          onChange={(e) => {
+                            onChange(e);
+                            handlePaymentChange(e.target.value)
+                          }}
+                          onBlur={onBlur}
                           error={!!error}
-                          helperText={error?.message}
-                        />
-                      )}
-                    />
+                        >
+                          {paymentTypeOptions.map((paymentType, ind) => (
+                            <FormControlLabel key={`payment_${ind}`}
+                            value={paymentType?.value}
+                            control={<Radio/>}
+                            label={paymentType?.label}
+                          />
+                          ))}
+                          {/* <FormControlLabel
+                            value="Working"
+                            control={<Radio/>}
+                            label="Working"
+                          />
+                          <FormControlLabel
+                            value="Long Holiday"
+                            control={<Radio/>}
+                            label="Long Holiday"
+                          />
+                          <FormControlLabel
+                            value="Left"
+                            control={<Radio/>}
+                            label="Left"
+                          /> */}
+                        </RadioGroup>
+                      </FormControl>
+                    </>
                   )}
                   rules={{
                     required: "Please Select Payment",
@@ -652,7 +694,7 @@ const AddEditBill = ({ tag }) => {
                   >
                     <TextField
                       type="text"
-                      label={getValues("paymentID")?.label}
+                      label={paymentTypeOptions.find((pym) => pym.value === parseInt(getValues("paymentID")))?.label}
                       size="small"
                       name="cardNo"
                       disabled

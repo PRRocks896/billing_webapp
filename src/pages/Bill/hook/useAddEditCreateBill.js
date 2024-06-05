@@ -71,7 +71,7 @@ export const useAddEditCreateBill = (tag) => {
       Phone: "",
       staffID: "",
       roomNo: "",
-      cardNo: "Cash",
+      cardNo: "",
       csgst: 0,
       sgst: 0,
       grandTotal: 0,
@@ -205,7 +205,8 @@ export const useAddEditCreateBill = (tag) => {
   }, [setPaymentOptionAndCard]);
 
   const handlePaymentChange = (value) => {
-    const { label } = value;
+    const selected = paymentTypeOptions.find((pym) => pym.value === parseInt(value));
+    const { label } = selected; //value;
     if (label?.toLowerCase() === "cash" || label?.toLowerCase() === "upi") {
       setValue("cardNo", label);
     } else {
@@ -289,11 +290,15 @@ export const useAddEditCreateBill = (tag) => {
   }, [service]);
 
   const isCardSelect = useMemo(() => {
-    const value = getValues("paymentID")?.label?.toLowerCase();
-    if (["cash", "upi"].includes(value)) {
-      return true;
+    const value = paymentTypeOptions.find((pym) => pym.value === parseInt(getValues("paymentID")))
+    if(value) {
+      if (["cash", "upi"].includes(value?.label?.toLowerCase())) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      return true;
     }
     // eslint-disable-next-line
   }, [watch("paymentID"), getValues]);
@@ -318,7 +323,7 @@ export const useAddEditCreateBill = (tag) => {
           staffID: data.staffID.value,
           customerID: data.customerID.value,
           detail: detailData,
-          paymentID: data.paymentID.value,
+          paymentID: parseInt(data.paymentID),
           grandTotal: data.grandTotal,
           phoneNumber: +data.customerID.label,
           roomNo: data.roomNo,
@@ -542,7 +547,7 @@ export const useAddEditCreateBill = (tag) => {
       total: getValues("grandTotal"),
       billNo: getValues("billNo"),
       payment: paymentType.find(
-        (row) => row.id === getValues("paymentID").value
+        (row) => row.id === parseInt(getValues("paymentID"))
       )?.name,
       cardNo: getValues("cardNo"),
       date: new Date(), //getValues("date"),
@@ -577,7 +582,7 @@ export const useAddEditCreateBill = (tag) => {
           staffID: getValues("staffID").value,
           customerID: getValues("customerID").value,
           detail: detailData,
-          paymentID: getValues("paymentID").value,
+          paymentID: getValues("paymentID"),
           cgst: getValues("csgst"),
           sgst: getValues("sgst"),
           grandTotal: getValues("grandTotal"),
@@ -591,7 +596,7 @@ export const useAddEditCreateBill = (tag) => {
             name: getValues("Phone"),
             phoneNumber: +getValues("customerID").label,
           },
-          px_payment_type: { name: getValues("paymentID").label },
+          // px_payment_type: { name: getValues("paymentID").label },
           px_staff: { name: getValues("staffID").label },
           referenceBy: getValues("referenceBy"),
           managerName: getValues('managerName')

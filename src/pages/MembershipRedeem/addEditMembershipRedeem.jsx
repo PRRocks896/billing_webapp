@@ -153,7 +153,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                             <TableCell>Bill No</TableCell>
                                             <TableCell>Plan Name</TableCell>
                                             <TableCell>Extra Hours</TableCell>
-                                            <TableCell>Total Minutes</TableCell>
+                                            <TableCell>Remaining Minutes</TableCell>
                                             <TableCell>Action</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -169,7 +169,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                                 <TableCell>{item?.px_user?.branchName}</TableCell>
                                                                 <TableCell>{item?.px_customer?.name}</TableCell>
                                                                 <TableCell>{item?.billNo}</TableCell>
-                                                                <TableCell>{item?.px_membership_plan?.planName}</TableCell>
+                                                                <TableCell>{item?.px_membership_plan?.planName} ({item?.px_membership_plan?.hours})</TableCell>
                                                                 <TableCell>{item?.extraHours}</TableCell>
                                                                 <TableCell>{item?.minutes}</TableCell>
                                                                 <TableCell>
@@ -195,7 +195,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                         <TableCell>{item?.px_user?.branchName}</TableCell>
                                                         <TableCell>{item?.px_customer?.name}</TableCell>
                                                         <TableCell>{item?.billNo}</TableCell>
-                                                        <TableCell>{item?.px_membership_plan?.planName}</TableCell>
+                                                        <TableCell>{item?.px_membership_plan?.planName} ({item?.px_membership_plan?.hours})</TableCell>
                                                         <TableCell>{item?.extraHours}</TableCell>
                                                         <TableCell>{item?.minutes}</TableCell>
                                                         <TableCell>
@@ -248,7 +248,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                             <TableCell>{item?.billNo}</TableCell>
                                                             <TableCell>{item?.px_service?.name}</TableCell>
                                                             <TableCell>{item?.minutes}</TableCell>
-                                                            <TableCell>{item?.px_staff?.name}</TableCell>
+                                                            <TableCell>{item?.px_staff?.nickName}</TableCell>
                                                             <TableCell>{item?.managerName}</TableCell>
                                                         </TableRow>
                                                     ))}

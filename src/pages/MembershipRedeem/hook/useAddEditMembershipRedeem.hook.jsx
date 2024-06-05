@@ -202,6 +202,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                 setMembership([]);
                 setVerifiedOtp(false);
                 setMembershipRedeemList([]);
+                setValue('billNo', loginUserResponse.data.latestBillNo);
             } else {
                 showToast(message, false);
             }

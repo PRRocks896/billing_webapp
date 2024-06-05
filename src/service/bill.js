@@ -8,6 +8,10 @@ import {
 } from "../utils/constant";
 import { attachId, get, post, put, remove } from "./webRequest";
 
+export const searchViaDashboard = async (where) => {
+  return await post(`${CREATE_BILL_API}/search-via-dashboard`, where);
+}
+
 export const getBillList = async (body) => {
   const response = await post(BILL_LIST_API, body);
   return response;
