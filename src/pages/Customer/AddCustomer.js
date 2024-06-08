@@ -38,7 +38,11 @@ const AddCustomer = ({ tag }) => {
                         size="small"
                         name="name"
                         value={value}
-                        onChange={(e) => onChange(e.target.value.toUpperCase())}
+                        onChange={(e) => {
+                          if(e.target.value.length < 15) {
+                            onChange(e.target.value.toUpperCase())
+                          }
+                        }}
                         onBlur={onBlur}
                         error={!!error}
                         helperText={error?.message}
