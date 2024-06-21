@@ -15,15 +15,16 @@ import FormHelpText from "@mui/material/FormHelperText";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+
+// import Typography from "@mui/material/Typography";
 
 import VerifyOtp from "../../components/VerifyOTPModel";
+import VerifyOtpMerchant from "../../components/VerifyOTPMerchantModel";
 
 import { useRenewPlan } from "./hook/useRenewPlan.hook";
 
 const RenewPlan = () => {
     const {
-        otp,
         control,
         isOtpSend,
         paymentType,
@@ -35,6 +36,7 @@ const RenewPlan = () => {
         membershipDetail,
         verifyCustomerMembership,
         openVerifyMembershipModal,
+        openVerifyMembershipByMerchantModal,
         setOtp,
         getOtp,
         onSubmit,
@@ -45,11 +47,12 @@ const RenewPlan = () => {
         setVerifiedOtp,
         handleVerifyMembership,
         handleSendOtpForMembership,
+        handleCancelVerifyPermission,
         setOpenVerifyMembershipModal,
     } = useRenewPlan();
     return (
         <>
-            <form onSubmit={handleSubmit(verifyCustomerMembership ? onSubmit : handleSendOtpForMembership)}>
+            <form onSubmit={handleSubmit(!isOtpSend ? getOtp : verifyCustomerMembership ? onSubmit : handleSendOtpForMembership)}>
                 <Card>
                     <CardContent>
                         <Grid container spacing={2}>
@@ -338,7 +341,7 @@ const RenewPlan = () => {
                                                     >
                                                         <FiMinusCircle/>
                                                     </span>
-                                                    {parseInt(value) > 0 && !verifiedOtp &&
+                                                    {/* {parseInt(value) > 0 && !verifiedOtp &&
                                                         <>
                                                             {isOtpSend ?
                                                                 <Box sx={{ display: 'grid', gridTemplateColumns: '3fr 3fr',  alignItems: 'center'}}>
@@ -369,7 +372,7 @@ const RenewPlan = () => {
                                                         <>
                                                             <Typography variant="subtitle1" sx={{ color: theme => theme.palette.success.main}}>Verified</Typography>
                                                         </>
-                                                    }
+                                                    } */}
                                                 </Box>
                                             )}
                                             rules={{
@@ -394,6 +397,13 @@ const RenewPlan = () => {
                     </CardActions>
                 </Card>
             </form>
+            <VerifyOtpMerchant
+                title="Verify Extra Hour Permission OTP"
+                isOpen={openVerifyMembershipByMerchantModal}
+                handleCancelVerifyPermission={handleCancelVerifyPermission}
+                handleEnterOtp={verifyOtp}
+                resendOtp={getOtp}
+            />
             <VerifyOtp
                 title="Verify Customer OTP"
                 isOpen={openVerifyMembershipModal}
