@@ -10,7 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
-import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import { FiEdit3, FiTrash2, FiEye } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useStaff } from "./hook/useStaff";
@@ -93,6 +93,14 @@ const Staff = () => {
                       {(rights.edit || rights.delete) && (
                         <TableCell width={50}>
                           <Box className="table-action-btn">
+                            <Button
+                              className="btn btn-primary"
+                              onClick={() =>
+                                navigate(`/view-staff/${row.id}`)
+                              }
+                            >
+                              <FiEye size={15}/>
+                            </Button>
                             {rights.edit && (
                               <Button
                                 className="btn btn-primary"

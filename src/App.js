@@ -63,6 +63,7 @@ import AddEditEmployeeType from "./pages/EmployeeType/addEditEmployeeType";
 import Salary from './pages/Salary';
 import AddEditSalary from './pages/Salary/addEditSalary';
 import LastDailyReportPending from './components/LastDailyReportPending';
+import ViewStaffDocument from './pages/Staff/viewDocument';
 
 const token = getAuthToken();
 
@@ -339,7 +340,17 @@ const App = () => {
             />
           ),
         },
-
+        {
+          path: 'view-staff/:id',
+          element: (
+            <ProtectedRoute
+              path="view-staff/:id"
+              Component={
+                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <ViewStaffDocument/> : <NoConnection/>
+              }
+            />
+          ),
+        },
         {
           path: "service-category",
           element: (

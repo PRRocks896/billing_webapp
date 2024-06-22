@@ -9,6 +9,7 @@ const ProtectedRoute = ({ path, Component }) => {
     // Split path and get only name
     const mainPath = path.split("/")[0];
     if (accessModules && accessModules.length > 0) {
+      
       return accessModules
         .map((res) => {
           // Check for View
@@ -26,6 +27,8 @@ const ProtectedRoute = ({ path, Component }) => {
               return true;
               // Check for Edit
             } else if (mainPath.includes("edit") && res.edit) {
+              return true;
+            } else if (mainPath.includes('view') && res.view) {
               return true;
             } else {
               return false;
