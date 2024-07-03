@@ -35,7 +35,6 @@ const AddEditMembershipRedeem = ({ tag }) => {
     const {
         staff,
         control,
-        membership,
         verifiedOtp,
         loggedInUser,
         isSubmitting,
@@ -55,7 +54,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
         setOpenVerifyMembershipModal,
         handleSendOtpFormMembershipRedeem,
     } = useAddEditMembershipRedeem(tag);
-
+    
     return (
         <>
             <form onSubmit={handleSubmit(verifiedOtp ? onSubmit : handleSendOtpFormMembershipRedeem)}>

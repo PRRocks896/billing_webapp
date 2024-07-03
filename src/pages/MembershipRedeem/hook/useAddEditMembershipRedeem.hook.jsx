@@ -367,6 +367,7 @@ export const useAddEditMembershipRedeem = (tag) => {
             // if(item.userID === loggedInUser.id) {
                 if(item.minutes > 0) {
                     filterData.push(item);
+                    isMinutesZero = false;
                 } else {
                     isMinutesZero = true;
                 }
