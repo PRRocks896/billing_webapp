@@ -30,6 +30,7 @@ import { Fade, Modal, Typography } from "@mui/material";
 import AddCustomer from "./AddCustomer";
 import AddStaff from "./AddStaff";
 import CustomerBillData from "../../components/CustomerBillData";
+import ViewDetail from "../../components/ViewDetailModal";
 
 const StyledTableCell = styled(TableCell)({
   padding: 0,
@@ -46,6 +47,9 @@ const AddEditBill = ({ tag }) => {
     staffOptions,
     serviceOptions,
     isShowGst,
+    isSelectedPayment,
+    isPrintBtn,
+    setIsPrintBtn,
     onSubmit,
     navigate,
     handleSubmit,
@@ -71,11 +75,14 @@ const AddEditBill = ({ tag }) => {
 
     isCustomerBillDataModalOpen,
     setIsCustomerBillDataModalOpen,
+
+    isViewDetailOpen,
+    toggleViewDetailOpen
   } = useAddEditCreateBill(tag);
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(toggleViewDetailOpen)}>
         <Box className="card">
           {/* bill no, payment type, customer, sales person selection */}
           <FormGroup className="form-field">
@@ -657,7 +664,7 @@ const AddEditBill = ({ tag }) => {
                           {paymentTypeOptions.map((paymentType, ind) => (
                             <FormControlLabel key={`payment_${ind}`}
                             value={paymentType?.value}
-                            control={<Radio/>}
+                            control={<Radio checked={isSelectedPayment === paymentType?.value}/>}
                             label={paymentType?.label}
                           />
                           ))}
@@ -818,8 +825,14 @@ const AddEditBill = ({ tag }) => {
           )} */}
           <Grid item xs={1.5}>
             <Button
+              type="submit"
               className="btn btn-tertiary"
-              onClick={handleSubmit(onSubmit)}
+              // onClick={handleSubmit(onSubmit)}
+              onClick={(e) => {
+                e.stopPropagation();
+                // toggleViewDetailOpen();
+                setIsPrintBtn(false);
+              }}
               disabled={isSubmitting}
             >
               <FiSave /> &nbsp; <p>Save</p>
@@ -838,21 +851,17 @@ const AddEditBill = ({ tag }) => {
             <Button
               type="submit"
               className="btn btn-tertiary"
-              onClick={handleSubmit(printHandler)}
+              onClick={(e) => {
+                e.stopPropagation();
+                // toggleViewDetailOpen();
+                setIsPrintBtn(true);
+              }}
+              // onClick={handleSubmit(printHandler)}
               disabled={isSubmitting}
             >
               <FiPrinter /> &nbsp; <p>Print</p>
             </Button>
           </Grid>
-          {/* <Grid item xs={1.5}>
-            <Button
-              size="large"
-              className="btn btn-tertiary"
-              sx={{ width: "max-content" }}
-            >
-              <FiPrinter /> &nbsp; <p>Re-Print</p>
-            </Button>
-          </Grid> */}
           <Grid item xs={1.5}>
             <Button
               onClick={() => navigate("/bill")}
@@ -862,6 +871,20 @@ const AddEditBill = ({ tag }) => {
             </Button>
           </Grid>
         </Grid>
+        {isViewDetailOpen && (
+          <ViewDetail
+            open={isViewDetailOpen}
+            handleClose={toggleViewDetailOpen}
+            detail={{
+              customer: `${getValues('Phone')} (${getValues('customerID')['label']})`,
+              service: getValues('detail')[0].serviceID['label'],
+              rate: getValues('detail')[0].rate,
+              manager: getValues('managerName'),
+            }}
+            handleOk={isPrintBtn ? handleSubmit(printHandler) : handleSubmit(onSubmit)}
+            okTitle={isPrintBtn ? 'Print' : 'Save'}
+          />
+        )}
       </form>
 
       <>

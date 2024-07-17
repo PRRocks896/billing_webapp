@@ -44,6 +44,8 @@ export const useAddEditCreateBill = (tag) => {
   const [isCustomerBillDataModalOpen, setIsCustomerBillDataModalOpen] =
     useState(false);
 
+  const [isViewDetailOpen, setIsViewDetailOpen] = useState(false);
+  const [isPrintBtn, setIsPrintBtn] = useState(false);
   // eslint-disable-next-line
   const [submitedBillData, setSubmitedBillData] = useState("");
 
@@ -61,7 +63,7 @@ export const useAddEditCreateBill = (tag) => {
     watch,
     // setError,
     clearErrors,
-    formState: {isSubmitting}
+    formState: {isSubmitting, isValid}
   } = useForm({
     defaultValues: {
       billNo: "",
@@ -152,6 +154,10 @@ export const useAddEditCreateBill = (tag) => {
     }
   }
 
+  const toggleViewDetailOpen = () => {
+    setIsViewDetailOpen(!isViewDetailOpen);
+  }
+
   const changeCustomerPhoneHandler = (selectedCus) => {
     setValue(
       "Phone",
@@ -195,7 +201,7 @@ export const useAddEditCreateBill = (tag) => {
       const initialValue = data.filter(
         (row) => row?.label?.toLowerCase() === "cash"
       );
-      setValue("paymentID", initialValue[0]);
+      // setValue("paymentID", initialValue[0]);
       setValue("cardNo", initialValue[0]?.label);
     }
   }, [paymentType, setValue, tag]);
@@ -203,6 +209,16 @@ export const useAddEditCreateBill = (tag) => {
   useEffect(() => {
     setPaymentOptionAndCard();
   }, [setPaymentOptionAndCard]);
+
+  const isSelectedPayment = useMemo(() => {
+    const detail = getValues('paymentID');
+    if(typeof detail === 'object') {
+      return detail?.value;
+    } else if(typeof detail === 'string') {
+      return parseInt(detail);
+    }
+    // eslint-disable-next-line
+  }, [watch('paymentID')]);
 
   const handlePaymentChange = (value) => {
     const selected = paymentTypeOptions.find((pym) => pym.value === parseInt(value));
@@ -528,6 +544,8 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const printHandler = async (info) => {
+    setIsViewDetailOpen(false);
+    setIsPrintBtn(false);
     if(!isSubmitting) {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
@@ -546,7 +564,7 @@ export const useAddEditCreateBill = (tag) => {
       subTotal: getValues(`detail.${0}.total`),
       total: getValues("grandTotal"),
       billNo: getValues("billNo"),
-      payment: paymentType.find(
+      payment: typeof getValues('paymentID') === 'object' ? getValues('paymentID')?.label : paymentType.find(
         (row) => row.id === parseInt(getValues("paymentID"))
       )?.name,
       cardNo: getValues("cardNo"),
@@ -631,7 +649,7 @@ export const useAddEditCreateBill = (tag) => {
           staffID: getValues("staffID").value,
           customerID: getValues("customerID").value,
           detail: detailData,
-          paymentID: getValues("paymentID").value,
+          paymentID: typeof getValues('paymentID') === 'object' ? getValues("paymentID").value : getValues('paymentID'),
           cgst: getValues("csgst"),
           sgst: getValues("sgst"),
           grandTotal: getValues("grandTotal"),
@@ -665,11 +683,15 @@ export const useAddEditCreateBill = (tag) => {
   return {
     control,
     fields,
+    isValid,
     isSubmitting,
     paymentTypeOptions,
     customersOptions,
     staffOptions,
     serviceOptions,
+    isSelectedPayment,
+    isPrintBtn,
+    setIsPrintBtn,
     reset,
     addRow,
     onSubmit,
@@ -695,6 +717,8 @@ export const useAddEditCreateBill = (tag) => {
     setQtyRateValuesHandler,
     printHandler,
     getValues,
+    toggleViewDetailOpen,
+    isViewDetailOpen,
     handlePaymentChange,
     isCardSelect,
     isShowGst: loggedInUser.isShowGst,
