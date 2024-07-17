@@ -701,7 +701,7 @@ const AddEditBill = ({ tag }) => {
                   >
                     <TextField
                       type="text"
-                      label={paymentTypeOptions.find((pym) => pym.value === parseInt(getValues("paymentID")))?.label}
+                      label={typeof getValues('paymentID') === 'object' ? getValues('paymentID')?.label : paymentTypeOptions.find((pym) => pym.value === parseInt(getValues("paymentID")))?.label}
                       size="small"
                       name="cardNo"
                       disabled
@@ -878,8 +878,10 @@ const AddEditBill = ({ tag }) => {
             detail={{
               customer: `${getValues('Phone')} (${getValues('customerID')['label']})`,
               service: getValues('detail')[0].serviceID['label'],
-              rate: getValues('detail')[0].rate,
               manager: getValues('managerName'),
+              staff: getValues('staffID')['label'],
+              payment: typeof getValues('paymentID') === 'object' ? getValues('paymentID')['label'] : paymentTypeOptions.map((paymentType) => paymentType.value === parseInt(getValues('paymentID'))),
+              rate: getValues('detail')[0].rate,
             }}
             handleOk={isPrintBtn ? handleSubmit(printHandler) : handleSubmit(onSubmit)}
             okTitle={isPrintBtn ? 'Print' : 'Save'}

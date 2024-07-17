@@ -339,7 +339,7 @@ export const useAddEditCreateBill = (tag) => {
           staffID: data.staffID.value,
           customerID: data.customerID.value,
           detail: detailData,
-          paymentID: parseInt(data.paymentID),
+          paymentID: typeof data.paymentID === 'object' ? data.paymentID?.value : parseInt(data.paymentID),
           grandTotal: data.grandTotal,
           phoneNumber: +data.customerID.label,
           roomNo: data.roomNo,

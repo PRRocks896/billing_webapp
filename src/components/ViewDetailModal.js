@@ -47,7 +47,7 @@ const ViewDetail = ({
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Typography variant="subtitle1" fontSize={18}>
+                                    <Typography variant="subtitle1" fontSize={18} fontWeight={['rate'].includes(field) ? 700 : 400}>
                                         {Object.values(detail)[index]}
                                     </Typography>
                                 </Grid>
