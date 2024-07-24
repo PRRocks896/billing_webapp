@@ -880,7 +880,7 @@ const AddEditBill = ({ tag }) => {
               service: getValues('detail')[0].serviceID['label'],
               manager: getValues('managerName'),
               staff: getValues('staffID')['label'],
-              payment: typeof getValues('paymentID') === 'object' ? getValues('paymentID')['label'] : paymentTypeOptions.map((paymentType) => paymentType.value === parseInt(getValues('paymentID'))),
+              payment: typeof getValues('paymentID') === 'object' ? getValues('paymentID')['label'] : paymentTypeOptions.find((paymentType) => paymentType.value === parseInt(getValues('paymentID')))?.label,
               rate: getValues('detail')[0].rate,
             }}
             handleOk={isPrintBtn ? handleSubmit(printHandler) : handleSubmit(onSubmit)}
