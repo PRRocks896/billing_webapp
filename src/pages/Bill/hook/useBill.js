@@ -36,6 +36,13 @@ export const useBill = () => {
     return billData;
   }, [billData]);
 
+  const isAdmin = useMemo(() => {
+    if(loggedInUser && loggedInUser.px_role && ['Admin', 'Super Admin'].includes(loggedInUser.px_role.name)) {
+        return true;
+    }
+    return false;
+  }, [loggedInUser]);
+
   // pagination end
 
   const rights = useMemo(() => {
@@ -191,6 +198,7 @@ export const useBill = () => {
   };
 
   return {
+    isAdmin,
     handlePrint,
     isDeleteModalOpen,
     setIsDeleteModalOpen,

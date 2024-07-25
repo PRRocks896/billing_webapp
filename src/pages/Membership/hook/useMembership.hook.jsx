@@ -32,6 +32,13 @@ const useMembershipPlanHooks = () => {
       setPage(newPage);
     };
 
+    const isAdmin = useMemo(() => {
+      if(loggedInUser && loggedInUser.px_role && ['Admin', 'Super Admin'].includes(loggedInUser.px_role.name)) {
+          return true;
+      }
+      return false;
+    }, [loggedInUser]);
+
     const rights = useMemo(() => {
       return rightsAccess(accessModules, pathname);
     }, [accessModules, pathname]);
@@ -186,6 +193,7 @@ const useMembershipPlanHooks = () => {
       page,
       count,
       rights,
+      isAdmin,
       visibleRows,
       isDeleteModalOpen,
       handlePrint,

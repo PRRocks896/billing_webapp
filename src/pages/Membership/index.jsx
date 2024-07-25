@@ -33,6 +33,7 @@ const MembershipPlan = () => {
         page,
         count,
         rights,
+        isAdmin,
         visibleRows,
         isDeleteModalOpen,
         handlePrint,
@@ -65,7 +66,9 @@ const MembershipPlan = () => {
                                 <TableCell>Bill No</TableCell>
                                 <TableCell>Branch Name</TableCell>
                                 <TableCell>Customer Name</TableCell>
-                                <TableCell>Phone No</TableCell>
+                                {isAdmin &&
+                                    <TableCell>Phone No</TableCell>
+                                }
                                 <TableCell>Plan</TableCell>
                                 <TableCell>Minutes</TableCell>
                                 <TableCell>Paid By</TableCell>
@@ -84,7 +87,9 @@ const MembershipPlan = () => {
                                             <TableCell align="left">{row.billNo}</TableCell>
                                             <TableCell align="left">{row?.px_user?.branchName}</TableCell>
                                             <TableCell align="left">{row?.px_customer?.name}</TableCell>
-                                            <TableCell align="left">{row?.px_customer?.phoneNumber}</TableCell>
+                                            {isAdmin &&
+                                                <TableCell align="left">{row?.px_customer?.phoneNumber}</TableCell>
+                                            }
                                             <TableCell align="left">{row?.px_membership_plan?.planName}</TableCell>
                                             <TableCell align="left">{row?.minutes}</TableCell>
                                             <TableCell align="left">{row?.px_payment_type?.name}</TableCell>

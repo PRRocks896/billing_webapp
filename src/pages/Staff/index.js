@@ -28,6 +28,7 @@ const switchStyles = {
 
 const Staff = () => {
   const {
+    isAdmin,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
@@ -63,7 +64,9 @@ const Staff = () => {
                 <TableCell>No</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Nick Name</TableCell>
-                <TableCell>Phone No.</TableCell>
+                {isAdmin &&
+                  <TableCell>Phone No.</TableCell>
+                }
                 <TableCell>Emp. Type</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
@@ -79,7 +82,9 @@ const Staff = () => {
                       <TableCell width={25}>{(index += 1)}</TableCell>
                       <TableCell width={200}>{row.name}</TableCell>
                       <TableCell width={125}>{row.nickName}</TableCell>
-                      <TableCell width={100}>{row.phoneNumber}</TableCell>
+                      {isAdmin &&
+                        <TableCell width={100}>{row.phoneNumber}</TableCell>
+                      }
                       <TableCell width={125}>{row.px_employee_type?.name}</TableCell>
                       {rights.edit && (
                         <TableCell width={50}>
@@ -93,14 +98,16 @@ const Staff = () => {
                       {(rights.edit || rights.delete) && (
                         <TableCell width={50}>
                           <Box className="table-action-btn">
-                            <Button
-                              className="btn btn-primary"
-                              onClick={() =>
-                                navigate(`/view-staff/${row.id}`)
-                              }
-                            >
-                              <FiEye size={15}/>
-                            </Button>
+                            {(rights.edit && rights.delete) && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={() =>
+                                  navigate(`/view-staff/${row.id}`)
+                                }
+                              >
+                                <FiEye size={15}/>
+                              </Button>
+                            )}
                             {rights.edit && (
                               <Button
                                 className="btn btn-primary"

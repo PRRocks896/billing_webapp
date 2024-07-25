@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const Bill = () => {
   const {
+    isAdmin,
     handlePrint,
     isDeleteModalOpen,
     handleChangeRowsPerPage,
@@ -82,7 +83,13 @@ const Bill = () => {
                         {moment(row?.createdAt).format('yyyy-MM-DD hh:mm A')}
                       </TableCell>
                       <TableCell align="left">
-                        {row?.px_customer?.name}<br/>{row?.px_customer?.phoneNumber}
+                        {row?.px_customer?.name}
+                        {isAdmin &&
+                          <>
+                            <br/>
+                            {row?.px_customer?.phoneNumber}
+                          </>
+                        }
                       </TableCell>
                       <TableCell align="left">{row?.px_staff?.nickName}</TableCell>
                       <TableCell align="left">

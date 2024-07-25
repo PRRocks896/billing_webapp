@@ -224,7 +224,7 @@ export const useAddEditMembership = (tag) => {
                     setValue('validity', data.validity);
                     setValue('managerName', data.managerName);
                     setValue('billNo', data.billNo);
-                    setValue('cardNo', data.cardNo);
+                    setValue('cardNo', data.billDetail && data.billDetail.cardNo ? data.billDetail.cardNo : null);
                     setCurrentDate(moment(data.createdAt).format('DD/MM/yyyy'))
                 } else {
                     showToast(message, false);
