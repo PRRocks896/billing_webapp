@@ -538,8 +538,10 @@ export const useAddEditCreateBill = (tag) => {
     if(printWindow.document) {
       printWindow.document.write(PrintContent(billData, branchData));
       printWindow.document.close();
-      printWindow.print();
-      printWindow.close();
+      printWindow.onload = () => {
+        printWindow.print();
+        printWindow.close();
+      };
     }
   };
 

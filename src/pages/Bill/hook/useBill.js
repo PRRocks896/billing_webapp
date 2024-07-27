@@ -157,8 +157,10 @@ export const useBill = () => {
     if(printWindow.document) {
       printWindow.document.write(PrintContent(billData, branchData, isShowSecond));
       printWindow.document.close();
-      printWindow.print();
-      printWindow.close();
+      printWindow.onload = () => {
+        printWindow.print();
+        printWindow.close();
+      };
     }
   };
 

@@ -167,8 +167,10 @@ export const useAddEditMembership = (tag) => {
                 const printWindow = window.open("", "_blank", "popup=yes");
                 printWindow.document.write(PrintContent(billData, branchData, false));
                 printWindow.document.close();
-                printWindow.print();
-                printWindow.close();
+                printWindow.onload = () => {
+                    printWindow.print();
+                    printWindow.close();
+                };
             } else {
                 showToast(message, false);
             }
