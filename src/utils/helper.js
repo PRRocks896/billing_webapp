@@ -3,12 +3,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const showTwoDecimalWithoutRound = (value) => {
-  return `${value?.split('.')[0]}.${value?.split('.')[1]?.slice(0, 2) || 0}`;
-}
+  return `${value?.split(".")[0]}.${value?.split(".")[1]?.slice(0, 2) || 0}`;
+};
 
 export const showTwoDecimal = (value) => {
   return (Math.round(parseFloat(value) * 100) / 100).toFixed(2);
-}
+};
 
 export const showToast = (Message, status) => {
   if (status) {
@@ -68,7 +68,13 @@ export const logoutHandler = () => {
   window.location.href = "/login";
 };
 
-export const listPayload = (page, where = {}, rows = 10, pagination = {}, descending = true) => {
+export const listPayload = (
+  page,
+  where = {},
+  rows = 10,
+  pagination = {},
+  descending = true
+) => {
   return {
     where: {
       isDeleted: false,
@@ -104,47 +110,127 @@ export const rightsAccess = (accessModules, pathname) => {
 };
 
 export const convertAmountToWords = (amount) => {
-  const singleDigits = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-  const teens = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
-  const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
-  const thousands = ["", "thousand", "lacs", "crores"];
+  const singleDigits = [
+    "",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+  ];
+  const teens = [
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
+  ];
+  const tens = [
+    "",
+    "",
+    "twenty",
+    "thirty",
+    "forty",
+    "fifty",
+    "sixty",
+    "seventy",
+    "eighty",
+    "ninety",
+  ];
+  const thousands = ["", "thousand", "lakh", "crore"];
+
+  function convertTwoDigits(num) {
+    if (num < 10) return singleDigits[num];
+    if (num < 20) return teens[num - 10];
+    let ten = Math.floor(num / 10);
+    let one = num % 10;
+    return tens[ten] + (one ? " " + singleDigits[one] : "");
+  }
 
   function convertThreeDigits(num) {
-      let result = "";
-      let hundred = Math.floor(num / 100);
-      num %= 100;
-      if (hundred > 0) {
-          result += singleDigits[hundred] + " hundred ";
+    let hundred = Math.floor(num / 100);
+    let remainder = num % 100;
+    let result = "";
+    if (hundred) {
+      result += singleDigits[hundred] + " hundred";
+      if (remainder) {
+        result += " and ";
       }
-      if (num === 0) return result.trim();
-      if (result !== "") result += "and ";
-      if (num < 10) {
-          result += singleDigits[num];
-      } else if (num < 20) {
-          result += teens[num - 10];
-      } else {
-          let ten = Math.floor(num / 10);
-          result += tens[ten];
-          let one = num % 10;
-          if (one > 0) {
-              result += " " + singleDigits[one];
-          }
-      }
-      return result.trim();
+    }
+    if (remainder) {
+      result += convertTwoDigits(remainder);
+    }
+    return result;
   }
 
   if (amount === 0) return "zero";
 
   let result = "";
+  let parts = [];
   let i = 0;
 
+  // Handle thousands separately
   while (amount > 0) {
-      if (amount % 1000 !== 0) {
-          result = convertThreeDigits(amount % 1000) + " " + thousands[i] + " " + result;
+    let part = amount % (i === 1 ? 100 : 1000);
+    if (part > 0) {
+      let partInWords = convertThreeDigits(part);
+      if (thousands[i]) {
+        partInWords += " " + thousands[i];
       }
-      amount = Math.floor(amount / 1000);
-      i++;
+      parts.unshift(partInWords);
+    }
+    amount = Math.floor(amount / (i === 1 ? 100 : 1000));
+    i++;
   }
 
-  return result.trim();
-}
+  result = parts.join(" ").trim();
+  return result;
+
+  // function convertThreeDigits(num) {
+  //     let result = "";
+  //     let hundred = Math.floor(num / 100);
+  //     num %= 100;
+  //     if (hundred > 0) {
+  //         result += singleDigits[hundred] + " hundred ";
+  //     }
+  //     if (num === 0) return result.trim();
+  //     if (result !== "") result += "and ";
+  //     if (num < 10) {
+  //         result += singleDigits[num];
+  //     } else if (num < 20) {
+  //         result += teens[num - 10];
+  //     } else {
+  //         let ten = Math.floor(num / 10);
+  //         result += tens[ten];
+  //         let one = num % 10;
+  //         if (one > 0) {
+  //             result += " " + singleDigits[one];
+  //         }
+  //     }
+  //     return result.trim();
+  // }
+
+  // if (amount === 0) return "zero";
+
+  // let result = "";
+  // let i = 0;
+
+  // while (amount > 0) {
+  //     if (amount % 1000 !== 0) {
+  //         result = convertThreeDigits(amount % 1000) + " " + thousands[i] + " " + result;
+  //     }
+  //     amount = Math.floor(amount / 1000);
+  //     i++;
+  // }
+
+  // return result.trim();
+};

@@ -136,10 +136,10 @@ const useMembershipPlanHooks = () => {
           const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0;
           const billData = {
             subTotal: tempTotal,
-            total: loggedInUser?.isShowGst ? parseFloat(tempTotal) + parseFloat(cgst) + parseFloat(sgst) : data?.px_membership_plan?.price,
+            total: data?.px_membership_plan?.price,
             billNo: data?.billNo,
             payment: data?.px_payment_type?.name,
-            cardNo: data?.cardNo,
+            cardNo: data?.billDetail?.cardNo,
             date: new Date(data?.createdAt),
             customer: data?.px_customer?.name,
             customerID: data?.customerID,

@@ -608,9 +608,7 @@ export const useAddEditCreateBill = (tag) => {
           grandTotal: getValues("grandTotal"),
           phoneNumber: getValues("customerID").label,
           roomNo: getValues("roomNo"),
-          cardNo: getValues("paymentID")?.label?.toLowerCase()?.includes("card")
-            ? getValues("cardNo")
-            : "",
+          cardNo: !isCardSelect ? getValues("cardNo") : "",
 
           px_customer: {
             name: getValues("Phone"),
@@ -657,11 +655,7 @@ export const useAddEditCreateBill = (tag) => {
           grandTotal: getValues("grandTotal"),
           roomNo: getValues("roomNo"),
           phoneNumber: getValues("customerID").label,
-          cardNo: getValues("paymentID")
-            ?.label?.toLowerCase()
-            ?.includes("card")
-            ? getValues("cardNo")
-            : "",
+          cardNo: !isCardSelect ? getValues("cardNo") : "",
           referenceBy: getValues("referenceBy"),
           managerName: getValues("managerName")
         };
