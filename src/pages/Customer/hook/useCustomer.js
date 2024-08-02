@@ -2,8 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { customerActions } from "../../../redux/customer";
 import { useDispatch, useSelector } from "react-redux";
-import { getCustomerList, updateCustomer, deleteCustomer } from "../../../service/customer";
+import { getCustomerList, updateCustomer, deleteCustomer, customerReport } from "../../../service/customer";
 import { useLocation } from "react-router";
+import { getUserList } from "../../../service/users";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useCustomer = () => {
@@ -16,6 +17,9 @@ export const useCustomer = () => {
 
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
 
   // pagination start
   const [page, setPage] = useState(0);
@@ -34,6 +38,32 @@ export const useCustomer = () => {
   const rights = useMemo(() => {
     return rightsAccess(accessModules, pathname);
   }, [accessModules, pathname]);
+
+  const isAdmin = useMemo(() => {
+    if(loggedInUser && loggedInUser.px_role && loggedInUser.px_role.name === 'Admin') {
+        return true;
+    }
+    return false;
+  }, [loggedInUser]);
+
+  const fetchBranch = async () => {
+    try {
+      const body = listPayload(0, {isActive: true, isDeleted: false}, 1000);
+
+      const response = await getUserList(body);
+      if (response?.statusCode === 200) {
+        const payload = response?.data?.rows;
+        const branchOption = payload.filter(item => item.roleID !== 1);
+        setBranchList([{id: null, branchName: 'All'}].concat(branchOption));
+        // setBranchList([{id: null, branchName: 'All'}].concat(branchOption));
+      } else if (response?.statusCode === 404) {
+        const payload = [];
+        setBranchList(payload);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  };
 
   //  fetch customer logic
   const fetchCustomerData = useCallback(
@@ -71,6 +101,8 @@ export const useCustomer = () => {
 
   useEffect(() => {
     fetchCustomerData();
+    fetchBranch();
+    // eslint-disable-next-line
   }, [fetchCustomerData]);
 
   const deleteBtnClickHandler = (id) => {
@@ -119,8 +151,27 @@ export const useCustomer = () => {
     }
   };
 
+  const downloadCustomer = async () => {
+    try {
+      if(selectedBranch.length) {
+        const body = {
+          branchIds: selectedBranch
+        }
+        await customerReport(body)
+      } else {
+        showToast('Select Branch', false);
+      }
+    } catch(error) {
+      showToast(error?.message, false);
+    }
+  }
+
   return {
+    branchList,
+    isAdmin,
     isDeleteModalOpen,
+    setSelectedBranch,
+    selectedBranch,
     setIsDeleteModalOpen,
     deleteHandler,
     deleteBtnClickHandler,
@@ -130,6 +181,7 @@ export const useCustomer = () => {
     handleChangePage,
     visibleRows,
     count,
+    downloadCustomer,
     rights,
   };
 };

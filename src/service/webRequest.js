@@ -125,7 +125,7 @@ export const getXlxsWithFile = async (url, data, fileName) => {
   });
 }
 
-export const getXlsx = async (url, data) => {
+export const getXlsx = async (url, data, fileNm = '') => {
   return axiosInstance.post(`${baseUrl}${url}`, data, {
     responseType: "blob", //Force to receive data in a Blob Format
     headers: {
@@ -135,11 +135,11 @@ export const getXlsx = async (url, data) => {
   }).then((response) => {
     //Create a Blob from the PDF Stream
     const { userID, startDate, endDate } = data;
-    let fileName = `Green day spa all branch sales report ${moment(startDate).format('DD-MM-yyyy')}_${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
+    let fileName = fileNm.length > 0 ? fileNm : `Green day spa all branch sales report ${moment(startDate).format('DD-MM-yyyy')}_${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     if(userID && userID.length === 1) {
-      fileName = `${userID[0].label === 'All' ? 'green day spa all branch' : userID[0].label} sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
+      fileName = fileNm.length > 0 ? fileNm : `${userID[0].label === 'All' ? 'green day spa all branch' : userID[0].label} sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     } else {
-      fileName = `Green day spa selected branch sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
+      fileName = fileNm.length > 0 ? fileNm : `Green day spa selected branch sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     }
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');

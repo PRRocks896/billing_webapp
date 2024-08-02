@@ -29,6 +29,7 @@ const switchStyles = {
 
 const User = () => {
   const {
+    isAdmin,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
@@ -66,6 +67,9 @@ const User = () => {
                 <TableCell>Branch</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
+                {isAdmin &&
+                  <TableCell>OTP</TableCell>
+                }
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
                   <TableCell>Action</TableCell>
@@ -85,7 +89,9 @@ const User = () => {
                       <TableCell align="left">{row.branchName}</TableCell>
                       <TableCell align="left">{row.email}</TableCell>
                       <TableCell align="left">{row.phoneNumber}</TableCell>
-
+                      {isAdmin &&
+                        <TableCell align="left">{row?.otp || 'N/A'}</TableCell>
+                      }
                       {rights.edit && (
                         <TableCell>
                           <Switch

@@ -1,6 +1,8 @@
 import React from "react";
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,6 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
@@ -27,6 +30,8 @@ const switchStyles = {
 
 const Customer = () => {
   const {
+    branchList,
+    isAdmin,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     deleteHandler,
@@ -38,12 +43,59 @@ const Customer = () => {
     visibleRows,
     count,
     rights,
+    setSelectedBranch,
+    downloadCustomer
   } = useCustomer();
   const navigate = useNavigate();
   let index = page * 10;
 
   return (
     <>
+      {isAdmin ?
+        <>
+        <Box className="card">
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <Autocomplete
+                freeSolo
+                fullWidth
+                size="small"
+                id="userID"
+                disablePortal
+                multiple
+                // isOptionEqualToValue={(option, value) => option?.id === value}
+                getOptionLabel={(option) => option.branchName ? option.branchName : ''}
+                options={branchList || []}
+                // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
+                onChange={(_event, value) => {
+                  if (value) {
+                    setSelectedBranch(value)
+                  } else {
+                    setSelectedBranch(null);
+                  }
+                }}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {option.branchName}
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Branch"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Button fullWidth className="btn btn-tertiary" onClick={downloadCustomer}>Export</Button>
+            </Grid>
+          </Grid>
+        </Box>
+        <br/>
+        </>
+        : null
+      }
       <TopBar
         btnTitle="Add Customer"
         inputName="customer"
@@ -61,6 +113,9 @@ const Customer = () => {
                 <TableCell>No</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Phone</TableCell>
+                {isAdmin &&
+                  <TableCell>OTP</TableCell>
+                }
                 <TableCell>DOB</TableCell>
                 <TableCell>Gender</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
@@ -77,6 +132,9 @@ const Customer = () => {
                       <TableCell align="left">{(index += 1)}</TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row.phoneNumber}</TableCell>
+                      {isAdmin &&
+                        <TableCell align="left">{row?.otp || 'N/A'}</TableCell>
+                      }
                       <TableCell align="left">{row.dob || 'N/A'}</TableCell>
                       <TableCell align="left">{row.gender}</TableCell>
                       {rights.edit && (

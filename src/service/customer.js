@@ -8,9 +8,14 @@ import {
   SENT_MEMBERHSIP_OTP,
   VERIFY_MEMBERSHIP_OTP,
   SEND_MEMBERHSIP_REDEEM_OTP,
-  VERIFY_MEMBERSHIP_REDEEM_OTP
+  VERIFY_MEMBERSHIP_REDEEM_OTP,
+  EXPORT_CUSTOMER
 } from "../utils/constant";
-import { attachId, post, put, remove, get } from "./webRequest";
+import { attachId, post, put, remove, get, getXlsx } from "./webRequest";
+
+export const customerReport = async (payload) => {
+  return await getXlsx(EXPORT_CUSTOMER, payload, 'Branch_Wise_Customer_List.xlsx');
+}
 
 export const verifyMembershipRedeemOtp = async (payload) => {
   return await post(VERIFY_MEMBERSHIP_REDEEM_OTP, payload);
