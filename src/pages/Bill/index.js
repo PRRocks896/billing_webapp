@@ -115,12 +115,14 @@ const Bill = () => {
                               <FiTrash2 size={15} />
                             </Button>
                           )}
-                          <Button
-                            className="btn btn-primary"
-                            onClick={() => handlePrint(row.id)}
-                          >
-                            <FiPrinter size={15} />
-                          </Button>
+                          {isAdmin &&
+                            <Button
+                              className="btn btn-primary"
+                              onClick={() => handlePrint(row.id)}
+                            >
+                              <FiPrinter size={15} />
+                            </Button>
+                          }
                         </Box>
                         {/* )} */}
                       </TableCell>

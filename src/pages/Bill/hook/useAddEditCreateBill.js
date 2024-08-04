@@ -534,7 +534,7 @@ export const useAddEditCreateBill = (tag) => {
       phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
     };
 
-    const printWindow = window.open("", "_blank", "popup=yes");
+    const printWindow = window.open("", "_blank", "popup=yes,menubar=no,toolbap=no");
     if(printWindow.document) {
       printWindow.document.write(PrintContent(billData, branchData));
       printWindow.document.close();

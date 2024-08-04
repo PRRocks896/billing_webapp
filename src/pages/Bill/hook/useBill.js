@@ -153,7 +153,7 @@ export const useBill = () => {
       phone1: billData.phoneNumber,
       phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
     };
-    const printWindow = window.open("", "_blank", "popup=yes");
+    const printWindow = window.open("", "_blank", "menubar=no,toolbar=no,resizable=yes,scrollbars=yes,status=no");
     if(printWindow.document) {
       printWindow.document.write(PrintContent(billData, branchData, isShowSecond));
       printWindow.document.close();

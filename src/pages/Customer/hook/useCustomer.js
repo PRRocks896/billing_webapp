@@ -153,6 +153,7 @@ export const useCustomer = () => {
 
   const downloadCustomer = async () => {
     try {
+      dispatch(startLoading());
       if(selectedBranch.length) {
         const body = {
           branchIds: selectedBranch
@@ -163,6 +164,8 @@ export const useCustomer = () => {
       }
     } catch(error) {
       showToast(error?.message, false);
+    } finally {
+      dispatch(stopLoading());
     }
   }
 

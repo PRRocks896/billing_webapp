@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef} from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,22 +10,37 @@ import Typography from "@mui/material/Typography";
 
 import { Controller } from "react-hook-form";
 import { useLogin } from "./hook/useLogin";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Edit from '@mui/icons-material/Edit';
 import { Link } from "react-router-dom";
 import Sidecover from "../../assets/images/login-sidecover.png";
 import SiteLogo from "../../assets/images/logo.png";
 
 const Login = () => {
-  const { control, handleSubmit, onSubmit } = useLogin();
+  const { 
+    control,
+    showOTP,
+    seconds,
+    canResend,
+    onSubmit,
+    resendOtp,
+    handleSubmit,
+    toggleShowOTP
+  } = useLogin();
 
-  const [showPassword, setShowPassword] = React.useState(false);
+  const otpInputRef = useRef(null);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  useEffect(() => {
+    if(showOTP) {
+      if(otpInputRef.current) {
+        otpInputRef.current.focus();
+      }
+    } else {
+      if(otpInputRef.current) {
+        otpInputRef.current.blur();
+      }
+    }
+    // eslint-disable-next-line
+  }, [showOTP])
 
   return (
     <Grid container className="login">
@@ -54,7 +69,168 @@ const Login = () => {
                 </Typography>
               </Box>
 
+              <Box sx={{display: "flex", flexDirection: "column", gap: "18px", width: "90%", justifyContent: "center", alignItems: "center" }} className="field-box">
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error }
+                  }) => (
+                    <FormControl size="small" fullWidth variant="standard" className="login-form-control">
+                      {showOTP ? (
+                        <TextField
+                          type="number"
+                          label="Phone Number"
+                          size="small"
+                          fullWidth
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                          disabled={showOTP}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={toggleShowOTP}
+                                  onMouseDown={(event) => {
+                                    event.preventDefault();
+                                  }}
+                                  edge="end"
+                                >
+                                  <Edit />
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                      ) : (
+                        <TextField
+                          type="number"
+                          label="Phone number"
+                          size="small"
+                          variant="outlined"
+                          fullWidth
+                          value={value}
+                          onChange={(e) => {
+                            if (e.target.value.length <= 10) {
+                              onChange(e.target.value);
+                            }
+                          }}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                          // InputLabelProps={{
+                          //   style: {
+                          //     color: theme.palette.primary.main
+                          //   }
+                          // }}
+                        />
+                      )}
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: 'Phone number is required',
+                    minLength: {
+                      value: 10,
+                      message: 'Please enter minimum 10 digit'
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: 'Please enter maximum 10 digit'
+                    },
+                    pattern: {
+                      value: /^\d{10}$/i,
+                      message: 'Please enter valid Phone Number'
+                    }
+                  }}
+                />
+                {showOTP ? (
+                  <Controller
+                    name="otp"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error }
+                    }) => (
+                      <FormControl size="small" className="login-form-control" fullWidth variant="standard">
+                        <TextField
+                          type="number"
+                          label="OTP"
+                          placeholder="Enter OTP"
+                          size="small"
+                          name="OTP"
+                          inputRef={otpInputRef}
+                          focused={true}
+                          value={value}
+                          onChange={(e) => {
+                            if (e.target.value.length <= 6) {
+                              onChange(e.target.value);
+                            }
+                          }}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      </FormControl>
+                    )}
+                    rules={{
+                      required: 'OTP required',
+                      minLength: {
+                        value: 6,
+                        message: 'Please enter minimum 6 digit'
+                      },
+                      maxLength: {
+                        value: 6,
+                        message: 'Please enter maximum 6 digit'
+                      },
+                      pattern: {
+                        value: /^\d{6}$/i,
+                        message: 'Please enter valid OTP'
+                      }
+                    }}
+                  />
+                ) : null}
+                {showOTP ? (
+                  <Box>
+                    {canResend ? (
+                      <Typography
+                        component={Link}
+                        onClick={resendOtp}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        Resend OTP
+                      </Typography>
+                    ) : (
+                      <Typography>
+                        did't not receive OTP Try after 00:{seconds}
+                      </Typography>
+                    )}
+                  </Box>
+                ) : null}
+                <br />
+              </Box>
+
               <Box
+                display="flex"
+                justifyContent="center"
+                width={"250px"}
+                className="login-action-box"
+              >
+                <Button
+                  type="submit"
+                  className="btn btn-tertiary"
+                  size="large"
+                  fullWidth
+                >
+                  {showOTP ? 'Verify OTP' : 'Get OTP'}
+                </Button>
+              </Box>
+
+              {/* <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -159,7 +335,7 @@ const Login = () => {
                 <Button type="submit" className="btn btn-tertiary">
                   Login
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
           </form>
         </Box>

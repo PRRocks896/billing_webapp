@@ -33,6 +33,13 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
             size: 150mm
           }
         }
+        body {
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          -o-user-select: none;
+        }
       </style>
     </head>
     <body>

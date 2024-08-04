@@ -9,15 +9,18 @@ import React, { useMemo, useState } from "react";
 import { FiChevronRight, FiLogOut, FiGrid, FiSquare, FiRepeat } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { logoutHandler } from "../utils/helper";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutHandler, showToast } from "../utils/helper";
+import { logout } from "../service/login";
+import { startLoading, stopLoading } from "../redux/loader";
 
 const Sidebar = () => {
   let panelNo = 3;
-  const { accessModules } = useSelector((state) => state.loggedInUser);
+  const { accessModules, id } = useSelector((state) => state.loggedInUser);
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   // sidebar menu accordion
   const [expanded, setExpanded] = useState(false);
@@ -65,9 +68,17 @@ const Sidebar = () => {
 
   const logoutClickHandler = async () => {
     try {
-      logoutHandler();
+      dispatch(startLoading());
+      const response = await logout({id: id});
+      if(response && response.success) {
+        logoutHandler();
+      } else {
+        showToast(response.message || response.messageCode, false);
+      }
     } catch (error) {
       // console.log(error);
+    } finally {
+      dispatch(stopLoading());
     }
   };
 

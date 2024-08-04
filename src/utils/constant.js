@@ -1,7 +1,9 @@
 // login apis
 export const LOGIN_API = "api/auth/login-via-email";
+export const LOGIN_API_VIA_PHONE = 'api/auth/login-via-phone';
 export const VERIFY_OTP = "api/auth/verify-otp";
 export const GET_LOGGED_IN_USER_API = "api/user/get";
+export const LOGOUT_API = 'api/auth/logout';
 
 // home apis
 export const FETCH_DASHBOARD_DETAILS_API = "api/dashboard";
