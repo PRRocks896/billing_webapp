@@ -1,4 +1,5 @@
 import moment from 'moment';
+import reviewImg from '../assets/images/review_image.png'
 import { showTwoDecimal, convertAmountToWords } from '../utils/helper';
 const { REACT_APP_CGST, REACT_APP_SGST } = process.env;
 
@@ -171,7 +172,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
               <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
           ${isShowSecondPage ?
-            `<div style="height: max-content; border: 0px solid black;">
+            `<div style="page-break-after: always; height: max-content; border: 0px solid black;">
               <table style="font-size: 20px;">
                 <tbody>
                   <tr>
@@ -210,7 +211,40 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
               </table>
             </div>`
           : ''}
+          ${branchData.reviewUrl ?
+          `<div style="margin-top: 12px;page-break-after: always; border: 0px solid black; min-height: max-content;">
+            <div style="text-align: center; margin: 0;">
+                <img width="175px" src="https://bill.myjilo.com/static/media/logo.356ee5c5b1f892c1675d.png" alt="logo"/>
+            </div>
+            <div style="margin-top: 32px;">
+                <p style="text-align: center; margin: 0;font-size: 20px;">
+                    Impressed with out Service?
+                </p>
+            </div>
+            <div id="qrcode" style="margin-top: 32px;display: flex;justify-content: center;;">
+            </div>
+            <p style="text-align: center; margin: 35px 35px 0 35px;font-size: 14px;">
+                Scan this qrcode and make our day by leaving us a 5 star Review
+            </p>
+            <div style="text-align: center; margin: 0;">
+                <img width="200px" src=${reviewImg} alt="logo"/>
+            </div>
+          </div>`
+          : ''}
       </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+      <script>
+        var qrcodeContainer = document.getElementById("qrcode");
+            
+        // Clear previous QR code if any
+        qrcodeContainer.innerHTML = "";
+
+        var qrcode = new QRCode(qrcodeContainer, {
+          text: '${branchData.reviewUrl}', 
+          width: 128,
+          height: 128
+        });  
+      </script>
     </body>
   </html>
   `;

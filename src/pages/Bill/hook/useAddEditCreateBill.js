@@ -532,6 +532,7 @@ export const useAddEditCreateBill = (tag) => {
         : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
       phone1: billData.phoneNumber,
       phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+      reviewUrl: billData.reviewUrl
     };
 
     const printWindow = window.open("", "_blank", "popup=yes,menubar=no,toolbap=no");
@@ -590,6 +591,7 @@ export const useAddEditCreateBill = (tag) => {
       isShowGst: loggedInUser.isShowGst,
       cgst: loggedInUser.isShowGst ? getValues('csgst') : 0,
       sgst: loggedInUser.isShowGst ? getValues('sgst') : 0,
+      reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
     };
 
     try {

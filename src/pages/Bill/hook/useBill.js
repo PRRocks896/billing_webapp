@@ -152,6 +152,7 @@ export const useBill = () => {
         : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
       phone1: billData.phoneNumber,
       phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+      reviewUrl: billData.reviewUrl
     };
     const printWindow = window.open("", "_blank", "menubar=no,toolbar=no,resizable=yes,scrollbars=yes,status=no");
     if(printWindow.document) {
@@ -192,6 +193,7 @@ export const useBill = () => {
         isShowGst: body?.px_user?.isShowGst,
         cgst: body?.px_user?.isShowGst ? body?.cgst : 0,
         sgst: body?.px_user?.isShowGst ? body?.sgst : 0,
+        reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
       };
       doPrint(billData, billData.detail[0]?.membershipPlan ? false : true);
     } else {

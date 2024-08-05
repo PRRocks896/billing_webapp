@@ -241,7 +241,8 @@ export const useAddEditMembershipRedeem = (tag) => {
                     phoneNumber2: loggedInUser.phoneNumber2,
                     roleID: loggedInUser.roleID,
                     gstNo: loggedInUser?.gstNo,
-                    isShowGst: false
+                    isShowGst: false,
+                    reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
                 }
                 const branchData = {
                     title: billData.billTitle
@@ -252,6 +253,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                         : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
                     phone1: billData.phoneNumber,
                     phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+                    reviewUrl: billData.reviewUrl
                 };
                 const printWindow = window.open("", "_blank", "popup=yes");
                 printWindow.document.write(PrintContent(billData, branchData));

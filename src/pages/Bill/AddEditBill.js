@@ -21,7 +21,6 @@ import moment from 'moment';
 import {
   FiPlusCircle,
   FiPrinter,
-  FiSave,
   FiXCircle,
   FiSearch,
 } from "react-icons/fi";
@@ -823,7 +822,7 @@ const AddEditBill = ({ tag }) => {
               </Button>
             </Grid>
           )} */}
-          <Grid item xs={1.5}>
+          {/* <Grid item xs={1.5}>
             <Button
               type="submit"
               className="btn btn-tertiary"
@@ -837,7 +836,7 @@ const AddEditBill = ({ tag }) => {
             >
               <FiSave /> &nbsp; <p>Save</p>
             </Button>
-          </Grid>
+          </Grid> */}
           {/* {tag === "edit" ? (
             ""
           ) : (

@@ -439,6 +439,38 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  control={control}
+                  name="reviewUrl"
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Review URL*"
+                        size="small"
+                        name="reviewUrl"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value);
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Review URL"
+                  }}
+                />
+              </Grid>
             </Grid>
             <Grid container spacing={2}>
               {isNotAdmin && (

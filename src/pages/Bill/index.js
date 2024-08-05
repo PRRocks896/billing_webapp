@@ -66,7 +66,9 @@ const Bill = () => {
                 <TableCell>Staff</TableCell>
                 <TableCell>Payment Type</TableCell>
                 <TableCell>Grand Total</TableCell>
-                <TableCell>Action</TableCell>
+                {isAdmin &&
+                  <TableCell>Action</TableCell>
+                }
               </TableRow>
             </TableHead>
             <TableBody>
@@ -96,6 +98,7 @@ const Bill = () => {
                         {row?.px_payment_type?.name}
                       </TableCell>
                       <TableCell align="left">{row?.grandTotal}</TableCell>
+                      {isAdmin &&
                       <TableCell>
                         {/* {(rights.edit || rights.delete) && ( */}
                         <Box className="table-action-btn">
@@ -125,7 +128,7 @@ const Bill = () => {
                           }
                         </Box>
                         {/* )} */}
-                      </TableCell>
+                      </TableCell>}
                     </TableRow>
                   );
                 })
