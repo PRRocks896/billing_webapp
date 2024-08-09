@@ -218,7 +218,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
             </div>
             <div style="margin-top: 32px;">
                 <p style="text-align: center; margin: 0;font-size: 20px;">
-                    Impressed with out Service?
+                    Impressed with our Service?
                 </p>
             </div>
             <div id="qrcode" style="margin-top: 32px;display: flex;justify-content: center;;">
