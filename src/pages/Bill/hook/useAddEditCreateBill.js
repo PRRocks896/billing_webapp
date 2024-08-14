@@ -523,33 +523,36 @@ export const useAddEditCreateBill = (tag) => {
   }, [tag, fetchEditBillData]);
 
   const print = (billData) => {
-    const branchData = {
-      title: billData.billTitle
-        ? billData.billTitle
-        : "green health spa and saloon",
-      address: billData.address
-        ? billData.address
-        : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
-      phone1: billData.phoneNumber,
-      phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
-      reviewUrl: billData.reviewUrl
-    };
-
-    const printWindow = window.open("", "_blank", "popup=yes,menubar=no,toolbap=no");
-    if(printWindow.document) {
-      printWindow.document.write(PrintContent(billData, branchData));
-      printWindow.document.close();
-      printWindow.onload = () => {
-        printWindow.print();
-        printWindow.close();
+    try {
+      const branchData = {
+        title: billData.billTitle
+          ? billData.billTitle
+          : "green health spa and saloon",
+        address: billData.address
+          ? billData.address
+          : "NO, 52 HUDA COLONY, MANIKONDA HYDERABAD, TELANGANA - 500089",
+        phone1: billData.phoneNumber,
+        phone2: billData.phoneNumber2 ? billData.phoneNumber2 : "",
+        reviewUrl: billData.reviewUrl
       };
+
+      const printWindow = window.open("", "_blank", "popup=yes,menubar=no,toolbap=no");
+      if(printWindow && printWindow.document) {
+        printWindow.document.write(PrintContent(billData, branchData));
+        printWindow.document.close();
+        printWindow.onload = () => {
+          printWindow.print();
+          printWindow.close();
+        };
+      }
+    } catch(err) {
+      showToast(err?.message, false);
     }
   };
 
   const printHandler = async (info) => {
     setIsViewDetailOpen(false);
     setIsPrintBtn(false);
-    if(!isSubmitting) {
     const detail = getValues("detail");
     const detailData = detail.map((item) => {
       return {
@@ -629,6 +632,7 @@ export const useAddEditCreateBill = (tag) => {
 
         if (response?.statusCode === 200) {
           showToast(response?.message, true);
+          print(billData);
           const { success, message, data} = await fetchLoggedInUserData();
           if (success) {
             const latestBillNo = data.latestBillNo;
@@ -641,7 +645,6 @@ export const useAddEditCreateBill = (tag) => {
           getNewBillNo();
           setSubmitedBillData(response.data);
           setPaymentOptionAndCard();
-          print(billData);
         } else {
           showToast(response?.message, false);
         }
@@ -674,7 +677,6 @@ export const useAddEditCreateBill = (tag) => {
       showToast(error?.message, false);
     } finally {
       dispatch(stopLoading());
-    }
     }
   };
 
