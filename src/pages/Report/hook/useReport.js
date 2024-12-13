@@ -84,7 +84,10 @@ export const useReport = () => {
       dispatch(startLoading());
 
       const body = {
-        userID: branch,
+        userID: user.roleID !== 1 ? [{
+          value: user.id,
+          label: user.lastName,
+        }] : branch,
         paymentID: selectedPayment,
         // userID: user.roleID !== 1 ? user.id : branch.value,
         startDate: moment(dateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),

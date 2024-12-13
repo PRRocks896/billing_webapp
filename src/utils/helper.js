@@ -194,43 +194,4 @@ export const convertAmountToWords = (amount) => {
 
   result = parts.join(" ").trim();
   return result;
-
-  // function convertThreeDigits(num) {
-  //     let result = "";
-  //     let hundred = Math.floor(num / 100);
-  //     num %= 100;
-  //     if (hundred > 0) {
-  //         result += singleDigits[hundred] + " hundred ";
-  //     }
-  //     if (num === 0) return result.trim();
-  //     if (result !== "") result += "and ";
-  //     if (num < 10) {
-  //         result += singleDigits[num];
-  //     } else if (num < 20) {
-  //         result += teens[num - 10];
-  //     } else {
-  //         let ten = Math.floor(num / 10);
-  //         result += tens[ten];
-  //         let one = num % 10;
-  //         if (one > 0) {
-  //             result += " " + singleDigits[one];
-  //         }
-  //     }
-  //     return result.trim();
-  // }
-
-  // if (amount === 0) return "zero";
-
-  // let result = "";
-  // let i = 0;
-
-  // while (amount > 0) {
-  //     if (amount % 1000 !== 0) {
-  //         result = convertThreeDigits(amount % 1000) + " " + thousands[i] + " " + result;
-  //     }
-  //     amount = Math.floor(amount / 1000);
-  //     i++;
-  // }
-
-  // return result.trim();
 };
