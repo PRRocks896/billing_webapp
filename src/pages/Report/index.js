@@ -8,7 +8,8 @@ const Report = () => {
   const {
     roleId,
     dateRange,
-    branchOptions,
+    // branchOptions,
+    companyOptions,
     paymentList,
     
     // branch,
@@ -33,14 +34,14 @@ const Report = () => {
                   freeSolo
                   size="small"
                   disablePortal
-                  multiple
-                  id="Branch"
-                  options={branchOptions || []}
+                  // multiple
+                  id="Comapny"
+                  options={companyOptions || []}
                   getOptionLabel={(option) => option.label}
                   // value={branch}
-                  onChange={(event, newValue) => handleBranchChange(newValue)}
+                  onChange={(_, newValue) => handleBranchChange(newValue)}
                   renderInput={(params) => (
-                    <TextField {...params} label="Branch" />
+                    <TextField {...params} label="Company" />
                   )}
                 />
               </>

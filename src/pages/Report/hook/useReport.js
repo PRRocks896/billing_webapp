@@ -1,28 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
 import { getReportList } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { getUserList } from "../../../service/users";
+import { getCompanyList } from "../../../service/company";
 import { getPaymentTypeList } from "../../../service/paymentType";
 
 export const useReport = () => {
   const dispatch = useDispatch();
   const [pdfData, setPdfData] = useState(null);
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const [branchOptions, setBranchOptions] = useState([]);
-  const [branch, setBranch] = useState([]);
+  // const [branchOptions, setBranchOptions] = useState([]);
+  // const [branch, setBranch] = useState([]);
+  const [company, setCompany] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState(null);
   const [paymentList, setPaymentList] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState([]);
   const user = useSelector((state) => state.loggedInUser);
+
+  const companyOptions = useMemo(() => {
+    const data = company.map((item) => {
+      return { value: item.id, label: item.companyName };
+    });
+    // setRoleOptions([...data]);
+    return data;
+  }, [company]);
 
   const handleDateChange = (value) => {
     setDateRange(value);
   };
   const handleBranchChange = (newValue) => {
-    setBranch(newValue);
+    setSelectedCompany(newValue);
   };
   const handlePaymentChange = (newValue) => {
     setSelectedPayment(newValue);
@@ -30,19 +40,20 @@ export const useReport = () => {
 
   const fetchBranch = async () => {
     try {
-      const body = listPayload(0, {}, 1000);
+      const body = listPayload(0, {isActive: true}, 1000);
 
-      const response = await getUserList(body);
+      const response = await getCompanyList(body);
       if (response?.statusCode === 200) {
         const payload = response?.data?.rows;
-        const branchOption = payload.filter(item => item.roleID !== 1).map((row) => ({
-          value: row.id,
-          label: row.branchName,
-        }));
-        setBranchOptions([{value: null, label: 'All'}].concat(branchOption));
+        setCompany(payload);
+        // const branchOption = payload.filter(item => item.roleID !== 1).map((row) => ({
+        //   value: row.id,
+        //   label: row.branchName,
+        // }));
+        // setBranchOptions([{value: null, label: 'All'}].concat(branchOption));
       } else if (response?.statusCode === 404) {
         const payload = [];
-        setBranchOptions(payload);
+        setCompany(payload);
       }
     } catch (error) {
       showToast(error?.message, false);
@@ -84,10 +95,11 @@ export const useReport = () => {
       dispatch(startLoading());
 
       const body = {
-        userID: user.roleID !== 1 ? [{
-          value: user.id,
-          label: user.lastName,
-        }] : branch,
+        // userID: user.roleID !== 1 ? [{
+        //   value: user.id,
+        //   label: user.lastName,
+        // }] : branch,
+        companyID: selectedCompany && selectedCompany?.value,
         paymentID: selectedPayment,
         // userID: user.roleID !== 1 ? user.id : branch.value,
         startDate: moment(dateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
@@ -107,11 +119,13 @@ export const useReport = () => {
   // }, [fetchReportDate]);
 
   return {
-    branch,
+    // branch,
     pdfData,
     dateRange,
     paymentList,
-    branchOptions,
+    // branchOptions,
+    selectedCompany,
+    companyOptions,
     roleId: user.roleID,
     fetchReportDate,
     handleDateChange,
