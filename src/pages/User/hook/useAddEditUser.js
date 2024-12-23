@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createUser, getUserById, updateUser } from "../../../service/users";
 import { getRolesList } from "../../../service/roles";
+import { getCompanyList } from "../../../service/company";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddEditUser = (tag) => {
@@ -18,11 +19,13 @@ export const useAddEditUser = (tag) => {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const [roles, setRoles] = useState([]);
+  const [company, setCompany] = useState([]);
   const [isNotAdmin, setIsNotAdmin] = useState(true);
 
   const { setValue, handleSubmit, control, watch } = useForm({
     defaultValues: {
       roleID: "",
+      companyID: "",
       firstName: "",
       lastName: "",
       branchName: "",
@@ -68,22 +71,37 @@ export const useAddEditUser = (tag) => {
     return data;
   }, [roles]);
 
+  const companyOptions = useMemo(() => {
+    const data = company.map((item) => {
+      return { value: item.id, label: item.companyName };
+    });
+    // setRoleOptions([...data]);
+    return data;
+  }, [company]);
+
   // get role list
   useEffect(() => {
     try {
-      const fetchRolesData = async () => {
+      const fetchDropDownData = async () => {
         const body = listPayload(0, { isActive: true }, 1000);
-        const response = await getRolesList(body);
+        const [roleResponse, companyResponse] = await Promise.all([getRolesList(body), getCompanyList(body)]);
 
-        if (response.statusCode === 200) {
-          const payload = response?.data?.rows;
+        if (roleResponse.statusCode === 200) {
+          const payload = roleResponse?.data?.rows;
           setRoles(payload);
-        } else if (response.statusCode === 404) {
+        } else if (roleResponse.statusCode === 404) {
           const payload = [];
           setRoles(payload);
         }
+        if(companyResponse.statusCode === 200){
+          const payload = companyResponse?.data?.rows;
+          setCompany(payload);
+        } else {
+          const payload = [];
+          setCompany(payload);
+        }
       };
-      fetchRolesData();
+      fetchDropDownData();
     } catch (error) {
       showToast(error.message, false);
     }
@@ -116,6 +134,7 @@ export const useAddEditUser = (tag) => {
       let payload;
       if (isNotAdmin) {
         payload = {
+          companyID: data.companyID.value,
           roleID: data.roleID.value,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -134,6 +153,7 @@ export const useAddEditUser = (tag) => {
         };
       } else {
         payload = {
+          companyID: data.companyID.value,
           roleID: data.roleID.value,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -199,12 +219,17 @@ export const useAddEditUser = (tag) => {
             value: response.data.roleID,
             label: response.data.px_role.name,
           };
+          const company = {
+            value: response.data.companyID,
+            label: response.data.px_company.companyName,
+          }
 
           setValue("firstName", response.data.firstName);
           setValue("lastName", response.data.lastName);
           setValue("userName", response.data.userName);
           setValue("branchName", response.data.branchName);
           setValue("roleID", role);
+          setValue("companyID", company);
           setValue("email", response.data.email);
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("gstNo", response.data.gstNo);
@@ -242,6 +267,8 @@ export const useAddEditUser = (tag) => {
     handleSubmit,
     onSubmit,
     cancelHandler,
+    companyOptions,
+    company: loggedInUser?.px_company?.companyName.toLowerCase(),
     role: loggedInUser?.px_role?.name.toLowerCase(),
     isNotAdmin,
 

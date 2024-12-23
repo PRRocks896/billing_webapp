@@ -17,6 +17,8 @@ import ChangePasswordModal from "../../components/ChangePasswordModal";
 const AddEditUser = ({ tag }) => {
   const {
     control,
+    company,
+    companyOptions,
     roleOptions,
     handleSubmit,
     onSubmit,
@@ -137,8 +139,41 @@ const AddEditUser = ({ tag }) => {
             <Grid container spacing={2}>
               <Grid item xs={4}>
                 <Controller
+                  name={`companyID`}
                   control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <>
+                      <Autocomplete
+                        freeSolo
+                        size="small"
+                        id="companyID"
+                        options={companyOptions}
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={(event, newValue) => onChange(newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Company"
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                    </>
+                  )}
+                  rules={{
+                    required: "Please Select Company",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
                   name={`roleID`}
+                  control={control}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
@@ -201,6 +236,8 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
+            </Grid>
+            <Grid container spacing={2}>
               {tag === "add" && (
                 <Grid item xs={4}>
                   <Controller
@@ -233,8 +270,6 @@ const AddEditUser = ({ tag }) => {
                   />
                 </Grid>
               )}
-            </Grid>
-            <Grid container spacing={2}>
               <Grid item xs={4}>
                 <Controller
                   name="email"
@@ -262,6 +297,144 @@ const AddEditUser = ({ tag }) => {
                   )}
                   rules={{
                     required: "Please Enter Email",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        type="number"
+                        label="Phone*"
+                        size="small"
+                        name="phoneNumber"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Phone",
+                    pattern: {
+                      value: /^\d{10}$/,
+                      message: "please enter at leats 10 digits.",
+                    },
+                  }}
+                />
+              </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+              {isNotAdmin && (
+                <Grid item xs={4}>
+                  <Controller
+                    name="phoneNumberSecond"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
+                        <TextField
+                          type="number"
+                          label="Phone 2*"
+                          size="small"
+                          name="phoneNumberSecond"
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      </FormControl>
+                    )}
+                    rules={{
+                      // required: "Please Enter Phone 2",
+                      pattern: {
+                        value: /^\d{10}$/,
+                        message: "please enter at leats 10 digits.",
+                      },
+                    }}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={4}>
+                <Controller
+                  name="feedbackUrl"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Feedback URL*"
+                        size="small"
+                        name="gst"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value);
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Feedback URL"
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name="reviewUrl"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Review URL*"
+                        size="small"
+                        name="reviewUrl"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value);
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Review URL"
                   }}
                 />
               </Grid>
@@ -335,144 +508,6 @@ const AddEditUser = ({ tag }) => {
               )}
             </Grid>
             <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        type="number"
-                        label="Phone*"
-                        size="small"
-                        name="phoneNumber"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    </FormControl>
-                  )}
-                  rules={{
-                    required: "Please Enter Phone",
-                    pattern: {
-                      value: /^\d{10}$/,
-                      message: "please enter at leats 10 digits.",
-                    },
-                  }}
-                />
-              </Grid>
-              {isNotAdmin && (
-                <Grid item xs={4}>
-                  <Controller
-                    name="phoneNumberSecond"
-                    control={control}
-                    render={({
-                      field: { onBlur, onChange, value },
-                      fieldState: { error },
-                    }) => (
-                      <FormControl
-                        size="small"
-                        variant="standard"
-                        className="form-control"
-                      >
-                        <TextField
-                          type="number"
-                          label="Phone 2*"
-                          size="small"
-                          name="phoneNumberSecond"
-                          value={value}
-                          onChange={onChange}
-                          onBlur={onBlur}
-                          error={!!error}
-                          helperText={error?.message}
-                        />
-                      </FormControl>
-                    )}
-                    rules={{
-                      // required: "Please Enter Phone 2",
-                      pattern: {
-                        value: /^\d{10}$/,
-                        message: "please enter at leats 10 digits.",
-                      },
-                    }}
-                  />
-                </Grid>
-              )}
-              <Grid item xs={4}>
-                <Controller
-                  control={control}
-                  name="feedbackUrl"
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Feedback URL*"
-                        size="small"
-                        name="gst"
-                        value={value}
-                        onChange={(e) => {
-                          onChange(e.target.value);
-                        }}
-                        onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    </FormControl>
-                  )}
-                  rules={{
-                    required: "Please Enter Feedback URL"
-                  }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Controller
-                  control={control}
-                  name="reviewUrl"
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Review URL*"
-                        size="small"
-                        name="reviewUrl"
-                        value={value}
-                        onChange={(e) => {
-                          onChange(e.target.value);
-                        }}
-                        onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    </FormControl>
-                  )}
-                  rules={{
-                    required: "Please Enter Review URL"
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
               {isNotAdmin && (
                 <Grid item xs={6}>
                   <Controller
@@ -511,8 +546,8 @@ const AddEditUser = ({ tag }) => {
               )}
               <Grid item xs={6}>
                 <Controller
-                  control={control}
                   name="gstNo"
+                  control={control}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
@@ -545,8 +580,8 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
                 <Controller
-                  control={control}
                   name="isShowGst"
+                  control={control}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },

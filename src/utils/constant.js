@@ -120,3 +120,5 @@ export const EXPENSE = 'api/expense';
 export const EMPLOYEETYPE = 'api/employee-type';
 
 export const SALARY = 'api/salary';
+
+export const COMPANY = "api/company";

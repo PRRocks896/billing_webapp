@@ -64,6 +64,8 @@ import Salary from './pages/Salary';
 import AddEditSalary from './pages/Salary/addEditSalary';
 import LastDailyReportPending from './components/LastDailyReportPending';
 import ViewStaffDocument from './pages/Staff/viewDocument';
+import Company from "./pages/Company";
+import AddEditCompany from "./pages/Company/AddEditCompany";
 
 const token = getAuthToken();
 
@@ -96,6 +98,33 @@ const App = () => {
             <ProtectedRoute
               path="renew-plan/:membershipID/:customerID"
               Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <RenewPlan /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'company',
+          element: (
+            <ProtectedRoute
+              path="company"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Company/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-company',
+          element: (
+            <ProtectedRoute
+              path="add-company"
+              Component={isOnline ? <AddEditCompany tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-company/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-company"
+              Component={isOnline ? <AddEditCompany tag="edit" /> : <NoConnection/>}
             />
           )
         },
