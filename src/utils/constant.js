@@ -122,3 +122,5 @@ export const EMPLOYEETYPE = 'api/employee-type';
 export const SALARY = 'api/salary';
 
 export const COMPANY = "api/company";
+
+export const ROOM = "api/room";

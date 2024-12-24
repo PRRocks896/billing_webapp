@@ -15,6 +15,7 @@ import { getMembershipList } from "../../../service/membership";
 import { getCustomerList, sendMembershipRedeemOtp, verifyMembershipRedeemOtp } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
+import { getRoomList } from "../../../service/room";
 
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { loggedInUserAction } from "../../../redux/loggedInUser";
@@ -29,6 +30,7 @@ export const useAddEditMembershipRedeem = (tag) => {
     const [otp, setOtp] = useState(null);
 
     const [staff, setStaff] = useState([]);
+    const [room, setRoom] = useState([]);
     const [service, setService] = useState([]);
     const [customer, setCustomer] = useState(null);
     const [membership, setMembership] = useState([]);
@@ -40,10 +42,10 @@ export const useAddEditMembershipRedeem = (tag) => {
     const { setValue, control, handleSubmit, watch, getValues, reset, formState: { isSubmitting } } = useForm({
         defaultValues: {
             userID: loggedInUser.id,
+            roomID: "",
             customerID: "",
             membershipID: "",
             staffID: "",
-            roomNo: "",
             serviceID: "",
             serviceName: "",
             billNo: localStorage.getItem('latestBillNo'),
@@ -154,6 +156,7 @@ export const useAddEditMembershipRedeem = (tag) => {
             dispatch(startLoading());
             const payload = {
                 userID: loggedInUser?.id,
+                roomID: info.roomID,
                 customerID: customer?.id,
                 membershipID: info?.membershipID?.id,
                 membershipPurchaseUserID: info?.membershipID?.userID,
@@ -337,10 +340,12 @@ export const useAddEditMembershipRedeem = (tag) => {
             const payload = listPayload(0, whereCondition, 100000);
             const [
                 staffResponse,
-                serviceResponse
+                serviceResponse,
+                roomResponse,
             ] = await Promise.all([
-                getStaffList(listPayload(0, loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? {...whereCondition, searchText: "THERAPIST"} : { ...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id }, 100000)),
+                getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase())  ? {...whereCondition, searchText: "THERAPIST"} : { ...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id }, 100000)),
                 getServiceList(payload),
+                getRoomList(payload),
             ]);
             if (staffResponse?.statusCode === 200 && staffResponse?.success) {
                 setStaff(staffResponse.data?.rows);
@@ -353,6 +358,11 @@ export const useAddEditMembershipRedeem = (tag) => {
                 setService(serviceResponse.data?.rows);
             } else {
                 setService([]);
+            }
+            if(roomResponse.success) {
+                setRoom(roomResponse.data?.rows);
+            } else {
+                setRoom([]);
             }
         };
         fetchDropDownList();
@@ -385,6 +395,7 @@ export const useAddEditMembershipRedeem = (tag) => {
 
     return {
         otp,
+        room,
         staff,
         control,
         service,

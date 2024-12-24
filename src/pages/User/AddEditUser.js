@@ -17,7 +17,6 @@ import ChangePasswordModal from "../../components/ChangePasswordModal";
 const AddEditUser = ({ tag }) => {
   const {
     control,
-    company,
     companyOptions,
     roleOptions,
     handleSubmit,

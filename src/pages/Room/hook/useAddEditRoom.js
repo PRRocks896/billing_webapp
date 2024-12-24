@@ -6,9 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
-import { createCompany, updateCompany, getCompanyById } from "../../../service/company";
+import { createRoom, getRoomById, updateRoom } from "../../../service/room";
 
-const useAddEditCompany = (tag) => {
+const useAddEditRoomHook = (tag) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -17,10 +17,7 @@ const useAddEditCompany = (tag) => {
 
     const { setValue, control, handleSubmit } = useForm({
         defaultValues: {
-            companyName: "",
-            displayName: "",
-            billCode: "",
-            cashBillCode: "",
+            roomName: "",
         },
         mode: "onBlur",
     });
@@ -30,12 +27,12 @@ const useAddEditCompany = (tag) => {
             const payload = { ...data };
             const response =
                 tag === "add"
-                    ? await createCompany({ ...payload, createdBy: loggedInUser.id })
-                    : await updateCompany({ ...payload, updatedBy: loggedInUser.id }, id);
+                    ? await createRoom({ ...payload, userID: loggedInUser.id, createdBy: loggedInUser.id })
+                    : await updateRoom({ ...payload, userID: loggedInUser.id, updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
-                navigate("/company");
+                navigate("/room");
             } else {
                 showToast(response?.messageCode, false);
             }
@@ -46,16 +43,13 @@ const useAddEditCompany = (tag) => {
         }
     };
 
-    const fetchEditCompanyData = useCallback(async () => {
+    const fetchEditRoomData = useCallback(async () => {
         try {
             if (id) {
                 dispatch(startLoading());
-                const response = await getCompanyById(id);
+                const response = await getRoomById(id);
                 if (response?.statusCode === 200) {
-                    setValue("companyName", response.data.companyName);
-                    setValue("displayName", response.data.displayName);
-                    setValue("billCode", response.data.billCode);
-                    setValue("cashBillCode", response.data.cashBillCode);
+                    setValue("roomName", response.data.roomName);
                 } else {
                     showToast(response?.message, false);
                 }
@@ -68,20 +62,19 @@ const useAddEditCompany = (tag) => {
     }, [id, dispatch, setValue]);
 
     useEffect(() => {
-        tag === "edit" && fetchEditCompanyData();
-    }, [tag, fetchEditCompanyData]);
+        tag === "edit" && fetchEditRoomData();
+    }, [tag, fetchEditRoomData]);
 
     const cancelHandler = () => {
-        navigate("/company");
+        navigate("/room");
     };
 
     return {
         control,
-        handleSubmit,
         onSubmit,
+        handleSubmit,
         cancelHandler,
     };
 };
 
-
-export default useAddEditCompany;
+export default useAddEditRoomHook;

@@ -66,6 +66,8 @@ import LastDailyReportPending from './components/LastDailyReportPending';
 import ViewStaffDocument from './pages/Staff/viewDocument';
 import Company from "./pages/Company";
 import AddEditCompany from "./pages/Company/AddEditCompany";
+import Room from "./pages/Room";
+import AddEditRoom from "./pages/Room/AddEditRoom";
 
 const token = getAuthToken();
 
@@ -98,6 +100,33 @@ const App = () => {
             <ProtectedRoute
               path="renew-plan/:membershipID/:customerID"
               Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <RenewPlan /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'room',
+          element: (
+            <ProtectedRoute
+              path="room"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Room /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-room',
+          element: (
+            <ProtectedRoute
+              path="add-room"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditRoom tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-room/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-room/:id"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditRoom tag="edit" /> : <NoConnection/>}
             />
           )
         },

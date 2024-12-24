@@ -33,6 +33,7 @@ import { useAddEditMembershipRedeem } from "./hook/useAddEditMembershipRedeem.ho
 const AddEditMembershipRedeem = ({ tag }) => {
     const navigate = useNavigate();
     const {
+        room,
         staff,
         control,
         verifiedOtp,
@@ -349,28 +350,56 @@ const AddEditMembershipRedeem = ({ tag }) => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={4}>
                                     <Controller
-                                        name="roomNo"
+                                        name="roomID"
                                         control={control}
                                         render={({
                                             field: { onBlur, onChange, value },
                                             fieldState: { error },
                                         }) => (
-                                            <FormControl
+                                            <Autocomplete
                                                 size="small"
-                                                variant="standard"
-                                                className="form-control"
-                                            >
-                                                <TextField
-                                                    label="Room No*"
-                                                    size="small"
-                                                    name="roomNo"
-                                                    value={value}
-                                                    onChange={(e) => onChange(e.target.value.toUpperCase())}
-                                                    onBlur={onBlur}
-                                                    error={!!error}
-                                                    helperText={error?.message}
-                                                />
-                                            </FormControl>
+                                                freeSolo
+                                                id="roomID"
+                                                isOptionEqualToValue={(option, value) =>
+                                                    option?.id === value?.id
+                                                }
+                                                getOptionLabel={(option) => option?.name ?? ''}
+                                                options={room || []}
+                                                value={room?.find((option) => option.id === value) ?? ''}
+                                                onBlur={onBlur}
+                                                onChange={(_event, newValue) => onChange(newValue?.id)}
+                                                renderOption={(props, option) => {
+                                                    return (
+                                                        <li {...props} key={option.id}>
+                                                            {option.roomName}
+                                                        </li>
+                                                    );
+                                                }}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Room*"
+                                                        error={!!error}
+                                                        helperText={error?.message}
+                                                    />
+                                                )}
+                                            />
+                                            // <FormControl
+                                            //     size="small"
+                                            //     variant="standard"
+                                            //     className="form-control"
+                                            // >
+                                            //     <TextField
+                                            //         label="Room No*"
+                                            //         size="small"
+                                            //         name="roomNo"
+                                            //         value={value}
+                                            //         onChange={(e) => onChange(e.target.value.toUpperCase())}
+                                            //         onBlur={onBlur}
+                                            //         error={!!error}
+                                            //         helperText={error?.message}
+                                            //     />
+                                            // </FormControl>
                                         )}
                                         rules={{
                                             required: "Please enter Room No",
@@ -378,6 +407,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                     />
                                 </Grid>
                             </Grid>
+                            <br/>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={4}>
                                     <Controller
