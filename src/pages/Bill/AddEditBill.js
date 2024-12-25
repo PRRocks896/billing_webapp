@@ -45,6 +45,7 @@ const AddEditBill = ({ tag }) => {
     customersOptions,
     staffOptions,
     serviceOptions,
+    roomOptions,
     isShowGst,
     isSelectedPayment,
     isPrintBtn,
@@ -86,7 +87,7 @@ const AddEditBill = ({ tag }) => {
           {/* bill no, payment type, customer, sales person selection */}
           <FormGroup className="form-field">
             <Grid container spacing={2}>
-              <Grid item xs={12} md={4} sm={6}>
+              {/* <Grid item xs={12} md={4} sm={6}>
                 <Controller
                   name="billNo"
                   control={control}
@@ -111,33 +112,9 @@ const AddEditBill = ({ tag }) => {
                     </FormControl>
                   )}
                 />
-              </Grid>
-
-              <Grid item xs={12} md={4} sm={6}>
-                <Controller
-                  name="date"
-                  control={control}
-                  render={({
-                    field: { value },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        disabled
-                        label="Date"
-                        size="small"
-                        name="date"
-                        value={moment(value).format('DD/MM/yyyy')}
-                        />
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
+              </Grid> */}
+            {/* </Grid>
+            <Grid container spacing={2}> */}
               {/* --------------------------------------------------- */}
               <Grid item xs={12} md={4} sm={6}>
                 <Controller
@@ -233,6 +210,29 @@ const AddEditBill = ({ tag }) => {
                         onChange={onChange}
                         onBlur={onBlur}
                       />
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={4} sm={6}>
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({
+                    field: { value },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        disabled
+                        label="Date"
+                        size="small"
+                        name="date"
+                        value={moment(value).format('DD/MM/yyyy')}
+                        />
                     </FormControl>
                   )}
                 />
@@ -533,28 +533,45 @@ const AddEditBill = ({ tag }) => {
             <Grid container spacing={2}>
               <Grid item xs={12} md={3} sm={6}>
                 <Controller
-                  name="roomNo"
+                  name="roomID"
                   control={control}
                   render={({
                     field: { onBlur, onChange, value },
                     fieldState: { error },
                   }) => (
-                    <FormControl
+                    <Autocomplete
                       size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        label="Room No*"
-                        size="small"
-                        name="roomNo"
-                        value={value}
-                        onChange={(e) => onChange(e.target.value.toUpperCase())}
-                        onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    </FormControl>
+                      disablePortal
+                      id="roomID"
+                      options={roomOptions}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={(event, newValue) => onChange(newValue)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Room No"
+                          error={!!error}
+                          helperText={error?.message}
+                        />
+                      )}
+                    />
+                    // <FormControl
+                    //   size="small"
+                    //   variant="standard"
+                    //   className="form-control"
+                    // >
+                    //   <TextField
+                    //     label="Room No*"
+                    //     size="small"
+                    //     name="roomNo"
+                    //     value={value}
+                    //     onChange={(e) => onChange(e.target.value.toUpperCase())}
+                    //     onBlur={onBlur}
+                    //     error={!!error}
+                    //     helperText={error?.message}
+                    //   />
+                    // </FormControl>
                   )}
                   rules={{
                     required: "Please enter Room No",

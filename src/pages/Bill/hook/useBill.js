@@ -58,7 +58,7 @@ export const useBill = () => {
           isDeleted: false,
           searchText: searchValue,
         };
-        if (userRole !== "admin") {
+        if (!isAdmin) {
           whereCondition = {
             ...whereCondition,
             userID: loggedInUser.id,
@@ -88,9 +88,8 @@ export const useBill = () => {
       } finally {
         dispatch(stopLoading());
       }
-    },
-    [dispatch, page, userRole, loggedInUser.id, rowsPerPage]
-  );
+      // eslint-disable-next-line
+    }, [dispatch, page, userRole, isAdmin, rowsPerPage]);
 
   // search bill
   const searchBillHandler = async (payload) => {
@@ -180,7 +179,7 @@ export const useBill = () => {
         customerID: body?.customerID,
         phone: body?.px_customer?.phoneNumber,
         staff: body?.px_staff?.nickName,
-        roomNo: body?.roomNo,
+        roomNo: body?.px_room?.roomName || body?.roomNo,
         detail: body?.detail?.map((row) => {
           return { ...row, item: row.serviceID ? row.service?.name : row.membershipPlan?.planName };
         }),

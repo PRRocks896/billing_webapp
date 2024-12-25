@@ -7,6 +7,7 @@ import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
 import { getStaffList } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
+import { getRoomList } from "../../../service/room";
 import { fetchLoggedInUserData } from "../../../service/loggedInUser";
 import { listPayload, showToast, showTwoDecimal, showTwoDecimalWithoutRound } from "../../../utils/helper";
 import { getBillById, updateBill, createBill } from "../../../service/bill";
@@ -37,6 +38,9 @@ export const useAddEditCreateBill = (tag) => {
   const [serviceOptions, setServiceOptions] = useState([]);
   const [service, setService] = useState([]);
 
+  const [roomOptions, setRoomOptions] = useState([]);
+  const [room, setRoom] = useState([]);
+
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [isStaffModalOpen, setIsStaffModalOpen] = useState(false);
@@ -66,13 +70,14 @@ export const useAddEditCreateBill = (tag) => {
     formState: {isSubmitting, isValid}
   } = useForm({
     defaultValues: {
-      billNo: "",
+      // billNo: "",
       paymentID: "",
       date: new Date(),
       customerID: "",
       Phone: "",
       staffID: "",
-      roomNo: "",
+      // roomNo: "",
+      roomID: "",
       cardNo: "",
       csgst: 0,
       sgst: 0,
@@ -245,10 +250,12 @@ export const useAddEditCreateBill = (tag) => {
         staffResponse,
         serviceResponse,
         paymentResponse,
+        roomResponse
       ] = await Promise.all([
         getStaffList(listPayload(0, loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? {...whereCondition, searchText: "THERAPIST"} : {...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id}, 100000)),
         getServiceList(payload),
-        getPaymentTypeList(payload)
+        getPaymentTypeList(payload),
+        getRoomList(payload)
       ]);
       if(staffResponse?.statusCode === 200 && staffResponse?.success) {
         setStaff(staffResponse.data?.rows);
@@ -264,6 +271,11 @@ export const useAddEditCreateBill = (tag) => {
         setPaymentType(paymentResponse.data?.rows);
       } else {
         setPaymentType([]);
+      }
+      if(roomResponse?.statusCode === 200 && roomResponse?.success) {
+        setRoom(roomResponse.data?.rows);
+      } else {
+        setRoom([]);
       }
     }
     fetchDropDownList();
@@ -305,6 +317,14 @@ export const useAddEditCreateBill = (tag) => {
     setServiceOptions([...data]);
   }, [service]);
 
+  // genrate room options for drop down
+  useEffect(() => {
+    const data = room.map((item) => {
+      return { value: item.id, label: item.roomName };
+    });
+    setRoomOptions([...data]);
+  }, [room]);
+
   const isCardSelect = useMemo(() => {
     const value = paymentTypeOptions.find((pym) => pym.value === parseInt(getValues("paymentID")))
     if(value) {
@@ -338,6 +358,7 @@ export const useAddEditCreateBill = (tag) => {
           // billNo: getValues("billNo"),
           staffID: data.staffID.value,
           customerID: data.customerID.value,
+          roomID: data.roomID,
           detail: detailData,
           paymentID: typeof data.paymentID === 'object' ? data.paymentID?.value : parseInt(data.paymentID),
           grandTotal: data.grandTotal,
@@ -364,17 +385,17 @@ export const useAddEditCreateBill = (tag) => {
         if (response.statusCode === 200) {
           showToast(response.message, true);
           if (tag === "add") {
-            const { success, message, data} = await fetchLoggedInUserData();
-            if (success) {
-              const latestBillNo = data.latestBillNo;
-              localStorage.setItem('latestBillNo', latestBillNo);
-            } else {
-              showToast(message, false);
-            }
+            // const { success, message, data} = await fetchLoggedInUserData();
+            // if (success) {
+            //   const latestBillNo = data.latestBillNo;
+            //   localStorage.setItem('latestBillNo', latestBillNo);
+            // } else {
+            //   showToast(message, false);
+            // }
             reset();
             setValue('date', new Date());
-            getNewBillNo();
-            setSubmitedBillData(response.data);
+            // getNewBillNo();
+            // setSubmitedBillData(response.data);
             setPaymentOptionAndCard();
           } else {
             navigate("/bill");
@@ -582,7 +603,7 @@ export const useAddEditCreateBill = (tag) => {
         customerID: getValues("customerID").value,
         phone: getValues("customerID").label,
         staff: staff.find((row) => row.id === getValues("staffID").value)?.nickName,
-        roomNo: getValues("roomNo"),
+        roomNo: room.find((row) => row.id === getValues("roomID")?.value)?.roomName,
         detail: getValues("detail").map((row) => {
           return { ...row, item: row.serviceID.label };
         }),
@@ -613,7 +634,8 @@ export const useAddEditCreateBill = (tag) => {
             sgst: getValues("sgst"),
             grandTotal: getValues("grandTotal"),
             phoneNumber: getValues("customerID").label,
-            roomNo: getValues("roomNo"),
+            // roomNo: getValues("roomNo"),
+            roomID: getValues("roomID").value,
             cardNo: !isCardSelect ? getValues("cardNo") : "",
 
             px_customer: {
@@ -691,6 +713,7 @@ export const useAddEditCreateBill = (tag) => {
     customersOptions,
     staffOptions,
     serviceOptions,
+    roomOptions,
     isSelectedPayment,
     isPrintBtn,
     setIsPrintBtn,
