@@ -27,11 +27,29 @@ const useRoomHook = () => {
     const rights = useMemo(() => {
         return rightsAccess(accessModules, pathname);
     }, [accessModules, pathname]);
+
+    const isAdmin = useMemo(() => {
+        if(loggedInUser && loggedInUser.px_role && ['Admin', 'Super Admin'].includes(loggedInUser.px_role.name)) {
+            return true;
+        }
+        return false;
+    }, [loggedInUser]);
+
     //  fetch company
     const fetchRoomData = useCallback(async (searchValue = "") => {
         try {
             dispatch(startLoading());
-            const body = listPayload(page, { searchText: searchValue });
+            let whereCondition = {
+                isDeleted: false,
+                searchText: searchValue,
+            };
+            if(!isAdmin) {
+                whereCondition = {
+                    ...whereCondition,
+                    userID: loggedInUser.id,
+                };
+            }
+            const body = listPayload(page, whereCondition);
             const response = await getRoomList(body);
             let payload = [];
             if (response?.statusCode === 200) {
@@ -49,7 +67,7 @@ const useRoomHook = () => {
         } finally {
             dispatch(stopLoading());
         }
-    }, [dispatch, page]);
+    }, [dispatch, page, isAdmin]);
 
     // search role
     const searchRoomHandler = async (payload) => {

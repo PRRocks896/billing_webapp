@@ -252,7 +252,7 @@ export const useAddEditCreateBill = (tag) => {
         paymentResponse,
         roomResponse
       ] = await Promise.all([
-        getStaffList(listPayload(0, loggedInUser?.px_role?.name?.toLowerCase() === 'admin' ? {...whereCondition, searchText: "THERAPIST"} : {...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id}, 100000)),
+        getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "THERAPIST"} : {...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id}, 100000)),
         getServiceList(payload),
         getPaymentTypeList(payload),
         getRoomList(payload)
@@ -655,7 +655,7 @@ export const useAddEditCreateBill = (tag) => {
 
           if (response?.statusCode === 200) {
             showToast(response?.message, true);
-            print(billData);
+            print({...billData, billNo: response.data.billNo});
             const { success, message, data} = await fetchLoggedInUserData();
             if (success) {
               const latestBillNo = data.latestBillNo;

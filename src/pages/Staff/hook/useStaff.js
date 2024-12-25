@@ -58,7 +58,7 @@ export const useStaff = () => {
         //   };
         // }
         const payload = { searchText: searchValue };
-        if (loggedInUser.roleID !== 1) {
+        if (!isAdmin) {
           payload.createdBy = loggedInUser.id;
         }
         const body = listPayload(page, { ...payload });
@@ -78,7 +78,7 @@ export const useStaff = () => {
       }
     },
     // eslint-disable-next-line
-    [dispatch, page]
+    [dispatch, page, isAdmin]
   );
 
   const searchStaffHandler = async (payload) => {

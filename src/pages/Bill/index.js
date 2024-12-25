@@ -57,7 +57,7 @@ const Bill = () => {
             <TableHead>
               <TableRow>
                 <TableCell>No</TableCell>
-                {userRole === 'admin' &&
+                {isAdmin &&
                   <TableCell>Branch Name</TableCell>
                 }
                 <TableCell>Bill No</TableCell>
@@ -77,7 +77,7 @@ const Bill = () => {
                   return (
                     <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
-                      {userRole === 'admin' &&
+                      {isAdmin &&
                         <TableCell>{`${row?.px_user?.firstName} - ${row?.px_user?.lastName}`}</TableCell>
                       }
                       <TableCell align="left">{row?.billNo}</TableCell>

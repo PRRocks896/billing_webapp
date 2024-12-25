@@ -69,7 +69,7 @@ const AddEditMembership = ({tag}) => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={8}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <Controller
                                             control={control}
                                             name='billNo'
@@ -89,7 +89,7 @@ const AddEditMembership = ({tag}) => {
                                                 </FormControl>
                                             )}
                                         />
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid item xs={12} sm={6}>
                                         <FormControl
                                             size="small"

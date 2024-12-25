@@ -62,7 +62,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                 <Box className="card">
                     <FormGroup className="form-field">
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={2} sm={6}>
+                            {/* <Grid item xs={12} md={2} sm={6}>
                                 <Controller
                                     name="billNo"
                                     control={control}
@@ -85,7 +85,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                         </FormControl>
                                     )}
                                 />
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12} md={2} sm={6}>
                                 <FormControl size="small" fullWidth>
                                     <TextField

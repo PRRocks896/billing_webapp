@@ -71,9 +71,10 @@ export const useAddEditMembership = (tag) => {
             const payload = {
                 ...data,
                 billDetail: {
-                    billNo: localStorage.getItem('latestBillNo'),
+                    // billNo: localStorage.getItem('latestBillNo'),
                     staffID: 1,
                     userID: loggedInUser.id,
+                    roomID: 1,
                     paymentID: data.paymentID,
                     customerID: data.customerID,
                     detail: JSON.stringify([{
