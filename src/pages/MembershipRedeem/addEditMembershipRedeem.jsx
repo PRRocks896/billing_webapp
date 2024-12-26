@@ -363,7 +363,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                 isOptionEqualToValue={(option, value) =>
                                                     option?.id === value?.id
                                                 }
-                                                getOptionLabel={(option) => option?.name ?? ''}
+                                                getOptionLabel={(option) => option?.roomName ?? ''}
                                                 options={room || []}
                                                 value={room?.find((option) => option.id === value) ?? ''}
                                                 onBlur={onBlur}
