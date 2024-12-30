@@ -51,7 +51,7 @@ const useMembershipPlanHooks = () => {
       try {
         dispatch(startLoading());
         let payload = { searchText: searchValue };
-        if (loggedInUser.roleID !== 1) {
+        if (!isAdmin) {
           payload.createdBy = loggedInUser.id;
         }
         const body = listPayload(page, payload);
