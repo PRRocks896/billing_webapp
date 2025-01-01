@@ -345,7 +345,7 @@ export const useAddEditMembershipRedeem = (tag) => {
             ] = await Promise.all([
                 getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase())  ? {...whereCondition, searchText: "THERAPIST"} : { ...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id }, 100000)),
                 getServiceList(payload),
-                getRoomList(payload),
+                getRoomList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? whereCondition : {...whereCondition, createdBy: loggedInUser.id}, 100000)),
             ]);
             if (staffResponse?.statusCode === 200 && staffResponse?.success) {
                 setStaff(staffResponse.data?.rows);

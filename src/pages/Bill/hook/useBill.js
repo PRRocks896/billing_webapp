@@ -38,7 +38,7 @@ export const useBill = () => {
 
   const isAdmin = useMemo(() => {
     if(loggedInUser && loggedInUser.px_role && ['Admin', 'Super Admin'].includes(loggedInUser.px_role.name)) {
-        return true;
+      return true;
     }
     return false;
   }, [loggedInUser]);
@@ -52,44 +52,46 @@ export const useBill = () => {
   //  fetch bill
   const fetchBillData = useCallback(
     async (searchValue = "") => {
-      try {
-        dispatch(startLoading());
-        let whereCondition = {
-          isDeleted: false,
-          searchText: searchValue,
-        };
-        if (!isAdmin) {
-          whereCondition = {
-            ...whereCondition,
-            userID: loggedInUser.id,
-            createdAt: moment(new Date()).format('yyyy-MM-DD') //'2024-03-29' //new Date().toISOString().split('T')[0]
+      if(loggedInUser) {
+        try {
+          dispatch(startLoading());
+          let whereCondition = {
+            isDeleted: false,
+            searchText: searchValue,
           };
+          if (!['admin', 'super admin'].includes(userRole)) {
+            whereCondition = {
+              ...whereCondition,
+              userID: loggedInUser.id,
+              createdAt: moment(new Date()).format('yyyy-MM-DD') //'2024-03-29' //new Date().toISOString().split('T')[0]
+            };
+          }
+
+          const body = listPayload(page, whereCondition, rowsPerPage, {
+            sortBy: "id",
+          });
+
+          const response = await getBillList(body);
+
+          if (response?.statusCode === 200) {
+            const finalPayload = [
+              ...response?.data?.rows,
+            ];
+            setCount(response.data.count);
+            dispatch(billAction.storeBill(finalPayload));
+          } else {
+            const payload = [];
+            setCount(0);
+            dispatch(billAction.storeBill(payload));
+          }
+        } catch (error) {
+          showToast(error?.message, false);
+        } finally {
+          dispatch(stopLoading());
         }
-
-        const body = listPayload(page, whereCondition, rowsPerPage, {
-          sortBy: "id",
-        });
-
-        const response = await getBillList(body);
-
-        if (response?.statusCode === 200) {
-          const finalPayload = [
-            ...response?.data?.rows,
-          ];
-          setCount(response.data.count);
-          dispatch(billAction.storeBill(finalPayload));
-        } else {
-          const payload = [];
-          setCount(0);
-          dispatch(billAction.storeBill(payload));
-        }
-      } catch (error) {
-        showToast(error?.message, false);
-      } finally {
-        dispatch(stopLoading());
       }
       // eslint-disable-next-line
-    }, [dispatch, page, userRole, isAdmin, rowsPerPage]);
+    }, [dispatch, page, userRole, loggedInUser,rowsPerPage]);
 
   // search bill
   const searchBillHandler = async (payload) => {
