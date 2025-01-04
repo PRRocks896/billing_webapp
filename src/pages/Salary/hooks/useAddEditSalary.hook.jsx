@@ -23,13 +23,12 @@ export const useAddEditSalary = (tag) => {
     const dispatch = useDispatch();
     const { id } = useParams();
     const loggedInUser = useSelector((state) => state.loggedInUser);
-
     const [staffList, setStaffList] = useState([]);
     const { setValue, control, watch, getValues, handleSubmit } = useForm({
         defaultValues: {
             staffID: "",
-            month: moment().month(),
-            year: moment().format('yyyy'),
+            month: moment().subtract(1, 'months').get('month'),
+            year: moment().subtract(1, 'months').format('yyyy'),
             workingDays: "",
             weekOff: "",
             advance: '0',
@@ -89,7 +88,7 @@ export const useAddEditSalary = (tag) => {
                 const {success, message, data} = await getSalaryById(id);
                 if (success) {
                     setValue('staffID', data.staffID);
-                    setValue('month', data.month);
+                    setValue('month', (parseInt(data.month) - 1));
                     setValue("year", data.year);
                     setValue("workingDays", data.workingDays);
                     setValue("weekOff", data.weekOff);
@@ -123,8 +122,8 @@ export const useAddEditSalary = (tag) => {
                 }
             }
             const response = tag === "add"
-                ? await createSalary({ ...data, createdBy: loggedInUser.id })
-                : await updateSalary({ ...data, updatedBy: loggedInUser.id }, id);
+                ? await createSalary({ ...data, month: parseInt(data.month) + 1, createdBy: loggedInUser.id })
+                : await updateSalary({ ...data, month: parseInt(data.month) + 1, updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
