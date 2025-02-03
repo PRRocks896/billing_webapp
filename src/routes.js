@@ -31,6 +31,8 @@ import MembershipPlan from "./pages/MembershipPlan";
 import AddEditMembershipPlan from "./pages/MembershipPlan/addEditMembershipPlan";
 import Membership from "./pages/Membership";
 import AddEditMembership from "./pages/Membership/addEditMembership";
+import Coupon from "./pages/Coupon";
+import AddEditCoupon from "./pages/Coupon/addEditCoupon";
 
 const token = getAuthToken();
 
@@ -41,7 +43,9 @@ const routes = createBrowserRouter([
     loader: checkIsAuthenticated,
     children: [
       { index: true, element: <Home /> },
-
+      { path: "coupon", element: <Coupon /> },
+      { path: "add-coupon", element: <AddEditCoupon /> },
+      { path: "edit-coupon/:id", element: <AddEditCoupon /> },
       { path: "membership", element: <Membership /> },
       { path: "add-membership-plan", element: <AddEditMembership /> },
       { path: "edit-membership-plan/:id", element: <AddEditMembership /> },

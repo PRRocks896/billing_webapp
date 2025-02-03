@@ -68,6 +68,10 @@ import Company from "./pages/Company";
 import AddEditCompany from "./pages/Company/AddEditCompany";
 import Room from "./pages/Room";
 import AddEditRoom from "./pages/Room/AddEditRoom";
+import Coupon from "./pages/Coupon";
+import AddEditCoupon from "./pages/Coupon/addEditCoupon";
+import SEO from "./pages/Seo";
+import AddEditSeo from "./pages/Seo/addEditSeo";
 
 const token = getAuthToken();
 
@@ -94,6 +98,60 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Home /> : <NoConnection /> },
+        {
+          path: 'coupon',
+          element: (
+            <ProtectedRoute
+              path="coupon"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Coupon /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-coupon',
+          element: (
+            <ProtectedRoute
+              path="add-coupon"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditCoupon tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-coupon/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-coupon/:id"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditCoupon tag="edit" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'seo',
+          element: (
+            <ProtectedRoute
+              path="seo"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <SEO /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-seo',
+          element: (
+            <ProtectedRoute
+              path="add-seo"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditSeo tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-seo/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-seo/:id"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditSeo tag="edit" /> : <NoConnection/>}
+            />
+          )
+        },
         {
           path: 'renew-plan/:membershipID/:customerID',
           element: (

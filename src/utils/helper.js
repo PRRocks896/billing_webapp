@@ -2,6 +2,19 @@ import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const generateSlug = (value) => {
+  return value?.trim().toLowerCase().replace(/\s+/g, '_') || "";
+}
+
+export const generateUrl = (value) => {
+  return `/${value
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')  // Remove special characters
+        .replace(/\s+/g, '-')       // Replace spaces with hyphens
+        .replace(/-+/g, '-')}`;       // Remove duplicate hyphens
+}
+
 export const showTwoDecimalWithoutRound = (value) => {
   return `${value?.split(".")[0]}.${value?.split(".")[1]?.slice(0, 2) || 0}`;
 };

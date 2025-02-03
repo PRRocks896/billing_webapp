@@ -66,6 +66,20 @@ const Sidebar = () => {
     }
   }, [accessModules]);
 
+  const subMenuWebListArray = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      return accessModules?.filter((row) => {
+        if (["coupon", "seo"].includes(row.px_module.name.toLowerCase()) && row.view) {
+          return row;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return [];
+    }
+  }, [accessModules]);
+
   const logoutClickHandler = async () => {
     try {
       dispatch(startLoading());
@@ -122,6 +136,52 @@ const Sidebar = () => {
               </AccordionSummary>
               <AccordionDetails className="sub-menu-list">
                 {subMenuListArray?.map((item, index) => {
+                  return (
+                    <Box
+                      key={index}
+                      className={`sub-menu-link ${
+                        activeTab === item?.px_module?.path && "active"
+                      }`}
+                      onClick={() =>
+                        navigate(item?.px_module?.path, {
+                          state: {
+                            add: item.add,
+                            edit: item.edit,
+                            delete: item.delete,
+                            view: item.view,
+                          },
+                        })
+                      }
+                    >
+                      <Typography>
+                        <FiSquare />
+                        {item?.px_module?.name}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          )}
+
+          {subMenuWebListArray?.length > 0 && (
+            <Accordion
+              expanded={expanded === "panel3"}
+              onChange={handleChange("panel3")}
+              className="menu-list"
+            >
+              <AccordionSummary
+                className="menu-title"
+                expandIcon={<FiChevronRight />}
+                aria-controls="panel2bh-content"
+                id="panel2bh-header"
+              >
+                <Typography>
+                  <FiGrid /> Web Master
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className="sub-menu-list">
+                {subMenuWebListArray?.map((item, index) => {
                   return (
                     <Box
                       key={index}

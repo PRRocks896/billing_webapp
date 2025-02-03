@@ -19,6 +19,8 @@ import MembershipRedeemReducer from './membershipRedeem';
 import DailyReportReducer from './dailyReport';
 import employeeTypeReducer from "./employeeType";
 import SalaryReducer from "./salary";
+import CouponReducer from "./coupon";
+import SeoReducer from "./seo";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -40,7 +42,9 @@ const rootReducer = combineReducers({
   membershipRedeem: MembershipRedeemReducer,
   dailyReport: DailyReportReducer,
   employeeType: employeeTypeReducer,
-  salary: SalaryReducer
+  salary: SalaryReducer,
+  coupon: CouponReducer,
+  seo: SeoReducer,
 });
 
 export default rootReducer;

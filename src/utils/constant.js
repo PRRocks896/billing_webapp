@@ -124,3 +124,7 @@ export const SALARY = 'api/salary';
 export const COMPANY = "api/company";
 
 export const ROOM = "api/room";
+
+export const COUPON = "api/coupon";
+
+export const SEO = "api/seo";

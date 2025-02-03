@@ -135,11 +135,11 @@ export const getXlsx = async (url, data, fileNm = '') => {
   }).then((response) => {
     //Create a Blob from the PDF Stream
     const { userID, startDate, endDate } = data;
-    let fileName = fileNm.length > 0 ? fileNm : `Green day spa all branch sales report ${moment(startDate).format('DD-MM-yyyy')}_${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
+    let fileName = fileNm.length > 0 ? fileNm : `Bill Software all branch sales report ${moment(startDate).format('DD-MM-yyyy')}_${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     if(userID && userID.length === 1) {
-      fileName = fileNm.length > 0 ? fileNm : `${userID[0].label === 'All' ? 'green day spa all branch' : userID[0].label} sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
+      fileName = fileNm.length > 0 ? fileNm : `${userID[0].label === 'All' ? 'Bill Software all branch' : userID[0].label} sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     } else {
-      fileName = fileNm.length > 0 ? fileNm : `Green day spa selected branch sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
+      fileName = fileNm.length > 0 ? fileNm : `Bill Software selected branch sales report ${moment(startDate).format('DD-MM-yyyy')} ${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
     }
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
@@ -150,7 +150,7 @@ export const getXlsx = async (url, data, fileNm = '') => {
   });
 }
 
-export const getPDF = async (url, data, title = `Green_Day_Sales_Report_${new Date().toDateString()}.xlsx`) => {
+export const getPDF = async (url, data, title = `Bill_Software_Sales_Report_${new Date().toDateString()}.xlsx`) => {
   return axiosInstance
     .post(`${baseUrl}${url}`, data, {
       responseType: "blob", //Force to receive data in a Blob Format
