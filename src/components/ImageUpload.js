@@ -8,6 +8,7 @@ import Input from '@mui/material/Input';
 import FormHelperText from '@mui/material/FormHelperText';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { imagePath } from '../utils/helper';
 
 const ImageUpload = ({ title = 'Image Upload', value, onChange, error }) => {
     const handleFileChange = (event) => {
@@ -35,7 +36,7 @@ const ImageUpload = ({ title = 'Image Upload', value, onChange, error }) => {
                     display: 'flex',
                     position: 'relative'
                 }}>
-                    <img crossOrigin="anonymous" src={typeof value === 'object' ? URL.createObjectURL(value) : ''} alt="uploaded_img" />
+                    <img style={{ width: '100%', height: '250px'}} crossOrigin="anonymous" src={typeof value === 'object' ? URL.createObjectURL(value) : typeof value === 'string' ? imagePath(value) : ''} alt="uploaded_img" />
                     <span style={{
                         zIndex: 99,
                         top: '-10px',

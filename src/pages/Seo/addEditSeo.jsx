@@ -1,6 +1,8 @@
 import React from "react";
 import { Controller } from "react-hook-form";
 import Box from "@mui/material/Box";
+import Autocomplete from "@mui/material/Autocomplete";
+import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
@@ -108,6 +110,84 @@ const AddEditSeo = ({tag}) => {
                                             )}
                                         />
                                     </Grid>
+                                    <Grid item xs={12}>
+                                        <Controller
+                                            name="tags"
+                                            control={control}
+                                            render={({
+                                                field: { onChange, value },
+                                                fieldState: { error },
+                                            }) => (
+                                                <Box sx={{ display: "flex"}}>
+                                                    {/* Autocomplete for tags */}
+                                                    <Autocomplete
+                                                        fullWidth
+                                                        size="small"
+                                                        multiple
+                                                        freeSolo
+                                                        options={[]} // No predefined options (free text)
+                                                        value={value}
+                                                        onChange={(_event, newTags) => {
+                                                            onChange(newTags);
+                                                        }}
+                                                        renderTags={(value, getTagProps) =>
+                                                            value.map((option, index) => (
+                                                                <Chip
+                                                                key={index}
+                                                                label={option}
+                                                                {...getTagProps({ index })}
+                                                                color="primary"
+                                                                />
+                                                            ))
+                                                        }
+                                                        renderInput={(params) => <TextField className="form-control" {...params} label="Add Tags" error={!!error} helperText={error?.message} />}
+                                                    />
+                                                </Box>
+                                            )}
+                                            rules={{
+                                                required: "Tags field required",
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Controller
+                                            name="keywords"
+                                            control={control}
+                                            render={({
+                                                field: { onChange, value },
+                                                fieldState: { error },
+                                            }) => (
+                                                <Box sx={{ display: "flex"}}>
+                                                    {/* Autocomplete for tags */}
+                                                    <Autocomplete
+                                                        fullWidth
+                                                        size="small"
+                                                        multiple
+                                                        freeSolo
+                                                        options={[]} // No predefined options (free text)
+                                                        value={value}
+                                                        onChange={(_event, newTags) => {
+                                                            onChange(newTags);
+                                                        }}
+                                                        renderTags={(value, getTagProps) =>
+                                                            value.map((option, index) => (
+                                                                <Chip
+                                                                key={index}
+                                                                label={option}
+                                                                {...getTagProps({ index })}
+                                                                color="primary"
+                                                                />
+                                                            ))
+                                                        }
+                                                        renderInput={(params) => <TextField className="form-control" {...params} label="Add Keywords" error={!!error} helperText={error?.message} />}
+                                                    />
+                                                </Box>
+                                            )}
+                                            rules={{
+                                                required: "Keywords field required",
+                                            }}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item xs={4}>
@@ -169,6 +249,18 @@ const AddEditSeo = ({tag}) => {
                         </Grid>
                     </FormGroup>
                 </Box>
+                <Grid container spacing={3} sx={{ marginTop: "6px" }}>
+                    <Grid item md={1.5}>
+                        <Button type="submit" className="btn btn-tertiary">
+                            {tag === "add" ? "Save" : "Update"}
+                        </Button>
+                    </Grid>
+                    <Grid item md={1.5}>
+                        <Button className="btn btn-cancel" onClick={cancelHandler}>
+                            Cancel
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
         </>
     )

@@ -2,6 +2,15 @@ import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const baseUrl = process.env.REACT_APP_BASE_URL;
+const apiUrl = `${baseUrl}`;
+const modifiedapiUrl = apiUrl.replace(/\/api\/?$/, '');
+const formattedApiUrl = modifiedapiUrl
+
+export const imagePath = (path) => {
+  return `${formattedApiUrl}${path}`;
+};
+
 export const generateSlug = (value) => {
   return value?.trim().toLowerCase().replace(/\s+/g, '_') || "";
 }

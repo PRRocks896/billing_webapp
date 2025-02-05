@@ -26,8 +26,8 @@ const useAddEditSeoHook = (tag) => {
             description: "",
             slug: "",
             image: "",
-            keywords: "",
-            tags: "",
+            keywords: [],
+            tags: [],
             pagePath: ""
         },
         mode: "onBlur",
@@ -35,9 +35,32 @@ const useAddEditSeoHook = (tag) => {
     const onSubmit = async (data) => {
         try {
             dispatch(startLoading());
+            const payload = {...data};
+            const formData = new FormData();
+            if(tag === "add") {
+                formData.append('createdBy', '' + loggedInUser?.id);
+            } else {
+                formData.append('updatedBy', '' + loggedInUser?.id);
+            }
+            (Object.keys(data)).forEach(key => {
+                if(!['image', 'keywords', 'tags'].includes(key)) {
+                  formData.append(key, data[key]);
+                }
+            });
+            if(payload && payload.keywords && Array.isArray(payload.keywords)){
+                // payload.keywords = payload.keywords.join(',');
+                formData.append('keywords', payload.keywords.join(','));
+            }
+            if(payload && payload.tags && Array.isArray(payload.tags)){
+                // payload.tags = payload.tags.join(',');
+                formData.append('tags', payload.tags.join(','));
+            }
+            if (payload && payload.image && typeof data.image === 'object') {
+                formData.append('image', payload.image);
+            }
             const response = tag === "add"
-                ? await createSeo({ ...data, createdBy: loggedInUser.id })
-                : await updateSeo({ ...data, updatedBy: loggedInUser.id }, id);
+                ? await createSeo(formData)
+                : await updateSeo(formData, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
@@ -57,14 +80,13 @@ const useAddEditSeoHook = (tag) => {
             if (id) {
                 dispatch(startLoading());
                 const response = await getSeoById(id);
-                console.log(response);
                 if (response?.statusCode === 200) {
                     setValue("title", response.data.title);
                     setValue("description", response.data.description);
                     setValue("slug", response.data.slug);
                     setValue("image", response.data.image);
-                    setValue("keywords", response.data.keywords);
-                    setValue("tags", response.data.tags);
+                    setValue("keywords", response.data.keywords.split(','));
+                    setValue("tags", response.data.tags.split(','));
                     setValue("pagePath", response.data.pagePath);
                 } else {
                     showToast(response?.message, false);

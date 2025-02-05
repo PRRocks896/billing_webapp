@@ -58,11 +58,11 @@ const SEO = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Code</TableCell>
-                                <TableCell>Type</TableCell>
-                                <TableCell>Value</TableCell>
-                                <TableCell>Max Price</TableCell>
+                                <TableCell>Title</TableCell>
+                                <TableCell>Slug</TableCell>
+                                <TableCell>Page Path</TableCell>
+                                <TableCell>Tags</TableCell>
+                                <TableCell>Keywords</TableCell>
                                 {rights.edit && <TableCell>Status</TableCell>}
                                 {/* {(rights.edit || rights.delete) && ( */}
                                     <TableCell>Action</TableCell>
@@ -74,11 +74,11 @@ const SEO = () => {
                                 visibleRows.map((row) => {
                                     return (
                                         <TableRow key={"membership_" + row.id}>
-                                            <TableCell align="left">{row.name}</TableCell>
-                                            <TableCell align="left">{row.code}</TableCell>
-                                            <TableCell align="left">{row.type}</TableCell>
-                                            <TableCell align="left">{row.value}</TableCell>
-                                            <TableCell align="left">{row.maxPrice}</TableCell>
+                                            <TableCell align="left">{row.title}</TableCell>
+                                            <TableCell align="left">{row.slug}</TableCell>
+                                            <TableCell align="left">{row.pagePath}</TableCell>
+                                            <TableCell align="left">{row.tags}</TableCell>
+                                            <TableCell align="left">{row.keywords}</TableCell>
                                             {rights.edit && (
                                                 <TableCell>
                                                     <Switch
