@@ -7,14 +7,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { showToast } from "../../../utils/helper";
 
 import {
-    createSeo,
-    updateSeo,
-    getSeoById
-} from "../../../service/seo";
+    createBlog,
+    updateBlog,
+    getBlogById
+} from "../../../service/blog";
 
 import { startLoading, stopLoading } from "../../../redux/loader";
 
-const useAddEditSeoHook = (tag) => {
+const useAddEditBlogHook = (tag) => {
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { id } = useParams();
@@ -25,13 +26,15 @@ const useAddEditSeoHook = (tag) => {
             title: "",
             description: "",
             slug: "",
-            image: "",
-            keywords: [],
-            tags: [],
-            pagePath: ""
+            shortDescription: "",
+            thumbnilImage: "",
+            metaKeywords: [],
+            metaTags: [],
+            metaDescription: ""
         },
         mode: "onBlur",
     });
+
     const onSubmit = async (data) => {
         try {
             dispatch(startLoading());
@@ -43,28 +46,27 @@ const useAddEditSeoHook = (tag) => {
                 formData.append('updatedBy', '' + loggedInUser?.id);
             }
             (Object.keys(data)).forEach(key => {
-                if(!['image', 'keywords', 'tags'].includes(key)) {
-                  formData.append(key, data[key]);
+                if(!['thumbnilImage', 'metaKeywords', 'metaTags'].includes(key)) {
+                    formData.append(key, data[key]);
                 }
             });
-            if(payload && payload.keywords && Array.isArray(payload.keywords)){
-                // payload.keywords = payload.keywords.join(',');
-                formData.append('keywords', payload.keywords.join(','));
+            if(payload && payload.metaKeywords && Array.isArray(payload.metaKeywords)){
+                formData.append('metaKeywords', payload.metaKeywords.join(','));
             }
-            if(payload && payload.tags && Array.isArray(payload.tags)){
-                // payload.tags = payload.tags.join(',');
-                formData.append('tags', payload.tags.join(','));
+            if(payload && payload.metaTags && Array.isArray(payload.metaTags)){
+                formData.append('metaTags', payload.metaTags.join(','));
             }
-            if (payload && payload.image && typeof payload.image === 'object') {
-                formData.append('image', payload.image);
+            console.log('payload', typeof payload.thumbnilImage);
+            if (payload && payload.thumbnilImage && typeof payload.thumbnilImage === 'object') {
+                formData.append('thumbnilImage', payload.thumbnilImage[0]);
             }
             const response = tag === "add"
-                ? await createSeo(formData)
-                : await updateSeo(formData, id);
+                ? await createBlog(formData)
+                : await updateBlog(formData, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
-                navigate("/seo");
+                navigate("/blog");
             } else {
                 showToast(response?.messageCode, false);
             }
@@ -75,19 +77,20 @@ const useAddEditSeoHook = (tag) => {
         }
     };
 
-    const fetchEditSeoData = useCallback(async () => {
+    const fetchEditBlogData = useCallback(async () => {
         try {
             if (id) {
                 dispatch(startLoading());
-                const response = await getSeoById(id);
+                const response = await getBlogById(id);
                 if (response?.statusCode === 200) {
                     setValue("title", response.data.title);
                     setValue("description", response.data.description);
                     setValue("slug", response.data.slug);
-                    setValue("image", response.data.image);
-                    setValue("keywords", response.data.keywords.split(','));
-                    setValue("tags", response.data.tags.split(','));
-                    setValue("pagePath", response.data.pagePath);
+                    setValue("thumbnilImage", [response.data.thumbnilImage]);
+                    setValue("metaKeywords", response.data.metaKeywords.split(','));
+                    setValue("metaTags", response.data.metaTags.split(','));
+                    setValue("shortDescription", response.data.shortDescription);
+                    setValue("metaDescription", response.data.metaDescription);
                 } else {
                     showToast(response?.message, false);
                 }
@@ -100,12 +103,13 @@ const useAddEditSeoHook = (tag) => {
     }, [id, setValue, dispatch]);
 
     useEffect(() => {
-        tag === "edit" && fetchEditSeoData();
-    }, [tag, fetchEditSeoData]);
+        tag === "edit" && fetchEditBlogData();
+    }, [tag, fetchEditBlogData]);
 
     const cancelHandler = () => {
-        navigate("/seo");
+        navigate("/blog");
     };
+
     return {
         control,
         setValue,
@@ -113,6 +117,6 @@ const useAddEditSeoHook = (tag) => {
         handleSubmit,
         cancelHandler,
     }
-};
+}
 
-export default useAddEditSeoHook;
+export default useAddEditBlogHook;

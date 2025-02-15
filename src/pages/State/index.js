@@ -49,7 +49,7 @@ const State = () => {
       <TopBar
         btnTitle={"Add State"}
         inputName="state"
-        navigatePath="/add-states"
+        navigatePath="/add-state"
         callAPI={searchStatesandler}
         addPermission={rights.add}
       />
@@ -92,7 +92,7 @@ const State = () => {
                               <Button
                                 className="btn btn-primary"
                                 onClick={() =>
-                                  navigate(`/edit-states/${row.id}`)
+                                  navigate(`/edit-state/${row.id}`)
                                 }
                               >
                                 <FiEdit3 size={15} />

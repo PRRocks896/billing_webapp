@@ -18,8 +18,10 @@ export const useAddEditCity = (tag) => {
 
   const { setValue, handleSubmit, control } = useForm({
     defaultValues: {
-      cityName: "",
-      stateId: "",
+      name: "",
+      stateID: "",
+      description: "",
+      image: ""
     },
     mode: "onBlur",
   });
@@ -27,14 +29,28 @@ export const useAddEditCity = (tag) => {
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
-      const payload = {
-        name: data.cityName,
-        stateID: data.stateId.value,
-      };
+      const payload = {...data};
+      const formData = new FormData();
+      if(tag === "add") {
+        formData.append('createdBy', '' + loggedInUser?.id);
+      } else {
+        formData.append('updatedBy', '' + loggedInUser?.id);
+      }
+      (Object.keys(data)).forEach(key => {
+        if(!['image', 'stateID'].includes(key)) {
+          formData.append(key, data[key]);
+        }
+      });
+      if(payload && payload.stateID && typeof payload.stateID === 'object') {
+        formData.append('stateID', payload.stateID.value);
+      }
+      if (payload && payload.image && typeof payload.image === 'object') {
+        formData.append('image', payload.image);
+      }
       const response =
         tag === "add"
-          ? await createCity({ ...payload, createdBy: loggedInUser.id })
-          : await updateCity({ ...payload, updatedBy: loggedInUser.id }, id);
+          ? await createCity(formData)
+          : await updateCity(formData, id);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         navigate("/city");
@@ -54,11 +70,13 @@ export const useAddEditCity = (tag) => {
         dispatch(startLoading());
         const response = await getCityById(id);
         if (response?.statusCode === 200) {
-          setValue("cityName", response.data.name);
-          setValue("stateId", {
+          setValue("name", response.data.name);
+          setValue("stateID", {
             value: response.data.stateID,
             label: response.data.px_state.name,
           });
+          setValue("description", response.data.description);
+          setValue("image", response.data.image);
         } else {
           showToast(response?.message, false);
         }

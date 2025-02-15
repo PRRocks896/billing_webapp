@@ -295,7 +295,7 @@
             color: var(--color-grey);
             // padding: 10px 20px;
             border-bottom: 1px solid rgba(119, 119, 119, 0.2);
-            white-space: nowrap; /* Prevent line breaks */
+            white-space: wrap; /* Prevent line breaks */
           }
           &:not(.exclude-wrap) {
             white-space: wrap !important;

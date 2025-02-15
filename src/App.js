@@ -72,6 +72,10 @@ import Coupon from "./pages/Coupon";
 import AddEditCoupon from "./pages/Coupon/addEditCoupon";
 import SEO from "./pages/Seo";
 import AddEditSeo from "./pages/Seo/addEditSeo";
+import Blog from "./pages/Blog";
+import AddEditBlog from "./pages/Blog/addEditBlog";
+import WebsiteBooking from "./pages/WebsiteBooking";
+import AddEditWebsiteBooking from "./pages/WebsiteBooking/addEditWebsiteBooking";
 
 const token = getAuthToken();
 
@@ -98,6 +102,60 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Home /> : <NoConnection /> },
+        {
+          path: 'website-booking',
+          element: (
+            <ProtectedRoute
+              path="website-booking"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <WebsiteBooking /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-website-booking',
+          element: (
+            <ProtectedRoute
+              path="add-website-booking"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditWebsiteBooking tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-website-booking/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-website-booking/:id"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditWebsiteBooking tag="edit" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'blog',
+          element: (
+            <ProtectedRoute
+              path="blog"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Blog /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-blog',
+          element: (
+            <ProtectedRoute
+              path="add-blog"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditBlog tag="add" /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-blog/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-blog/:id"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditBlog tag="edit" /> : <NoConnection/>}
+            />
+          )
+        },
         {
           path: 'coupon',
           element: (
@@ -604,19 +662,19 @@ const App = () => {
         },
 
         {
-          path: "states",
+          path: "state",
           element: (
             <ProtectedRoute
-              path="states"
+              path="state"
               Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <State /> : <NoConnection />}
             />
           ),
         },
         {
-          path: "add-states",
+          path: "add-state",
           element: (
             <ProtectedRoute
-              path="add-states"
+              path="add-state"
               Component={
                 isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditStates tag="add" /> : <NoConnection />
               }
@@ -624,10 +682,10 @@ const App = () => {
           ),
         },
         {
-          path: "edit-states/:id",
+          path: "edit-state/:id",
           element: (
             <ProtectedRoute
-              path="edit-states/:id"
+              path="edit-state/:id"
               Component={
                 isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditStates tag="edit" /> : <NoConnection />
               }

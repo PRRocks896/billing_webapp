@@ -35,6 +35,7 @@ const Service = () => {
     deleteBtnClickHandler,
     searchServiceHandler,
     changeStatusHandler,
+    changeWebDisplayHandler,
     page,
     handleChangePage,
     visibleRows,
@@ -65,6 +66,7 @@ const Service = () => {
                 <TableCell>Name</TableCell>
                 <TableCell>Minutes</TableCell>
                 <TableCell>Amount</TableCell>
+                {rights.edit && <TableCell>Web Display</TableCell>}
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
                   <TableCell>Action</TableCell>
@@ -83,6 +85,15 @@ const Service = () => {
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row?.mintues || 'N/A'}</TableCell>
                       <TableCell align="left">{row.amount}</TableCell>
+                      {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isWebDisplay}
+                            onChange={(e) => changeWebDisplayHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )}
                       {rights.edit && (
                         <TableCell>
                           <Switch

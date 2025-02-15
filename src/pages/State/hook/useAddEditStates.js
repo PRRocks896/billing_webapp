@@ -34,7 +34,7 @@ export const useAddEditStates = (tag) => {
           : await updateStates({ ...data, updatedBy: loggedInUser.id }, id);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
-        navigate("/states");
+        navigate("/state");
       } else {
         showToast(response?.messageCode, false);
       }
@@ -68,7 +68,7 @@ export const useAddEditStates = (tag) => {
   }, [tag, fetchEditStateData]);
 
   const cancelHandler = () => {
-    navigate("/states");
+    navigate("/state");
   };
 
   return {

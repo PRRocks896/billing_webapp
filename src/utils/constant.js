@@ -128,3 +128,7 @@ export const ROOM = "api/room";
 export const COUPON = "api/coupon";
 
 export const SEO = "api/seo";
+
+export const BLOG = "api/blog";
+
+export const WEBSITEBOOKING = "api/website-booking"

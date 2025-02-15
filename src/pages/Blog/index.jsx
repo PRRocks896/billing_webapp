@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,7 +17,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 
-import useMembershipPlanHooks from "./hook/useMembershipPlan.hook";
+import useBlogHooks from "./hook/useBlog.hook";
 
 const switchStyles = {
     color: "var(--color-black)",
@@ -27,7 +29,7 @@ const switchStyles = {
     },
 };
 
-const MembershipPlan = () => {
+const Blog = () => {
     const navigate = useNavigate();
     const {
         page,
@@ -40,19 +42,19 @@ const MembershipPlan = () => {
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
-        changeWebDisplayHandler,
-        searchMembershipPlanHandler,
-    } = useMembershipPlanHooks();
+        searchBlogHandler,
+    } = useBlogHooks();
 
     let index = page * 10;
 
+
     return (
         <>
-            <TopBar
-                btnTitle={"Add MemberShip Plan"}
-                inputName="membershipPlan"
-                navigatePath="/add-membership-plan"
-                callAPI={searchMembershipPlanHandler}
+        <TopBar
+                btnTitle={"Add Blog"}
+                inputName="blog"
+                navigatePath="/add-blog"
+                callAPI={searchBlogHandler}
                 addPermission={rights.add}
             />
 
@@ -63,10 +65,10 @@ const MembershipPlan = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>No</TableCell>
-                                <TableCell>Plan Name</TableCell>
-                                <TableCell>Price</TableCell>
-                                <TableCell>Hours</TableCell>
-                                <TableCell>Web Display</TableCell>
+                                <TableCell>Title</TableCell>
+                                {/* <TableCell>Slug</TableCell> */}
+                                <TableCell>Short Description</TableCell>
+                                <TableCell>Publish Date</TableCell>
                                 {rights.edit && <TableCell>Status</TableCell>}
                                 {(rights.edit || rights.delete) && (
                                     <TableCell>Action</TableCell>
@@ -79,18 +81,10 @@ const MembershipPlan = () => {
                                     return (
                                         <TableRow key={"membership_plan_" + row.id}>
                                             <TableCell align="left">{(index += 1)}</TableCell>
-                                            <TableCell align="left">{row.planName}</TableCell>
-                                            <TableCell align="left">{row.price}</TableCell>
-                                            <TableCell align="left">{row.hours}</TableCell>
-                                            {rights.edit && (
-                                                <TableCell>
-                                                    <Switch
-                                                        style={switchStyles}
-                                                        checked={row.isWebDisplay}
-                                                        onChange={(e) => changeWebDisplayHandler(e, row.id)}
-                                                    />
-                                                </TableCell>
-                                            )}
+                                            <TableCell align="left" sx={{whiteSpace: 'break-spaces'}}>{row.title}</TableCell>
+                                            {/* <TableCell align="left" sx={{whiteSpace: 'break-spaces'}}>{row.slug}</TableCell> */}
+                                            <TableCell align="left">{row.shortDescription}</TableCell>
+                                            <TableCell align="left">{moment(row.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
                                             {rights.edit && (
                                                 <TableCell>
                                                     <Switch
@@ -107,7 +101,7 @@ const MembershipPlan = () => {
                                                             <Button
                                                                 className="btn btn-primary"
                                                                 onClick={() =>
-                                                                    navigate(`/edit-membership-plan/${row.id}`)
+                                                                    navigate(`/edit-blog/${row.id}`)
                                                                 }
                                                             >
                                                                 <FiEdit3 size={15} />
@@ -153,11 +147,11 @@ const MembershipPlan = () => {
             <ConfirmationModal
                 isDeleteModalOpen={isDeleteModalOpen}
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
-                title="Membership Plan"
+                title="Blog"
                 deleteHandler={deleteHandler}
             />
         </>
     )
 }
 
-export default MembershipPlan;
+export default Blog;

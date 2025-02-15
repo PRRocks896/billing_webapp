@@ -21,6 +21,8 @@ import employeeTypeReducer from "./employeeType";
 import SalaryReducer from "./salary";
 import CouponReducer from "./coupon";
 import SeoReducer from "./seo";
+import BlogReducer from "./blog";
+import WebsiteBookingReducer from "./websiteBooking";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -45,6 +47,8 @@ const rootReducer = combineReducers({
   salary: SalaryReducer,
   coupon: CouponReducer,
   seo: SeoReducer,
+  blog: BlogReducer,
+  websiteBooking: WebsiteBookingReducer,
 });
 
 export default rootReducer;

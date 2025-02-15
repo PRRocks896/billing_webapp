@@ -84,6 +84,30 @@ const useMembershipPlanHooks = () => {
       }
     };
 
+    const changeWebDisplayHandler = async (e, id) => {
+      try {
+        try {
+          const payload = {
+            isWebDisplay: e.target.checked,
+            updatedBy: loggedInUser.id,
+          };
+          const response = await updateMembershipPlan(payload, id);
+
+          if (response?.statusCode === 200) {
+            showToast(response?.message, true);
+            const payload2 = { id, isWebDisplay: payload.isWebDisplay };
+            dispatch(membershipPlanAction.changeMembershipPlanWebDisplayStatus(payload2));
+          } else {
+            showToast(response?.message, false);
+          }
+        } catch (error) {
+          showToast(error?.message, false);
+        }
+      } catch(error) {
+        showToast(error?.message, false);
+      }
+    }
+
     const changeStatusHandler = async (e, id) => {
         try {
           const payload = {
@@ -127,6 +151,7 @@ const useMembershipPlanHooks = () => {
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
+        changeWebDisplayHandler,
         searchMembershipPlanHandler,
     }
 }

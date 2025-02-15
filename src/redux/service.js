@@ -22,6 +22,14 @@ const serviceSlice = createSlice({
       );
       return { data: updatedService };
     },
+    changeServiceWebDisplayStatus(state, action) {
+      const updatedState = state.data.map((row) =>
+        row.id === action.payload.id
+          ? { ...row, isWebDisplay: action.payload.isWebDisplay }
+          : { ...row }
+      );
+      return { data: updatedState };
+    }
   },
 });
 
