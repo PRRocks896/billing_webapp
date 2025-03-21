@@ -76,6 +76,7 @@ import Blog from "./pages/Blog";
 import AddEditBlog from "./pages/Blog/addEditBlog";
 import WebsiteBooking from "./pages/WebsiteBooking";
 import AddEditWebsiteBooking from "./pages/WebsiteBooking/addEditWebsiteBooking";
+import NewsLetter from "./pages/NewsLetter";
 
 const token = getAuthToken();
 
@@ -102,6 +103,15 @@ const App = () => {
       loader: checkIsAuthenticated,
       children: [
         { index: true, element: isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Home /> : <NoConnection /> },
+        {
+          path: 'newsletter',
+          element: (
+            <ProtectedRoute
+              path="newsletter"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <NewsLetter /> : <NoConnection/>}
+            />
+          )
+        },
         {
           path: 'website-booking',
           element: (

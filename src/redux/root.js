@@ -23,6 +23,7 @@ import CouponReducer from "./coupon";
 import SeoReducer from "./seo";
 import BlogReducer from "./blog";
 import WebsiteBookingReducer from "./websiteBooking";
+import NewsLetterReducer from "./newsletter";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   seo: SeoReducer,
   blog: BlogReducer,
   websiteBooking: WebsiteBookingReducer,
+  newsLetter: NewsLetterReducer
 });
 
 export default rootReducer;

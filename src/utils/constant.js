@@ -133,3 +133,5 @@ export const SEO = "api/seo";
 export const BLOG = "api/blog";
 
 export const WEBSITEBOOKING = "api/website-booking"
+
+export const NewsLetter = "api/newsLetter";
