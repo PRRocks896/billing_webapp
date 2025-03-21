@@ -135,6 +135,26 @@ export const useUser = () => {
     }
   };
 
+  const changeWebDisplayHandler = async (e, id) => {
+    try {
+      const payload = {
+        isWebDisplay: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updateUser(payload, id);
+
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
+        const payload2 = { id, isWebDisplay: payload.isWebDisplay };
+        dispatch(userAction.changeServiceWebDisplayStatus(payload2));
+      } else {
+        showToast(response?.message, false);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }
+
   return {
     isAdmin,
     isDeleteModalOpen,
@@ -143,6 +163,7 @@ export const useUser = () => {
     deleteBtnClickHandler,
     searchUserHandler,
     changeStatusHandler,
+    changeWebDisplayHandler,
     page,
     handleChangePage,
     visibleRows,

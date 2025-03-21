@@ -10,21 +10,25 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import { Controller } from "react-hook-form";
-import { useAddEditUser } from "./hook/useAddEditUser";
+import Typography from "@mui/material/Typography";
+import { Controller, set } from "react-hook-form";
 import ChangePasswordModal from "../../components/ChangePasswordModal";
+import ImageUpload from "../../components/ImageUpload";
+import { useAddEditUser } from "./hook/useAddEditUser";
+import { generateSlug } from "../../utils/helper";
 
 const AddEditUser = ({ tag }) => {
   const {
     control,
     companyOptions,
     roleOptions,
+    cityOptions,
     handleSubmit,
     onSubmit,
     cancelHandler,
     role,
     isNotAdmin,
-
+    setValue,
     isChangePasswordOpen,
     setIsChangePasswordOpen,
     userId,
@@ -35,7 +39,7 @@ const AddEditUser = ({ tag }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box
           className="card"
-          sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
+          // sx={{ maxHeight: "calc(100vh - 200px)", overflow: "auto" }}
         >
           <FormGroup className="form-field">
             <Grid container spacing={2}>
@@ -90,7 +94,8 @@ const AddEditUser = ({ tag }) => {
                         name="lastName"
                         value={value}
                         onChange={(e) => {
-                          onChange(e.target.value.toUpperCase());
+                          onChange(e.target.value);
+                          setValue("slug", generateSlug('massage-spa-in-' + value));
                         }}
                         onBlur={onBlur}
                         error={!!error}
@@ -101,6 +106,29 @@ const AddEditUser = ({ tag }) => {
                   rules={{
                     required: "Please Enter Last Name",
                   }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Controller
+                  name="slug"
+                  control={control}
+                  render={({
+                    field: { value }
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Slug"
+                        size="small"
+                        name="name"
+                        value={value}
+                        disabled
+                      />
+                    </FormControl>
+                  )}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -134,8 +162,41 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Controller
+                  name={`cityID`}
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <>
+                      <Autocomplete
+                        freeSolo
+                        size="small"
+                        id="cityID"
+                        options={cityOptions}
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={(event, newValue) => onChange(newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select City"
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                    </>
+                  )}
+                  rules={{
+                    required: "Please Select Company",
+                  }}
+                />
+              </Grid>
+              {/* </Grid>
+            <Grid container spacing={2}> */}
               <Grid item xs={4}>
                 <Controller
                   name={`companyID`}
@@ -235,8 +296,8 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={2}>
+              {/* </Grid>
+            <Grid container spacing={2}> */}
               {tag === "add" && (
                 <Grid item xs={4}>
                   <Controller
@@ -334,8 +395,8 @@ const AddEditUser = ({ tag }) => {
                   }}
                 />
               </Grid>
-              </Grid>
-              <Grid container spacing={2}>
+              {/* </Grid>
+              <Grid container spacing={2}> */}
               {isNotAdmin && (
                 <Grid item xs={4}>
                   <Controller
@@ -401,7 +462,7 @@ const AddEditUser = ({ tag }) => {
                     </FormControl>
                   )}
                   rules={{
-                    required: "Please Enter Feedback URL"
+                    required: "Please Enter Feedback URL",
                   }}
                 />
               </Grid>
@@ -433,7 +494,7 @@ const AddEditUser = ({ tag }) => {
                     </FormControl>
                   )}
                   rules={{
-                    required: "Please Enter Review URL"
+                    required: "Please Enter Review URL",
                   }}
                 />
               </Grid>
@@ -505,8 +566,8 @@ const AddEditUser = ({ tag }) => {
                   </Grid>
                 </>
               )}
-            </Grid>
-            <Grid container spacing={2}>
+              {/* </Grid>
+            <Grid container spacing={2}> */}
               {isNotAdmin && (
                 <Grid item xs={6}>
                   <Controller
@@ -573,9 +634,10 @@ const AddEditUser = ({ tag }) => {
                   rules={{
                     required: "Please Enter Gst",
                     pattern: {
-                      value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
-                      message: 'Enter Invalid Gst Number'
-                    }
+                      value:
+                        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/,
+                      message: "Enter Invalid Gst Number",
+                    },
                   }}
                 />
                 <Controller
@@ -590,7 +652,16 @@ const AddEditUser = ({ tag }) => {
                       variant="standard"
                       className="form-control"
                     >
-                      <FormControlLabel control={<Switch checked={value} onChange={onChange} onBlur={onBlur} />} label="Show Gst" />
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                          />
+                        }
+                        label="Show Gst"
+                      />
                     </FormControl>
                   )}
                 />
@@ -598,7 +669,156 @@ const AddEditUser = ({ tag }) => {
             </Grid>
           </FormGroup>
         </Box>
-
+        <br />
+        <Box className="card">
+          <Typography variant="h6">Website Detail</Typography>
+          <FormGroup className="form-field">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <Controller
+                  name="areaName"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Area Name*"
+                        size="small"
+                        name="areaName"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value.toUpperCase());
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Area Name",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={8}></Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="mapUrl"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Map URL*"
+                        size="small"
+                        name="mapUrl"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value.toUpperCase());
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Map URL",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="iFrameMap"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        label="Iframe Map*"
+                        size="small"
+                        name="iFrameMap"
+                        value={value}
+                        onChange={(e) => {
+                          onChange(e.target.value.toUpperCase());
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "Please Enter Iframe Map",
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="images"
+                  control={control}
+                  render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                  }) => (
+                      <ImageUpload
+                          key={'img-upload'}
+                          value={value}
+                          onChange={onChange}
+                          error={error}
+                          multiple={true}
+                          accept={'image/*'}
+                      />
+                  )}
+                  rules={{
+                      required: 'Please Upload File'
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="thumbnilImage"
+                  control={control}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <ImageUpload
+                      key={'img-upload'}
+                      title="Thumbnail Image Upload"
+                      value={value}
+                      onChange={onChange}
+                      error={error}
+                      accept={'image/*'}
+                    />
+                  )}
+                  rules={{
+                    required: 'Please Upload File'
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </FormGroup>
+        </Box>
+        
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           {tag === "edit" && role === "admin" && (
             <Grid item md={3}>

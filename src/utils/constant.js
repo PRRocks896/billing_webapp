@@ -41,6 +41,7 @@ export const CREATE_CITY_API = "api/city";
 export const GET_SINGLE_CITY_API = "api/city/";
 export const UPDATE_CITY_API = "api/city/";
 export const DELETE_CITY_API = "api/city/";
+export const CITY_FIND_API = "api/city/find";
 
 // service category apis
 export const SERVICE_CATEGORY_LIST_API = "api/service-category/list";

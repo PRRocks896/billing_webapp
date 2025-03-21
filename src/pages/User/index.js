@@ -36,6 +36,7 @@ const User = () => {
     deleteBtnClickHandler,
     searchUserHandler,
     changeStatusHandler,
+    changeWebDisplayHandler,
     page,
     handleChangePage,
     visibleRows,
@@ -70,6 +71,7 @@ const User = () => {
                 {isAdmin &&
                   <TableCell>OTP</TableCell>
                 }
+                {rights.edit && <TableCell>Web Display</TableCell>}
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
                   <TableCell>Action</TableCell>
@@ -92,6 +94,15 @@ const User = () => {
                       {isAdmin &&
                         <TableCell align="left">{row?.otp || 'N/A'}</TableCell>
                       }
+                      {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isWebDisplay}
+                            onChange={(e) => changeWebDisplayHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )}
                       {rights.edit && (
                         <TableCell>
                           <Switch

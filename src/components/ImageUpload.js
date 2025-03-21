@@ -14,7 +14,8 @@ const ImageUpload = ({
     value = [],
     onChange,
     error,
-    multiple = false
+    multiple = false,
+    accept = 'image/*'
 }) => {
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
@@ -32,7 +33,7 @@ const ImageUpload = ({
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
-        accept: 'image/*',
+        accept: accept,
         multiple: multiple
     });
 
@@ -41,7 +42,7 @@ const ImageUpload = ({
         <Paper elevation={3} style={{ padding: '20px', margin: 'auto' }}>
             <Typography variant="h6">{title}</Typography>
             <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center', cursor: 'pointer' }}>
-                <input {...getInputProps()} />
+                <input {...getInputProps()} accept={accept} />
                 <p>Drag & drop some files here, or click to select files</p>
             </div>
             {/* <Input type="file" accept="image/*" multiple={multiple} onChange={handleFileChange} style={{ margin: '10px 0' }} /> */}

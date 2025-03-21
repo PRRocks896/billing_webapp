@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray, set } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { getServiceCategoryList } from "../../../service/serviceCategory";
 import { listPayload, showToast } from "../../../utils/helper";
@@ -20,30 +20,91 @@ export const useAddEditService = (tag) => {
   const [serviceCategories, setServiceCategories] = useState([]);
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
-  const { control, setValue, handleSubmit } = useForm({
+  const { control, getValues, setValue, handleSubmit } = useForm({
     defaultValues: {
       name: "",
       amount: "",
       category: "",
-      minutes: ""
+      minutes: "",
+      displayName: "",
+      description: "",
+      webPrice: "",
+      featureList: [{
+        index: 0,
+        value: ""
+      }],
+      slug: "",
+      video: "",
+      thumbnilImage: "",
+      images: [],
+      backgrandImage: "",
+
     },
     mode: "onBlur",
   });
+
+  const { fields, append, remove } = useFieldArray({
+    name: "featureList",
+    control: control,
+  });
+
+  const addRow = () => {
+    const index = getValues("featureList").length;
+    append({
+      index: index,
+      value: ""
+    });
+  }
+
+  const removeRow = (index) => {
+    remove(index);
+  }
 
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
       const payload = {
-        name: data.name,
+        ...data,
         service_category_id: data.category.value,
-        amount: data.amount,
-        minutes: data.minutes
       };
+      delete payload['category'];
+      const formData = new FormData();
+      if (tag === "add") {
+        formData.append("createdBy", "" + loggedInUser?.id);
+      } else {
+        formData.append("updatedBy", "" + loggedInUser?.id);
+      }
+      (Object.keys(payload)).forEach(key => {
+        if(!['thumbnilImage', 'backgrandImage', 'video', 'images', 'featureList'].includes(key)) {
+          formData.append(key, payload[key]);
+        }
+      });
+      if(payload && payload.video) {
+        formData.append('video', payload.video[0]);
+      }
+      if(payload && payload.thumbnilImage) {
+        formData.append('thumbnilImage', payload.thumbnilImage[0]);
+      }
+      if(payload && payload.backgrandImage) {
+        formData.append('backgrandImage', payload.backgrandImage[0]);
+      }
+      if(payload && payload.images && Array.isArray(payload.images)){
+        payload.images.filter((image) => typeof image === 'object').forEach((image) => {
+          formData.append('images', image);
+        });
+        const stringImgs = payload.images.filter((image) => typeof image === 'string');
+        if(stringImgs.length > 0) {
+          formData.append('images', JSON.stringify(stringImgs));
+        }
+      }
+      if(payload && payload.featureList && Array.isArray(payload.featureList)){
+        formData.append('featureList', JSON.stringify(payload.featureList.map((feature) => feature.value)));
+      }
 
       const response =
         tag === "add"
-          ? await createService({ ...payload, createdBy: loggedInUser.id })
-          : await updateService({ ...payload, updatedBy: loggedInUser.id }, id);
+          ? await createService(formData)
+          : await updateService(formData, id);
       if (response?.statusCode === 200) {
         showToast(response?.message, true);
         navigate("/service");
@@ -75,6 +136,15 @@ export const useAddEditService = (tag) => {
           setValue("amount", response.data.amount);
           setValue("category", category);
           setValue("minutes", response.data.minutes);
+          setValue("displayName", response.data.displayName);
+          setValue("description", response.data.description);
+          setValue("webPrice", response.data.webPrice);
+          setValue("slug", response.data.slug);
+          setValue("video", [response.data.video]);
+          setValue("thumbnilImage", [response.data.thumbnilImage]);
+          setValue("backgrandImage", [response.data.backgrandImage]);
+          setValue("images", response.data.images);
+          setValue("featureList", response.data.featureList.map((feature, index) => ({index, value: feature})));
         } else {
           showToast(response?.message, false);
         }
@@ -119,10 +189,14 @@ export const useAddEditService = (tag) => {
   }, []);
 
   return {
+    fields,
     control,
-    handleSubmit,
-    onSubmit,
-    cancelHandler,
     categoryOptions,
+    addRow,
+    onSubmit,
+    setValue,
+    removeRow,
+    handleSubmit,
+    cancelHandler,
   };
 };

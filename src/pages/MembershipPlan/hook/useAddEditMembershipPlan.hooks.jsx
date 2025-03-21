@@ -55,7 +55,6 @@ export const useAddEditMembershipPlan = (tag) => {
     const onSubmit = async (data) => {
         try {
             dispatch(startLoading());
-            console.log('Data: ', data);
             const payload = { ...data };
             const formData = new FormData();
             if(tag === "add") {

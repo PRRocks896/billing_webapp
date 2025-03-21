@@ -4,8 +4,13 @@ import {
   CITY_LIST_API,
   UPDATE_CITY_API,
   DELETE_CITY_API,
+  CITY_FIND_API
 } from "../utils/constant";
 import { attachId, get, post, remove, put } from "./webRequest";
+
+export const getCityByFind = async (body) => {
+  return await post(CITY_FIND_API, body);
+}
 
 export const getCityList = async (body) => {
   const response = await post(CITY_LIST_API, body);
