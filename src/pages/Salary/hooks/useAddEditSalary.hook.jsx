@@ -27,7 +27,7 @@ export const useAddEditSalary = (tag) => {
     const { setValue, control, watch, getValues, handleSubmit } = useForm({
         defaultValues: {
             staffID: "",
-            month: moment().subtract(1, 'months').get('month'),
+            month: "", //moment().subtract(1, 'months').get('month'),
             year: moment().subtract(1, 'months').format('yyyy'),
             workingDays: "",
             weekOff: "",
@@ -51,27 +51,36 @@ export const useAddEditSalary = (tag) => {
         // eslint-disable-next-line
     }, [watch('staffID'), staffList]);
 
+    const currentMothDays = useMemo(() => {
+        const month = getValues('month');
+        const year = getValues('year');
+        if(!month || !year) {
+            return 0;
+        }
+        return moment(`${year}-${month}`, "YYYY-MM").daysInMonth();
+    },[watch('month'), watch('year')]);
+
     const totalLeave = useMemo(() => {
-        return (moment(new Date()).subtract(1, 'M').daysInMonth()) - (parseInt(getValues('workingDays') || 0) + parseInt(getValues('weekOff') || 0));
+        return currentMothDays - (parseInt(getValues('workingDays') || 0) + parseInt(getValues('weekOff') || 0));
         // eslint-disable-next-line
-    }, [watch('workingDays'), watch('weekOff')]);
+    }, [watch('workingDays'), watch('weekOff'), currentMothDays]);
 
     const totalLeaveAmount = useMemo(() => {
         const staff = selectedStaff;
-        const totalDays = moment(new Date()).subtract(1, 'M').daysInMonth();
+        const totalDays = currentMothDays; //moment(new Date()).subtract(1, 'M').daysInMonth();
         if(staff) {
             const perDaySalary = parseInt(staff.salary) / totalDays;
             return Math.round(totalLeave * perDaySalary);
         }
         return 0;
         // eslint-disable-next-line
-    }, [totalLeave, selectedStaff]);
+    }, [totalLeave, selectedStaff, currentMothDays]);
 
     const totalpayableAmount = useMemo(() => {
         const staff = selectedStaff;
         const expenseCut = parseInt(getValues('expenseCut') || '0');
         const advance = parseInt(getValues('advance') || '0');
-        const totalDays = moment(new Date()).subtract(1, 'M').daysInMonth();
+        const totalDays = currentMothDays; //moment(new Date()).subtract(1, 'M').daysInMonth();
         if(staff) {
             const perDaySalary = parseInt(staff.salary) / totalDays;
             const totalPayableDays = totalDays - totalLeave;
@@ -79,7 +88,7 @@ export const useAddEditSalary = (tag) => {
         }
         return 0;
         // eslint-disable-next-line
-    }, [totalLeave, selectedStaff, watch('expenseCut'), watch('advance')]);
+    }, [currentMothDays, totalLeave, selectedStaff, watch('expenseCut'), watch('advance')]);
 
     const fetchEditSalaryData = useCallback(async () => {
         try {
@@ -88,7 +97,7 @@ export const useAddEditSalary = (tag) => {
                 const {success, message, data} = await getSalaryById(id);
                 if (success) {
                     setValue('staffID', data.staffID);
-                    setValue('month', (parseInt(data.month) - 1));
+                    setValue('month', (parseInt(data.month)));
                     setValue("year", data.year);
                     setValue("workingDays", data.workingDays);
                     setValue("weekOff", data.weekOff);
@@ -166,6 +175,7 @@ export const useAddEditSalary = (tag) => {
         control,
         staffList,
         totalLeave,
+        currentMothDays,
         totalLeaveAmount,
         totalpayableAmount,
         setValue,

@@ -92,7 +92,8 @@ const AddEditSeo = ({tag}) => {
                                             name="pagePath"
                                             control={control}
                                             render={({
-                                                field: { value }
+                                                field: { onBlur, onChange, value },
+                                                fieldState: { error },
                                             }) => (
                                                 <FormControl
                                                     size="small"
@@ -104,7 +105,10 @@ const AddEditSeo = ({tag}) => {
                                                         size="small"
                                                         name="name"
                                                         value={value}
-                                                        disabled
+                                                        onChange={(e) => {
+                                                            onChange(e.target.value.toLowerCase())
+                                                        }}
+                                                        onBlur={onBlur}
                                                     />
                                                 </FormControl>
                                             )}
@@ -212,39 +216,42 @@ const AddEditSeo = ({tag}) => {
                                             }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <Controller
-                                            name="description"
-                                            control={control}
-                                            render={({
-                                                field: { onBlur, onChange, value },
-                                                fieldState: { error },
-                                            }) => (
-                                                <FormControl
-                                                    size="small"
-                                                    variant="standard"
-                                                    className="form-control"
-                                                >
-                                                    <TextField
-                                                        label="Description"
-                                                        size="small"
-                                                        name="name"
-                                                        multiline
-                                                        rows={6}
-                                                        value={value}
-                                                        onChange={onChange}
-                                                        onBlur={onBlur}
-                                                        error={!!error}
-                                                        helperText={error?.message}
-                                                    />
-                                                </FormControl>
-                                            )}
-                                            rules={{
-                                                required: "Description field required",
-                                            }}
-                                        />
-                                    </Grid>
                                 </Grid>
+                            </Grid>
+                        </Grid>
+                        <br/>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="description"
+                                    control={control}
+                                    render={({
+                                        field: { onBlur, onChange, value },
+                                        fieldState: { error },
+                                    }) => (
+                                        <FormControl
+                                            size="small"
+                                            variant="standard"
+                                            className="form-control"
+                                        >
+                                            <TextField
+                                                label="Description"
+                                                size="small"
+                                                name="name"
+                                                multiline
+                                                rows={6}
+                                                value={value}
+                                                onChange={onChange}
+                                                onBlur={onBlur}
+                                                error={!!error}
+                                                helperText={error?.message}
+                                            />
+                                        </FormControl>
+                                    )}
+                                    rules={{
+                                        required: "Description field required",
+                                    }}
+                                />
                             </Grid>
                         </Grid>
                     </FormGroup>

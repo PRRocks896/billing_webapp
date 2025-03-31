@@ -27,6 +27,7 @@ const AddEditSalary = ({ tag }) => {
         control,
         staffList,
         totalLeave,
+        currentMothDays,
         totalLeaveAmount,
         totalpayableAmount,
         setValue,
@@ -36,8 +37,6 @@ const AddEditSalary = ({ tag }) => {
         cancelHandler
     } = useAddEditSalary(tag);
 
-    const totalDays = moment(new Date()).subtract(1, 'M').daysInMonth();
-    
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -55,7 +54,6 @@ const AddEditSalary = ({ tag }) => {
                                         <FormControl fullWidth size="small">
                                             <InputLabel id="month">Select Month</InputLabel>
                                             <Select 
-                                                disabled
                                                 size="small"
                                                 label="Select Month"
                                                 labelId="month"
@@ -63,18 +61,18 @@ const AddEditSalary = ({ tag }) => {
                                                 onChange={onChange}
                                                 onBlur={onBlur}
                                             >
-                                                <MenuItem value={0}>Jan</MenuItem>
-                                                <MenuItem value={1}>Feb</MenuItem>
-                                                <MenuItem value={2}>March</MenuItem>
-                                                <MenuItem value={3}>Apr</MenuItem>
-                                                <MenuItem value={4}>May</MenuItem>
-                                                <MenuItem value={5}>June</MenuItem>
-                                                <MenuItem value={6}>July</MenuItem>
-                                                <MenuItem value={7}>Aug</MenuItem>
-                                                <MenuItem value={8}>Sept</MenuItem>
-                                                <MenuItem value={9}>Oct</MenuItem>
-                                                <MenuItem value={10}>Nov</MenuItem>
-                                                <MenuItem value={11}>Dec</MenuItem>
+                                                <MenuItem value={1}>Jan</MenuItem>
+                                                <MenuItem value={2}>Feb</MenuItem>
+                                                <MenuItem value={3}>March</MenuItem>
+                                                <MenuItem value={4}>Apr</MenuItem>
+                                                <MenuItem value={5}>May</MenuItem>
+                                                <MenuItem value={6}>June</MenuItem>
+                                                <MenuItem value={7}>July</MenuItem>
+                                                <MenuItem value={8}>Aug</MenuItem>
+                                                <MenuItem value={9}>Sept</MenuItem>
+                                                <MenuItem value={10}>Oct</MenuItem>
+                                                <MenuItem value={11}>Nov</MenuItem>
+                                                <MenuItem value={12}>Dec</MenuItem>
                                             </Select>
                                             {error && error.message &&
                                                 <FormHelperText error={true}>{error.message}</FormHelperText>
@@ -115,7 +113,8 @@ const AddEditSalary = ({ tag }) => {
                                         variant="outlined"
                                         label="Total Days"
                                         size="small"
-                                        value={moment(new Date()).subtract(1, 'M').daysInMonth()}
+                                        value={currentMothDays}
+                                        // value={moment(new Date()).subtract(1, 'M').daysInMonth()}
                                         disabled
                                     />
                                 </FormControl>
@@ -263,7 +262,7 @@ const AddEditSalary = ({ tag }) => {
                                                 type="number"
                                                 value={value}
                                                 onChange={(e) => {
-                                                    const remainingDays = parseInt(totalDays) - parseInt(getValues('workingDays') || '0');
+                                                    const remainingDays = currentMothDays - parseInt(getValues('workingDays') || '0');
                                                     const useForCheck = remainingDays <= 4 ? remainingDays : 4;
                                                     if(e.target.value <= useForCheck) {
                                                         onChange(e);
