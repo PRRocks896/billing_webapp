@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { listPayload, showToast } from "../../../utils/helper";
-import { sendOtp, verifyOtp, createStaff, getStaffById, updateStaff } from "../../../service/staff";
+import { sendOtp, sendStaffOtp, verifyOtp, createStaff, getStaffById, updateStaff } from "../../../service/staff";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -25,6 +25,7 @@ export const useAddEditStaff = (tag) => {
 
   const [verifiedOtp, setVerifiedOtp] = useState(false);
   const [openVerifyOtpModal, setOpenVerifyOtpModal] = useState(false);
+  const [isStaffNoOtpSend, setIsStaffNoOtpSend] = useState(false);
 
   const { control, handleSubmit, setValue, getValues, formState: { dirtyFields } } = useForm({
     defaultValues: {
@@ -128,6 +129,28 @@ export const useAddEditStaff = (tag) => {
     }
   }
 
+  const handleStaffMobileSendOtp = async () => {
+    try {
+      dispatch(startLoading());
+      const {success, message} = await sendStaffOtp({
+        mobile: getValues("phoneNumber"),
+        petName: getValues("nickName"),
+        originalName: getValues("name"),
+        branchName: loggedInUser.lastName
+      });
+      if (success) {
+        setOpenVerifyOtpModal(true);
+        setIsStaffNoOtpSend(true);
+      } else {
+        showToast(message, false);
+      }
+    } catch(err) {
+      showToast(err?.message, false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
   const handleVerifyOtp = async (otp) => {
     try {
       dispatch(startLoading());
@@ -137,8 +160,12 @@ export const useAddEditStaff = (tag) => {
       if(success) {
         setVerifiedOtp(true);
         setOpenVerifyOtpModal(false);
+        if(!isStaffNoOtpSend) {
+          await handleStaffMobileSendOtp();
+          return;
+        }
         onSubmit(getValues());
-        showToast(message);
+        // showToast(message, true);
       } else {
         showToast(message, false);
       }
@@ -235,6 +262,7 @@ export const useAddEditStaff = (tag) => {
     isEditByBranch,
     isShowBankDetail,
     employeeTypeList,
+    isStaffNoOtpSend,
     openVerifyOtpModal,
     onSubmit,
     getValues,
@@ -245,5 +273,6 @@ export const useAddEditStaff = (tag) => {
     handleVerifyOtp,
     setIsShowBankDetail,
     setOpenVerifyOtpModal,
+    handleStaffMobileSendOtp,
   };
 };

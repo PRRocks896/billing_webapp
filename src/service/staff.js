@@ -11,6 +11,10 @@ export const sendOtp = async(body) => {
   return post(`${CREATE_STAFF_API}/send-otp`, body);
 }
 
+export const sendStaffOtp = async (body) => {
+  return post(`${CREATE_STAFF_API}/mobile-send-otp`, body);
+}
+
 export const verifyOtp = async (body) => {
   return post(`${CREATE_STAFF_API}/verify-otp`, body);
 }

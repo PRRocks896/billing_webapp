@@ -24,7 +24,7 @@ const VerifyOtp = ({
     const [seconds, setSeconds] = useState(30); // Initial countdown time
     const [canResend, setCanResend] = useState(false);
     const [attempt, setAttempt] = useState(3);
-    
+
     useEffect(() => {
         let timer;
     
@@ -41,6 +41,7 @@ const VerifyOtp = ({
       }, [seconds, canResend]);
 
     useEffect(() => {
+        console.log(isOpen);
         if(isOpen) {
             setOtp(null);
             setAttempt(3);

@@ -28,6 +28,7 @@ const AddEditStaff = ({ tag }) => {
     isEditByBranch,
     isShowBankDetail,
     employeeTypeList,
+    isStaffNoOtpSend,
     openVerifyOtpModal,
     onSubmit,
     getValues,
@@ -37,6 +38,7 @@ const AddEditStaff = ({ tag }) => {
     handleVerifyOtp,
     setIsShowBankDetail,
     setOpenVerifyOtpModal,
+    handleStaffMobileSendOtp
   } = useAddEditStaff(tag);
 
   return (
@@ -683,16 +685,16 @@ const AddEditStaff = ({ tag }) => {
             </Button>
           </Grid>
         </Grid>
-        {openVerifyOtpModal &&
+        {/* {openVerifyOtpModal && */}
           <VerifyOtp
-            title="Verify Staff Add Permission OTP"
+            title={isStaffNoOtpSend ? "Verify Staff Mobile No Via OTP" : "Verify Staff Add Permission OTP"}
             isOpen={openVerifyOtpModal}
             isShowResend={true}
             setOpen={setOpenVerifyOtpModal}
             handleEnterOtp={handleVerifyOtp}
-            resendOtp={handleSubmit(handleSendOtp)}
+            resendOtp={handleSubmit(isStaffNoOtpSend ? handleStaffMobileSendOtp : handleSendOtp)}
           />
-        }
+        {/* } */}
       </form>
     </>
   );
