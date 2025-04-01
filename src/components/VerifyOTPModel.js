@@ -41,7 +41,6 @@ const VerifyOtp = ({
       }, [seconds, canResend]);
 
     useEffect(() => {
-        console.log(isOpen);
         if(isOpen) {
             setOtp(null);
             setAttempt(3);
