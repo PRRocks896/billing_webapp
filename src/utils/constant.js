@@ -135,3 +135,5 @@ export const BLOG = "api/blog";
 export const WEBSITEBOOKING = "api/website-booking"
 
 export const NewsLetter = "api/newsLetter";
+
+export const ADVANCE = "api/advance"

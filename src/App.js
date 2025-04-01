@@ -77,6 +77,8 @@ import AddEditBlog from "./pages/Blog/addEditBlog";
 import WebsiteBooking from "./pages/WebsiteBooking";
 import AddEditWebsiteBooking from "./pages/WebsiteBooking/addEditWebsiteBooking";
 import NewsLetter from "./pages/NewsLetter";
+import Advance from "./pages/Advance";
+import AddEditAdvance from "./pages/Advance/AddEditAdvance";
 
 const token = getAuthToken();
 
@@ -109,6 +111,33 @@ const App = () => {
             <ProtectedRoute
               path="newsletter"
               Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <NewsLetter /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'advance',
+          element: (
+            <ProtectedRoute
+              path="advance"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Advance /> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'add-advance',
+          element: (
+            <ProtectedRoute
+              path="add-advance"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditAdvance tag="add"/> : <NoConnection/>}
+            />
+          )
+        },
+        {
+          path: 'edit-advance/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-advance/:id"
+              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditAdvance tag="edit"/> : <NoConnection/>}
             />
           )
         },
