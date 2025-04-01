@@ -76,7 +76,7 @@ export const useAddEditAdvance = (tag) => {
             }
             setValue("staffID", data?.px_staff?.id);
             setValue("paymentID", data?.px_payment_type?.id);
-            setValue("date", data.date);
+            setValue("date", moment(new Date(data.date)).format('yyyy-MM-DD'));
             setValue("permissionName", data.permissionName);
             setValue("managerName", data.managerName);
             setValue("amount", data.amount);
