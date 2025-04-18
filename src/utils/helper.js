@@ -8,8 +8,6 @@ const modifiedapiUrl = apiUrl.replace(/\/api\/?$/, '');
 const formattedApiUrl = modifiedapiUrl
 
 export const imagePath = (path) => {
-  console.log(formattedApiUrl);
-  console.log(path);
   return `${formattedApiUrl}${path}`;
 };
 

@@ -98,7 +98,7 @@ export const useAddEditCreateBill = (tag) => {
       phoneNumber: "",
       phoneNumber2: "",
       referenceBy: "",
-      managerName: ""
+      managerName: localStorage.getItem("managerName") || "",
     },
     mode: "onBlur",
   });

@@ -135,6 +135,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     value={value}
                                                     onChange={(e) => onChange(e.target.value.toUpperCase())}
                                                     onBlur={onBlur}
+                                                    // disabled
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
                                                 />

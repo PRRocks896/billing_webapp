@@ -28,7 +28,7 @@ export const useAddMembership = () => {
             customerID: "",
             paymentID: "",
             membershipPlanID: "",
-            managerName: "",
+            managerName: localStorage.getItem("managerName") || '',
             registerPhoto: null,
             billNo: "", //localStorage.getItem('latestBillNo'),
             extraHours: "0",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import Sidebar from "./Sidebar";
@@ -11,7 +11,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import Clock from "../components/Clock";
+
 
 const drawerWidth = 300;
 
@@ -45,10 +47,9 @@ const UserName = React.memo(({ firstName = "", lastName = "" }) => {
   return <Typography>{firstName + " " + lastName}</Typography>;
 });
 
-const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
+const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => {
   const data = useSelector((state) => state.loggedInUser);
   let location = useLocation();
-
   let pageTitle = "";
 
   if (location.pathname === "/") {
@@ -57,6 +58,10 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     pageTitle = location.pathname.split("/")[1];
   }
   pageTitle = pageTitle.toUpperCase();
+
+  const managerName = useMemo(() => {
+    return localStorage.getItem("managerName") || "";
+  }, [localStorage.getItem("managerName")]);
 
   return (
     <>
@@ -79,9 +84,14 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open }) => {
           >
             {pageTitle}
           </Typography>
+          <Box className="manager-name">
+            {/* <Button style={{ width: '100px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
+              {managerName}
+            </Button> */}
+          </Box>
           <Box className="username">
-            <UserName firstName={data?.firstName} lastName={data?.lastName} />
-            <Clock />
+              <UserName firstName={data?.firstName} lastName={data?.lastName} />
+              <Clock />
           </Box>
         </Toolbar>
       </AppBar>

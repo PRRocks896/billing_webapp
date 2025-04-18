@@ -19,6 +19,10 @@ export const verifyOtp = async (body) => {
   return post(`${CREATE_STAFF_API}/verify-otp`, body);
 }
 
+export const getManager = async (body) => {
+  return post(`${CREATE_STAFF_API}/get-manager`, body);
+}
+
 export const getStaffList = async (body) => {
   const response = await post(STAFF_LIST_API, body);
   return response;

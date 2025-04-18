@@ -45,6 +45,7 @@ const Salary = () => {
         month,
         isAdmin,
         branchList,
+        companyList,
         visibleRows,
         isDeleteModalOpen,
         setYear,
@@ -54,6 +55,7 @@ const Salary = () => {
         deleteHandler,
         handleChangePage,
         setSelectedBranch,
+        setSelectedCompany,
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
@@ -110,21 +112,54 @@ const Salary = () => {
                             />
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
+                        <Autocomplete
+                            freeSolo
+                            fullWidth
+                            size="small"
+                            id="companyID"
+                            disablePortal
+                            // multiple
+                            // isOptionEqualToValue={(option, value) => option?.id === value}
+                            getOptionLabel={(option) => option.companyName ? option.companyName : ''}
+                            options={companyList || []}
+                            // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
+                            onChange={(_event, value) => {
+                                console.log(value);
+                                if(value && typeof value === 'object') {
+                                    setSelectedCompany(value.id);
+                                    // fetchBranch();
+                                } else {
+                                    setSelectedCompany(null);
+                                }
+                            }}
+                            renderOption={(props, option) => (
+                                <li {...props} key={option.id}>
+                                    {option.companyName}
+                                </li>
+                            )}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Company"
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
                         <Autocomplete
                             freeSolo
                             fullWidth
                             size="small"
                             id="userID"
                             disablePortal
-                            // multiple
                             // isOptionEqualToValue={(option, value) => option?.id === value}
                             getOptionLabel={(option) => option.branchName ? option.branchName : ''}
                             options={branchList || []}
                             // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
                             onChange={(_event, value) => {
                                 if(value) {
-                                    setSelectedBranch(value)
+                                    setSelectedBranch(value?.id)
                                 } else {
                                     setSelectedBranch(null);
                                 }

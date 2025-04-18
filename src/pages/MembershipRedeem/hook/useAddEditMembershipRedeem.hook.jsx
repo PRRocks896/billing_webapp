@@ -50,7 +50,7 @@ export const useAddEditMembershipRedeem = (tag) => {
             serviceName: "",
             billNo: localStorage.getItem('latestBillNo'),
             minutes: "",
-            managerName: "",
+            managerName: localStorage.getItem("managerName") || '',
         },
         mode: "onBlur",
     });

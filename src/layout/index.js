@@ -8,7 +8,10 @@ import { styled, useTheme } from "@mui/material/styles";
 import Header from "./Header";
 import { getAuthToken, showToast } from "../utils/helper";
 import { loggedInUserAction } from "../redux/loggedInUser";
-import { fetchLoggedInUserData } from "../service/loggedInUser";
+import { fetchLoggedInUserData, fetchServerDate } from "../service/loggedInUser";
+
+import useManagerName from "../hook/useManagerName";
+import SelectManager from "../components/SelectManager";
 
 const drawerWidth = 300;
 
@@ -46,6 +49,15 @@ const LayoutProvider = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const {
+    showModal,
+    managerOption,
+    handleClose,
+    setShowModal,
+    fetchManager,
+    handleSelectManager
+  } = useManagerName();
+  
   const token = getAuthToken();
 
   const [open, setOpen] = useState(true);
@@ -92,6 +104,12 @@ const LayoutProvider = () => {
       } else {
         showToast(response.message, false);
       }
+      // if(!localStorage.getItem("serverDate")) {
+      //   const serverDate = await fetchServerDate();
+      //   if(serverDate) {
+      //     localStorage.setItem("serverDate", serverDate.split("T")[0])
+      //   }
+      // }
     } catch (error) {
       showToast(error.message, false);
     }
@@ -103,6 +121,19 @@ const LayoutProvider = () => {
     }
     // eslint-disable-next-line
   }, [token]);
+
+  if(showModal) {
+    return (
+      <SelectManager
+        fetchManager={fetchManager}
+        isOpen={showModal}
+        handleClose={handleClose}
+        handleSelectManager={handleSelectManager}
+        managerOption={managerOption}
+        setOpen={handleClose}
+      />
+    );
+  }
 
   if (
     pathname.startsWith("/login") ||
@@ -120,6 +151,7 @@ const LayoutProvider = () => {
       <>
         <Box>
           <Header
+            setShowModal={setShowModal}
             handleDrawerOpen={handleDrawerOpen}
             handleDrawerClose={handleDrawerClose}
             open={open}

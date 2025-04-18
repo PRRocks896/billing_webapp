@@ -18,6 +18,7 @@ export const useAddEditAdvance = (tag) => {
     
     const [ staffOption, setStaffOption ] = useState([]);
     const [ paymentOption, setPaymentOption ] = useState([]);
+    const [ managerOption, setManagerOption] = useState([]);
 
     const {
         control,
@@ -29,10 +30,10 @@ export const useAddEditAdvance = (tag) => {
         defaultValues: {
             staffID: "",
             paymentID: "",
+            managerID: parseInt(localStorage.getItem("managerId")) || "",
             date: moment(new Date()).format('yyyy-MM-DD'),
             amount: "",
             permissionName: "",
-            managerName: ""
         }
     });
 
@@ -51,7 +52,6 @@ export const useAddEditAdvance = (tag) => {
                     updatedBy: loggedInUser.id
                 }
             }
-            console.log(payload);
             const response = tag !== 'add' ? await updateAdvance(payload, id) : await createAdvance(payload);
             if(response && response.success) {
                 showToast(response.message, true);
@@ -74,11 +74,11 @@ export const useAddEditAdvance = (tag) => {
                 showToast(message, false);
                 return;
             }
-            setValue("staffID", data?.px_staff?.id);
+            setValue("staffID", data?.staff?.id);
             setValue("paymentID", data?.px_payment_type?.id);
             setValue("date", moment(new Date(data.date)).format('yyyy-MM-DD'));
             setValue("permissionName", data.permissionName);
-            setValue("managerName", data.managerName);
+            setValue("managerID", data?.manager?.id);
             setValue("amount", data.amount);
         } catch(err) {
             showToast(err.message, false);
@@ -101,9 +101,11 @@ export const useAddEditAdvance = (tag) => {
             const [
                 staffResponse,
                 paymentResponse,
+                managerResponse
             ] = await Promise.all([
                 getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition} : {...whereCondition, createdBy: loggedInUser.id}, 100000)),
                 getPaymentTypeList(payload),
+                getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "MANAGER"} : {...whereCondition, searchText: "MANAGER", createdBy: loggedInUser.id}, 100000))
             ]);
             if(staffResponse?.statusCode === 200 && staffResponse?.success) {
                 setStaffOption(staffResponse.data?.rows);
@@ -114,6 +116,11 @@ export const useAddEditAdvance = (tag) => {
                 setPaymentOption(paymentResponse.data?.rows);
             } else {
                 setPaymentOption([]);
+            }
+            if(managerResponse?.statusCode === 200 && managerResponse?.success) {
+                setManagerOption(managerResponse.data?.rows);
+            } else {
+                setManagerOption([]);
             }
         }
         fetchDropDownList();
@@ -130,6 +137,7 @@ export const useAddEditAdvance = (tag) => {
         staffOption,
         isSubmitting,
         paymentOption,
+        managerOption,
         onSubmit,
         handleSubmit,
         cancelHandler

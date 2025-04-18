@@ -215,6 +215,7 @@ const AddEditMembership = ({tag}) => {
                                                         value={value || ''}
                                                         onChange={(e) => onChange(e.target.value.toUpperCase())}
                                                         onBlur={onBlur}
+                                                        // disabled
                                                         error={!!error}
                                                         helperText={error?.message}
                                                     />

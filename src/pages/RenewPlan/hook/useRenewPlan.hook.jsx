@@ -52,7 +52,7 @@ export const useRenewPlan = () => {
             membershipID: membershipID,
             paymentID: "",
             membershipPlanID: "",
-            managerName: "",
+            managerName: localStorage.getItem("managerName") || "",
             customerPhoto: "",
             billNo: localStorage.getItem('latestBillNo'),
             extraHours: "0",

@@ -37,7 +37,7 @@ export const useAddEditDailyReportHook = (tag) => {
         defaultValues: {
             userID: loggedInUser.id,
             dailyReportDate: moment(new Date()).format('yyyy-MM-DD'),
-            managerName: '',
+            managerName: localStorage.getItem("managerName") || '',
             totalStaffPresent: '',
             totalCustomer: '',
             totalMemberGuest: '',

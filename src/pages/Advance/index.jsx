@@ -76,12 +76,12 @@ const Advance = () => {
                   return (
                     <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
-                      <TableCell>{row?.px_staff.nickName}</TableCell>
+                      <TableCell>{row?.staff.nickName}</TableCell>
                       <TableCell align="left">{moment(row?.date).format("yyyy-MM-DD")}</TableCell>
                       <TableCell align="left">{row?.px_payment_type.name}</TableCell>
                       <TableCell align="left">{row?.amount}</TableCell>
                       <TableCell align="left">{row?.permissionName}</TableCell>
-                      <TableCell align="left">{row?.managerName}</TableCell>
+                      <TableCell align="left">{row?.manager?.nickName}</TableCell>
                       {rights.edit && (
                             <TableCell>
                                 <Switch

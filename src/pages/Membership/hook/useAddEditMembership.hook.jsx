@@ -49,7 +49,7 @@ export const useAddEditMembership = (tag) => {
             customerID: "",
             paymentID: "",
             membershipPlanID: "",
-            managerName: "",
+            managerName: localStorage.getItem("managerName") || '',
             customerPhoto: "",
             billNo: localStorage.getItem('latestBillNo'),
             extraHours: "0",

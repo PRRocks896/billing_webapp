@@ -23,6 +23,7 @@ const AddEditAdvance = ({ tag }) => {
         staffOption,
         isSubmitting,
         paymentOption,
+        managerOption,
         onSubmit,
         handleSubmit,
         cancelHandler
@@ -172,28 +173,45 @@ const AddEditAdvance = ({ tag }) => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <Controller
-                                    name="managerName"
+                                    name="managerID"
                                     control={control}
                                     render={({
                                         field: { onBlur, onChange, value },
                                         fieldState: { error },
                                     }) => (
-                                        <FormControl size="small" fullWidth>
-                                            <TextField
-                                                label="Manager Name"
-                                                variant="outlined"
-                                                size="small"
-                                                name="managerName"
-                                                value={value || ""}
-                                                onChange={(e) => onChange(e.target.value.toUpperCase())}
-                                                onBlur={onBlur}
-                                                error={!!error}
-                                                helperText={error?.message}
-                                            />
-                                        </FormControl>
+                                        <Autocomplete
+                                            freeSolo
+                                            size="small"
+                                            id="managerID"
+                                            options={managerOption || []}
+                                            getOptionLabel={(option) => option.nickName || ''}
+                                            isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                                            value={managerOption?.find((option) => option.id === value) ?? ''}
+                                            // onBlur={onBlur}
+                                            onChange={(_event, value) => {
+                                                if (value) {
+                                                    onChange(value?.id)
+                                                } else {
+                                                    onChange(null);
+                                                }
+                                            }}
+                                            renderOption={(props, option) => (
+                                                <li {...props} key={option.id}>
+                                                    {option.nickName}
+                                                </li>
+                                            )}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Manager"
+                                                    error={!!error}
+                                                    helperText={error?.message}
+                                                />
+                                            )}
+                                        />
                                     )}
                                     rules={{
-                                        required: "Please Enter Manager Name",
+                                        required: "Please Select Maanger",
                                     }}
                                 />
                             </Grid>

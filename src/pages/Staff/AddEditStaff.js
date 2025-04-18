@@ -193,7 +193,7 @@ const AddEditStaff = ({ tag }) => {
                           <TextField
                             id="phoneNumber"
                             type="number"
-                            label="Phone"
+                            label="Whatsapp Number"
                             size="small"
                             name="phoneNumber"
                             value={value}
@@ -209,14 +209,14 @@ const AddEditStaff = ({ tag }) => {
                         </FormControl>
                       )}
                       rules={{
-                        required: "Phone number is required",
+                        required: "Whatsapp Number is required",
                         maxLength: {
                           value: 10,
-                          message: "Phone number must be 10 digit",
+                          message: "Whatsapp Number must be 10 digit",
                         },
                         minLength: {
                           value: 10,
-                          message: "Phone number must be 10 digit",
+                          message: "Whatsapp Number must be 10 digit",
                         },
                       }}
                     />

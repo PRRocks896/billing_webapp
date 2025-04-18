@@ -33,7 +33,7 @@ export const useAddEditSalary = (tag) => {
             weekOff: "",
             advance: '0',
             expenseCut: '0',
-            staffStatus: "Working",
+            staffStatus: "",
             accountHolderName: "",
             accountNumber: "",
             reEnterAccountNumber: "",
@@ -131,8 +131,8 @@ export const useAddEditSalary = (tag) => {
                 }
             }
             const response = tag === "add"
-                ? await createSalary({ ...data, month: parseInt(data.month) + 1, createdBy: loggedInUser.id })
-                : await updateSalary({ ...data, month: parseInt(data.month) + 1, updatedBy: loggedInUser.id }, id);
+                ? await createSalary({ ...data, month: parseInt(data.month), createdBy: loggedInUser.id })
+                : await updateSalary({ ...data, month: parseInt(data.month), updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);

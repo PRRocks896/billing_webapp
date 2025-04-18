@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
-import { getReportList } from "../../../service/report";
+import { getReportList, getGstReportList } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { getCompanyList } from "../../../service/company";
@@ -12,12 +12,14 @@ export const useReport = () => {
   const dispatch = useDispatch();
   const [pdfData, setPdfData] = useState(null);
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const [gstDateRange, setGstDateRange] = useState([new Date(), new Date()]);
   // const [branchOptions, setBranchOptions] = useState([]);
   // const [branch, setBranch] = useState([]);
   const [company, setCompany] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [paymentList, setPaymentList] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState([]);
+  const [selectedGstPayment, setSelectedGstPayment] = useState([]);
   const user = useSelector((state) => state.loggedInUser);
 
   const companyOptions = useMemo(() => {
@@ -28,6 +30,10 @@ export const useReport = () => {
     return data;
   }, [company]);
 
+  const handleGstDateChange = (value) => {
+    setGstDateRange(value);
+  };
+
   const handleDateChange = (value) => {
     setDateRange(value);
   };
@@ -36,6 +42,10 @@ export const useReport = () => {
   };
   const handlePaymentChange = (newValue) => {
     setSelectedPayment(newValue);
+  }
+
+  const handleGstPaymentChange = (newValue) => {
+    setSelectedGstPayment(newValue);
   }
 
   const fetchBranch = async () => {
@@ -89,6 +99,24 @@ export const useReport = () => {
     }
   }, [user.roleID]);
 
+  const fetchGstReportData = async () => {
+    try {
+      dispatch(startLoading());
+      setPdfData(null);
+      const body = {
+        paymentID: selectedGstPayment,
+        startDate: moment(gstDateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
+        endDate: moment(gstDateRange[1]).format('yyyy-MM-DD') //formatDate(dateRange[1])
+      };
+      const response = await getGstReportList(body, `Bill Software all branch GST report ${moment(gstDateRange[0]).format('DD-MM-yyyy')}_${moment(gstDateRange[1]).format('DD-MM-yyyy')}.xlsx`.toUpperCase());
+      setPdfData(response);
+    } catch(error) {
+      showToast("No report found", false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
   const fetchReportDate = async () => {
     try {
       setPdfData(null);
@@ -122,6 +150,7 @@ export const useReport = () => {
     // branch,
     pdfData,
     dateRange,
+    gstDateRange,
     paymentList,
     // branchOptions,
     selectedCompany,
@@ -131,5 +160,8 @@ export const useReport = () => {
     handleDateChange,
     handleBranchChange,
     handlePaymentChange,
+    fetchGstReportData,
+    handleGstDateChange,
+    handleGstPaymentChange,
   };
 };

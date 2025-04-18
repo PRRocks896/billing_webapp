@@ -106,6 +106,7 @@ export const UPDATE_RIGHT_API = "api/right/";
 // reports apis
 
 export const REPORT_LIST_API = "api/report";
+export const GST_REPORT_LIST_API = "api/report/gst-report";
 
 // Membership Plan apis
 export const MEMBERSHIP = 'api/membership'

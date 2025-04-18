@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import moment from "moment";
 
-import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast, generateSlug } from "../../../utils/helper";
 
 import {
   updateSalary,
@@ -14,6 +14,9 @@ import {
 import {
   getUserList
 } from "../../../service/users";
+import {
+  getCompanyList
+} from "../../../service/company";
 import { salaryAction } from "../../../redux/salary";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
@@ -27,8 +30,10 @@ const useSalaryHooks = () => {
     const [month, setMonth] = useState((moment().month() + 1));
     const [year, setYear] = useState(moment().format('yyyy'));
     const [selectedBranch, setSelectedBranch] = useState(null);
+    const [selectedCompany, setSelectedCompany] = useState(null);
 
     const [branchList, setBranchList] = useState([]);
+    const [companyList, setCompanyList] = useState([]);
     const [deleteId, setDeleteId] = useState("");
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -123,14 +128,14 @@ const useSalaryHooks = () => {
 
     const fetchBranch = async () => {
       try {
-        const body = listPayload(0, {isActive: true, isDeleted: false}, 1000);
+        const body = listPayload(0, {isActive: true, isDeleted: false, companyID: selectedCompany}, 1000);
   
         const response = await getUserList(body);
         if (response?.statusCode === 200) {
           const payload = response?.data?.rows;
           const branchOption = payload.filter(item => item.roleID !== 1);
-          setBranchList(branchOption);
-          // setBranchList([{id: null, branchName: 'All'}].concat(branchOption));
+          // setBranchList(branchOption);
+          setBranchList([{id: null, branchName: 'All'}].concat(branchOption));
         } else if (response?.statusCode === 404) {
           const payload = [];
           setBranchList(payload);
@@ -177,15 +182,38 @@ const useSalaryHooks = () => {
           showToast('Please Enter Correct Year', false);
           return;
         }
-        if(selectedBranch === null) {
-          showToast('Please Select Branch', false);
-          return;
-        }
+        // if(selectedBranch === null) {
+        //   showToast('Please Select Branch', false);
+        //   return;
+        // }
+        const selectedComapnyDetail = companyList.find(item => item.id === selectedCompany);
+        const selectedBranchDetail = branchList.filter((item) => item.id !== null).find(item => item.id === selectedBranch);
+        const fileName = `${selectedBranchDetail ? `${generateSlug(selectedBranchDetail.branchName)}_salary_report` : selectedComapnyDetail ? `${generateSlug(selectedComapnyDetail.companyName)}_salary_report` : 'green_day_spa_salary_report'}_${month}_${year}.xlsx`;
         await downloadSalary({
           year: year,
           month: month,
-          branchId: selectedBranch?.id
-        }, `${selectedBranch?.branchName}_${month}_${year}.xlsx`);
+          branchId: selectedBranch,
+          companyID: selectedCompany
+        }, fileName);
+      } catch(err) {
+        showToast(err?.response?.statusText, false);
+      } finally {
+        dispatch(stopLoading());
+      }
+    }
+
+    const fetchCompany = async () => {
+      try {
+        dispatch(startLoading());
+        const body = listPayload(0, {isActive: true, isDeleted: false}, 1000);
+        const response = await getCompanyList(body);
+        if (response?.statusCode === 200) {
+          const payload = response?.data?.rows;
+          setCompanyList(payload);
+        } else if (response?.statusCode === 404) {
+          const payload = [];
+          setCompanyList(payload);
+        }
       } catch(err) {
         showToast(err?.response?.statusText, false);
       } finally {
@@ -195,10 +223,24 @@ const useSalaryHooks = () => {
 
     useEffect(() => {
       if(isAdmin) {
-        fetchBranch();
+        fetchCompany();
       }
       // eslint-disable-next-line
     }, [isAdmin]);
+
+    // useEffect(() => {
+    //   if(isAdmin) {
+    //     fetchBranch();
+    //   }
+    //   // eslint-disable-next-line
+    // }, [isAdmin]);
+
+    useEffect(() => {
+      if(selectedCompany) {
+        fetchBranch();
+      }
+      // eslint-disable-next-line
+    }, [selectedCompany])
 
     useEffect(() => {
       fetchSalaryData()
@@ -212,16 +254,20 @@ const useSalaryHooks = () => {
         rights,
         isAdmin,
         branchList,
+        companyList,
         visibleRows,
         selectedBranch,
+        selectedCompany,
         isDeleteModalOpen,
         setYear,
         setMonth,
         download,
         searchList,
+        fetchBranch,
         deleteHandler,
         handleChangePage,
         setSelectedBranch,
+        setSelectedCompany,
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,

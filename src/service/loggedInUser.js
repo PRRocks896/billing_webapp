@@ -5,3 +5,7 @@ export const fetchLoggedInUserData = async () => {
   const response = await get(GET_LOGGED_IN_USER_API);
   return response;
 };
+
+export const fetchServerDate = async () => {
+  return await get('api/servertime');
+}
