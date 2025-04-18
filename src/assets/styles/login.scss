@@ -1,0 +1,70 @@
+body{
+  .login{
+    overflow: hidden;
+    .image-box{
+      height: 100vh;
+      border-right: 1px solid #ccc;
+      box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      // min-height: 100vh !important;
+  
+      .billing-image{
+        position: absolute;
+        top: 50%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+
+        img{
+          width: 100%;
+          height: auto;
+        }
+      }
+      
+      .background-img{
+        width: 100%;
+        max-height: 100vh;
+        min-height: 100vh;
+      }
+    }
+    .login-box{
+      display: flex;
+      flex-direction: column;
+      width: 500px !important;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+
+      .login-heading{
+        text-align: center; 
+        color: var(--color-grey);
+      }
+      .forgot-heading{
+        align-self: flex-end;
+        color: var(--color-grey) !important;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      @media (max-width: 940px) {
+        .login-form-control{
+          width: 80% !important;
+        }
+        .field-box{
+          width: 80% !important;
+        }
+        .forgot-heading{
+          margin-right: 40px;
+        }
+        .login-action-box{
+          width: 35% !important;
+        }
+        .login{
+          .image-box{
+            .billing-image{
+              width: 500px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

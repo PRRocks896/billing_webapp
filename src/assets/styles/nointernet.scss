@@ -1,0 +1,27 @@
+.no-connection-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  height: 100vh;
+}
+
+.no-internet-page {
+  text-align: center;
+  padding: 20px;
+}
+
+.no-internet-page h1 {
+  font-size: 3rem;
+  color: #21ab58;
+}
+
+.no-internet-page img {
+  width: 300px;
+  height: auto;
+  margin: 20px;
+}
+
+.no-internet-page p {
+  font-size: 1.2rem;
+}

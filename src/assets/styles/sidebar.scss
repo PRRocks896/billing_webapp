@@ -1,0 +1,126 @@
+// Sidebar
+.sidebar{
+  .MuiDrawer-paper{
+    background-color: var(--color-black);
+
+    .site-logo{
+      min-height: 130px;
+      position: relative;
+      margin-bottom: 0px;
+
+      @media(max-width:1560.98px){
+        min-height: 130px;
+      }
+      img{
+        margin: 0 auto;
+        // width: 50%;
+        // height: auto;
+      }
+      button{
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-color: var(--color-green);
+        border: 1px solid var(--color-green);
+        padding: 0 2px 0 0;
+        font-size: 25px;
+        color: var(--color-white);
+      }
+    }
+    .sidebar-menu{
+      margin-top: 20px;
+      padding-left: 20px;
+      padding-right: 20px;
+
+      min-height: calc(100vh - 220px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .menu-list{
+        background-color: transparent;
+        box-shadow: none;
+        margin: 0;
+        margin-bottom: 15px;
+        &:before{
+          display: none;
+        }
+        .logout-title{
+          background-color: var(--color-green);
+        }
+        .menu-title{
+          border-radius: 6px;
+          min-height: 45px !important;
+          max-height: 45px !important;
+          padding-right: 10px;
+          &.Mui-expanded,&:hover{
+            background-color: var(--color-white);
+            p{
+              color: var(--color-black);
+            }
+            svg{
+              color: var(--color-black);
+            }
+          }
+          svg{
+            font-size: 20px;
+            color: #fff;
+          }
+          .Mui-expanded{
+            svg{
+              transform: rotate(-90deg);
+            }
+          }
+          p{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 30px;
+            color: var(--color-white);
+            svg{
+              width: 20px;
+              height: 20px;
+              transform: rotate(0deg) !important;
+            }
+          }
+
+        }
+        .sub-menu-list{
+          padding-bottom: 0;
+          margin-left: 24px;
+          .sub-menu-link{
+            cursor: pointer;
+            p{
+              display: flex;
+              align-items: center;
+              gap: 18px;
+              font-weight: 400;
+              font-size: 15px;
+              line-height: 27px;
+              color: var(--color-white);
+              margin-top: 10px;
+              svg{
+                fill: var(--color-white);
+              }
+            }
+            &.active{
+              p{
+                svg{
+                  fill:var(--color-green);
+                  color:var(--color-green);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.page-wrapper{
+  padding: 36px 30px 30px 30px !important;
+}
