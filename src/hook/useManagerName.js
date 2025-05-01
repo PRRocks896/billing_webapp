@@ -39,6 +39,12 @@ const useManagerName = () => {
     }
 
     const handleSelectManager = (selectedManager) => {
+        if(selectedManager && selectedManager.length > 0) {
+            localStorage.setItem("managerId", selectedManager.map((item) => item.id).join(","));
+            localStorage.setItem("managerName", selectedManager.map((item) => item.name).join(","));
+            localStorage.setItem("serverDate", moment(new Date()).format("YYYY-MM-DD"));
+            // setShowModal(false);
+        }
         // if(selectedManager && typeof selectedManager === "object") {
         //     localStorage.setItem("managerId", selectedManager.id);
         //     localStorage.setItem("managerName", selectedManager.name);
@@ -48,13 +54,13 @@ const useManagerName = () => {
     }
 
     useEffect(() => {
-        // if(isDateChanged) {
-        //     setShowModal(true);
-        //     localStorage.removeItem("managerId");
-        //     localStorage.removeItem("managerName");
-        //     localStorage.removeItem("serverDate");
-        // }
-        // fetchManager();
+        if(isDateChanged) {
+            setShowModal(true);
+            localStorage.removeItem("managerId");
+            localStorage.removeItem("managerName");
+            localStorage.removeItem("serverDate");
+        }
+        fetchManager();
     }, [isDateChanged]);
 
     return {

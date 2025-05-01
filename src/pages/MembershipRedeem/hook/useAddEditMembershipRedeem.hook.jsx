@@ -165,7 +165,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                 billNo: info.billNo,
                 minutes: info.minutes,
                 remainMinutes: parseInt(info?.membershipID?.minutes) > 0 ? (parseInt(info?.membershipID?.minutes) - parseInt(info.minutes)) : 0,
-                managerName: info.managerName,
+                managerName: localStorage.getItem('managerId'),
                 createdBy: loggedInUser?.id,
                 updatedBy: loggedInUser?.id,
                 billDetail: {
@@ -184,7 +184,7 @@ export const useAddEditMembershipRedeem = (tag) => {
                     }]),
                     cardNo: "",
                     grandTotal: 1,
-                    managerName: info.managerName,
+                    managerName: localStorage.getItem('managerId'),
                     createdBy: loggedInUser.id,
                 }
             }

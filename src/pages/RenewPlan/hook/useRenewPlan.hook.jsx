@@ -71,6 +71,7 @@ export const useRenewPlan = () => {
             const payload = {
                 ...data,
                 membershipID: parseInt(membershipID),
+                managerName: localStorage.getItem('managerId'),
                 billDetail: {
                     billNo: localStorage.getItem('latestBillNo'),
                     staffID: 1,
@@ -86,7 +87,7 @@ export const useRenewPlan = () => {
                     }]),
                     cardNo: data.cardNo,
                     grandTotal: selectedMemberShipPlan.price,
-                    managerName: data.managerName,
+                    managerName: localStorage.getItem('managerId'),
                     createdBy: loggedInUser.id,
                 },
                 minutes: totalMinutes,

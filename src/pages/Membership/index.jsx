@@ -93,7 +93,7 @@ const MembershipPlan = () => {
                                             <TableCell align="left">{row?.px_membership_plan?.planName}</TableCell>
                                             <TableCell align="left">{row?.minutes}</TableCell>
                                             <TableCell align="left">{row?.px_payment_type?.name}</TableCell>
-                                            <TableCell align="left">{row.managerName}</TableCell>
+                                            <TableCell align="left">{row.managerName && Array.isArray(row.managerName) ? row.managerName.map((manager) => manager?.name).join(',') : row.managerName?.name}</TableCell>
                                             {rights.edit && (
                                                 <TableCell>
                                                     <Switch

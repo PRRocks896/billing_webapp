@@ -154,7 +154,7 @@ export const useAddEditDailyReportHook = (tag) => {
             }
             
             const response = tag === "add"
-                ? await createDailyReport({ ...data, expense: updatedExpese, createdBy: loggedInUser.id })
+                ? await createDailyReport({ ...data, expense: updatedExpese, createdBy: loggedInUser.id, managerName: localStorage.getItem('managerId') })
                 : await updateDailyReport({ ...data, expense: updatedExpese, updatedBy: loggedInUser.id }, id);
 
             if (response?.statusCode === 200) {
@@ -192,10 +192,12 @@ export const useAddEditDailyReportHook = (tag) => {
 
                 if (response?.statusCode === 200) {
                     const { data } = response;
+                    const { managerName } = data;
+                    console.log("managerName", managerName);
                     reset({
                         userID: data.userID,
                         dailyReportDate: moment(new Date(data.dailyReportDate)).format('yyyy-MM-DD'),
-                        managerName: data.managerName,
+                        managerName: Array.isArray(managerName) ? managerName.map((manager) => manager?.name).join(',') : managerName?.name, //data.managerName,
                         totalStaffPresent: data.totalStaffPresent,
                         totalCustomer: data.totalCustomer,
                         totalMemberGuest: data.totalMemberGuest,

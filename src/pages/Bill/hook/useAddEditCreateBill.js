@@ -369,7 +369,7 @@ export const useAddEditCreateBill = (tag) => {
           px_payment_type: { name: data.paymentID.label },
           px_staff: { name: data.staffID.label },
           referenceBy: data.referenceBy,
-          managerName: data.managerName
+          managerName: localStorage.getItem('managerId') //data.managerName
         };
         const response = tag === 'add' ?
           await createBill({
@@ -486,9 +486,13 @@ export const useAddEditCreateBill = (tag) => {
         dispatch(startLoading());
         const response = await getBillById(id);
         if (response?.statusCode === 200) {
+          const { managerName } = response.data;
           const date = new Date(response.data.createdAt);
           setValue("billNo", response.data.billNo);
-          setValue("roomNo", response.data.roomNo);
+          setValue("roomID", {
+            value: response.data.roomID,
+            label: response.data.px_room?.roomName,
+          });
           setValue("date", date.toISOString().substring(0, 10));
           setValue("paymentID", {
             value: response.data.paymentID,
@@ -510,7 +514,7 @@ export const useAddEditCreateBill = (tag) => {
           editCardNo = response.data.cardNo;
           setValue("cardNo", response.data.cardNo);
           setValue("referenceBy", response.data.referenceBy);
-          setValue("managerName", response.data.managerName);
+          setValue("managerName", Array.isArray(managerName) ? managerName.map((manager) => manager?.name).join(',') : managerName?.name);
           const items = response.data.detail.map((item) => {
             return {
               id: item.id,
@@ -645,7 +649,7 @@ export const useAddEditCreateBill = (tag) => {
             // px_payment_type: { name: getValues("paymentID").label },
             px_staff: { name: getValues("staffID").label },
             referenceBy: getValues("referenceBy"),
-            managerName: getValues('managerName')
+            managerName: localStorage.getItem('managerId')
           };
           const response = await createBill({
             ...payload,

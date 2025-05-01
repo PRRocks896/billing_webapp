@@ -249,7 +249,11 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                             <TableCell>{item?.px_service?.name}</TableCell>
                                                             <TableCell>{item?.minutes}</TableCell>
                                                             <TableCell>{item?.px_staff?.nickName}</TableCell>
-                                                            <TableCell>{item?.managerName}</TableCell>
+                                                            <TableCell>{
+                                                                item?.managerName && Array.isArray(item?.managerName) ?
+                                                                    item?.managerName.map((manager) => manager?.name).join(',')
+                                                                : item?.managerName?.name
+                                                            }</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
@@ -470,7 +474,7 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                     value={value}
                                                     onChange={(e) => onChange(e.target.value.toUpperCase())}
                                                     onBlur={onBlur}
-                                                    // disabled
+                                                    disabled
                                                     error={!!error}
                                                     helperText={error?.message}
                                                 />

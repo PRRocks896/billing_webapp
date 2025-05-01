@@ -85,9 +85,10 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             {pageTitle}
           </Typography>
           <Box className="manager-name">
-            {/* <Button style={{ width: '100px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
-              {managerName}
-            </Button> */}
+            <Button style={{ width: '180px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
+              {/* {managerName} */}
+              Select Manager
+            </Button>
           </Box>
           <Box className="username">
               <UserName firstName={data?.firstName} lastName={data?.lastName} />

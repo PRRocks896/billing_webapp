@@ -133,6 +133,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     label="Manager Name"
                                                     size="small"
                                                     value={value}
+                                                    disabled
                                                     onChange={(e) => onChange(e.target.value.toUpperCase())}
                                                     onBlur={onBlur}
                                                     // disabled

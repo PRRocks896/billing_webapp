@@ -810,7 +810,7 @@ const AddEditBill = ({ tag }) => {
                         label="Manager Name"
                         size="small"
                         name="managerName"
-                        // disabled
+                        disabled
                         value={value}
                         onChange={(e) => onChange(e.target.value.toUpperCase())}
                         onBlur={onBlur}

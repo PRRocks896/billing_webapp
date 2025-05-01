@@ -94,7 +94,7 @@ export const useAddEditMembership = (tag) => {
                 minutes: totalMinutes,
             };
             const response = tag === "add"
-                ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id })
+                ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id, managerName: localStorage.getItem('managerId') })
                 : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
             if (response?.statusCode === 200) {
                 tag === "add" && handlePrint(response.data?.id, cardNo);
@@ -221,13 +221,14 @@ export const useAddEditMembership = (tag) => {
                 const { success, message, data } = await getMembershipById(id);
 
                 if (success) {
+                    const { managerName } = data;
                     searchCustomer(data.px_customer?.phoneNumber);
                     setValue('customerID', data.customerID);
                     setValue('paymentID', data.paymentID);
                     setValue('membershipPlanID', data.membershipPlanID);
                     setValue('extraHours', '' + data.extraHours);
                     setValue('validity', data.validity);
-                    setValue('managerName', data.managerName);
+                    setValue('managerName', Array.isArray(managerName) ? managerName.map((manager) => manager?.name).join(',') : managerName?.name);
                     setValue('billNo', data.billNo);
                     setValue('cardNo', data.billDetail && data.billDetail.cardNo ? data.billDetail.cardNo : null);
                     setCurrentDate(moment(data.createdAt).format('DD/MM/yyyy'))
