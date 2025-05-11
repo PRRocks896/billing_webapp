@@ -9,19 +9,23 @@ const Report = () => {
     roleId,
     dateRange,
     gstDateRange,
-    // branchOptions,
+    managerDateRange,
+    managerList,
     companyOptions,
     paymentList,
-    
-    // branch,
-    
+    serviceList,
+    // selectedService,
     fetchReportDate,
     handleDateChange,
     handleBranchChange,
     handlePaymentChange,
     fetchGstReportData,
     handleGstDateChange,
-    handleGstPaymentChange
+    handleGstPaymentChange,
+    fetchManagerReportData,
+    handleManagerDateChange,
+    handleManagerChange,
+    setSelectedService,
   } = useReport();
 
   return (
@@ -114,6 +118,62 @@ const Report = () => {
           </Grid>
           <Grid item xs={12} sm={3}>
             <Button className="btn btn-tertiary" onClick={fetchGstReportData}>Export</Button>
+          </Grid>
+        </Grid>
+      </Box>
+      <br/>
+      <Box className="card">
+        <Typography variant="h5">Manager Report</Typography>
+        <br/>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={3}>
+            <DateRangePicker value={managerDateRange} onChange={handleManagerDateChange} />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="service"
+              options={serviceList || []}
+              getOptionLabel={(option) => option.label}
+              // value={branch}
+              onChange={(_, newValue) => {
+                console.log("newValue", newValue);
+                const selected = JSON.parse(JSON.stringify(newValue));
+                if(selected && selected?.value) {
+                  setSelectedService(selected?.value);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Service" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="manager"
+              options={managerList || []}
+              getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
+              // value={branch}
+              onChange={(_, newValue) => {
+                const selected = JSON.parse(JSON.stringify(newValue));
+                if(selected && selected?.id) {
+                  handleManagerChange(selected?.id);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Manager" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Button className="btn btn-tertiary" onClick={fetchManagerReportData}>Export</Button>
           </Grid>
         </Grid>
       </Box>

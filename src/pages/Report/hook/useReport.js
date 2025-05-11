@@ -2,17 +2,19 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
-import { getReportList, getGstReportList } from "../../../service/report";
+import { getReportList, getGstReportList, getManagerList } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { getCompanyList } from "../../../service/company";
 import { getPaymentTypeList } from "../../../service/paymentType";
+import { getManager } from "../../../service/staff";
 
 export const useReport = () => {
   const dispatch = useDispatch();
   const [pdfData, setPdfData] = useState(null);
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [gstDateRange, setGstDateRange] = useState([new Date(), new Date()]);
+  const [managerDateRange, setManagerDateRange] = useState([new Date(), new Date()]);
   // const [branchOptions, setBranchOptions] = useState([]);
   // const [branch, setBranch] = useState([]);
   const [company, setCompany] = useState([]);
@@ -20,6 +22,18 @@ export const useReport = () => {
   const [paymentList, setPaymentList] = useState([]);
   const [selectedPayment, setSelectedPayment] = useState([]);
   const [selectedGstPayment, setSelectedGstPayment] = useState([]);
+  const [managerList, setManagerList] = useState([]);
+  const [selectedManager, setSelectedManager] = useState([]);
+  const [selectedService, setSelectedService] = useState(null);
+
+  const serviceList = [
+    { value: 'bill', label: 'Bill' },
+    { value: 'membership', label: 'Membership' },
+    { value: 'membership-redeem', label: 'Membership Redeem' },
+    { value: 'daily-report', label: 'Daily Report' },
+    { value: 'renew-plan', label: 'Renew Plan' },
+  ]
+
   const user = useSelector((state) => state.loggedInUser);
 
   const companyOptions = useMemo(() => {
@@ -30,6 +44,10 @@ export const useReport = () => {
     return data;
   }, [company]);
 
+  const handleManagerDateChange = (value) => {
+    setManagerDateRange(value);
+  };
+
   const handleGstDateChange = (value) => {
     setGstDateRange(value);
   };
@@ -37,15 +55,21 @@ export const useReport = () => {
   const handleDateChange = (value) => {
     setDateRange(value);
   };
+
   const handleBranchChange = (newValue) => {
     setSelectedCompany(newValue);
   };
+
   const handlePaymentChange = (newValue) => {
     setSelectedPayment(newValue);
   }
 
   const handleGstPaymentChange = (newValue) => {
     setSelectedGstPayment(newValue);
+  }
+
+  const handleManagerChange = (newValue) => {
+    setSelectedManager(newValue);
   }
 
   const fetchBranch = async () => {
@@ -92,12 +116,52 @@ export const useReport = () => {
     }
   }
 
+  const fetchManager = async () => {
+    try {
+      const whereCondition = {
+        isActive: true,
+        isDeleted: false
+      };
+      const response = await getManager(
+        whereCondition
+      );
+      if(response && response.success) {
+        const payload = response.data;
+        setManagerList(payload);
+      } else {
+        setManagerList([]);
+        showToast(response?.message, false);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }
+
   useEffect(() => {
     if (user.roleID === 1) {
       fetchBranch();
       fetchPaymentType();
+      fetchManager();
     }
   }, [user.roleID]);
+
+  const fetchManagerReportData = async () => {
+    try {
+      dispatch(startLoading());
+      setPdfData(null);
+      const body = {
+        managerName: selectedManager,
+        startDate: moment(managerDateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
+        endDate: moment(managerDateRange[1]).format('yyyy-MM-DD') //formatDate(dateRange[1])
+      };
+      const response = await getManagerList(body, selectedService, `Bill Software Manager's ${selectedService} report ${moment(managerDateRange[0]).format('DD-MM-yyyy')}-${moment(managerDateRange[1]).format('DD-MM-yyyy')}.xlsx`.toUpperCase());
+      setPdfData(response);
+    } catch(error) {
+      showToast("No report found", false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
 
   const fetchGstReportData = async () => {
     try {
@@ -151,10 +215,14 @@ export const useReport = () => {
     pdfData,
     dateRange,
     gstDateRange,
+    managerDateRange,
+    managerList,
     paymentList,
     // branchOptions,
     selectedCompany,
     companyOptions,
+    serviceList,
+    selectedService,
     roleId: user.roleID,
     fetchReportDate,
     handleDateChange,
@@ -163,5 +231,9 @@ export const useReport = () => {
     fetchGstReportData,
     handleGstDateChange,
     handleGstPaymentChange,
+    fetchManagerReportData,
+    handleManagerDateChange,
+    handleManagerChange,
+    setSelectedService
   };
 };

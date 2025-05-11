@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import {
-    listPayload
-} from "../utils/helper";
-import {
-    getStaffList,
     getManager
 } from "../service/staff";
 import {
@@ -41,7 +37,7 @@ const useManagerName = () => {
     const handleSelectManager = (selectedManager) => {
         if(selectedManager && selectedManager.length > 0) {
             localStorage.setItem("managerId", selectedManager.map((item) => item.id).join(","));
-            localStorage.setItem("managerName", selectedManager.map((item) => item.name).join(","));
+            localStorage.setItem("managerName", selectedManager.map((item) => item.nickName).join(","));
             localStorage.setItem("serverDate", moment(new Date()).format("YYYY-MM-DD"));
             // setShowModal(false);
         }
@@ -61,6 +57,7 @@ const useManagerName = () => {
             localStorage.removeItem("serverDate");
         }
         fetchManager();
+        // eslint-disable-next-line
     }, [isDateChanged]);
 
     return {
