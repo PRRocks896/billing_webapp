@@ -16,8 +16,7 @@ import TablePagination from "@mui/material/TablePagination";
 
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
-
-import useBlogHooks from "./hook/useBlog.hook";
+import useHomePageHook from "./hook/useHomePage.hook";
 
 const switchStyles = {
     color: "var(--color-black)",
@@ -29,7 +28,7 @@ const switchStyles = {
     },
 };
 
-const Blog = () => {
+const HomePage = () => {
     const navigate = useNavigate();
     const {
         page,
@@ -42,22 +41,20 @@ const Blog = () => {
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
-        searchBlogHandler,
-    } = useBlogHooks();
-
+        searchHomePageHandler,
+    } = useHomePageHook();
+    
     let index = page * 10;
-
 
     return (
         <>
             <TopBar
-                btnTitle={"Add Blog"}
-                inputName="blog"
-                navigatePath="/add-blog"
-                callAPI={searchBlogHandler}
+                btnTitle={"Add Home Page"}
+                inputName="home page"
+                navigatePath="/add-home-page"
+                callAPI={searchHomePageHandler}
                 addPermission={rights.add}
             />
-
             {/* state listing */}
             <Box className="card">
                 <TableContainer className="table-wrapper">
@@ -66,8 +63,7 @@ const Blog = () => {
                             <TableRow>
                                 <TableCell>No</TableCell>
                                 <TableCell>Title</TableCell>
-                                {/* <TableCell>Slug</TableCell> */}
-                                <TableCell>Short Description</TableCell>
+                                <TableCell>Detail</TableCell>
                                 <TableCell>Publish Date</TableCell>
                                 {rights.edit && <TableCell>Status</TableCell>}
                                 {(rights.edit || rights.delete) && (
@@ -76,48 +72,52 @@ const Blog = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {visibleRows.length ? (
+                            {visibleRows?.length > 0 ? (
                                 visibleRows.map((row) => {
                                     return (
-                                        <TableRow key={"membership_plan_" + row.id}>
-                                            <TableCell align="left">{(index += 1)}</TableCell>
-                                            <TableCell align="left" sx={{whiteSpace: 'break-spaces'}}>{row.title}</TableCell>
-                                            {/* <TableCell align="left" sx={{whiteSpace: 'break-spaces'}}>{row.slug}</TableCell> */}
-                                            <TableCell align="left">{row.shortDescription}</TableCell>
-                                            <TableCell align="left">{moment(row.createdAt).format('DD/MM/yyyy hh:mm A')}</TableCell>
+                                        <TableRow key={row.id}>
+                                            <TableCell>{++index}</TableCell>
+                                            <TableCell>{row.title}</TableCell>
+                                            <TableCell>{row.detail}</TableCell>
+                                            <TableCell>
+                                                {moment(row.createdAt).format("YYYY-MM-DD")}
+                                            </TableCell>
                                             {rights.edit && (
                                                 <TableCell>
                                                     <Switch
-                                                        style={switchStyles}
                                                         checked={row.isActive}
-                                                        onChange={(e) => changeStatusHandler(e, row.id)}
+                                                        onChange={(e) =>
+                                                            changeStatusHandler(e, row.id)
+                                                        }
+                                                        sx={switchStyles}
                                                     />
                                                 </TableCell>
                                             )}
                                             {(rights.edit || rights.delete) && (
                                                 <TableCell>
                                                     <Box className="table-action-btn">
-                                                        {rights.edit && (
-                                                            <Button
-                                                                className="btn btn-primary"
-                                                                onClick={() =>
-                                                                    navigate(`/edit-blog/${row.id}`)
-                                                                }
-                                                            >
-                                                                <FiEdit3 size={15} />
-                                                            </Button>
-                                                        )}
-                                                        {rights.delete && (
-                                                            <Button
-                                                                className="btn btn-primary"
-                                                                onClick={deleteBtnClickHandler.bind(
-                                                                    null,
-                                                                    row.id
-                                                                )}
-                                                            >
-                                                                <FiTrash2 size={15} />
-                                                            </Button>
-                                                        )}
+                                                    {rights.edit && (
+                                                        <Button
+                                                            className="btn btn-primary"
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/edit-home-page/${row.id}`
+                                                                )
+                                                            }
+                                                        >
+                                                            <FiEdit3 />
+                                                        </Button>
+                                                    )}
+                                                    {rights.delete && (
+                                                        <Button
+                                                            className="btn btn-primary"
+                                                            onClick={() =>
+                                                                deleteBtnClickHandler(row.id)
+                                                            }
+                                                        >
+                                                            <FiTrash2 />
+                                                        </Button>
+                                                    )}
                                                     </Box>
                                                 </TableCell>
                                             )}
@@ -126,8 +126,8 @@ const Blog = () => {
                                 })
                             ) : (
                                 <TableRow>
-                                    <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                                        No Membership Plan Found
+                                    <TableCell colSpan={6} align="center">
+                                        No data found
                                     </TableCell>
                                 </TableRow>
                             )}
@@ -143,15 +143,14 @@ const Blog = () => {
                     onPageChange={handleChangePage}
                 />
             </Box>
-
             <ConfirmationModal
                 isDeleteModalOpen={isDeleteModalOpen}
                 setIsDeleteModalOpen={setIsDeleteModalOpen}
-                title="Blog"
+                title="Home Page"
                 deleteHandler={deleteHandler}
             />
         </>
-    )
+    );
 }
 
-export default Blog;
+export default HomePage;

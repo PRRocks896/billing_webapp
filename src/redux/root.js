@@ -25,6 +25,7 @@ import BlogReducer from "./blog";
 import WebsiteBookingReducer from "./websiteBooking";
 import NewsLetterReducer from "./newsletter";
 import AdvanceReducer from "./advance";
+import HomePageReducer from "./homePage";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -52,7 +53,8 @@ const rootReducer = combineReducers({
   blog: BlogReducer,
   websiteBooking: WebsiteBookingReducer,
   newsLetter: NewsLetterReducer,
-  advance: AdvanceReducer
+  advance: AdvanceReducer,
+  homePage: HomePageReducer,
 });
 
 export default rootReducer;

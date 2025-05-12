@@ -53,7 +53,7 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          !["newsletter", "blog","city", "state", "seo", "coupon", "user", "bill", "report",  "membership", "membership redeem", 'daily report', 'website booking'].includes(
+          !["home page", "newsletter", "blog","city", "state", "seo", "coupon", "user", "bill", "report",  "membership", "membership redeem", 'daily report', 'website booking'].includes(
             row.px_module.name.toLowerCase()
           ) &&
           row.view
@@ -69,7 +69,7 @@ const Sidebar = () => {
   const subMenuWebListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
-        if (["newsletter","blog","coupon", "seo", "city", "state"].includes(row.px_module.name.toLowerCase()) && row.view) {
+        if (["home page","newsletter","blog","coupon", "seo", "city", "state"].includes(row.px_module.name.toLowerCase()) && row.view) {
           return row;
         } else {
           return null;

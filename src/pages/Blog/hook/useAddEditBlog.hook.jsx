@@ -56,7 +56,6 @@ const useAddEditBlogHook = (tag) => {
             if(payload && payload.metaTags && Array.isArray(payload.metaTags)){
                 formData.append('metaTags', payload.metaTags.join(','));
             }
-            console.log('payload', typeof payload.thumbnilImage);
             if (payload && payload.thumbnilImage && typeof payload.thumbnilImage === 'object') {
                 formData.append('thumbnilImage', payload.thumbnilImage[0]);
             }
