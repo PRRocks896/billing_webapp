@@ -185,11 +185,11 @@ export const useBill = () => {
         detail: body?.detail?.map((row) => {
           return { ...row, item: row.serviceID ? row.service?.name : row.membershipPlan?.planName };
         }),
-        phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
-        billTitle: loggedInUser.billTitle,
-        address: loggedInUser.address,
-        phoneNumber2: loggedInUser.phoneNumber2,
-        roleID: loggedInUser.roleID,
+        phoneNumber: body?.px_user?.phoneNumber || loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
+        billTitle: body?.px_user?.billTitle || loggedInUser.billTitle,
+        address: body?.px_user?.address || loggedInUser.address,
+        phoneNumber2: body?.px_user?.phoneNumber2 || loggedInUser.phoneNumber2,
+        roleID: body?.px_user?.roleID || loggedInUser.roleID,
         gstNo: body?.px_user?.gstNo,
         isShowGst: body?.px_user?.isShowGst,
         cgst: body?.px_user?.isShowGst ? body?.cgst : 0,
