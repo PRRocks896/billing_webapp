@@ -6,7 +6,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import { FiChevronRight, FiLogOut, FiGrid, FiSquare, FiRepeat } from "react-icons/fi";
+import {
+  FiChevronRight,
+  FiLogOut,
+  FiGrid,
+  FiSquare,
+  FiRepeat,
+} from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,9 +40,15 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          ["user", "bill", "report", "membership", "membership redeem", 'daily report', 'website booking'].includes(
-            row.px_module.name.toLowerCase()
-          ) &&
+          [
+            "user",
+            "bill",
+            "report",
+            "membership",
+            "membership redeem",
+            "daily report",
+            "website booking",
+          ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
           return row;
@@ -53,9 +65,23 @@ const Sidebar = () => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
         if (
-          !["home page", "newsletter", "blog","city", "state", "seo", "coupon", "user", "bill", "report",  "membership", "membership redeem", 'daily report', 'website booking'].includes(
-            row.px_module.name.toLowerCase()
-          ) &&
+          ![
+            "home page",
+            "newsletter",
+            "blog",
+            "city",
+            "state",
+            "seo",
+            "coupon",
+            "user",
+            "bill",
+            "report",
+            "membership",
+            "membership redeem",
+            "daily report",
+            "website booking",
+            "barcode",
+          ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
           return row;
@@ -69,7 +95,18 @@ const Sidebar = () => {
   const subMenuWebListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
-        if (["home page","newsletter","blog","coupon", "seo", "city", "state"].includes(row.px_module.name.toLowerCase()) && row.view) {
+        if (
+          [
+            "home page",
+            "newsletter",
+            "blog",
+            "coupon",
+            "seo",
+            "city",
+            "state",
+          ].includes(row.px_module.name.toLowerCase()) &&
+          row.view
+        ) {
           return row;
         } else {
           return null;
@@ -83,8 +120,8 @@ const Sidebar = () => {
   const logoutClickHandler = async () => {
     try {
       dispatch(startLoading());
-      const response = await logout({id: id});
-      if(response && response.success) {
+      const response = await logout({ id: id });
+      if (response && response.success) {
         logoutHandler();
       } else {
         showToast(response.message || response.messageCode, false);
@@ -114,6 +151,23 @@ const Sidebar = () => {
             >
               <Typography>
                 <GoHome /> Home
+              </Typography>
+            </AccordionSummary>
+          </Accordion>
+
+          <Accordion
+            expanded={expanded === "panel-barcode"}
+            onChange={handleChange("panel-barcode")}
+            className="menu-list"
+            onClick={() => navigate("/barcode")}
+          >
+            <AccordionSummary
+              className="menu-title"
+              aria-controls="panel-barcode-content"
+              id="panel-barcode-header"
+            >
+              <Typography>
+                <FiSquare /> Barcode
               </Typography>
             </AccordionSummary>
           </Accordion>
@@ -248,7 +302,9 @@ const Sidebar = () => {
             expanded={expanded === "panel7"}
             onChange={handleChange("panel7")}
             className="menu-list"
-            onClick={() => {window.location.reload();}}
+            onClick={() => {
+              window.location.reload();
+            }}
           >
             <AccordionSummary
               className="menu-title"

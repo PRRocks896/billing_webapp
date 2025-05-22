@@ -8,6 +8,15 @@ export const LOGOUT_API = 'api/auth/logout';
 // home apis
 export const FETCH_DASHBOARD_DETAILS_API = "api/dashboard";
 
+// barcodemodule api
+
+export const CREATE_BARCODE_API = "api/barcode";
+export const GET_SINGLE_BARCODE_API = "api/barcode/get";
+export const BARCODE_LIST_API = "api/barcode/list";
+export const UPDATE_BARCODE_API = "api/barcode/:id";
+export const DELETE_BARCODE_API = "api/barcode";
+export const BARCODE_FIND_API = "api/barcode/";
+
 // customer apis
 export const CUSTOMER_LIST_API = "api/customer/list";
 export const CREATE_CUSTOMER_API = "api/customer";

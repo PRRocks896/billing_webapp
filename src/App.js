@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo } from "react";
+import React, {  useMemo } from "react";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
 import { useSelector } from "react-redux";
-import moment from "moment";
+// import moment from "moment";
 // import routes from "./routes";
 import { ToastContainer } from "react-toastify";
 import Loader from "./components/Loader";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
-
 
 // css imports
 import "./assets/styles/global.scss";
@@ -59,13 +58,13 @@ import AddMembership from "./pages/Membership/addMembership";
 import AddEditMembershipRedeem from "./pages/MembershipRedeem/addEditMembershipRedeem";
 import RenewPlan from "./pages/RenewPlan";
 import DailyReport from "./pages/DailyReport";
-import AddEditDailyReport from './pages/DailyReport/addEditDailyReport';
+import AddEditDailyReport from "./pages/DailyReport/addEditDailyReport";
 import EmployeeType from "./pages/EmployeeType";
 import AddEditEmployeeType from "./pages/EmployeeType/addEditEmployeeType";
-import Salary from './pages/Salary';
-import AddEditSalary from './pages/Salary/addEditSalary';
-import LastDailyReportPending from './components/LastDailyReportPending';
-import ViewStaffDocument from './pages/Staff/viewDocument';
+import Salary from "./pages/Salary";
+import AddEditSalary from "./pages/Salary/addEditSalary";
+import LastDailyReportPending from "./components/LastDailyReportPending";
+import ViewStaffDocument from "./pages/Staff/viewDocument";
 import Company from "./pages/Company";
 import AddEditCompany from "./pages/Company/AddEditCompany";
 import Room from "./pages/Room";
@@ -83,6 +82,8 @@ import Advance from "./pages/Advance";
 import AddEditAdvance from "./pages/Advance/AddEditAdvance";
 import HomePage from "./pages/HomePage";
 import AddEditHomePage from "./pages/HomePage/addEditHomePage";
+import BarcodePage from "./pages/Barcode"; 
+
 
 const token = getAuthToken();
 
@@ -91,7 +92,7 @@ const App = () => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const isPendingDailyReport = useMemo(() => {
-    if(loggedInUser && loggedInUser.hasOwnProperty('isLastDailyReportAdded')) {
+    if (loggedInUser && loggedInUser.hasOwnProperty("isLastDailyReportAdded")) {
       return loggedInUser.isLastDailyReportAdded;
     }
     return false;
@@ -100,258 +101,542 @@ const App = () => {
   const routes2 = createBrowserRouter([
     {
       path: "/",
-      element: isOnline ?
+      element: isOnline ? (
         <LayoutProvider />
-      : pathname.includes("bill") ? (
+      ) : pathname.includes("bill") ? (
         <LayoutProvider />
       ) : null,
       errorElement: <NotFound />,
       loader: checkIsAuthenticated,
       children: [
-        { index: true, element: isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Home /> : <NoConnection /> },
         {
-          path: 'newsletter',
+          index: true,
+          element: isOnline ? (
+            isPendingDailyReport ? (
+              <LastDailyReportPending />
+            ) : (
+              <Home />
+            )
+          ) : (
+            <NoConnection />
+          ),
+        },
+        {
+          path: "newsletter",
           element: (
             <ProtectedRoute
               path="newsletter"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <NewsLetter /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <NewsLetter />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'advance',
+          path: "barcode",
+          element: (
+            <ProtectedRoute
+              path="barcode"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <BarcodePage />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "advance",
           element: (
             <ProtectedRoute
               path="advance"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Advance /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Advance />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'home-page',
+          path: "home-page",
           element: (
             <ProtectedRoute
               path="home-page"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <HomePage /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <HomePage />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-home-page',
+          path: "add-home-page",
           element: (
             <ProtectedRoute
               path="add-home-page"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditHomePage tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditHomePage tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-home-page/:id',
+          path: "edit-home-page/:id",
           element: (
             <ProtectedRoute
               path="edit-home-page/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditHomePage tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditHomePage tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-advance',
+          path: "add-advance",
           element: (
             <ProtectedRoute
               path="add-advance"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditAdvance tag="add"/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditAdvance tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-advance/:id',
+          path: "edit-advance/:id",
           element: (
             <ProtectedRoute
               path="edit-advance/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditAdvance tag="edit"/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditAdvance tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'website-booking',
+          path: "website-booking",
           element: (
             <ProtectedRoute
               path="website-booking"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <WebsiteBooking /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <WebsiteBooking />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-website-booking',
+          path: "add-website-booking",
           element: (
             <ProtectedRoute
               path="add-website-booking"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditWebsiteBooking tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditWebsiteBooking tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-website-booking/:id',
+          path: "edit-website-booking/:id",
           element: (
             <ProtectedRoute
               path="edit-website-booking/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditWebsiteBooking tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditWebsiteBooking tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'blog',
+          path: "blog",
           element: (
             <ProtectedRoute
               path="blog"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Blog /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Blog />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-blog',
+          path: "add-blog",
           element: (
             <ProtectedRoute
               path="add-blog"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditBlog tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditBlog tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-blog/:id',
+          path: "edit-blog/:id",
           element: (
             <ProtectedRoute
               path="edit-blog/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditBlog tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditBlog tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'coupon',
+          path: "coupon",
           element: (
             <ProtectedRoute
               path="coupon"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Coupon /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Coupon />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-coupon',
+          path: "add-coupon",
           element: (
             <ProtectedRoute
               path="add-coupon"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditCoupon tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditCoupon tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-coupon/:id',
+          path: "edit-coupon/:id",
           element: (
             <ProtectedRoute
               path="edit-coupon/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditCoupon tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditCoupon tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'seo',
+          path: "seo",
           element: (
             <ProtectedRoute
               path="seo"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <SEO /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <SEO />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-seo',
+          path: "add-seo",
           element: (
             <ProtectedRoute
               path="add-seo"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditSeo tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditSeo tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-seo/:id',
+          path: "edit-seo/:id",
           element: (
             <ProtectedRoute
               path="edit-seo/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditSeo tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditSeo tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'renew-plan/:membershipID/:customerID',
+          path: "renew-plan/:membershipID/:customerID",
           element: (
             <ProtectedRoute
               path="renew-plan/:membershipID/:customerID"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <RenewPlan /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <RenewPlan />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'room',
+          path: "room",
           element: (
             <ProtectedRoute
               path="room"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Room /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Room />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-room',
+          path: "add-room",
           element: (
             <ProtectedRoute
               path="add-room"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditRoom tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditRoom tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-room/:id',
+          path: "edit-room/:id",
           element: (
             <ProtectedRoute
               path="edit-room/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditRoom tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditRoom tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'company',
+          path: "company",
           element: (
             <ProtectedRoute
               path="company"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Company/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Company />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-company',
+          path: "add-company",
           element: (
             <ProtectedRoute
               path="add-company"
-              Component={isOnline ? <AddEditCompany tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? <AddEditCompany tag="add" /> : <NoConnection />
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-company/:id',
+          path: "edit-company/:id",
           element: (
             <ProtectedRoute
               path="edit-company"
-              Component={isOnline ? <AddEditCompany tag="edit" /> : <NoConnection/>}
+              Component={
+                isOnline ? <AddEditCompany tag="edit" /> : <NoConnection />
+              }
             />
-          )
+          ),
         },
         {
-          path: 'membership-redeem',
+          path: "membership-redeem",
           element: (
             <ProtectedRoute
               path="membership-redeem"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditMembershipRedeem tag="add" /> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMembershipRedeem tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
               // Component={isOnline ? <MemberShipRedeem/> : <NoConnection/>}
             />
-          )
+          ),
         },
         // {
         //   path: 'add-membership-redeem',
@@ -372,29 +657,59 @@ const App = () => {
         //   )
         // },
         {
-          path: 'membership',
+          path: "membership",
           element: (
             <ProtectedRoute
               path="membership"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Membership/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Membership />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'past-membership',
+          path: "past-membership",
           element: (
             <ProtectedRoute
-              path='past-membership'
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddMembership/> : <NoConnection/>}
+              path="past-membership"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddMembership />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
           path: "add-membership",
           element: (
             <ProtectedRoute
               path="add-membership"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditMembership tag="add" /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMembership tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -404,100 +719,182 @@ const App = () => {
             <ProtectedRoute
               path="edit-membership/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditMembership tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMembership tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
         },
         {
-          path: 'salary',
+          path: "salary",
           element: (
             <ProtectedRoute
               path="salary"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Salary/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Salary />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-salary',
+          path: "add-salary",
           element: (
             <ProtectedRoute
               path="add-salary"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditSalary tag="add"/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditSalary tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-salary/:id',
+          path: "edit-salary/:id",
           element: (
             <ProtectedRoute
               path="edit-salary/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditSalary tag="edit"/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditSalary tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'employee-type',
+          path: "employee-type",
           element: (
             <ProtectedRoute
               path="employee-type"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <EmployeeType/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <EmployeeType />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-employee-type',
+          path: "add-employee-type",
           element: (
             <ProtectedRoute
               path="add-employee-type"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditEmployeeType tag="add"/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditEmployeeType tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-employee-type/:id',
+          path: "edit-employee-type/:id",
           element: (
             <ProtectedRoute
               path="edit-employee-type/:id"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditEmployeeType tag="edit"/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditEmployeeType tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
-          path: 'add-daily-report',
+          path: "add-daily-report",
           element: (
-            <ProtectedRoute 
-              path="add-daily-report" 
-              Component={isOnline ? <AddEditDailyReport tag="add"/> : <NoConnection/>}
+            <ProtectedRoute
+              path="add-daily-report"
+              Component={
+                isOnline ? <AddEditDailyReport tag="add" /> : <NoConnection />
+              }
             />
-          )
+          ),
         },
         {
-          path: 'edit-daily-report/:id',
+          path: "edit-daily-report/:id",
           element: (
-            <ProtectedRoute 
-              path="edit-daily-report/:id" 
-              Component={isOnline ? <AddEditDailyReport tag="edit"/> : <NoConnection/>}
+            <ProtectedRoute
+              path="edit-daily-report/:id"
+              Component={
+                isOnline ? <AddEditDailyReport tag="edit" /> : <NoConnection />
+              }
             />
-          )
+          ),
         },
         {
-          path: 'daily-report',
+          path: "daily-report",
           element: (
-            <ProtectedRoute 
-              path="daily-report" 
-              Component={isOnline ? <DailyReport/> : <NoConnection/>}
+            <ProtectedRoute
+              path="daily-report"
+              Component={isOnline ? <DailyReport /> : <NoConnection />}
             />
-          )
+          ),
         },
         {
-          path: 'membership-plan',
+          path: "membership-plan",
           element: (
             <ProtectedRoute
               path="membership-plan"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <MembershipPlan/> : <NoConnection/>}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <MembershipPlan />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
-          )
+          ),
         },
         {
           path: "add-membership-plan",
@@ -505,7 +902,15 @@ const App = () => {
             <ProtectedRoute
               path="add-membership-plan"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditMembershipPlan tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMembershipPlan tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -516,7 +921,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-membership-plan/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditMembershipPlan tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMembershipPlan tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -526,7 +939,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="customer"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Customer /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Customer />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -536,7 +959,15 @@ const App = () => {
             <ProtectedRoute
               path="add-customer"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddCustomer tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddCustomer tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -547,7 +978,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-customer/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddCustomer tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddCustomer tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -558,7 +997,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="staff"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Staff /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Staff />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -568,7 +1017,15 @@ const App = () => {
             <ProtectedRoute
               path="add-staff"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditStaff tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStaff tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -579,18 +1036,34 @@ const App = () => {
             <ProtectedRoute
               path="edit-staff/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditStaff tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStaff tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
         },
         {
-          path: 'view-staff/:id',
+          path: "view-staff/:id",
           element: (
             <ProtectedRoute
               path="view-staff/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <ViewStaffDocument/> : <NoConnection/>
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <ViewStaffDocument />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -600,7 +1073,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="service-category"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <ServiceCategory /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <ServiceCategory />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -611,7 +1094,11 @@ const App = () => {
               path="add-service-category"
               Component={
                 isOnline ? (
-                  isPendingDailyReport ? <LastDailyReportPending/> : <AddEditServiceCategory tag="add" />
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditServiceCategory tag="add" />
+                  )
                 ) : (
                   <NoConnection />
                 )
@@ -626,7 +1113,11 @@ const App = () => {
               path="edit-service-category/:id"
               Component={
                 isOnline ? (
-                  isPendingDailyReport ? <LastDailyReportPending/> : <AddEditServiceCategory tag="edit" />
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditServiceCategory tag="edit" />
+                  )
                 ) : (
                   <NoConnection />
                 )
@@ -640,7 +1131,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="service"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Service /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Service />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -650,7 +1151,15 @@ const App = () => {
             <ProtectedRoute
               path="add-service"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditService tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditService tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -661,7 +1170,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-service/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditService tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditService tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -672,7 +1189,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="payment-type"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <PaymentType /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <PaymentType />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -682,7 +1209,15 @@ const App = () => {
             <ProtectedRoute
               path="add-payment-type"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditPaymentType tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditPaymentType tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -693,7 +1228,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-payment-type/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditPaymentType tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditPaymentType tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -704,7 +1247,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="city"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <City /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <City />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -714,7 +1267,15 @@ const App = () => {
             <ProtectedRoute
               path="add-city"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditCity tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditCity tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -725,7 +1286,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-city/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditCity tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditCity tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -736,7 +1305,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="state"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <State /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <State />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -746,7 +1325,15 @@ const App = () => {
             <ProtectedRoute
               path="add-state"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditStates tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStates tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -757,7 +1344,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-state/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditStates tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStates tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -768,7 +1363,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="user"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <User /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <User />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -778,7 +1383,15 @@ const App = () => {
             <ProtectedRoute
               path="add-user"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditUser tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditUser tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -789,7 +1402,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-user/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditUser tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditUser tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -798,10 +1419,18 @@ const App = () => {
         {
           path: "bill",
           element: (
-            <ProtectedRoute 
-              path="bill" 
+            <ProtectedRoute
+              path="bill"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Bill/> : <NoConnection/>
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Bill />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -812,7 +1441,15 @@ const App = () => {
             <ProtectedRoute
               path="create-bill"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditBill tag="add" /> : <NoConnection/>
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditBill tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -823,7 +1460,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-bill/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditBill tag="edit" /> : <NoConnection/>
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditBill tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -834,7 +1479,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="role"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Role /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Role />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -844,7 +1499,15 @@ const App = () => {
             <ProtectedRoute
               path="add-role"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditRole tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditRole tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -855,7 +1518,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-role/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditRole tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditRole tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -865,7 +1536,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="rights"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Rights /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Rights />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -874,7 +1555,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="module"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Module /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Module />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
@@ -884,7 +1575,15 @@ const App = () => {
             <ProtectedRoute
               path="add-module"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditModule tag="add" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditModule tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -895,7 +1594,15 @@ const App = () => {
             <ProtectedRoute
               path="edit-module/:id"
               Component={
-                isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <AddEditModule tag="edit" /> : <NoConnection />
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditModule tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
               }
             />
           ),
@@ -905,7 +1612,17 @@ const App = () => {
           element: (
             <ProtectedRoute
               path="report"
-              Component={isOnline ? isPendingDailyReport ? <LastDailyReportPending/> : <Report /> : <NoConnection />}
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Report />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
             />
           ),
         },
