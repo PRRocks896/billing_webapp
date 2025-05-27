@@ -15,6 +15,8 @@ import { Controller, set } from "react-hook-form";
 import ChangePasswordModal from "../../components/ChangePasswordModal";
 import ImageUpload from "../../components/ImageUpload";
 import { useAddEditUser } from "./hook/useAddEditUser";
+import Editor from "../../components/Editor";
+import FormHelperText from "@mui/material/FormHelperText";
 import { generateSlug } from "../../utils/helper";
 
 const AddEditUser = ({ tag }) => {
@@ -113,7 +115,8 @@ const AddEditUser = ({ tag }) => {
                   name="slug"
                   control={control}
                   render={({
-                    field: { value }
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
                   }) => (
                     <FormControl
                       size="small"
@@ -125,10 +128,18 @@ const AddEditUser = ({ tag }) => {
                         size="small"
                         name="name"
                         value={value}
-                        disabled
+                        onChange={(e) => {
+                          onChange(e.target.value);
+                        }}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
                       />
                     </FormControl>
                   )}
+                  rules={{
+                    required: "Please Enter Slug",
+                  }}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -693,7 +704,7 @@ const AddEditUser = ({ tag }) => {
                         name="areaName"
                         value={value}
                         onChange={(e) => {
-                          onChange(e.target.value.toUpperCase());
+                          onChange(e.target.value);
                         }}
                         onBlur={onBlur}
                         error={!!error}
@@ -707,6 +718,34 @@ const AddEditUser = ({ tag }) => {
                 />
               </Grid>
               <Grid item xs={12} sm={8}></Grid>
+              <Grid item xs={12}>
+                <Controller
+                    name="description"
+                    control={control}
+                    render={({
+                      field: { onBlur, onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <FormControl
+                        size="small"
+                        variant="standard"
+                        className="form-control"
+                      >
+                        <Editor
+                          value={value}
+                          onChange={onChange}
+                          onBlur={onBlur}
+                        />
+                        {error && error.message &&
+                          <FormHelperText error={true}>{error.message}</FormHelperText>
+                        }
+                      </FormControl>
+                    )}
+                    rules={{
+                        required: "Description field required",
+                    }}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <Controller
                   name="mapUrl"
@@ -726,7 +765,7 @@ const AddEditUser = ({ tag }) => {
                         name="mapUrl"
                         value={value}
                         onChange={(e) => {
-                          onChange(e.target.value.toUpperCase());
+                          onChange(e.target.value);
                         }}
                         onBlur={onBlur}
                         error={!!error}
@@ -758,7 +797,7 @@ const AddEditUser = ({ tag }) => {
                         name="iFrameMap"
                         value={value}
                         onChange={(e) => {
-                          onChange(e.target.value.toUpperCase());
+                          onChange(e.target.value);
                         }}
                         onBlur={onBlur}
                         error={!!error}
@@ -777,20 +816,20 @@ const AddEditUser = ({ tag }) => {
                   control={control}
                   render={({
                       field: { onChange, value },
-                      fieldState: { error },
+                      // fieldState: { error },
                   }) => (
                       <ImageUpload
                           key={'img-upload'}
                           value={value}
                           onChange={onChange}
-                          error={error}
+                          // error={error}
                           multiple={true}
                           accept={'image/*'}
                       />
                   )}
-                  rules={{
-                      required: 'Please Upload File'
-                  }}
+                  // rules={{
+                  //     required: 'Please Upload File'
+                  // }}
                 />
               </Grid>
               <Grid item xs={12}>

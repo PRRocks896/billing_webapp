@@ -84,7 +84,7 @@ const useAddEditSeoHook = (tag) => {
                     setValue("title", response.data.title);
                     setValue("description", response.data.description);
                     setValue("slug", response.data.slug);
-                    setValue("image", response.data.image);
+                    setValue("image", response.data.image && Array.isArray(response.data.images) ? [response.data.image] : []);
                     setValue("keywords", response.data.keywords.split(','));
                     setValue("tags", response.data.tags.split(','));
                     setValue("pagePath", response.data.pagePath);

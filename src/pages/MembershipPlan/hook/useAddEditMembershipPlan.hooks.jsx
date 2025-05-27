@@ -106,8 +106,11 @@ export const useAddEditMembershipPlan = (tag) => {
                     setValue("hours", response.data.hours);
                     setValue("price", response.data.price);
                     setValue("validity", response.data.validity);
-                    setValue("images", response.data.images);
-                    setValue("featureList", response.data.featureList.map((feature, index) => ({index, value: feature})));
+                    setValue("images", response.data && response.data.images ? [response.data.images] : []);
+                    setValue("featureList", response.data && response.data.featureList && Array.isArray(response.data.featureList) ? response.data.featureList.map((feature, index) => ({index, value: feature})) : [{
+                        index: 0,
+                        value: ""
+                    }]);
                 } else {
                     showToast(response?.message, false);
                 }

@@ -140,11 +140,11 @@ export const useAddEditService = (tag) => {
           setValue("description", response.data.description);
           setValue("webPrice", response.data.webPrice);
           setValue("slug", response.data.slug);
-          setValue("video", [response.data.video]);
-          setValue("thumbnilImage", [response.data.thumbnilImage]);
-          setValue("backgrandImage", [response.data.backgrandImage]);
-          setValue("images", response.data.images);
-          setValue("featureList", response.data.featureList.map((feature, index) => ({index, value: feature})));
+          setValue("video", response.data.video ? [response.data.video] : []);
+          setValue("thumbnilImage", response.data.thumbnilImage ? [response.data.thumbnilImage] : []);
+          setValue("backgrandImage", response.data.backgrandImage ? [response.data.backgrandImage] : []);
+          setValue("images", response.data.image && Array.isArray(response.data.images) ? response.data.images : []);
+          setValue("featureList", response.data.featureList?.map((feature, index) => ({index, value: feature})));
         } else {
           showToast(response?.message, false);
         }

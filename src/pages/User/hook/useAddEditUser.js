@@ -1,4 +1,4 @@
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { listPayload, showToast } from "../../../utils/helper";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -272,6 +272,7 @@ export const useAddEditUser = (tag) => {
       // }
       // dispatch(stopLoading());
     } catch (error) {
+      console.log(error);
       showToast(error.message, false);
     } finally {
       dispatch(stopLoading());
@@ -285,16 +286,16 @@ export const useAddEditUser = (tag) => {
         const response = await getUserById(id);
         if (response.statusCode === 200) {
           const role = {
-            value: response.data.roleID,
-            label: response.data.px_role.name,
+            value: response.data?.roleID,
+            label: response.data?.px_role?.name,
           };
           const company = {
-            value: response.data.companyID,
-            label: response.data.px_company.companyName,
+            value: response.data?.companyID,
+            label: response.data?.px_company?.companyName,
           }
           const city = {
-            value: response.data.cityID,
-            label: response.data.px_city.name,
+            value: response.data?.cityID,
+            label: response.data?.px_city?.name,
           }
 
           setValue("firstName", response.data.firstName);
@@ -328,6 +329,7 @@ export const useAddEditUser = (tag) => {
         }
       }
     } catch (error) {
+      console.error(error);
       showToast(error.message, false);
     } finally {
       dispatch(stopLoading());
