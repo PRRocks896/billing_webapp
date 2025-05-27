@@ -3,7 +3,8 @@ import {
   GET_SINGLE_BARCODE_API,
   UPDATE_BARCODE_API,
   DELETE_BARCODE_API,
-  BARCODE_FIND_API
+  BARCODE_FIND_API,
+  BARCODE_LIST_API
 } from "../utils/constant";
 import { attachId, get, post, put, remove } from "./webRequest";
 
@@ -14,7 +15,7 @@ export const getBarcodeByFind = async (body) => {
 
 
 export const getBarcodeList = async (body) => {
-  const response = await post(body);
+  const response = await post(BARCODE_LIST_API, body);
   return response;
 };
 

@@ -8,7 +8,7 @@ export const LOGOUT_API = 'api/auth/logout';
 // home apis
 export const FETCH_DASHBOARD_DETAILS_API = "api/dashboard";
 
-// barcodemodule api
+// barcodemodule apis
 
 export const CREATE_BARCODE_API = "api/barcode";
 export const GET_SINGLE_BARCODE_API = "api/barcode/get";

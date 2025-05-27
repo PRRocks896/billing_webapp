@@ -1,233 +1,150 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
-  getBarcodeList,
-  createBarcode,
-  updateBarcode,
-  deleteBarcode,
-} from "../../service/barcodeService";
-
-// import {
-//   Table,
-//   TableHead,
-//   TableRow,
-//   TableCell,
-//   TableBody,
-//   TableContainer,
-//   Paper,
-//   IconButton,
-// } from "@mui/material";
-// import { Edit, Delete } from "@mui/icons-material";
-
-import {
-  Button,
-  TextField,
   Box,
-  CircularProgress,
-  Typography,
+  Button,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
 } from "@mui/material";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
 
-const BarcodePage = () => {
-  const [barcodes, setBarcodes] = useState([]);
-  const [newBarcode, setNewBarcode] = useState("");
-  const [editId, setEditId] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+import TopBar from "../../components/TopBar";
+import ConfirmationModal from "../../components/ConfirmationModal";
+import useBarcodeHook from "./hook/useBarcode";
 
-  const fetchBarcodes = async () => {
-    setLoading(true);
-    setError("");
+const switchStyles = {
+  color: "var(--color-black)",
+  "&.MuiChecked": {
+    color: "green",
+  },
+  "&.MuiChecked + .MuiSwitchTrack": {
+    backgroundColor: "lightgreen", // Customize the track color when checked
+  },
+};
 
-    const body = {
-      where: {
-        isActive: true,
-        isDeleted: false,
-        searchText: "",
-      },
-      pagination: {
-        sortBy: "createdAt",
-        descending: true,
-        rows: 5,
-        page: 1,
-      },
-    };
+const Barcode = () => {
+    const {
+        page,
+        rows,
+        count,
+        rights,
+        isDeleteModalOpen,
+        deleteHandler,
+        handleChangePage,
+        changeStatusHandler,
+        searchBarcodeHandler,
+        setIsDeleteModalOpen,
+        deleteBtnClickHandler,
+    } = useBarcodeHook();
 
-    try {
-      const res = await getBarcodeList(body);
-
-      if (res.success) {
-        console.log("Raw API response data:", res.data);
-        setBarcodes(res.data.barcodes || []);
-      } else {
-        setError(res.message || "Failed to load barcodes");
-      }
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Error occurred while fetching barcodes");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // barcodemodule data add
-
-  const handleCreateOrUpdate = async () => {
-    if (!newBarcode.trim()) {
-      setError("Barcode cannot be empty.");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      let res;
-
-      const payload = {
-        userID: 2,
-        barcode: newBarcode.trim(),
-        out: true,
-        in: false,
-        receiverID: 4,
-      };
-
-      if (editId) {
-        res = await updateBarcode(editId, payload);
-      } else {
-        res = await createBarcode(payload);
-      }
-
-      if (res.success) {
-        await fetchBarcodes();
-        setNewBarcode("");
-        setEditId(null);
-        setError("");
-      } else {
-        const message =
-          res.message ||
-          (res.error && res.error[0] && res.error[0].message) ||
-          "Operation failed.";
-        setError(message);
-        console.error("Create/Update error:", res);
-      }
-    } catch (err) {
-      console.error("Create/Update API error:", err);
-      setError("An error occurred while saving the barcode.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // delete barcodemodule api
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this barcode?"))
-      return;
-
-    setLoading(true);
-    try {
-      const res = await deleteBarcode(id);
-      if (res.success) {
-        fetchBarcodes();
-        setError("");
-      } else {
-        setError("Failed to delete.");
-        console.error("Delete error:", res);
-      }
-    } catch (err) {
-      console.error("Delete API error:", err);
-      setError("Error deleting barcode.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = (item) => {
-    setEditId(item._id);
-    setNewBarcode(item.name);
-  };
-
-  useEffect(() => {
-    fetchBarcodes();
-  }, []);
+    const navigate = useNavigate();
+    let index = page * 10;
 
   return (
     <>
-      <Box sx={{ p: 2 }}>
-        <Typography variant="h5" mb={2}>
-          Barcode Module
-        </Typography>
+      <TopBar
+        btnTitle={"Add Company"}
+        inputName="company"
+        navigatePath="/add-company"
+        callAPI={searchBarcodeHandler}
+        addPermission={rights.add}
+      />
+      {/* state listing */}
+      <Box className="card">
+        <TableContainer className="table-wrapper">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>No</TableCell>
+                <TableCell>Barcode Module</TableCell>
+                <TableCell>Action</TableCell>
+                {rights.edit && <TableCell>Status</TableCell>}
+                {(rights.edit || rights.delete) && (
+                  <TableCell>Action</TableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.length ? (
+                rows.map((row) => {
+                  return (
+                    <TableRow key={"role_" + row.id}>
+                      <TableCell align="left">{(index += 1)}</TableCell>
+                      {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isActive}
+                            onChange={(e) => changeStatusHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )}
 
-        {error && (
-          <Typography color="error" mb={2}>
-            {error}
-          </Typography>
-        )}
-
-        <TextField
-          label="Barcode Name"
-          value={newBarcode}
-          onChange={(e) => setNewBarcode(e.target.value)}
-          sx={{ mr: 2 }}
-        />
-        <Button
-          variant="contained"
-          onClick={handleCreateOrUpdate}
-          disabled={loading}
-        >
-          {editId ? "Update" : "Create"}
-        </Button>
-        {editId && (
-          <Button
-            onClick={() => {
-              setEditId("");
-              setNewBarcode("");
-            }}
-            sx={{ ml: 2 }}
-          >
-            Cancel
-          </Button>
-        )}
-
-        {loading && <CircularProgress sx={{ mt: 2 }} />}
-
-        {/* table data getlist  */}
-
-        <ul>
-          {barcodes.map((item) => (
-            <li key={item._id}>
-              {item.name}
-              {item.image && (
-                <img
-                  src={item.image}
-                  alt="barcode"
-                  height="40"
-                  style={{ marginLeft: 10 }}
-                  onError={(e) => {
-                    console.error("Image load failed for:", item.image);
-                    e.target.style.display = "none";
-                  }}
-                />
+                      {(rights.edit || rights.delete) && (
+                        <TableCell>
+                          <Box className="table-action-btn">
+                            {rights.edit && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={() =>
+                                  navigate(`/edit-company/${row.id}`)
+                                }
+                              >
+                                <FiEdit3 size={15} />
+                              </Button>
+                            )}
+                            {rights.delete && (
+                              <Button
+                                className="btn btn-primary"
+                                onClick={deleteBtnClickHandler.bind(
+                                  null,
+                                  row.id
+                                )}
+                              >
+                                <FiTrash2 size={15} />
+                              </Button>
+                            )}
+                          </Box>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell sx={{ textAlign: "center" }} colSpan={7}>
+                    No Company Found
+                  </TableCell>
+                </TableRow>
               )}
-              <Button onClick={() => handleEdit(item)} sx={{ ml: 2 }}>
-                Edit
-              </Button>
-              <Button
-                onClick={() => handleDelete(item._id)}
-                color="error"
-                sx={{ ml: 1 }}
-              >
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
-        
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10]}
+          component="div"
+          count={count}
+          rowsPerPage={10}
+          page={page}
+          onPageChange={handleChangePage}
+        />
       </Box>
-      
 
+      <ConfirmationModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+        title="state"
+        deleteHandler={deleteHandler}
+      />
     </>
   );
 };
 
-export default BarcodePage;
+export default Barcode;
