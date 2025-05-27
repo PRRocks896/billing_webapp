@@ -7,7 +7,7 @@ import {
   updateBarcode,
   deleteBarcode,
   createBarcode,
-} from "../../../service/barcodeService";
+} from "../../../service/barcode";
 import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 

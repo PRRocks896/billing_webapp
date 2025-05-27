@@ -8,6 +8,9 @@ import {
 } from "../utils/constant";
 import { attachId, get, post, put, remove } from "./webRequest";
 
+export const receiveCourier = async (body) => {
+  return await post(`${CREATE_BARCODE_API}/receive-courier`, body);
+}
 
 export const getBarcodeByFind = async (body) => {
   return await post(BARCODE_FIND_API, body);

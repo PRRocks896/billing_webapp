@@ -14,6 +14,7 @@ import {
   FiRepeat,
 } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
+import { FaTruckRampBox } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutHandler, showToast } from "../utils/helper";
@@ -36,6 +37,20 @@ const Sidebar = () => {
 
   const activeTab = location.pathname;
 
+  const courierMenuListArray = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      return accessModules?.filter((row) => {
+        if (["send courier", "receive courier"].includes(row.px_module.name.toLowerCase()) && row.view) {
+          return row;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return [];
+    }
+  }, [accessModules]);
+  
   const mainMenuListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
@@ -80,7 +95,8 @@ const Sidebar = () => {
             "membership redeem",
             "daily report",
             "website booking",
-            "barcode",
+            "send courier",
+            "receive courier"
           ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
@@ -155,7 +171,7 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion>
 
-          <Accordion
+          {/* <Accordion
             expanded={expanded === "panel-barcode"}
             onChange={handleChange("panel-barcode")}
             className="menu-list"
@@ -170,7 +186,7 @@ const Sidebar = () => {
                 <FiSquare /> Barcode
               </Typography>
             </AccordionSummary>
-          </Accordion>
+          </Accordion> */}
 
           {subMenuListArray?.length > 0 && (
             <Accordion
@@ -236,6 +252,51 @@ const Sidebar = () => {
               </AccordionSummary>
               <AccordionDetails className="sub-menu-list">
                 {subMenuWebListArray?.map((item, index) => {
+                  return (
+                    <Box
+                      key={index}
+                      className={`sub-menu-link ${
+                        activeTab === item?.px_module?.path && "active"
+                      }`}
+                      onClick={() =>
+                        navigate(item?.px_module?.path, {
+                          state: {
+                            add: item.add,
+                            edit: item.edit,
+                            delete: item.delete,
+                            view: item.view,
+                          },
+                        })
+                      }
+                    >
+                      <Typography>
+                        <FiSquare />
+                        {item?.px_module?.name}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {courierMenuListArray?.length > 0 && (
+            <Accordion
+              expanded={expanded === "panel4"}
+              onChange={handleChange("panel4")}
+              className="menu-list"
+            >
+              <AccordionSummary
+                className="menu-title"
+                expandIcon={<FiChevronRight />}
+                aria-controls="panel4bh-content"
+                id="panel4bh-header"
+              >
+                <Typography>
+                  <FaTruckRampBox /> Courier
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className="sub-menu-list">
+                {courierMenuListArray?.map((item, index) => {
                   return (
                     <Box
                       key={index}

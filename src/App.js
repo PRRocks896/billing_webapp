@@ -83,6 +83,8 @@ import AddEditAdvance from "./pages/Advance/AddEditAdvance";
 import HomePage from "./pages/HomePage";
 import AddEditHomePage from "./pages/HomePage/addEditHomePage";
 import BarcodePage from "./pages/Barcode"; 
+import SendCourier from "./pages/SendCourier";
+import ReceiveCourier from "./pages/ReceiveCourier";
 
 
 const token = getAuthToken();
@@ -119,6 +121,44 @@ const App = () => {
             )
           ) : (
             <NoConnection />
+          ),
+        },
+        {
+          path: 'send-courier',
+          element: (
+            <ProtectedRoute
+              path="send-courier"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <SendCourier />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: 'receive-courier',
+          element: (
+            <ProtectedRoute
+              path="receive-courier"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <ReceiveCourier />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
           ),
         },
         {
