@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 
 import { Controller } from "react-hook-form";
 import { useLogin } from "./hook/useLogin";
-import Edit from '@mui/icons-material/Edit';
+// import Edit from '@mui/icons-material/Edit';
 import { Link } from "react-router-dom";
 import Sidecover from "../../assets/images/login-sidecover.png";
 import SiteLogo from "../../assets/images/logo.png";
@@ -101,7 +101,7 @@ const Login = () => {
                                   }}
                                   edge="end"
                                 >
-                                  <Edit />
+                                  {/* <Edit /> */}
                                 </IconButton>
                               </InputAdornment>
                             )

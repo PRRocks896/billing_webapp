@@ -69,7 +69,7 @@ const AddEditSeo = ({tag}) => {
                                             name="slug"
                                             control={control}
                                             render={({
-                                                field: { onChange, value },
+                                                field: { onBlur, onChange, value },
                                                 fieldState: { error },
                                             }) => (
                                                 <FormControl
@@ -82,7 +82,10 @@ const AddEditSeo = ({tag}) => {
                                                         size="small"
                                                         name="name"
                                                         value={value}
-                                                        onChange={onChange}
+                                                        onChange={(e) => {
+                                                            onChange(e.target.value.toLowerCase())
+                                                        }}
+                                                        onBlur={onBlur}
                                                         error={!!error}
                                                         helperText={error?.message}
                                                     />
@@ -115,9 +118,14 @@ const AddEditSeo = ({tag}) => {
                                                             onChange(e.target.value.toLowerCase())
                                                         }}
                                                         onBlur={onBlur}
+                                                        error={!!error}
+                                                        helperText={error?.message}
                                                     />
                                                 </FormControl>
                                             )}
+                                            rules={{
+                                                required: "Page Path field required",
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>

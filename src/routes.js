@@ -20,7 +20,7 @@ import AddEditServiceCategory from "./pages/ServiceCategory/AddEditServiceCatego
 import Login from "./pages/Login";
 import { checkIsAuthenticated, getAuthToken } from "./utils/helper";
 import Role from "./pages/Role";
-import AddEditRole from "./pages/Role/AddEditRole";
+// import AddEditRole from "./pages/Role/AddEditRole";
 import Module from "./pages/Module";
 import AddEditModule from "./pages/Module/ddEditModule";
 import Rights from "./pages/Rights";
@@ -33,6 +33,7 @@ import Membership from "./pages/Membership";
 import AddEditMembership from "./pages/Membership/addEditMembership";
 import Coupon from "./pages/Coupon";
 import AddEditCoupon from "./pages/Coupon/addEditCoupon";
+import BarCode from "../src/pages/Barcode/index";
 
 const token = getAuthToken();
 
@@ -43,6 +44,7 @@ const routes = createBrowserRouter([
     loader: checkIsAuthenticated,
     children: [
       { index: true, element: <Home /> },
+      { path: "barcode", element: <BarCode /> },
       { path: "coupon", element: <Coupon /> },
       { path: "add-coupon", element: <AddEditCoupon /> },
       { path: "edit-coupon/:id", element: <AddEditCoupon /> },
@@ -103,8 +105,8 @@ const routes = createBrowserRouter([
       },
 
       { path: "role", element: <Role /> },
-      { path: "add-role", element: <AddEditRole tag="add" /> },
-      { path: "edit-role/:id", element: <AddEditRole tag="edit" /> },
+      // { path: "add-role", element: <AddEditRole tag="add" /> },
+      // { path: "edit-role/:id", element: <AddEditRole tag="edit" /> },
 
       { path: "module", element: <Module /> },
       { path: "add-module", element: <AddEditModule tag="add" /> },
