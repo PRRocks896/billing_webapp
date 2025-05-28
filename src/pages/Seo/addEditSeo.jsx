@@ -49,7 +49,7 @@ const AddEditSeo = ({tag}) => {
                                                         name="name"
                                                         value={value}
                                                         onChange={(e) => {
-                                                            onChange(e.target.value.toUpperCase())
+                                                            onChange(e.target.value)
                                                             setValue("slug", generateSlug(e.target.value));
                                                             setValue("pagePath", generateUrl(e.target.value));
                                                         }}
@@ -69,7 +69,8 @@ const AddEditSeo = ({tag}) => {
                                             name="slug"
                                             control={control}
                                             render={({
-                                                field: { value }
+                                                field: { onBlur, onChange, value },
+                                                fieldState: { error },
                                             }) => (
                                                 <FormControl
                                                     size="small"
@@ -81,10 +82,18 @@ const AddEditSeo = ({tag}) => {
                                                         size="small"
                                                         name="name"
                                                         value={value}
-                                                        disabled
+                                                        onChange={(e) => {
+                                                            onChange(e.target.value.toLowerCase())
+                                                        }}
+                                                        onBlur={onBlur}
+                                                        error={!!error}
+                                                        helperText={error?.message}
                                                     />
                                                 </FormControl>
                                             )}
+                                            rules={{
+                                                required: "Slug field required",
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -109,9 +118,14 @@ const AddEditSeo = ({tag}) => {
                                                             onChange(e.target.value.toLowerCase())
                                                         }}
                                                         onBlur={onBlur}
+                                                        error={!!error}
+                                                        helperText={error?.message}
                                                     />
                                                 </FormControl>
                                             )}
+                                            rules={{
+                                                required: "Page Path field required",
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
