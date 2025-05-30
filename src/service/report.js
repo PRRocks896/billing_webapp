@@ -14,3 +14,7 @@ export const getGstReportList = async (body, fileName) => {
 export const getManagerList = async (body, serviceName, fileName) => {
   return await getXlsx(`api/${serviceName}/manager`, body, fileName);
 }
+
+export const getStaffSalaryReport = async (body, fileName) => {
+  return await getXlsx(`api/staff/auto-calculation-staff-salary-details`, body, fileName);
+}

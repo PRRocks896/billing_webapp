@@ -2,12 +2,13 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
-import { getReportList, getGstReportList, getManagerList } from "../../../service/report";
+import { getReportList, getGstReportList, getManagerList, getStaffSalaryReport } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { getCompanyList } from "../../../service/company";
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { getManager } from "../../../service/staff";
+import { getUserList } from "../../../service/users";
 
 export const useReport = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,10 @@ export const useReport = () => {
   const [managerList, setManagerList] = useState([]);
   const [selectedManager, setSelectedManager] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
+  const [userList, setUserList] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
 
   const serviceList = [
     { value: 'bill', label: 'Bill' },
@@ -70,6 +75,30 @@ export const useReport = () => {
 
   const handleManagerChange = (newValue) => {
     setSelectedManager(newValue);
+  }
+
+  const fetchUserList = async () => {
+    try {
+      const whereCondition = {
+        isActive: true,
+        isDeleted: false,
+        companyID: selectedCompany && selectedCompany?.value,
+      };
+      const payload = listPayload(0, whereCondition, 100000);
+      const response = await getUserList(payload);
+      if (response?.success) {
+        const items = response?.data?.rows?.map((row) => ({
+          value: row.id,
+          label: row.lastName,
+        }));
+        setUserList([{value: null, label: 'All'}].concat(items));
+      } else {
+        showToast(response?.message, false);
+        setUserList([]);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
   }
 
   const fetchBranch = async () => {
@@ -181,6 +210,26 @@ export const useReport = () => {
     }
   }
 
+  const fetchAttendanceReportData = async () => {
+    try {
+      dispatch(startLoading());
+      setPdfData(null);
+      const body = {
+        branchID: selectedUser ? selectedUser : null,
+        companyID: selectedCompany && selectedCompany?.value,
+        year: year,
+        month: month,
+      };
+      const response = await getStaffSalaryReport(body, `Bill Software branch Attendance report ${year}_${month}.xlsx`.toUpperCase());
+      console.log("Attendance Report Response: ", response);
+      setPdfData(response);
+    } catch(error) {
+      showToast("No report found", false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
   const fetchReportDate = async () => {
     try {
       setPdfData(null);
@@ -212,6 +261,11 @@ export const useReport = () => {
 
   return {
     // branch,
+    year,
+    month,
+    userList,
+    selectedUser,
+    setSelectedUser,
     pdfData,
     dateRange,
     gstDateRange,
@@ -224,6 +278,9 @@ export const useReport = () => {
     serviceList,
     selectedService,
     roleId: user.roleID,
+    setYear,
+    setMonth,
+    fetchUserList,
     fetchReportDate,
     handleDateChange,
     handleBranchChange,
@@ -234,6 +291,7 @@ export const useReport = () => {
     fetchManagerReportData,
     handleManagerDateChange,
     handleManagerChange,
-    setSelectedService
+    setSelectedService,
+    fetchAttendanceReportData
   };
 };
