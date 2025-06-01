@@ -204,7 +204,7 @@ const Report = () => {
                 onChange={(_, newValue) => {
                   console.log("newValue", newValue);
                   handleBranchChange(newValue)
-                  fetchUserList();
+                  fetchUserList(newValue?.value);
                 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Company" />

@@ -77,12 +77,12 @@ export const useReport = () => {
     setSelectedManager(newValue);
   }
 
-  const fetchUserList = async () => {
+  const fetchUserList = async (companyId) => {
     try {
       const whereCondition = {
         isActive: true,
         isDeleted: false,
-        companyID: selectedCompany && selectedCompany?.value,
+        companyID: companyId,
       };
       const payload = listPayload(0, whereCondition, 100000);
       const response = await getUserList(payload);
