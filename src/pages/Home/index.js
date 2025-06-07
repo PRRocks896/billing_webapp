@@ -4,6 +4,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import ActivityCard from "../../components/ActivityCard";
 import TextField from "@mui/material/TextField";
 import { PiUsersThree } from "react-icons/pi";
@@ -17,6 +18,9 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow"
 import TableContainer from "@mui/material/TableContainer";
+import SalesExpense from "./component/saleExpense";
+import LowSale from "./component/lowSale";
+import ManagerSales from "./component/managerSales";
 
 import { DateRangePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
@@ -66,6 +70,34 @@ const Home = () => {
           </Grid>
         </Box>
       </Box>
+      <br/>
+      {isAdmin && 
+        <>
+          <Box className="card">
+            <Box className="activity-card-wrapper mb-24">
+              <Typography variant="subtitle2" sx={{fontSize: 22}}>Top Sales Report</Typography>
+              <br/>
+              <SalesExpense />
+            </Box>
+          </Box>
+          <br/>
+          <Box className="card">
+            <Box className="activity-card-wrapper mb-24">
+              <Typography variant="subtitle2" sx={{fontSize: 22}}>Low Sales Report</Typography>
+              <br/>
+              <LowSale />
+            </Box>
+          </Box>
+          <br/>
+          <Box className="card">
+            <Box className="activity-card-wrapper mb-24">
+              <Typography variant="subtitle2" sx={{fontSize: 22}}>Manager Sales Report</Typography>
+              <br/>
+              <ManagerSales />
+            </Box>
+          </Box>
+        </>
+      }
       <br/>
       {isAdmin &&
         <Box className="card">

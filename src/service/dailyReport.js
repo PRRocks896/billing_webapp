@@ -37,3 +37,15 @@ export const deleteDailyReport = async (id) => {
     return response;
 };
 
+export const getSalesExpenseReport = async (payload) => {
+    return await post(`${DAILYREPORT}/sales-expense`, payload);
+}
+
+export const getLowSalesBranchReport = async (payload) => {
+    return await post(`${DAILYREPORT}/branch-sales-low`, payload);
+}
+
+export const getManagerSalesReport = async (payload) => {
+    return await post(`${DAILYREPORT}/maneger-sales-top`, payload);
+}
+
