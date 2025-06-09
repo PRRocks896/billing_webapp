@@ -26,8 +26,8 @@ const useLowSalesHook = () => {
             const { success, message, data } = await getLowSalesBranchReport(payload);
             if (success && data && data.length > 0) {
                 // Process the data as needed
-                const labels = data.map(item => item.branchName);
-                const salesData = data.map(item => item.sales || 0);
+                const labels = data.map(item => item.branch);
+                const salesData = data.map(item => item.total || 0);
                 setSalesData(salesData);
                 setLabels(labels);
             } else {

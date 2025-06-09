@@ -1,5 +1,6 @@
 import {
-    DAILYREPORT
+    DAILYREPORT,
+    REPORT_LIST_API
 } from "../utils/constant";
 import { getPDF, get, post, remove, put } from "./webRequest";
 
@@ -42,10 +43,10 @@ export const getSalesExpenseReport = async (payload) => {
 }
 
 export const getLowSalesBranchReport = async (payload) => {
-    return await post(`${DAILYREPORT}/branch-sales-low`, payload);
+    return await post(`${REPORT_LIST_API}/branch-sales-low`, payload);
 }
 
 export const getManagerSalesReport = async (payload) => {
-    return await post(`${DAILYREPORT}/maneger-sales-top`, payload);
+    return await post(`${REPORT_LIST_API}/maneger-sales-top`, payload);
 }
 
