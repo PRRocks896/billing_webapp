@@ -198,6 +198,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     onBlur={onBlur}
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
+                                                    disabled={!isAdmin}
                                                 />
                                             </FormControl>
                                         )}
@@ -228,6 +229,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     onBlur={onBlur}
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
+                                                    disabled={!isAdmin}
                                                 />
                                             </FormControl>
                                         )}
@@ -288,6 +290,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     onBlur={onBlur}
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
+                                                    disabled={!isAdmin}
                                                 />
                                             </FormControl>
                                         )}
@@ -318,6 +321,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     onBlur={onBlur}
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
+                                                    disabled={!isAdmin}
                                                 />
                                             </FormControl>
                                         )}
@@ -348,6 +352,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     onBlur={onBlur}
                                                     error={Boolean(error)}
                                                     helperText={error?.message ? error.message : ""}
+                                                    disabled={!isAdmin}
                                                 />
                                             </FormControl>
                                         )}
