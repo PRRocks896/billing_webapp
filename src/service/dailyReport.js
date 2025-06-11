@@ -50,3 +50,6 @@ export const getManagerSalesReport = async (payload) => {
     return await post(`${REPORT_LIST_API}/maneger-sales-top`, payload);
 }
 
+export const getDailyDetail = async (payload) => {
+    return await post(`${REPORT_LIST_API}/datails-api`, payload);
+}

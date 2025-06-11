@@ -34,7 +34,8 @@ const AddEditDailyReport = ({ tag }) => {
         handleAddField,
         handleRemoveField,
         handleTotalExpense,
-        fetchPreviousDateEntry
+        fetchPreviousDateEntry,
+        fetchDailySalesExpenseDetail
     } = useAddEditDailyReportHook(tag);
 
     return (
@@ -64,6 +65,8 @@ const AddEditDailyReport = ({ tag }) => {
                                                     onChange={(_event, value) => {
                                                         if(value) {
                                                             onChange(value?.id)
+                                                            fetchPreviousDateEntry();
+                                                            fetchDailySalesExpenseDetail();
                                                         } else {
                                                             onChange(null);
                                                         }

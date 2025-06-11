@@ -8,10 +8,11 @@ import * as moment from "moment";
 import { listPayload, showToast } from "../../../utils/helper";
 
 import {
+    getDailyDetail,
     createDailyReport,
     updateDailyReport,
     getDailyReportById,
-    getDailyReportByPayload
+    getDailyReportByPayload,
 } from "../../../service/dailyReport";
 import {
     hardDeleteExpense
@@ -240,6 +241,24 @@ export const useAddEditDailyReportHook = (tag) => {
     // eslint-disable-next-line
     }, [id, setValue, dispatch]);
 
+    const fetchDailySalesExpenseDetail = async () => {
+        try {
+            const { success, data } = await getDailyDetail({
+                userID: isAdmin ? getValues('userID') : loggedInUser.id,
+                date: moment(new Date()).format('yyyy-MM-DD')
+            });
+            if(success && data && data.length > 0) {
+                setValue('totalCustomer', data[0].totalCustomer || 0);
+                setValue('totalMemberGuest', data[0].membershipCustomer || 0);
+                setValue('cashSale', data[0].cashSales || 0);
+                setValue('cardSale', data[0].cardSales || 0);
+                setValue('upiSale', data[0].upiSales || 0);
+            }
+        } catch (error) {
+            showToast(error?.message, false);
+        }
+    }
+
     const fetchPreviousDateEntry = async () => {
         const { success, message, data} = await getDailyReportByPayload({
             isActive: true,
@@ -253,7 +272,7 @@ export const useAddEditDailyReportHook = (tag) => {
             setValue('openBalance', data.nextDayCash);
         } else {
             setPreviousDateReport(null);
-            showToast(message, false);
+            // showToast(message, false);
             // showToast(`Please Add Report for ${moment(new Date(getValues('dailyReportDate'))).subtract(1, 'day').format('DD/MM/yyyy')} Date`)
             setIsOpeningBalanceDisable(false);
             setValue('openBalance', '');
@@ -353,6 +372,7 @@ export const useAddEditDailyReportHook = (tag) => {
     useEffect(() => {
         if(loggedInUser && loggedInUser.id) {
             fetchPreviousDateEntry();
+            fetchDailySalesExpenseDetail();
         }
         // eslint-disable-next-line
     }, [loggedInUser]);
@@ -376,6 +396,7 @@ export const useAddEditDailyReportHook = (tag) => {
         handleAddField,
         handleRemoveField,
         handleTotalExpense,
-        fetchPreviousDateEntry
+        fetchPreviousDateEntry,
+        fetchDailySalesExpenseDetail
     }
 }
