@@ -260,7 +260,7 @@ export const useAddEditDailyReportHook = (tag) => {
     }
 
     const fetchPreviousDateEntry = async () => {
-        const { success, message, data} = await getDailyReportByPayload({
+        const { success, data} = await getDailyReportByPayload({
             isActive: true,
             isDeleted: false,
             userID: isAdmin ? getValues('userID') : loggedInUser.id,
