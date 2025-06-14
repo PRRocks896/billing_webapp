@@ -107,7 +107,7 @@ const AddEditDailyReport = ({ tag }) => {
                                                     size="small"
                                                     name="date"
                                                     value={value}
-                                                    onChange={(e) => [onChange(e.target.value), fetchPreviousDateEntry()]}
+                                                    onChange={(e) => [onChange(e.target.value), fetchPreviousDateEntry(), fetchDailySalesExpenseDetail()]}
                                                     onBlur={onBlur}
                                                     inputProps={{
                                                         max: moment(new Date()).format('yyyy-MM-DD')
@@ -996,6 +996,34 @@ const AddEditDailyReport = ({ tag }) => {
                                                             />
                                                         </FormControl>
                                                     )}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell colSpan={5}>
+                                                <Controller
+                                                    name="barcodeNumber"
+                                                    control={control}
+                                                    render={({
+                                                        field: { onBlur, onChange, value },
+                                                        fieldState: { error }
+                                                    }) => (
+                                                        <FormControl size="small" fullWidth>
+                                                            <TextField
+                                                                type="text"
+                                                                label="Barcode Number"
+                                                                size="small"
+                                                                value={value}
+                                                                onChange={(e) => onChange(e.target.value)}
+                                                                onBlur={onBlur}
+                                                                error={Boolean(error)}
+                                                                helperText={error?.message ? error.message : ""}
+                                                            />
+                                                        </FormControl>
+                                                    )}
+                                                    rules={{
+                                                        required: 'Enter Barcode Number',
+                                                    }}
                                                 />
                                             </TableCell>
                                         </TableRow>

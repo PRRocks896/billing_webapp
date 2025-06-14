@@ -60,6 +60,7 @@ export const useAddEditDailyReportHook = (tag) => {
             oneHundred: '0',
             fifty: '0',
             cashInCover: '',
+            barcodeNumber: null,
             expense: [
                 {
                     index: 0,
@@ -245,7 +246,7 @@ export const useAddEditDailyReportHook = (tag) => {
         try {
             const { success, data } = await getDailyDetail({
                 userID: isAdmin ? getValues('userID') : loggedInUser.id,
-                date: moment(new Date()).format('yyyy-MM-DD')
+                date: moment(new Date(getValues('dailyReportDate'))).format('yyyy-MM-DD')
             });
             if(success && data && data.length > 0) {
                 setValue('totalCustomer', data[0].totalCustomer || 0);
