@@ -85,6 +85,8 @@ import AddEditHomePage from "./pages/HomePage/addEditHomePage";
 import BarcodePage from "./pages/Barcode"; 
 import SendCourier from "./pages/SendCourier";
 import ReceiveCourier from "./pages/ReceiveCourier";
+import Material from "./pages/Material";
+import AddEditMaterial from "./pages/Material/addEditMaterial";
 
 
 const token = getAuthToken();
@@ -426,6 +428,63 @@ const App = () => {
               }
             />
           ),
+        },
+        {
+          path: "material",
+          element: (
+            <ProtectedRoute
+              path="material"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Material />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-material",
+          element: (
+            <ProtectedRoute
+              path="add-material"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMaterial tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "edit-material/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-material/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMaterial tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
         },
         {
           path: "coupon",

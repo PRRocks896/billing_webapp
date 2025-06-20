@@ -149,3 +149,5 @@ export const NewsLetter = "api/newsLetter";
 export const ADVANCE = "api/advance"
 
 export const HOMEPAGE = "api/v1/homepage"
+
+export const MATERIAL = "api/material";
