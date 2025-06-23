@@ -87,6 +87,9 @@ import SendCourier from "./pages/SendCourier";
 import ReceiveCourier from "./pages/ReceiveCourier";
 import Material from "./pages/Material";
 import AddEditMaterial from "./pages/Material/addEditMaterial";
+import Laundryitem from "./pages/LaundryItem"
+import AddEditLaundryItem from "./pages/LaundryItem/addEditLaundryIteam";
+
 
 
 const token = getAuthToken();
@@ -449,25 +452,6 @@ const App = () => {
           )
         },
         {
-          path: "add-material",
-          element: (
-            <ProtectedRoute
-              path="add-material"
-              Component={
-                isOnline ? (
-                  isPendingDailyReport ? (
-                    <LastDailyReportPending />
-                  ) : (
-                    <AddEditMaterial tag="add" />
-                  )
-                ) : (
-                  <NoConnection />
-                )
-              }
-            />
-          )
-        },
-        {
           path: "edit-material/:id",
           element: (
             <ProtectedRoute
@@ -478,6 +462,63 @@ const App = () => {
                     <LastDailyReportPending />
                   ) : (
                     <AddEditMaterial tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-item",
+          element: (
+            <ProtectedRoute
+              path="laundry-item"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Laundryitem />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+         {
+          path: "add-laundry-item",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-item"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryItem tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-laundry-item/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-item/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryItem tag="edit"/>
                   )
                 ) : (
                   <NoConnection />
