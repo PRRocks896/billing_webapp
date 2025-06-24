@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
-import { advanceActions } from "../../../redux/advance";
+import { LaundaryManagementActions } from "../../../redux/laundaryManagement";
 import { deleteLaundaryManagement, getLaundryManagementList, updateLaundaryManagement } from "../../../service/LaundaryManagement";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
@@ -51,10 +51,10 @@ const useLaundryManagement = () => {
             if (response?.statusCode === 200) {
                 const payload = response?.data?.rows;
                 setCount(response?.data?.count);
-                dispatch(advanceActions.storeLaundaryManagement(payload));
+                dispatch(LaundaryManagementActions.storeLaundaryManagement(payload));
             } else if (response?.statusCode === 404) {
                 const payload = [];
-                dispatch(advanceActions.storeLaundaryManagement(payload));
+                dispatch(LaundaryManagementActions.storeLaundaryManagement(payload));
             }
         } catch (error) {
             showToast(error?.message, false);
@@ -76,7 +76,7 @@ const useLaundryManagement = () => {
     
             if (response?.statusCode === 200) {
               showToast(response?.message, true);
-              dispatch(advanceActions.removeLaundaryManagement({ id: deleteId }));
+              dispatch(LaundaryManagementActions.removeLaundaryManagement({ id: deleteId }));
               setCount((prev) => prev - 1);
             } else {
               showToast(response?.messageCode, false);
@@ -100,7 +100,7 @@ const useLaundryManagement = () => {
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
                 const payload2 = { id, status: payload.isActive };
-                dispatch(advanceActions.changeLaundaryManagementStatus(payload2));
+                dispatch(LaundaryManagementActions.changeLaundaryManagementStatus(payload2));
             } else {
                 showToast(response?.message, false);
             }

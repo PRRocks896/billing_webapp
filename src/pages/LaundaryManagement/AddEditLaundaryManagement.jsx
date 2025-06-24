@@ -17,6 +17,7 @@ import useAddEditLaundryManagement from "./hook/useAddEditLaundaryManagement";
 
 const AddEditLaundryManagement = ({ tag }) => {
     const {
+        isEdit,
         control,
         fields,
         isSubmitting,
@@ -112,18 +113,20 @@ const AddEditLaundryManagement = ({ tag }) => {
                                 {fields.map((item, index) => (
                                     <Grid container spacing={2} key={item.id} style={{padding: '10px 0px'}}>
                                         <Grid item xs={12} sm={0.5}>
-                                            <Typography 
-                                                component="span"
-                                                variant="caption"
-                                                color="text"
-                                                fontWeight="medium"
-                                                onClick={addLaundryItem}
-                                                style={{ cursor: "pointer", alignSelf: "center" }}
-                                            >
-                                                {fields.length === (index + 1) ?
-                                                    <FiPlusCircle size={26} style={{marginTop: '8px'}}/>
-                                                : null}
-                                            </Typography>
+                                            {isEdit ? null :
+                                                <Typography 
+                                                    component="span"
+                                                    variant="caption"
+                                                    color="text"
+                                                    fontWeight="medium"
+                                                    onClick={addLaundryItem}
+                                                    style={{ cursor: "pointer", alignSelf: "center" }}
+                                                >
+                                                    {fields.length === (index + 1) ?
+                                                        <FiPlusCircle size={26} style={{marginTop: '8px'}}/>
+                                                    : null}
+                                                </Typography>
+                                            }
                                         </Grid>
                                         <Grid item xs={12} sm={7}>
                                             <Controller
@@ -221,18 +224,20 @@ const AddEditLaundryManagement = ({ tag }) => {
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={0.5}>
-                                            <Typography 
-                                                component="span"
-                                                variant="caption"
-                                                color="text"
-                                                fontWeight="medium"
-                                                onClick={() => removeLaundryItem(index)}
-                                                style={{ cursor: "pointer", alignSelf: "center" }}
-                                            >
-                                                {fields.length !== 1 ?
-                                                    <FiMinusCircle size={26} style={{marginTop: '8px'}}/>
-                                                : null}
-                                            </Typography>
+                                            {isEdit ? null :
+                                                <Typography 
+                                                    component="span"
+                                                    variant="caption"
+                                                    color="text"
+                                                    fontWeight="medium"
+                                                    onClick={() => removeLaundryItem(index)}
+                                                    style={{ cursor: "pointer", alignSelf: "center" }}
+                                                >
+                                                    {fields.length !== 1 ?
+                                                        <FiMinusCircle size={26} style={{marginTop: '8px'}}/>
+                                                    : null}
+                                                </Typography>
+                                            }
                                         </Grid>
                                     </Grid>
                                 ))}

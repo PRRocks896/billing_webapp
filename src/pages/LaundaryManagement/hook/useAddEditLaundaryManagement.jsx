@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,6 +67,11 @@ export const useAddEditLaundryManagement = (tag) => {
       showToast("At least one laundry item is required.", false);
     }
   };
+
+  const isEdit = useMemo(() => {
+    return tag === "edit";
+  }, [tag]);
+
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
@@ -176,6 +181,7 @@ export const useAddEditLaundryManagement = (tag) => {
   }, [tag]);
 
   return {
+    isEdit,
     control,
     fields,
     isSubmitting,
