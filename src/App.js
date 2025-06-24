@@ -91,6 +91,8 @@ import Laundryitem from "./pages/LaundryItem";
 import AddEditLaundryItem from "./pages/LaundryItem/addEditLaundryIteam";
 import LaundryWasher from "./pages/LaundryWasher";
 import AddEditLaundryWasher from "./pages/LaundryWasher/addEditLaundryWasher";
+import LaundryManagement from "./pages/LaundaryManagement"
+import AddEditLaundryManagement from "./pages/LaundaryManagement/AddEditLaundaryManagement"
 
 
 const token = getAuthToken();
@@ -520,6 +522,63 @@ const App = () => {
                     <LastDailyReportPending />
                   ) : (
                     <AddEditLaundryItem tag="edit"/>
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-management",
+          element: (
+            <ProtectedRoute
+              path="laundry-management"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <LaundryManagement />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-laundry-management",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-management"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryManagement tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-laundry-management/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-management/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryManagement tag="edit"/>
                   )
                 ) : (
                   <NoConnection />
