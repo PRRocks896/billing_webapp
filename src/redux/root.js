@@ -27,7 +27,8 @@ import NewsLetterReducer from "./newsletter";
 import AdvanceReducer from "./advance";
 import HomePageReducer from "./homePage";
 import MaterialReducer from "./material";
-import LaundryItemReducer from "./laundryItem"
+import LaundryItemReducer from "./laundryItem";
+import LaundryWasherReducer from "./laundryWasher";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -58,7 +59,8 @@ const rootReducer = combineReducers({
   advance: AdvanceReducer,
   homePage: HomePageReducer,
   material: MaterialReducer,
-  laundryItem: LaundryItemReducer
+  laundryItem: LaundryItemReducer,
+  laundryWasher: LaundryWasherReducer 
 });
 
 export default rootReducer;

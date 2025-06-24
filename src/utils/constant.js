@@ -153,3 +153,5 @@ export const HOMEPAGE = "api/v1/homepage"
 export const MATERIAL = "api/material";
 
 export const LAUNDRYITEM = "api/laundry-item";
+
+export const LAUNDRYWASHER = "api/laundry-washer";

@@ -87,9 +87,10 @@ import SendCourier from "./pages/SendCourier";
 import ReceiveCourier from "./pages/ReceiveCourier";
 import Material from "./pages/Material";
 import AddEditMaterial from "./pages/Material/addEditMaterial";
-import Laundryitem from "./pages/LaundryItem"
+import Laundryitem from "./pages/LaundryItem";
 import AddEditLaundryItem from "./pages/LaundryItem/addEditLaundryIteam";
-
+import LaundryWasher from "./pages/LaundryWasher";
+import AddEditLaundryWasher from "./pages/LaundryWasher/addEditLaundryWasher";
 
 
 const token = getAuthToken();
@@ -519,6 +520,62 @@ const App = () => {
                     <LastDailyReportPending />
                   ) : (
                     <AddEditLaundryItem tag="edit"/>
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-washer",
+          element: (
+            <ProtectedRoute
+              path="laundry-washer"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <LaundryWasher />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-laundry-washer",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-washer"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryWasher tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        }, {
+          path: "edit-laundry-washer/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-washer/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryWasher tag="edit" />
                   )
                 ) : (
                   <NoConnection />
