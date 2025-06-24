@@ -29,5 +29,9 @@ export const UpdateLaundryItem = async (payload, id) => {
     return await put(`${LAUNDRYITEM}/${id}`, payload);
 };
 
+export const getLaundryItemDropdownList = async (body) => {
+    return await post(`${LAUNDRYITEM}/dropdown`, body);
+};
+
 
 

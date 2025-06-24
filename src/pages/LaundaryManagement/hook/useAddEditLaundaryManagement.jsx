@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
-import { getLaundryItemList } from "../../../service/laundryItem";
-import { getLaundryWasherList } from "../../../service/laundryWasher";
+import { getLaundryItemDropdownList } from "../../../service/laundryItem";
+import { getLaundryWasherDropdownList } from "../../../service/laundryWasher";
 import { listPayload, showToast } from "../../../utils/helper";
 import {
-  createLaundaryManagement,
+  bulkCreateLaundaryManagement,
   updateLaundaryManagement,
   getLaundaryManagementById,
 } from "../../../service/LaundaryManagement";
@@ -20,57 +20,84 @@ export const useAddEditLaundryManagement = (tag) => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
-  const [staffOption, setStaffOption] = useState([]);
-  const [paymentOption, setPaymentOption] = useState([]);
-  const [managerOption, setManagerOption] = useState([]);
+  const [laundryItemOption, setLaundryItemOption] = useState([]);
+  const [laundryWasherOption, setLaundryWasherOption] = useState([]);
 
   const {
     control,
+    formState: { isSubmitting },
     getValues,
-    setValue,
     handleSubmit,
-    reset,
-    watch,
-    // setError,
-    clearErrors,
-    formState: { isSubmitting, isValid },
   } = useForm({
     defaultValues: {
       userID: "",
       laundryWasherID: "",
-      givenDate: new Date(),
-      givenManagerID: "",
-      detail: [
-        {
-          laundryItemID: 0,
-          price: "",
-          givenQty: "",
-        },
-      ],
+      givenDate: moment(new Date()).format('yyyy-MM-DD'),
+      givenManagerID: localStorage.getItem("managerId") || "",
+      detail: [{
+        index: 0,
+        laundryItemID: "",
+        price: "",
+        givenQty: "",
+      }],
       managerName: localStorage.getItem("managerName") || "",
     },
     mode: "onBlur",
   });
 
+  const { fields, append, remove } = useFieldArray({
+    name: "detail",
+    control: control,
+  });
+
+  const addLaundryItem = () => {
+    const index = getValues("detail").length;
+    append({
+      index: index,
+      laundryItemID: "",
+      price: "",
+      givenQty: "",
+    });
+  };
+
+  const removeLaundryItem = (index) => {
+    if (fields.length > 1) {
+      remove(index);
+    } else {
+      showToast("At least one laundry item is required.", false);
+    }
+  };
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());
       let payload = { ...data };
+      console.log("payload", payload);
       if (tag === "add") {
         payload = {
           ...payload,
+          userID: loggedInUser.id,
           createdBy: loggedInUser.id,
+          items: payload.detail.map((item) => ({
+            laundryItemID: item.laundryItemID,
+            price: item.price,
+            givenQty: item.givenQty,
+          })),
         };
       } else {
         payload = {
           ...payload,
           updatedBy: loggedInUser.id,
+          userID: loggedInUser.id,
+          laundryItemID: payload.detail[0].laundryItemID,
+          price: payload.detail[0].price,
+          givenQty: payload.detail[0].givenQty,
         };
       }
+      delete payload.detail;
       const response =
         tag !== "add"
           ? await updateLaundaryManagement(payload, id)
-          : await createLaundaryManagement(payload);
+          : await bulkCreateLaundaryManagement(payload);
       if (response && response.success) {
         showToast(response.message, true);
         navigate("/laundry-management");
@@ -84,7 +111,7 @@ export const useAddEditLaundryManagement = (tag) => {
     }
   };
 
-  const fetchEditAdvance = async () => {
+  const fetchEditLaundryManagement = async () => {
     try {
       dispatch(startLoading());
       const { success, message, data } = await getLaundaryManagementById(id);
@@ -92,12 +119,12 @@ export const useAddEditLaundryManagement = (tag) => {
         showToast(message, false);
         return;
       }
-      setValue("staffID", data?.staff?.id);
-      setValue("paymentID", data?.px_payment_type?.id);
-      setValue("date", moment(new Date(data.date)).format("yyyy-MM-DD"));
-      setValue("permissionName", data.permissionName);
-      setValue("managerID", data?.manager?.id);
-      setValue("amount", data.amount);
+      // setValue("staffID", data?.staff?.id);
+      // setValue("paymentID", data?.px_payment_type?.id);
+      // setValue("date", moment(new Date(data.date)).format("yyyy-MM-DD"));
+      // setValue("permissionName", data.permissionName);
+      // setValue("managerID", data?.manager?.id);
+      // setValue("amount", data.amount);
     } catch (err) {
       showToast(err.message, false);
     } finally {
@@ -115,51 +142,28 @@ export const useAddEditLaundryManagement = (tag) => {
         isActive: true,
         isDeleted: false,
       };
-      const payload = listPayload(0, whereCondition, 100000);
-      const [laundryWasherResponse, laundryItemResponse] = await Promise.all([
-        getLaundryWasherList(
-          listPayload(
-            0,
-            ["admin", "super admin"].includes(
-              loggedInUser?.px_role?.name?.toLowerCase()
-            )
-              ? { ...whereCondition }
-              : { ...whereCondition, createdBy: loggedInUser.id },
-            100000
-          )
-        ),
-        getLaundryItemList(payload),
-        getLaundryWasherList(
-          listPayload(
-            0,
-            ["admin", "super admin"].includes(
-              loggedInUser?.px_role?.name?.toLowerCase()
-            )
-              ? { ...whereCondition, searchText: "MANAGER" }
-              : {
-                  ...whereCondition,
-                  searchText: "MANAGER",
-                  createdBy: loggedInUser.id,
-                },
-            100000
-          )
-        ),
+      const [
+        laundryWasherResponse,
+        laundryItemResponse
+      ] = await Promise.all([
+        getLaundryWasherDropdownList(whereCondition),
+        getLaundryItemDropdownList(whereCondition)
       ]);
       if (
         laundryWasherResponse?.statusCode === 200 &&
         laundryWasherResponse?.success
       ) {
-        setStaffOption(laundryWasherResponse.data?.rows);
+        setLaundryWasherOption(laundryWasherResponse.data);
       } else {
-        setStaffOption([]);
+        setLaundryWasherOption([]);
       }
       if (
         laundryItemResponse?.statusCode === 200 &&
         laundryItemResponse?.success
       ) {
-        setPaymentOption(laundryItemResponse.data?.rows);
+        setLaundryItemOption(laundryItemResponse.data);
       } else {
-        setPaymentOption([]);
+        setLaundryItemOption([]);
       }
     };
     fetchDropDownList();
@@ -167,19 +171,21 @@ export const useAddEditLaundryManagement = (tag) => {
   }, []);
 
   useEffect(() => {
-    tag === "edit" && fetchEditAdvance();
+    tag === "edit" && fetchEditLaundryManagement();
     // eslint-disable-next-line
   }, [tag]);
 
   return {
     control,
-    staffOption,
+    fields,
     isSubmitting,
-    paymentOption,
-    managerOption,
+    laundryItemOption,
+    laundryWasherOption,
     onSubmit,
     handleSubmit,
     cancelHandler,
+    addLaundryItem,
+    removeLaundryItem,
   };
 };
 

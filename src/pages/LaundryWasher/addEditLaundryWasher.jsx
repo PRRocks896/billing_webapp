@@ -27,7 +27,7 @@ const AddEditLaundryWasher = ({ tag }) => {
             <Box className="card">
               <FormGroup className="form-field">
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={6}>
                     <Controller
                       name="name"
                       control={control}
@@ -57,7 +57,7 @@ const AddEditLaundryWasher = ({ tag }) => {
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={6}>
                     <Controller
                       name="phoneNumber"
                       control={control}

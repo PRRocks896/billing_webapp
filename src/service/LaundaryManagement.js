@@ -12,8 +12,8 @@ export const getLaundryManagementList = async (body) => {
     return await post(`${LAUNDARYMANAGEMENT}/list`, body);
 };
 
-export const createLaundaryManagement = async (body) => {
-    return await post(LAUNDARYMANAGEMENT, body);
+export const bulkCreateLaundaryManagement = async (body) => {
+    return await post(`${LAUNDARYMANAGEMENT}/bulkcreate`, body);
   };
   
   export const deleteLaundaryManagement = async (id) => {

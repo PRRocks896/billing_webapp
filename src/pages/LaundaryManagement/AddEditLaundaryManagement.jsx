@@ -1,5 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
+import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 
 import Autocomplete from "@mui/material/Autocomplete";
 // import Box from "@mui/material/Box";
@@ -9,24 +10,23 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
-import InputLabel from "@mui/material/InputLabel";
-import FormHelpText from "@mui/material/FormHelperText";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
 import useAddEditLaundryManagement from "./hook/useAddEditLaundaryManagement";
 
 const AddEditLaundryManagement = ({ tag }) => {
     const {
         control,
-        staffOption,
+        fields,
         isSubmitting,
-        paymentOption,
-        managerOption,
+        laundryItemOption,
+        laundryWasherOption,
         onSubmit,
         handleSubmit,
-        cancelHandler
+        cancelHandler,
+        addLaundryItem,
+        removeLaundryItem,
     } = useAddEditLaundryManagement(tag);
     return (
         <>
@@ -36,7 +36,7 @@ const AddEditLaundryManagement = ({ tag }) => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={4}>
                                 <Controller
-                                    name="date"
+                                    name="givenDate"
                                     control={control}
                                     render={({
                                         field: { onBlur, onChange, value },
@@ -46,7 +46,7 @@ const AddEditLaundryManagement = ({ tag }) => {
                                             <TextField
                                                 type="date"
                                                 variant="outlined"
-                                                label="Date"
+                                                label="Given Date"
                                                 size="small"
                                                 name="date"
                                                 value={value || new Date()}
@@ -64,37 +64,37 @@ const AddEditLaundryManagement = ({ tag }) => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <Controller
-                                    name="givenManagerID"
+                                    name="laundryWasherID"
                                     control={control}
                                     render={({
-                                        field: { onBlur, onChange, value },
+                                        field: { onChange, value },
                                         fieldState: { error },
                                     }) => (
                                         <Autocomplete
                                             freeSolo
                                             size="small"
-                                            id="givenManagerID"
-                                            options={staffOption || []}
-                                            getOptionLabel={(option) => option.nickName || ''}
-                                            isOptionEqualToValue={(option, value) => option?.id === value?.id}
-                                            value={staffOption?.find((option) => option.id === value) ?? ''}
+                                            id="laundryWasherID"
+                                            options={laundryWasherOption || []}
+                                            getOptionLabel={(option) => option.label || ''}
+                                            isOptionEqualToValue={(option, value) => option?.value === value}
+                                            value={laundryWasherOption?.find((option) => option.value === value) ?? ''}
                                             // onBlur={onBlur}
                                             onChange={(_event, value) => {
                                                 if (value) {
-                                                    onChange(value?.id)
+                                                    onChange(value?.value)
                                                 } else {
                                                     onChange(null);
                                                 }
                                             }}
                                             renderOption={(props, option) => (
                                                 <li {...props} key={option.id}>
-                                                    {option.nickName}
+                                                    {option.label}
                                                 </li>
                                             )}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
-                                                    label="Given Manager Id"
+                                                    label="Laundry Washer"
                                                     error={!!error}
                                                     helperText={error?.message}
                                                 />
@@ -102,145 +102,140 @@ const AddEditLaundryManagement = ({ tag }) => {
                                         />
                                     )}
                                     rules={{
-                                        required: "Please Select Staff",
+                                        required: 'Please Select Laundry Washer'
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="paymentID"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl fullWidth size="small">
-                                            <InputLabel id="paidBy">Paid By</InputLabel>
-                                            <Select
-                                                labelId="paidBy"
-                                                id="paidBy-select"
-                                                value={value}
-                                                label="Paid By"
-                                                onChange={onChange}
-                                                onBlur={onBlur}
+                            <Grid item xs={12} sm={4}></Grid>
+                            <Grid item xs={12} sm={12}>
+                                <Typography variant="subtitle2" fontSize={18} fontWeight={600}>Laundry Items</Typography>
+                                {fields.map((item, index) => (
+                                    <Grid container spacing={2} key={item.id} style={{padding: '10px 0px'}}>
+                                        <Grid item xs={12} sm={0.5}>
+                                            <Typography 
+                                                component="span"
+                                                variant="caption"
+                                                color="text"
+                                                fontWeight="medium"
+                                                onClick={addLaundryItem}
+                                                style={{ cursor: "pointer", alignSelf: "center" }}
                                             >
-                                                {paymentOption?.map((res, ind) => (
-                                                    <MenuItem style={{ textTransform: "capitalize" }} key={`paidBy_${ind}`} value={res.id}>
-                                                        {res.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                            {error && error.message &&
-                                                <FormHelpText error={true}>{error.message}</FormHelpText>
-                                            }
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: 'Please Select Paid By'
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="amount"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl size="small" fullWidth >
-                                            <TextField
-                                                type="number"
-                                                label="Amount"
-                                                size="small"
-                                                name="amount"
-                                                value={value}
-                                                onChange={onChange}
-                                                onBlur={onBlur}
-                                                error={!!error}
-                                                helperText={error?.message}
+                                                {fields.length === (index + 1) ?
+                                                    <FiPlusCircle size={26} style={{marginTop: '8px'}}/>
+                                                : null}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} sm={7}>
+                                            <Controller
+                                                name={`detail.${index}.laundryItemID`}
+                                                control={control}
+                                                render={({
+                                                    field: { onChange, value },
+                                                    fieldState: { error },
+                                                }) => (
+                                                    <Autocomplete
+                                                        freeSolo
+                                                        size="small"
+                                                        id={`detail.${index}.laundryItemID`}
+                                                        options={laundryItemOption || []}
+                                                        getOptionLabel={(option) => option.label || ''}
+                                                        isOptionEqualToValue={(option, value) => option?.value === value}
+                                                        value={laundryItemOption?.find((option) => option.value === value) ?? ''}
+                                                        onChange={(_event, value) => {
+                                                            if (value) {
+                                                                onChange(value?.value)
+                                                            } else {
+                                                                onChange(null);
+                                                            }
+                                                        }}
+                                                        renderOption={(props, option) => (
+                                                            <li {...props} key={option.value}>
+                                                                {option.label}
+                                                            </li>
+                                                        )}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                label="Laundry Item"
+                                                                error={!!error}
+                                                                helperText={error?.message}
+                                                            />
+                                                        )}
+                                                    />
+                                                )}
+                                                rules={{
+                                                    required: 'Please Select Laundry Item'
+                                                }}
                                             />
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: "Amount field required.",
-                                        pattern: {
-                                            value: /^\d*(\.\d{0,2})?$/i,
-                                            message: "please enter digit only.",
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="managerID"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <Autocomplete
-                                            freeSolo
-                                            size="small"
-                                            id="managerID"
-                                            options={managerOption || []}
-                                            getOptionLabel={(option) => option.nickName || ''}
-                                            isOptionEqualToValue={(option, value) => option?.id === value?.id}
-                                            value={managerOption?.find((option) => option.id === value) ?? ''}
-                                            // onBlur={onBlur}
-                                            onChange={(_event, value) => {
-                                                if (value) {
-                                                    onChange(value?.id)
-                                                } else {
-                                                    onChange(null);
-                                                }
-                                            }}
-                                            renderOption={(props, option) => (
-                                                <li {...props} key={option.id}>
-                                                    {option.nickName}
-                                                </li>
-                                            )}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Manager"
-                                                    error={!!error}
-                                                    helperText={error?.message}
-                                                />
-                                            )}
-                                        />
-                                    )}
-                                    rules={{
-                                        required: "Please Select Maanger",
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
-                                <Controller
-                                    name="permissionName"
-                                    control={control}
-                                    render={({
-                                        field: { onBlur, onChange, value },
-                                        fieldState: { error },
-                                    }) => (
-                                        <FormControl size="small" fullWidth>
-                                            <TextField
-                                                label="Permission Name"
-                                                variant="outlined"
-                                                size="small"
-                                                name="permissionName"
-                                                value={value || ""}
-                                                onChange={(e) => onChange(e.target.value.toUpperCase())}
-                                                onBlur={onBlur}
-                                                error={!!error}
-                                                helperText={error?.message}
+                                        </Grid>
+                                        <Grid item xs={12} sm={2}>
+                                            <Controller
+                                                name={`detail.${index}.price`}
+                                                control={control}
+                                                render={({
+                                                    field: { onChange, value },
+                                                    fieldState: { error },
+                                                }) => (
+                                                    <FormControl size="small" fullWidth>
+                                                        <TextField
+                                                            size="small"
+                                                            label="Price"
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                                rules={{
+                                                    required: 'Please Enter Price',
+                                                    pattern: {
+                                                        value: /^\d+(\.\d{1,2})?$/,
+                                                        message: 'Please enter a valid price'
+                                                    }
+                                                }}
                                             />
-                                        </FormControl>
-                                    )}
-                                    rules={{
-                                        required: "Please Enter Permission Name",
-                                    }}
-                                />
+                                        </Grid>
+                                        <Grid item xs={12} sm={2}>
+                                            <Controller
+                                                name={`detail.${index}.givenQty`}
+                                                control={control}
+                                                render={({
+                                                    field: { onChange, value },
+                                                    fieldState: { error },
+                                                }) => (
+                                                    <FormControl size="small" fullWidth>
+                                                        <TextField
+                                                            size="small"
+                                                            label="Qty"
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                                rules={{
+                                                    required: 'Please Enter Quantity'
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={0.5}>
+                                            <Typography 
+                                                component="span"
+                                                variant="caption"
+                                                color="text"
+                                                fontWeight="medium"
+                                                onClick={() => removeLaundryItem(index)}
+                                                style={{ cursor: "pointer", alignSelf: "center" }}
+                                            >
+                                                {fields.length !== 1 ?
+                                                    <FiMinusCircle size={26} style={{marginTop: '8px'}}/>
+                                                : null}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Grid>
                     </CardContent>
