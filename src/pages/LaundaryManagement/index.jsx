@@ -122,7 +122,7 @@ const LaundryManagement = () => {
               ) : (
                 <TableRow>
                   <TableCell sx={{ textAlign: "center" }} colSpan={8}>
-                    No Advance Found
+                    No Laundry Management Found
                   </TableCell>
                 </TableRow>
               )}

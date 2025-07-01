@@ -10,7 +10,7 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 const useLaundryManagement = () => {
     const dispatch = useDispatch();
     const { pathname } = useLocation();
-    const advanceData = useSelector((state) => state.advance.data);
+    const laundaryMgmtData = useSelector((state) => state.LaundaryManagement.data);
     const loggedInUser = useSelector((state) => state.loggedInUser);
     const { accessModules } = loggedInUser;
 
@@ -33,8 +33,8 @@ const useLaundryManagement = () => {
     }, [loggedInUser]);
 
     const visibleRows = useMemo(() => {
-        return advanceData;
-    }, [advanceData]);
+        return laundaryMgmtData;
+    }, [laundaryMgmtData]);
 
     const rights = useMemo(() => {
         return rightsAccess(accessModules, pathname);
@@ -44,7 +44,7 @@ const useLaundryManagement = () => {
     const fetchLaundryManagementData = useCallback(async (searchValue = "") => {
         try {
             dispatch(startLoading());
-            const body = listPayload(page, { searchText: searchValue });
+            const body = listPayload(page, { isDeleted: false, searchText: searchValue });
     
             const response = await getLaundryManagementList(body);
     
