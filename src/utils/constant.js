@@ -157,3 +157,5 @@ export const LAUNDRYITEM = "api/laundry-item";
 export const LAUNDRYWASHER = "api/laundry-washer";
 
 export const LAUNDARYMANAGEMENT = "api/laundry-management";
+
+export const STOCK = "api/stock";

@@ -93,6 +93,9 @@ import LaundryWasher from "./pages/LaundryWasher";
 import AddEditLaundryWasher from "./pages/LaundryWasher/addEditLaundryWasher";
 import LaundryManagement from "./pages/LaundaryManagement"
 import AddEditLaundryManagement from "./pages/LaundaryManagement/AddEditLaundaryManagement"
+import Stock from "./pages/Stock";
+import AddEditStock from "./pages/Stock/AddEditStock";
+
 
 
 const token = getAuthToken();
@@ -455,6 +458,25 @@ const App = () => {
           )
         },
         {
+          path: "add-material",
+          element: (
+            <ProtectedRoute
+              path="add-material"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditMaterial tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
           path: "edit-material/:id",
           element: (
             <ProtectedRoute
@@ -642,6 +664,63 @@ const App = () => {
               }
             />
           )
+        },
+        {
+          path: "stock",
+          element: (
+            <ProtectedRoute
+              path="stock"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Stock />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+         {
+          path: "add-stock",
+          element: (
+            <ProtectedRoute
+              path="add-stock"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStock tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+         {
+          path: "edit-stock/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-stock/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStock tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
         },
         {
           path: "coupon",
