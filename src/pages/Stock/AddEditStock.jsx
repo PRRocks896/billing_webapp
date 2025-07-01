@@ -34,11 +34,10 @@ const AddEditStock = ({ tag }) => {
         <Card>
           <CardContent>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={4}></Grid>
               <Grid item xs={12} sm={12}>
-                <Typography variant="subtitle2" fontSize={18} fontWeight={600}>
+                {/* <Typography variant="subtitle2" fontSize={18} fontWeight={600}>
                   Stock
-                </Typography>
+                </Typography> */}
                 {fields.map((item, index) => (
                   <Grid
                     container

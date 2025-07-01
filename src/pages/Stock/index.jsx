@@ -62,6 +62,7 @@ const Stock = () => {
               <TableRow>
                 <TableCell>No</TableCell>
                 <TableCell>Material</TableCell>
+                <TableCell>UOM</TableCell>
                 <TableCell>Qty</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
                 {isAdmin && <TableCell>Action</TableCell>}
@@ -75,6 +76,7 @@ const Stock = () => {
                     <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
                       <TableCell align="left">{row?.px_material.name}</TableCell>
+                      <TableCell align="left">{row?.px_material.uom}</TableCell>
                       <TableCell align="left">{row?.qty}</TableCell>
                       {rights.edit && (
                         <TableCell>

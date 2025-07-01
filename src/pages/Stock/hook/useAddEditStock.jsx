@@ -4,7 +4,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 import { createMaterialDropdown } from "../../../service/material";
-import { listPayload, showToast } from "../../../utils/helper";
+import { showToast } from "../../../utils/helper";
 import { bulkcreateStock, updateStock, getStockById } from "../../../service/stock";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
@@ -29,7 +29,7 @@ export const useAddEditLaundryManagement = (tag) => {
         {
           index: 0,
           materialID: "",
-          qty: 25,
+          qty: "",
         },
       ],
     },
@@ -63,12 +63,9 @@ export const useAddEditLaundryManagement = (tag) => {
   }, [tag]);
 
   const onSubmit = async (data) => {
-    console.log("Form data:", data);
     try {
       dispatch(startLoading());
-      console.log(data);
       let payload = { ...data };
-      console.log("payload", payload);
       if (tag === "add") {
         payload = {
           ...payload,
@@ -79,7 +76,6 @@ export const useAddEditLaundryManagement = (tag) => {
             qty: item.qty,
           })),
         };
-        console.log("Sending this to API:", payload);
       } else {
         payload = {
           ...payload,
@@ -94,7 +90,6 @@ export const useAddEditLaundryManagement = (tag) => {
         tag !== "add"
           ? await updateStock(payload, id)
           : await bulkcreateStock(payload);
-      console.log(response);
       if (response && response.success) {
         showToast(response.message, true);
         navigate("/stock");
@@ -116,8 +111,14 @@ export const useAddEditLaundryManagement = (tag) => {
         showToast(message, false);
         return;
       }
-      setValue("material", data?.px_material?.name);
-      setValue("qty", data?.qty?.id);
+      setValue("userID", data?.userID);
+      setValue("detail", [
+        {
+          index: 0,
+          materialID: data?.materialID,
+          qty: data?.qty,
+        },
+      ]);
     } catch (err) {
       showToast(err.message, false);
     } finally {
@@ -136,7 +137,6 @@ export const useAddEditLaundryManagement = (tag) => {
         isDeleted: false,
       };
       const [materialResponse] = await Promise.all([
-        createMaterialDropdown(whereCondition),
         createMaterialDropdown(whereCondition),
       ]);
       if (materialResponse?.statusCode === 200 && materialResponse?.success) {

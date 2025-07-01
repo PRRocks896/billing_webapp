@@ -11,7 +11,6 @@ const useStock = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const stockData = useSelector((state) => state.stock.data);
- console.log(stockData)
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const { accessModules } = loggedInUser;
 
