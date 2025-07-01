@@ -27,6 +27,7 @@ export const useAddEditLaundryManagement = (tag) => {
     control,
     formState: { isSubmitting },
     getValues,
+    setValue,
     handleSubmit,
   } = useForm({
     defaultValues: {
@@ -124,6 +125,17 @@ export const useAddEditLaundryManagement = (tag) => {
         showToast(message, false);
         return;
       }
+      setValue("userID", data?.userID);
+      setValue("laundryWasherID", data?.laundryWasherID);
+      setValue("givenDate", moment(new Date(data.givenDate)).format("yyyy-MM-DD"));
+      setValue("givenManagerID", data?.managerName?.[0]?.id || localStorage.getItem("managerId"));
+      setValue("managerName", data?.managerName?.[0]?.nickName || localStorage.getItem("managerName"));
+      setValue("detail", [{
+        index: 0,
+        laundryItemID: data?.laundryItemID,
+        price: data?.price,
+        givenQty: data?.givenQty,
+      }]);
       // setValue("staffID", data?.staff?.id);
       // setValue("paymentID", data?.px_payment_type?.id);
       // setValue("date", moment(new Date(data.date)).format("yyyy-MM-DD"));

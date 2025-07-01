@@ -61,9 +61,11 @@ const LaundryManagement = () => {
               <TableRow>
                 <TableCell>No</TableCell>
                 <TableCell>Given Date</TableCell>
-                <TableCell>givenManagerID</TableCell>
-                <TableCell>price</TableCell>
-                <TableCell>givenQty</TableCell>
+                <TableCell>Washer Name</TableCell>
+                {/* <TableCell>Laundry Item</TableCell> */}
+                <TableCell>Price</TableCell>
+                <TableCell>Given Qty</TableCell>
+                <TableCell>Manager</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
                 {isAdmin && <TableCell>Action</TableCell>}
               </TableRow>
@@ -74,12 +76,11 @@ const LaundryManagement = () => {
                   return (
                     <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
-                      <TableCell>{row?.staff.nickName}</TableCell>
-                      <TableCell align="left">{moment(row?.date).format("yyyy-MM-DD")}</TableCell>
-                      <TableCell align="left">{row?.px_payment_type.name}</TableCell>
-                      <TableCell align="left">{row?.amount}</TableCell>
-                      <TableCell align="left">{row?.permissionName}</TableCell>
-                      <TableCell align="left">{row?.manager?.nickName}</TableCell>
+                      <TableCell align="left">{moment(row?.givenDate).format("yyyy-MM-DD")}</TableCell>
+                      <TableCell align="left">{row?.px_laundry_washer?.name}</TableCell>
+                      <TableCell align="left">{row?.price}/-</TableCell>
+                      <TableCell align="left">{row?.givenQty}</TableCell>
+                      <TableCell>{row?.managerData && row?.managerData[0].nickName}</TableCell>
                       {rights.edit && (
                             <TableCell>
                                 <Switch
