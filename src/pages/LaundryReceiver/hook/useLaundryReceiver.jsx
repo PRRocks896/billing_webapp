@@ -11,7 +11,6 @@ const useLaundryReceiver = () => {
     const dispatch = useDispatch();
     const { pathname } = useLocation();
     const laundryReceiverData = useSelector((state) => state.LaundryReceiver.data);
-    console.log(laundryReceiverData)
     const loggedInUser = useSelector((state) => state.loggedInUser);
     const { accessModules } = loggedInUser;
 

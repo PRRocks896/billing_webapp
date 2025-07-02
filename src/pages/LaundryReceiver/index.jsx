@@ -81,6 +81,9 @@ const LaundryReceiver = () => {
                       <TableCell align="left">{row?.px_laundry_washer?.name}</TableCell>
                       <TableCell align="left">{row?.price}/-</TableCell>
                       <TableCell align="left">{row?.givenQty}</TableCell>
+                      <TableCell align="left">{row?.receiveQty}</TableCell>
+                      <TableCell align="left">{row?.managerName?.nickName}</TableCell>
+                      {/* <TableCell>{row?.managerData && row?.managerData[0].nickName}</TableCell> */}
                       <TableCell>{row?.managerData && row?.managerData[0].nickName}</TableCell>
                       {rights.edit && (
                             <TableCell>

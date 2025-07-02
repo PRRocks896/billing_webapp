@@ -1,29 +1,26 @@
-import { 
-    LAUNDARYMANAGEMENT 
-} from "../utils/constant"
-import {
-    post,
-    put,
-    get,
-    remove
-} from "./webRequest";
+import { LAUNDARYMANAGEMENT } from "../utils/constant";
+import { post, put, get, remove } from "./webRequest";
 
 export const getLaundryManagementList = async (body) => {
-    return await post(`${LAUNDARYMANAGEMENT}/list`, body);
+  return await post(`${LAUNDARYMANAGEMENT}/list`, body);
 };
 
 export const bulkCreateLaundaryManagement = async (body) => {
-    return await post(`${LAUNDARYMANAGEMENT}/bulkcreate`, body);
-  };
-  
-  export const deleteLaundaryManagement = async (id) => {
-    return await remove(`${LAUNDARYMANAGEMENT}/${id}`);
-  };
-  
-  export const getLaundaryManagementById = async (id) => {
-    return await get(`${LAUNDARYMANAGEMENT}/${id}`);
-  };
-  
-  export const updateLaundaryManagement = async (payload, id) => {
-    return await put(`${LAUNDARYMANAGEMENT}/${id}`, payload);
-  };
+  return await post(`${LAUNDARYMANAGEMENT}/bulkcreate`, body);
+};
+
+export const createLaundryManagementFind = async (body) => {
+  return await post(`${LAUNDARYMANAGEMENT}/find`, body);
+};
+
+export const deleteLaundaryManagement = async (id) => {
+  return await remove(`${LAUNDARYMANAGEMENT}/${id}`);
+};
+
+export const getLaundaryManagementById = async (id) => {
+  return await get(`${LAUNDARYMANAGEMENT}/${id}`);
+};
+
+export const updateLaundaryManagement = async (payload, id) => {
+  return await put(`${LAUNDARYMANAGEMENT}/${id}`, payload);
+};

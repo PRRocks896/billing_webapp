@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { createStaff } from "../../../service/staff";
 import moment from "moment";
 
 import { getLaundryItemDropdownList } from "../../../service/laundryItem";
-import { getLaundryWasherDropdownList } from "../../../service/laundryWasher";
+import { createLaundryManagementFind } from "../../../service/LaundaryManagement";
 import { listPayload, showToast } from "../../../utils/helper";
 import {
   bulkCreateLaundryReceiver,
@@ -21,7 +22,7 @@ export const useAddEditLaundryManagement = (tag) => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const [laundryItemOption, setLaundryItemOption] = useState([]);
-  const [laundryWasherOption, setLaundryWasherOption] = useState([]);
+  const [laundryMenagementOption, setLaundryManagementOption] = useState([]);
 
   const {
     control,
@@ -32,14 +33,16 @@ export const useAddEditLaundryManagement = (tag) => {
   } = useForm({
     defaultValues: {
       userID: "",
-      laundryWasherID: "",
+      laundryManagementID: "",
       givenDate: moment(new Date()).format('yyyy-MM-DD'),
-      givenManagerID: localStorage.getItem("managerId") || "",
+      receiveDate: moment(new Date()).format('yyyy-MM-DD'),
+      receiverManagerID: localStorage.getItem("receiverManagerID") || "",
       detail: [{
         index: 0,
         laundryItemID: "",
         price: "",
-        givenQty: "",
+        // givenQty: "",
+        receiveQty: "",
       }],
       managerName: localStorage.getItem("managerName") || "",
     },
@@ -86,7 +89,7 @@ export const useAddEditLaundryManagement = (tag) => {
           items: payload.detail.map((item) => ({
             laundryItemID: item.laundryItemID,
             price: item.price,
-            givenQty: item.givenQty,
+            receiveQty: item.receiveQty,
           })),
         };
       } else {
@@ -96,10 +99,11 @@ export const useAddEditLaundryManagement = (tag) => {
           userID: loggedInUser.id,
           laundryItemID: payload.detail[0].laundryItemID,
           price: payload.detail[0].price,
-          givenQty: payload.detail[0].givenQty,
+          receiveQty: payload.detail[0].receiveQty,
         };
       }
       delete payload.detail;
+      
       const response =
         tag !== "add"
           ? await updateLaundryReceiver(payload, id)
@@ -126,15 +130,16 @@ export const useAddEditLaundryManagement = (tag) => {
         return;
       }
       setValue("userID", data?.userID);
-      setValue("laundryWasherID", data?.laundryWasherID);
+      setValue("laundryManagementID", data?.laundryManagementID);
       setValue("givenDate", moment(new Date(data.givenDate)).format("yyyy-MM-DD"));
-      setValue("givenManagerID", data?.managerName?.[0]?.id || localStorage.getItem("managerId"));
+      setValue("receiveDate", moment(new Date(data.givenDate)).format("yyyy-MM-DD"));
+      setValue("receiverManagerID", data?.managerName?.[0]?.nic || localStorage.getItem("receiverManagerID"));
       setValue("managerName", data?.managerName?.[0]?.nickName || localStorage.getItem("managerName"));
       setValue("detail", [{
         index: 0,
         laundryItemID: data?.laundryItemID,
         price: data?.price,
-        givenQty: data?.givenQty,
+        receiveQty: data?.receiveQty,
       }]);
       // setValue("staffID", data?.staff?.id);
       // setValue("paymentID", data?.px_payment_type?.id);
@@ -160,19 +165,19 @@ export const useAddEditLaundryManagement = (tag) => {
         isDeleted: false,
       };
       const [
-        laundryWasherResponse,
+        laundryManagementResponse,
         laundryItemResponse
       ] = await Promise.all([
-        getLaundryWasherDropdownList(whereCondition),
+        createLaundryManagementFind(whereCondition),
         getLaundryItemDropdownList(whereCondition)
       ]);
       if (
-        laundryWasherResponse?.statusCode === 200 &&
-        laundryWasherResponse?.success
+        laundryManagementResponse?.statusCode === 200 &&
+        laundryManagementResponse?.success
       ) {
-        setLaundryWasherOption(laundryWasherResponse.data);
+        setLaundryManagementOption(laundryManagementResponse.data);
       } else {
-        setLaundryWasherOption([]);
+        setLaundryManagementOption([]);
       }
       if (
         laundryItemResponse?.statusCode === 200 &&
@@ -198,7 +203,7 @@ export const useAddEditLaundryManagement = (tag) => {
     fields,
     isSubmitting,
     laundryItemOption,
-    laundryWasherOption,
+    laundryMenagementOption,
     onSubmit,
     handleSubmit,
     cancelHandler,

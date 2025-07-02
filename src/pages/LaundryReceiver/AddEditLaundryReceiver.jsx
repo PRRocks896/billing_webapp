@@ -17,17 +17,17 @@ import useAddEditLaundryReceiver from "./hook/useAddEditLaundryReceiver";
 
 const AddEditLaundryReceiver = ({ tag }) => {
     const {
-        isEdit,
-        control,
-        fields,
-        isSubmitting,
-        laundryItemOption,
-        laundryWasherOption,
-        onSubmit,
-        handleSubmit,
-        cancelHandler,
-        addLaundryItem,
-        removeLaundryItem,
+       isEdit,
+    control,
+    fields,
+    isSubmitting,
+    laundryItemOption,
+    laundryMenagementOption,
+    onSubmit,
+    handleSubmit,
+    cancelHandler,
+    addLaundryItem,
+    removeLaundryItem,
     } = useAddEditLaundryReceiver(tag);
     return (
         <>
@@ -37,7 +37,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                         <Grid container spacing={2}>
                              <Grid item xs={12} sm={4}>
                                 <Controller
-                                    name="givenDate"
+                                    name="receiveDate"
                                     control={control}
                                     render={({
                                         field: { onBlur, onChange, value },
@@ -95,7 +95,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <Controller
-                                    name="laundryWasherID"
+                                    name="staff_name"
                                     control={control}
                                     render={({
                                         field: { onChange, value },
@@ -104,11 +104,11 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                         <Autocomplete
                                             freeSolo
                                             size="small"
-                                            id="laundryWasherID"
-                                            options={laundryWasherOption || []}
+                                            id="receiverManagerId"
+                                            options={laundryMenagementOption || []}
                                             getOptionLabel={(option) => option.label || ''}
                                             isOptionEqualToValue={(option, value) => option?.value === value}
-                                            value={laundryWasherOption?.find((option) => option.value === value) ?? ''}
+                                            value={laundryMenagementOption?.find((option) => option.value === value) ?? ''}
                                             // onBlur={onBlur}
                                             onChange={(_event, value) => {
                                                 if (value) {
@@ -256,7 +256,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                         </Grid>
                                         <Grid item xs={12} sm={2}>
                                             <Controller
-                                                name={`detail.${index}.givenQty`}
+                                                name={`detail.${index}.receiveQty`}
                                                 control={control}
                                                 render={({
                                                     field: { onChange, value },
@@ -265,7 +265,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                     <FormControl size="small" fullWidth>
                                                         <TextField
                                                             size="small"
-                                                            label="Qty"
+                                                            label="Receive Qty"
                                                             value={value}
                                                             onChange={onChange}
                                                             error={!!error}
