@@ -95,6 +95,8 @@ import LaundryManagement from "./pages/LaundaryManagement"
 import AddEditLaundryManagement from "./pages/LaundaryManagement/AddEditLaundaryManagement"
 import Stock from "./pages/Stock";
 import AddEditStock from "./pages/Stock/AddEditStock";
+import LaundryReceiver from "./pages/LaundryReceiver";
+import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiver";
 
 
 
@@ -657,6 +659,63 @@ const App = () => {
                     <LastDailyReportPending />
                   ) : (
                     <AddEditLaundryWasher tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-receiver",
+          element: (
+            <ProtectedRoute
+              path="laundry-receiver"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <LaundryReceiver />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-laundry-receiver",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-receiver"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryReceiver tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-laundry-receiver/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-receiver/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryReceiver tag="edit" />
                   )
                 ) : (
                   <NoConnection />

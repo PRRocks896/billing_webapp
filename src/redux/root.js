@@ -31,6 +31,7 @@ import LaundryItemReducer from "./laundryItem";
 import LaundryWasherReducer from "./laundryWasher";
 import LaundaryManagementReducer from "./laundaryManagement";
 import StockReducer from "./stock";
+import LaundryReceiverReducer from "./laundryReceiver" 
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -65,6 +66,7 @@ const rootReducer = combineReducers({
   laundryWasher: LaundryWasherReducer ,
   LaundaryManagement: LaundaryManagementReducer,
   stock: StockReducer,
+  LaundryReceiver: LaundryReceiverReducer,
 
 });
 
