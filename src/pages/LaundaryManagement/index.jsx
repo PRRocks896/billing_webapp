@@ -11,22 +11,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Switch from "@mui/material/Switch";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 
 import ConfirmationModal from "../../components/ConfirmationModal";
 import TopBar from "../../components/TopBar";
 import useLaundryManagement from "./hook/useLaundaryManagement";
 
-const switchStyles = {
-  color: "var(--color-black)",
-  "&.MuiChecked": {
-    color: "green",
-  },
-  "&.MuiChecked + .MuiSwitchTrack": {
-    backgroundColor: "lightgreen", // Customize the track color when checked
-  },
-};
 
 const LaundryManagement = () => {
   const {
@@ -38,9 +28,8 @@ const LaundryManagement = () => {
     isDeleteModalOpen,
     deleteHandler,
     handleChangePage,
-    changeStatusHandler,
     setIsDeleteModalOpen,
-    searchAdvanceHandler,
+    searchLaundaryManagementHandler,
     deleteBtnClickHandler
   } = useLaundryManagement();
   const navigate = useNavigate();
@@ -51,7 +40,7 @@ const LaundryManagement = () => {
         btnTitle="Add Laundry Management"
         inputName="Laundry Management"
         navigatePath="/add-laundry-management"
-        callAPI={searchAdvanceHandler}
+        callAPI={searchLaundaryManagementHandler}
         addPermission={rights.add}
       />
       <Box className="card">
@@ -66,7 +55,7 @@ const LaundryManagement = () => {
                 <TableCell>Price</TableCell>
                 <TableCell>Given Qty</TableCell>
                 <TableCell>Manager</TableCell>
-                {rights.edit && <TableCell>Status</TableCell>}
+                {/* {rights.edit && <TableCell>Status</TableCell>} */}
                 {isAdmin && <TableCell>Action</TableCell>}
               </TableRow>
             </TableHead>
@@ -81,7 +70,7 @@ const LaundryManagement = () => {
                       <TableCell align="left">{row?.price}/-</TableCell>
                       <TableCell align="left">{row?.givenQty}</TableCell>
                       <TableCell>{row?.managerData && row?.managerData[0].nickName}</TableCell>
-                      {rights.edit && (
+                      {/* {rights.edit && (
                             <TableCell>
                                 <Switch
                                     style={switchStyles}
@@ -89,7 +78,7 @@ const LaundryManagement = () => {
                                     onChange={(e) => changeStatusHandler(e, row.id)}
                                 />
                             </TableCell>
-                        )}
+                        )} */}
                       {(rights.edit || rights.delete) && (
                         <TableCell>
                           {/* {(rights.edit || rights.delete) && ( */}

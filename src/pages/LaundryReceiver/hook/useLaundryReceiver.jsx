@@ -10,7 +10,7 @@ import { startLoading, stopLoading } from "../../../redux/loader";
 const useLaundryReceiver = () => {
     const dispatch = useDispatch();
     const { pathname } = useLocation();
-    const laundryReceiverData = useSelector((state) => state.LaundryReceiver.data);
+    const laundryReceiverData = useSelector((state) => state.laundryReceiver.data);
     const loggedInUser = useSelector((state) => state.loggedInUser);
     const { accessModules } = loggedInUser;
 

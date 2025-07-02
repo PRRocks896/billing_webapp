@@ -3,14 +3,14 @@ import { useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
-import { LaundaryManagementActions } from "../../../redux/laundaryManagement";
+import { LaundryManagementActions } from "../../../redux/laundryManagement";
 import { deleteLaundaryManagement, getLaundryManagementList, updateLaundaryManagement } from "../../../service/LaundaryManagement";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
 const useLaundryManagement = () => {
     const dispatch = useDispatch();
     const { pathname } = useLocation();
-    const laundaryMgmtData = useSelector((state) => state.LaundaryManagement.data);
+    const laundaryMgmtData = useSelector((state) => state.laundryManagement.data);
     const loggedInUser = useSelector((state) => state.loggedInUser);
     const { accessModules } = loggedInUser;
 
@@ -51,10 +51,10 @@ const useLaundryManagement = () => {
             if (response?.statusCode === 200) {
                 const payload = response?.data?.rows;
                 setCount(response?.data?.count);
-                dispatch(LaundaryManagementActions.storeLaundaryManagement(payload));
+                dispatch(LaundryManagementActions.storeLaundryManagement(payload));
             } else if (response?.statusCode === 404) {
                 const payload = [];
-                dispatch(LaundaryManagementActions.storeLaundaryManagement(payload));
+                dispatch(LaundryManagementActions.storeLaundryManagement(payload));
             }
         } catch (error) {
             showToast(error?.message, false);
@@ -76,7 +76,7 @@ const useLaundryManagement = () => {
     
             if (response?.statusCode === 200) {
               showToast(response?.message, true);
-              dispatch(LaundaryManagementActions.removeLaundaryManagement({ id: deleteId }));
+              dispatch(LaundryManagementActions.removeLaundryManagement({ id: deleteId }));
               setCount((prev) => prev - 1);
             } else {
               showToast(response?.messageCode, false);
@@ -100,7 +100,7 @@ const useLaundryManagement = () => {
             if (response?.statusCode === 200) {
                 showToast(response?.message, true);
                 const payload2 = { id, status: payload.isActive };
-                dispatch(LaundaryManagementActions.changeLaundaryManagementStatus(payload2));
+                dispatch(LaundryManagementActions.changeLaundryManagementStatus(payload2));
             } else {
                 showToast(response?.message, false);
             }

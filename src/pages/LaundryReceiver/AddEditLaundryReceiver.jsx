@@ -1,6 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
+// import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 
 import Autocomplete from "@mui/material/Autocomplete";
 // import Box from "@mui/material/Box";
@@ -17,17 +17,14 @@ import useAddEditLaundryReceiver from "./hook/useAddEditLaundryReceiver";
 
 const AddEditLaundryReceiver = ({ tag }) => {
     const {
-       isEdit,
-    control,
-    fields,
-    isSubmitting,
-    laundryItemOption,
-    laundryMenagementOption,
-    onSubmit,
-    handleSubmit,
-    cancelHandler,
-    addLaundryItem,
-    removeLaundryItem,
+        control,
+        fields,
+        isSubmitting,
+        laundryItemOption,
+        laundryWasherOption,
+        onSubmit,
+        handleSubmit,
+        cancelHandler,
     } = useAddEditLaundryReceiver(tag);
     return (
         <>
@@ -35,7 +32,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                 <Card>
                     <CardContent>
                         <Grid container spacing={2}>
-                             <Grid item xs={12} sm={4}>
+                            <Grid item xs={12} sm={4}>
                                 <Controller
                                     name="receiveDate"
                                     control={control}
@@ -95,7 +92,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                             </Grid>
                             <Grid item xs={12} sm={4}>
                                 <Controller
-                                    name="staff_name"
+                                    name="laundryWasherID"
                                     control={control}
                                     render={({
                                         field: { onChange, value },
@@ -104,11 +101,11 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                         <Autocomplete
                                             freeSolo
                                             size="small"
-                                            id="receiverManagerId"
-                                            options={laundryMenagementOption || []}
+                                            id="laundryWasherID"
+                                            options={laundryWasherOption || []}
                                             getOptionLabel={(option) => option.label || ''}
                                             isOptionEqualToValue={(option, value) => option?.value === value}
-                                            value={laundryMenagementOption?.find((option) => option.value === value) ?? ''}
+                                            value={laundryWasherOption?.find((option) => option.value === value) ?? ''}
                                             // onBlur={onBlur}
                                             onChange={(_event, value) => {
                                                 if (value) {
@@ -125,7 +122,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
-                                                    label="Laundry Receiver"
+                                                    label="Laundry Washer"
                                                     error={!!error}
                                                     helperText={error?.message}
                                                 />
@@ -133,7 +130,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                         />
                                     )}
                                     rules={{
-                                        required: 'Please Select Laundry Receiver'
+                                        required: 'Please Select Laundry Washer'
                                     }}
                                 />
                             </Grid>
@@ -141,10 +138,10 @@ const AddEditLaundryReceiver = ({ tag }) => {
                             <Grid item xs={12} sm={12}>
                                 <Typography variant="subtitle2" fontSize={18} fontWeight={600}>Laundry Items</Typography>
                                 {fields.map((item, index) => (
-                                    <Grid container spacing={2} key={item.id} style={{padding: '10px 0px'}}>
+                                    <Grid container spacing={2} key={item.id} style={{ padding: '10px 0px' }}>
                                         <Grid item xs={12} sm={0.5}>
-                                            {isEdit ? null :
-                                                <Typography 
+                                            {/* {isEdit ? null :
+                                                <Typography
                                                     component="span"
                                                     variant="caption"
                                                     color="text"
@@ -153,10 +150,10 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                     style={{ cursor: "pointer", alignSelf: "center" }}
                                                 >
                                                     {fields.length === (index + 1) ?
-                                                        <FiPlusCircle size={26} style={{marginTop: '8px'}}/>
-                                                    : null}
+                                                        <FiPlusCircle size={26} style={{ marginTop: '8px' }} />
+                                                        : null}
                                                 </Typography>
-                                            }
+                                            } */}
                                         </Grid>
                                         <Grid item xs={12} sm={5}>
                                             <Controller
@@ -192,6 +189,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                                 label="Laundry Item"
                                                                 error={!!error}
                                                                 helperText={error?.message}
+                                                                disabled
                                                             />
                                                         )}
                                                     />
@@ -217,6 +215,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                             onChange={onChange}
                                                             error={!!error}
                                                             helperText={error?.message}
+                                                            disabled
                                                         />
                                                     </FormControl>
                                                 )}
@@ -274,13 +273,17 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                     </FormControl>
                                                 )}
                                                 rules={{
-                                                    required: 'Please Enter Quantity'
+                                                    required: 'Please Enter Quantity',
+                                                    max: { 
+                                                        value: parseFloat(fields[index].givenQty) || 0,
+                                                        message: 'Receive Qty cannot be greater than Given Qty' 
+                                                    }
                                                 }}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={0.5}>
-                                            {isEdit ? null :
-                                                <Typography 
+                                            {/* {isEdit ? null :
+                                                <Typography
                                                     component="span"
                                                     variant="caption"
                                                     color="text"
@@ -289,10 +292,10 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                     style={{ cursor: "pointer", alignSelf: "center" }}
                                                 >
                                                     {fields.length !== 1 ?
-                                                        <FiMinusCircle size={26} style={{marginTop: '8px'}}/>
-                                                    : null}
+                                                        <FiMinusCircle size={26} style={{ marginTop: '8px' }} />
+                                                        : null}
                                                 </Typography>
-                                            }
+                                            } */}
                                         </Grid>
                                     </Grid>
                                 ))}

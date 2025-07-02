@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment";
+// import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -11,40 +11,39 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Switch from "@mui/material/Switch";
+// import Switch from "@mui/material/Switch";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 
 import ConfirmationModal from "../../components/ConfirmationModal";
 import TopBar from "../../components/TopBar";
 import useLaundryReceiver from "./hook/useLaundryReceiver";
 
-const switchStyles = {
-  color: "var(--color-black)",
-  "&.MuiChecked": {
-    color: "green",
-  },
-  "&.MuiChecked + .MuiSwitchTrack": {
-    backgroundColor: "lightgreen", // Customize the track color when checked
-  },
-};
+// const switchStyles = {
+//   color: "var(--color-black)",
+//   "&.MuiChecked": {
+//     color: "green",
+//   },
+//   "&.MuiChecked + .MuiSwitchTrack": {
+//     backgroundColor: "lightgreen", // Customize the track color when checked
+//   },
+// };
 
 const LaundryReceiver = () => {
   const {
-     page,
-        count,
-        rights,
-        isAdmin,
-        visibleRows,
-        isDeleteModalOpen,
-        deleteHandler,
-        handleChangePage,
-        changeStatusHandler,
-        setIsDeleteModalOpen,
-        searchLaundryReceiverHandler,
-        deleteBtnClickHandler,
+    page,
+    count,
+    rights,
+    isAdmin,
+    visibleRows,
+    isDeleteModalOpen,
+    deleteHandler,
+    handleChangePage,
+    // changeStatusHandler,
+    setIsDeleteModalOpen,
+    searchLaundryReceiverHandler,
+    deleteBtnClickHandler,
   } = useLaundryReceiver();
   const navigate = useNavigate();
-  let index = page * 10;
   return (
     <>
       <TopBar
@@ -63,37 +62,36 @@ const LaundryReceiver = () => {
                 <TableCell>Received Date</TableCell>
                 <TableCell>Given Date</TableCell>
                 <TableCell>Washer Name</TableCell>
-                {/* <TableCell>Laundry Item</TableCell> */}
-                <TableCell>Price</TableCell>
+                <TableCell>Given Qty</TableCell>
                 <TableCell>Receive Qty</TableCell>
+                <TableCell>Remaining Qty</TableCell>
                 <TableCell>Manager</TableCell>
-                {rights.edit && <TableCell>Status</TableCell>}
+                {/* {rights.edit && <TableCell>Status</TableCell>} */}
                 {isAdmin && <TableCell>Action</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
               {visibleRows?.length ? (
-                visibleRows?.map((row) => {
+                visibleRows?.map((row, index) => {
                   return (
                     <TableRow key={"bill_" + row?.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
-                      <TableCell align="left">{moment(row?.givenDate).format("yyyy-MM-DD")}</TableCell>
-                      <TableCell align="left">{row?.px_laundry_washer?.name}</TableCell>
-                      <TableCell align="left">{row?.price}/-</TableCell>
-                      <TableCell align="left">{row?.givenQty}</TableCell>
+                      <TableCell align="left">{row?.receiveDate}</TableCell>
+                      <TableCell align="left">{row?.px_laundry_management?.givenDate}</TableCell>
+                      <TableCell align="left">{row?.px_laundry_management?.px_laundry_washer?.name}</TableCell>
+                      <TableCell align="left">{row?.px_laundry_management?.givenQty}</TableCell>
                       <TableCell align="left">{row?.receiveQty}</TableCell>
-                      <TableCell align="left">{row?.managerName?.nickName}</TableCell>
-                      {/* <TableCell>{row?.managerData && row?.managerData[0].nickName}</TableCell> */}
+                      <TableCell align="left">{(parseFloat(row?.px_laundry_management?.givenQty) - parseFloat(row?.receiveQty))}</TableCell>
                       <TableCell>{row?.managerData && row?.managerData[0].nickName}</TableCell>
-                      {rights.edit && (
-                            <TableCell>
-                                <Switch
-                                    style={switchStyles}
-                                    checked={row.isActive}
-                                    onChange={(e) => changeStatusHandler(e, row.id)}
-                                />
-                            </TableCell>
-                        )}
+                      {/* {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isActive}
+                            onChange={(e) => changeStatusHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )} */}
                       {(rights.edit || rights.delete) && (
                         <TableCell>
                           {/* {(rights.edit || rights.delete) && ( */}

@@ -4,17 +4,17 @@ const initialState = {
   data: [],
 };
 
-const LaundaryManagementSlice = createSlice({
-  name: "laundaryManagement",
+const LaundryManagementSlice = createSlice({
+  name: "laundryManagement",
   initialState: initialState,
   reducers: {
-    storeLaundaryManagement(state, action) {
+    storeLaundryManagement(state, action) {
       return { data: action.payload };
     },
-    removeLaundaryManagement(state, action) {
+    removeLaundryManagement(state, action) {
       return { data: state.data.filter((row) => row.id !== action.payload.id) };
     },
-    changeLaundaryManagementStatus(state, action) {
+    changeLaundryManagementStatus(state, action) {
       const updatedState = state.data.map((row) =>
         row.id === action.payload.id
           ? { ...row, isActive: action.payload.status }
@@ -25,5 +25,5 @@ const LaundaryManagementSlice = createSlice({
   },
 });
 
-export const LaundaryManagementActions = LaundaryManagementSlice.actions;
-export default LaundaryManagementSlice.reducer;
+export const LaundryManagementActions = LaundryManagementSlice.actions;
+export default LaundryManagementSlice.reducer;
