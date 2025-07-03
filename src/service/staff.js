@@ -7,6 +7,10 @@ import {
 } from "../utils/constant";
 import { attachId, get, post, put, remove } from "./webRequest";
 
+export const getTherapistDropdown = async (body) => {
+  return post(`${CREATE_STAFF_API}/therapist-dropdown`, body);
+}
+
 export const sendOtp = async(body) => {
   return post(`${CREATE_STAFF_API}/send-otp`, body);
 }

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { getCustomerList } from "../../../service/customer";
-import { getStaffList } from "../../../service/staff";
+import { getStaffList, getTherapistDropdown } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { getRoomList } from "../../../service/room";
 import { fetchLoggedInUserData } from "../../../service/loggedInUser";
@@ -252,13 +252,15 @@ export const useAddEditCreateBill = (tag) => {
         paymentResponse,
         roomResponse
       ] = await Promise.all([
-        getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "THERAPIST"} : {...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id}, 100000)),
+        getTherapistDropdown({ searchText: "THERAPIST", isActive: true, isDeleted: false }),
+        // getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "THERAPIST"} : {...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id}, 100000)),
         getServiceList(payload),
         getPaymentTypeList(payload),
         getRoomList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? whereCondition : {...whereCondition, createdBy: loggedInUser.id}, 100000))
       ]);
       if(staffResponse?.statusCode === 200 && staffResponse?.success) {
-        setStaff(staffResponse.data?.rows);
+        setStaff(staffResponse.data);
+        setStaffOptions(staffResponse.data);
       } else {
         setStaff([]);
       }
@@ -297,12 +299,14 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   // genrate staff options for drop down
-  useEffect(() => {
-    const data = staff.map((item) => {
-      return { value: item.id, label: item.nickName };
-    });
-    setStaffOptions([...data]);
-  }, [staff]);
+  // useEffect(() => {
+  //   if(staff && staff.length > 0) {
+  //     const data = staff?.map((item) => {
+  //       return { value: item.id, label: item.nickName };
+  //     });
+  //     setStaffOptions([...data]);
+  //   }
+  // }, [staff]);
 
   const setStaffSelectedHandler = (id, name) => {
     setValue("staffID", { value: id, label: name });
