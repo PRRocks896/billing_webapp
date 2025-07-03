@@ -16,6 +16,10 @@ export const createMaterial = async (body) => {
   return await post(MATERIAL, body);
 };
 
+export const createMaterialDropdown = async (body) => {
+  return await post(`${MATERIAL}/dropdown`, body);
+};
+
 export const deleteMaterial = async (id) => {
   return await remove(`${MATERIAL}/${id}`);
 };

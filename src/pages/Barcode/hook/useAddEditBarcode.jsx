@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-
 import { showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import {
@@ -12,7 +11,6 @@ import {
   updateBarcode,
   getBarcodeById,
 } from "../../../service/barcodeService";
-
 
 const useAddEditBarcode = (tag) => {
   const navigate = useNavigate();
@@ -32,7 +30,6 @@ const useAddEditBarcode = (tag) => {
     mode: "onBlur",
   });
 
-  
   const onSubmit = async (data) => {
     try {
       dispatch(startLoading());

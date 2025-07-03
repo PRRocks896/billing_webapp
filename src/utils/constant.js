@@ -151,3 +151,13 @@ export const ADVANCE = "api/advance"
 export const HOMEPAGE = "api/v1/homepage"
 
 export const MATERIAL = "api/material";
+
+export const LAUNDRYITEM = "api/laundry-item";
+
+export const LAUNDRYWASHER = "api/laundry-washer";
+
+export const LAUNDARYMANAGEMENT = "api/laundry-management";
+
+export const STOCK = "api/stock";
+
+export const LAUNDRYRECEIVER = "api/laundry-receiver";

@@ -50,6 +50,27 @@ const Sidebar = () => {
       return [];
     }
   }, [accessModules]);
+
+  const laundryManagementListArray = useMemo(() => {
+    if (accessModules && accessModules.length > 0) {
+      return accessModules?.filter((row) => {
+        if (
+          [
+            "laundry management",
+            "laundry item",
+            "laundry washer",
+            "laundry receiver",
+          ].includes(row.px_module.name.toLowerCase()) && row.view
+        ) {
+          return row;
+        } else {
+          return null;
+        }
+      });
+    } else {
+      return [];
+    }
+  }, [accessModules]);
   
   const mainMenuListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
@@ -81,6 +102,10 @@ const Sidebar = () => {
       return accessModules?.filter((row) => {
         if (
           ![
+            "laundry receiver",
+            "laundry management",
+            "laundry item",
+            "laundry washer",
             "home page",
             "newsletter",
             "blog",
@@ -252,6 +277,51 @@ const Sidebar = () => {
               </AccordionSummary>
               <AccordionDetails className="sub-menu-list">
                 {subMenuWebListArray?.map((item, index) => {
+                  return (
+                    <Box
+                      key={index}
+                      className={`sub-menu-link ${
+                        activeTab === item?.px_module?.path && "active"
+                      }`}
+                      onClick={() =>
+                        navigate(item?.px_module?.path, {
+                          state: {
+                            add: item.add,
+                            edit: item.edit,
+                            delete: item.delete,
+                            view: item.view,
+                          },
+                        })
+                      }
+                    >
+                      <Typography>
+                        <FiSquare />
+                        {item?.px_module?.name}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {laundryManagementListArray?.length > 0 && (
+            <Accordion
+              expanded={expanded === "panel5"}
+              onChange={handleChange("panel5")}
+              className="menu-list"
+            >
+              <AccordionSummary
+                className="menu-title"
+                expandIcon={<FiChevronRight />}
+                aria-controls="panel5bh-content"
+                id="panel5bh-header"
+              >
+                <Typography>
+                  <FiGrid /> Laundry Management
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className="sub-menu-list">
+                {laundryManagementListArray?.map((item, index) => {
                   return (
                     <Box
                       key={index}

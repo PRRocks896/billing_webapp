@@ -27,6 +27,11 @@ import NewsLetterReducer from "./newsletter";
 import AdvanceReducer from "./advance";
 import HomePageReducer from "./homePage";
 import MaterialReducer from "./material";
+import LaundryItemReducer from "./laundryItem";
+import LaundryWasherReducer from "./laundryWasher";
+import LaundryManagementReducer from "./laundryManagement";
+import StockReducer from "./stock";
+import LaundryReceiverReducer from "./laundryReceiver" 
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -56,7 +61,13 @@ const rootReducer = combineReducers({
   newsLetter: NewsLetterReducer,
   advance: AdvanceReducer,
   homePage: HomePageReducer,
-  material: MaterialReducer
+  material: MaterialReducer,
+  laundryItem: LaundryItemReducer,
+  laundryWasher: LaundryWasherReducer ,
+  laundryManagement: LaundryManagementReducer,
+  stock: StockReducer,
+  laundryReceiver: LaundryReceiverReducer,
+
 });
 
 export default rootReducer;

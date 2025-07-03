@@ -87,6 +87,17 @@ import SendCourier from "./pages/SendCourier";
 import ReceiveCourier from "./pages/ReceiveCourier";
 import Material from "./pages/Material";
 import AddEditMaterial from "./pages/Material/addEditMaterial";
+import Laundryitem from "./pages/LaundryItem";
+import AddEditLaundryItem from "./pages/LaundryItem/addEditLaundryIteam";
+import LaundryWasher from "./pages/LaundryWasher";
+import AddEditLaundryWasher from "./pages/LaundryWasher/addEditLaundryWasher";
+import LaundryManagement from "./pages/LaundaryManagement"
+import AddEditLaundryManagement from "./pages/LaundaryManagement/AddEditLaundaryManagement"
+import Stock from "./pages/Stock";
+import AddEditStock from "./pages/Stock/AddEditStock";
+import LaundryReceiver from "./pages/LaundryReceiver";
+import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiver";
+
 
 
 const token = getAuthToken();
@@ -465,7 +476,7 @@ const App = () => {
                 )
               }
             />
-          )
+          ),
         },
         {
           path: "edit-material/:id",
@@ -485,6 +496,290 @@ const App = () => {
               }
             />
           )
+        },
+        {
+          path: "laundry-item",
+          element: (
+            <ProtectedRoute
+              path="laundry-item"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Laundryitem />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+         {
+          path: "add-laundry-item",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-item"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryItem tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-laundry-item/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-item/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryItem tag="edit"/>
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-management",
+          element: (
+            <ProtectedRoute
+              path="laundry-management"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <LaundryManagement />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-laundry-management",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-management"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryManagement tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-laundry-management/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-management/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryManagement tag="edit"/>
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-washer",
+          element: (
+            <ProtectedRoute
+              path="laundry-washer"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <LaundryWasher />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-laundry-washer",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-washer"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryWasher tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        }, {
+          path: "edit-laundry-washer/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-washer/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryWasher tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "laundry-receiver",
+          element: (
+            <ProtectedRoute
+              path="laundry-receiver"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <LaundryReceiver />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "add-laundry-receiver",
+          element: (
+            <ProtectedRoute
+              path="add-laundry-receiver"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryReceiver tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-laundry-receiver/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-laundry-receiver/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditLaundryReceiver tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "stock",
+          element: (
+            <ProtectedRoute
+              path="stock"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Stock />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+         {
+          path: "add-stock",
+          element: (
+            <ProtectedRoute
+              path="add-stock"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStock tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+         {
+          path: "edit-stock/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-stock/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditStock tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
         },
         {
           path: "coupon",
