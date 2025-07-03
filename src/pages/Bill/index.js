@@ -1,9 +1,12 @@
 import React from "react";
+import { Controller } from "react-hook-form";
 import moment from "moment";
 
 import {
+  Autocomplete,
   Box,
   Button,
+  Grid,
   Table,
   TableBody,
   TableCell,
@@ -11,7 +14,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TextField
 } from "@mui/material";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { FiEdit3, FiTrash2, FiPrinter } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
@@ -20,6 +27,13 @@ import { useNavigate } from "react-router-dom";
 
 const Bill = () => {
   const {
+    // date,
+    // setDate,
+    userList,
+    // selectedUser,
+    // setSelectedUser,
+    control,
+    reset,
     isAdmin,
     handlePrint,
     isDeleteModalOpen,
@@ -34,9 +48,7 @@ const Bill = () => {
     visibleRows,
     count,
     rights,
-    userRole
   } = useBill();
-
   const navigate = useNavigate();
   let index = page * 10;
 
@@ -52,6 +64,73 @@ const Bill = () => {
 
       {/* payment type listing */}
       <Box className="card">
+        {isAdmin && (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={3}>
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({
+                    field: { onChange, value }
+                  }) => (
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label="Select Date"
+                        value={value}
+                        onChange={onChange}
+                        renderInput={(params) => <TextField size="small" {...params} />}
+                        format="DD-MM-YYYY"      
+                      />
+                    </LocalizationProvider>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Controller
+                  name="selectedUser"
+                  control={control}
+                  render={({
+                    field: { onChange, value }
+                  }) => {
+                    return (
+                    <Autocomplete
+                      options={userList || []}
+                      getOptionLabel={(option) =>
+                        typeof option === 'string' ? option : option?.label || ''
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option?.value === value?.value
+                      }
+                      value={value || null}
+                      onChange={(_, newValue) => {
+                        onChange(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="User" />
+                      )}
+                    />
+                  )}}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Button
+                  style={{ height: "55px"}}
+                  className="btn btn-tertiary"
+                  onClick={() => {
+                    reset({
+                      date: null,
+                      selectedUser: null
+                    });
+                  }}
+                >
+                  Clear
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+        <br/>
         <TableContainer className="table-wrapper">
           <Table>
             <TableHead>

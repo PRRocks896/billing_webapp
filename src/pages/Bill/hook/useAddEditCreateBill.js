@@ -677,7 +677,7 @@ export const useAddEditCreateBill = (tag) => {
           }
         } else if (tag === "edit") {
           const payload = {
-            userID: loggedInUser.id,
+            // userID: loggedInUser.id,
             staffID: getValues("staffID").value,
             customerID: getValues("customerID").value,
             detail: detailData,

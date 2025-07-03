@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
+import moment from "moment";
+import dayjs from 'dayjs';
+import { set, useForm } from "react-hook-form";
 
 import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
 import { billAction } from "../../../redux/bill";
@@ -10,9 +13,10 @@ import {
   getBillById,
   // createBulkBill,
 } from "../../../service/bill";
+import { getUserList } from "../../../service/users";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-import moment from "moment";
+
 
 export const useBill = () => {
   const dispatch = useDispatch();
@@ -26,10 +30,26 @@ export const useBill = () => {
   const [deleteId, setDeleteId] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // const [date, setDate] = useState(null);
+  const [userList, setUserList] = useState([]);
+  // const [selectedUser, setSelectedUser] = useState(null);
+
   // pagination start
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+
+  const {
+    control,
+    getValues,
+    watch,
+    reset,
+  } = useForm({
+    defaultValues: {
+      date: null,
+      selectedUser: null,
+    }
+  });
 
   const visibleRows = useMemo(() => {
     // return combinedData;
@@ -59,12 +79,29 @@ export const useBill = () => {
             isDeleted: false,
             searchText: searchValue,
           };
-          if (!['admin', 'super admin'].includes(userRole)) {
+          if (!isAdmin) {
             whereCondition = {
               ...whereCondition,
               userID: loggedInUser.id,
               createdAt: moment(new Date()).format('yyyy-MM-DD') //'2024-03-29' //new Date().toISOString().split('T')[0]
             };
+          }
+          if(isAdmin) {
+            const selectedUser = getValues('selectedUser');
+            if(selectedUser && selectedUser !== null) {
+              whereCondition = {
+                ...whereCondition,
+                userID: selectedUser.value,
+              }
+            }
+            const date = getValues('date');
+            if(date && date !== null) {
+              const formattedDate = dayjs(date);
+              whereCondition = {
+                ...whereCondition,
+                createdAt: formattedDate.format("YYYY-MM-DD") 
+              }
+            }
           }
 
           const body = listPayload(page, whereCondition, rowsPerPage, {
@@ -91,7 +128,7 @@ export const useBill = () => {
         }
       }
       // eslint-disable-next-line
-    }, [dispatch, page, userRole, loggedInUser,rowsPerPage]);
+    }, [dispatch, page, isAdmin, loggedInUser,rowsPerPage, watch('date'), watch('selectedUser')]);
 
   // search bill
   const searchBillHandler = async (payload) => {
@@ -202,7 +239,48 @@ export const useBill = () => {
     }
   };
 
+  const fetchUserList = async () => {
+    try {
+      const whereCondition = {
+        isActive: true,
+        isDeleted: false,
+        // companyID: loggedInUser.companyID,
+      };
+      const payload = listPayload(0, whereCondition, 100000);
+      const response = await getUserList(payload);
+      if (response?.success) {
+        const payload = response?.data?.rows;
+        const branchOption = payload.filter(item => item.roleID !== 1);
+        const items = branchOption?.map((row) => ({
+          value: row.id,
+          label: row.lastName,
+        }));
+        setUserList(items);
+      } else {
+        showToast(response?.message, false);
+        setUserList([]);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }
+
+  useEffect(() => {
+    if(isAdmin && loggedInUser && loggedInUser.companyID) {
+      fetchUserList();
+    }
+  }, [isAdmin, loggedInUser]);
+
   return {
+
+    // date,
+    // setDate,
+    userList,
+    // selectedUser,
+    // setSelectedUser,
+    control,
+    getValues,
+    reset,
     isAdmin,
     handlePrint,
     isDeleteModalOpen,
@@ -212,6 +290,7 @@ export const useBill = () => {
     searchBillHandler,
     page,
     rowsPerPage,
+    fetchBillData,
     handleChangePage,
     handleChangeRowsPerPage,
     visibleRows,
