@@ -21,9 +21,11 @@ import TableContainer from "@mui/material/TableContainer";
 import SalesExpense from "./component/saleExpense";
 import LowSale from "./component/lowSale";
 import ManagerSales from "./component/managerSales";
-import AttendanceList from "./component/attendanceList";
+import AttendanceList from "./component/attendanceList"
 import { DateRangePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
+
+
 
 const Home = () => {
   const {
@@ -99,12 +101,12 @@ const Home = () => {
           <br />
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
-              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Manager Sales Report</Typography>
+              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Attendance</Typography>
               <br />
               <AttendanceList />
             </Box>
           </Box>
-          
+
         </>
       }
       <br />
@@ -170,8 +172,8 @@ const Home = () => {
           </Box>
         </Box>
       }
-      
-  
+
+
     </>
   );
 };

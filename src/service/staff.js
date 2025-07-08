@@ -12,7 +12,7 @@ export const getTherapistDropdown = async (body) => {
 }
 
 export const getAttendanceList = async (body) => {
-  return post(`${STAFF_LIST_API}/therapist-in-out`, body);
+  return post(`${CREATE_STAFF_API}/therapist-in-out`, body);
 }
 
 
