@@ -9,6 +9,7 @@ import { getCompanyList } from "../../../service/company";
 import { getPaymentTypeList } from "../../../service/paymentType";
 import { getManager } from "../../../service/staff";
 import { getUserList } from "../../../service/users";
+import { generateSlug } from "../../../utils/helper";
 
 export const useReport = () => {
   const dispatch = useDispatch();
@@ -220,7 +221,7 @@ export const useReport = () => {
         year: year,
         month: month,
       };
-      const response = await getStaffSalaryReport(body, `Bill Software branch Attendance report ${year}_${month}.xlsx`.toUpperCase());
+      const response = await getStaffSalaryReport(body, generateSlug(`${selectedCompany?.label}_salary_report_${year}_${month}.xlsx`.toLowerCase()));
       console.log("Attendance Report Response: ", response);
       setPdfData(response);
     } catch(error) {
