@@ -594,7 +594,6 @@ export const useAddEditCreateBill = (tag) => {
           total: +item.total,
         };
       });
-
       // print Data start
       const billData = {
         subTotal: getValues(`detail.${0}.total`),
@@ -610,7 +609,7 @@ export const useAddEditCreateBill = (tag) => {
         )?.name,
         customerID: getValues("customerID").value,
         phone: getValues("customerID").label,
-        staff: staff.find((row) => row.id === getValues("staffID").value)?.nickName,
+        staff: staff.find((row) => row.value === getValues("staffID").value)?.label,
         roomNo: room.find((row) => row.id === getValues("roomID")?.value)?.roomName,
         detail: getValues("detail").map((row) => {
           return { ...row, item: row.serviceID.label };
