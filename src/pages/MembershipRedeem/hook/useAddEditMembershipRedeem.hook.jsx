@@ -13,7 +13,7 @@ import {
 import { fetchLoggedInUserData } from "../../../service/loggedInUser";
 import { getMembershipList } from "../../../service/membership";
 import { getCustomerList, sendMembershipRedeemOtp, verifyMembershipRedeemOtp } from "../../../service/customer";
-import { getStaffList } from "../../../service/staff";
+import { getTherapistDropdown } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { getRoomList } from "../../../service/room";
 
@@ -343,12 +343,13 @@ export const useAddEditMembershipRedeem = (tag) => {
                 serviceResponse,
                 roomResponse,
             ] = await Promise.all([
-                getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase())  ? {...whereCondition, searchText: "THERAPIST"} : { ...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id }, 100000)),
+                getTherapistDropdown({ searchText: "THERAPIST", isActive: true, isDeleted: false }),
+                // getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase())  ? {...whereCondition, searchText: "THERAPIST"} : { ...whereCondition, searchText: "THERAPIST", createdBy: loggedInUser.id }, 100000)),
                 getServiceList(payload),
                 getRoomList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? whereCondition : {...whereCondition, createdBy: loggedInUser.id}, 100000)),
             ]);
             if (staffResponse?.statusCode === 200 && staffResponse?.success) {
-                setStaff(staffResponse.data?.rows);
+                setStaff(staffResponse.data);
             } else {
                 setStaff([]);
             }

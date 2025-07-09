@@ -428,15 +428,15 @@ const AddEditMembershipRedeem = ({ tag }) => {
                                                 isOptionEqualToValue={(option, value) =>
                                                     option?.id === value?.id
                                                 }
-                                                getOptionLabel={(option) => option?.nickName ?? ''}
+                                                getOptionLabel={(option) => option?.label ?? ''}
                                                 options={staff || []}
-                                                value={staff?.find((option) => option.id === value) ?? ''}
+                                                value={staff?.find((option) => option.value === value) ?? ''}
                                                 onBlur={onBlur}
-                                                onChange={(event, newValue) => onChange(newValue?.id)}
+                                                onChange={(event, newValue) => onChange(newValue?.value)}
                                                 renderOption={(props, option) => {
                                                     return (
                                                         <li {...props} key={option.id}>
-                                                            {option.nickName}
+                                                            {option.label}
                                                         </li>
                                                     );
                                                 }}

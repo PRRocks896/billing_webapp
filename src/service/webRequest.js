@@ -150,7 +150,7 @@ export const getXlsx = async (url, data, fileNm = '') => {
   });
 }
 
-export const getPDF = async (url, data, title = `Bill_Software_Sales_Report_${new Date().toDateString()}.xlsx`) => {
+export const getPDF = async (url, data, passPdf = false, title = `Bill_Software_Sales_Report_${new Date().toDateString()}.xlsx`) => {
   return axiosInstance
     .post(`${baseUrl}${url}`, data, {
       responseType: "blob", //Force to receive data in a Blob Format
@@ -163,7 +163,13 @@ export const getPDF = async (url, data, title = `Bill_Software_Sales_Report_${ne
       //Create a Blob from the PDF Stream
       // const file = new Blob([response?.data], { type: "application/pdf" });
       // return URL.createObjectURL(file);
-
+      if(passPdf) {
+        return {
+          success: true,
+          message: 'Record Saved Successfully',
+          data: URL.createObjectURL(new Blob([response.data], { type: 'application/pdf'}))
+        };
+      }
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;

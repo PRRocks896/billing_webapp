@@ -6,6 +6,18 @@ import 'rsuite/dist/rsuite.min.css';
 
 const Report = () => {
   const {
+    attUserList,
+    selectedAttUser,
+    setSelectedAttUser,
+    fetchStaffList,
+    attMonth,
+    setAttMonth,
+    attYear,
+    setAttYear,
+    selectedStaff,
+    setSelectedStaff,
+    pdfData,
+    staffList,
     year,
     month,
     userList,
@@ -34,7 +46,8 @@ const Report = () => {
     handleManagerDateChange,
     handleManagerChange,
     setSelectedService,
-    fetchAttendanceReportData
+    fetchAttendanceReportData,
+    fetchStaffAttendanceReportData
   } = useReport();
 
   return (
@@ -186,6 +199,7 @@ const Report = () => {
           </Grid>
         </Grid>
       </Box>
+      <br/>
       <Box className="card">
         <Typography variant="h5">Attendance Report</Typography>
         <br/>
@@ -260,7 +274,7 @@ const Report = () => {
               disablePortal
               // multiple
               id="month"
-              options={[...Array(12)].map((_, index) => (new Date('01-01-2025').getMonth() + 1) + index) || []}
+              options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
               getOptionLabel={(option) => option}
               value={month}
               onChange={(_, newValue) => {
@@ -273,6 +287,110 @@ const Report = () => {
           </Grid>
           <Grid item xs={12} sm={3}>
             <Button className="btn btn-tertiary" onClick={() => fetchAttendanceReportData()}>Export</Button>
+          </Grid>
+        </Grid>
+      </Box>
+      <br/>
+      <Box className="card">
+        <Typography variant="h5">Attendance Detail Staff Wise</Typography>
+        <br/>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="userID"
+              options={attUserList || []}
+              getOptionLabel={(option) => option.label}
+              // value={branch}
+              onChange={(_, newValue) => {
+                const selected = JSON.parse(JSON.stringify(newValue));
+                if(selected && selected?.value) {
+                  setSelectedAttUser(selected?.value);
+                  fetchStaffList(selected?.value);
+                } else {
+                  setSelectedAttUser(null);
+                  setSelectedStaff(null);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="User" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="staffID"
+              options={staffList || []}
+              getOptionLabel={(option) => option.label}
+              // value={branch}
+              onChange={(_, newValue) => {
+                const selected = JSON.parse(JSON.stringify(newValue));
+                if(selected && selected?.value) {
+                  setSelectedStaff(selected?.value);
+                } else {
+                  setSelectedStaff(null);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Staff" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="year"
+              options={[...Array(10)].map((_, index) => new Date().getFullYear() - index) || []}
+              getOptionLabel={(option) => option}
+              value={attYear}
+              onChange={(_, newValue) => {
+                setAttYear(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Year" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="month"
+              options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
+              getOptionLabel={(option) => option}
+              value={attMonth}
+              onChange={(_, newValue) => {
+                setAttMonth(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Month" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Button className="btn btn-tertiary" onClick={() => fetchStaffAttendanceReportData()}>Search</Button>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+              {pdfData && (
+                <iframe
+                  title="PDF Viewer"
+                  src={pdfData}
+                  width="100%"
+                  style={{ height: "calc(100vh - 100px)" }}
+                />
+              )}
           </Grid>
         </Grid>
       </Box>
