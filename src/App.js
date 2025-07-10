@@ -677,7 +677,7 @@ const App = () => {
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <LaundryReceiver />
+                    <AddEditLaundryReceiver tag="add"/>
                   )
                 ) : (
                   <NoConnection />

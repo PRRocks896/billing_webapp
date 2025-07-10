@@ -27,3 +27,7 @@ export const bulkCreateLaundryReceiver = async (body) => {
   export const updateLaundryReceiver = async (payload, id) => {
     return await put(`${LAUNDRYRECEIVER}/${id}`, payload);
   };
+
+  export const updateBulkReceiver = async (payload) => {
+    return await post(`${LAUNDRYRECEIVER}/bulkupdate`, payload);
+  }
