@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import Sidebar from "./Sidebar";
@@ -13,6 +13,11 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Clock from "../components/Clock";
+import Avatar from "@mui/material/Avatar";
+import { useMediaQuery } from "@mui/material";
+import ProfileIcon from '../assets/images/profile icon.svg';
+import { useEffect } from "react";
+
 
 
 const drawerWidth = 300;
@@ -59,9 +64,20 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
   }
   pageTitle = pageTitle.toUpperCase();
 
+
+
   const managerName = useMemo(() => {
     return localStorage.getItem("managerName") || "";
   }, [localStorage.getItem("managerName")]);
+
+  const isSmallScreen = useMediaQuery('(max-width:320px)');
+
+  useEffect(() => {
+    if (isSmallScreen && open) {
+      handleDrawerClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   return (
     <>
@@ -85,15 +101,22 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             {pageTitle}
           </Typography>
           <Box className="manager-name">
-            <Button style={{ width: '180px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
+            <Button style={{ width: '180px' }}   className="btn btn-tertiary" onClick={() => setShowModal(true)}>
               {/* {managerName} */}
               Select Manager
             </Button>
           </Box>
           <Box className="username">
+            <Box sx={{ display: { xs: 'none', sm: 'flex', flexWrap: "wrap", gap: '10' }, alignItems: 'center' }}>
               <UserName firstName={data?.firstName} lastName={data?.lastName} />
               <Clock />
+            </Box>
           </Box>
+          <Avatar className="profile-icon"
+            alt="User Name"
+            src={ProfileIcon}
+            sx={{ width: 50, height: 50 }}
+          />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -110,7 +133,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
         <DrawerHeader className="site-logo">
           <img src={SiteLogo} alt="Sitelogo" width={140} height={80} />
         </DrawerHeader>
-        <Sidebar/>
+        <Sidebar />
       </Drawer>
     </>
   );

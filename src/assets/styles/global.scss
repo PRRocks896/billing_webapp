@@ -177,7 +177,15 @@ span {
     border: 1px solid var(--color-black);
     color: var(--color-white);
   }
+   @media (max-width: 600px) {
+    // font-size: 14px !important;
+    // height: 40px;
+    // max-width: 100%;
+  }
 }
+
+
+
 
 .form-field {
   .form-control {
