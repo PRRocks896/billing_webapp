@@ -9,8 +9,9 @@ import { getLaundryWasherDropdownList } from "../../../service/laundryWasher";
 import { fetchLaundryManagementViaPayload } from "../../../service/LaundaryManagement";
 import { showToast } from "../../../utils/helper";
 import {
-  bulkCreateLaundryReceiver,
-  updateLaundryReceiver,
+  // bulkCreateLaundryReceiver,
+  // updateLaundryReceiver,
+  updateBulkReceiver,
   getLaundryReceiverById,
 } from "../../../service/laundryReceiver";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -28,6 +29,7 @@ export const useAddEditLaundryManagement = (tag) => {
   const {
     control,
     formState: { isSubmitting },
+    reset,
     watch,
     getValues,
     setValue,
@@ -41,11 +43,13 @@ export const useAddEditLaundryManagement = (tag) => {
       receiverManagerID: localStorage.getItem("managerId") || "",
       detail: [{
         index: 0,
+        receiverId: "",
         laundryManagementID: "",
         laundryItemID: "",
         price: "",
         givenQty: "",
         receiveQty: "",
+        pendingQty: ""
       }],
       managerName: localStorage.getItem("managerName") || "",
     },
@@ -82,38 +86,44 @@ export const useAddEditLaundryManagement = (tag) => {
 
   const onSubmit = async (data) => {
     try {
+      if(data.receiverManagerID && data.receiverManagerID.length === 0) {
+        showToast('Manager is not selected', false);
+        return;
+      }
       dispatch(startLoading());
       let payload = { ...data };
-      if (tag === "add") {
+      // if (tag === "add") {
         payload = {
-          ...payload,
-          userID: loggedInUser.id,
-          createdBy: loggedInUser.id,
+          // ...payload,
+          // userID: loggedInUser.id,
+          
           items: payload.detail.map((item) => ({
-            laundryManagementID: item.laundryManagementID,
-            laundryItemID: item.laundryItemID,
-            receiveQty: item.receiveQty,
+            receiverID: item.receiverId,
+            // laundryManagementID: item.laundryManagementID,
+            // laundryItemID: item.laundryItemID,
+            receiveQty: item.receiveQty === 0 ? item.givenQty : item.pendingQty ? ((item.givenQty - item.pendingQty) + parseFloat(item.receiveQty)) : item.receiveQty,
+            receiveDate: payload.receiveDate,
+            receiverManagerID: payload.receiverManagerID,
+            updatedBy: loggedInUser.id,
           })),
         };
-      } else {
-        payload = {
-          ...payload,
-          updatedBy: loggedInUser.id,
-          userID: loggedInUser.id,
-          laundryManagementID: payload.detail[0].laundryManagementID,
-          laundryItemID: payload.detail[0].laundryItemID,
-          receiveQty: payload.detail[0].receiveQty,
-        };
-      }
+      // } else {
+      //   payload = {
+      //     ...payload,
+      //     updatedBy: loggedInUser.id,
+      //     userID: loggedInUser.id,
+      //     laundryManagementID: payload.detail[0].laundryManagementID,
+      //     laundryItemID: payload.detail[0].laundryItemID,
+      //     receiveQty: payload.detail[0].receiveQty,
+      //   };
+      // }
       delete payload.detail;
-
-      const response =
-        tag !== "add"
-          ? await updateLaundryReceiver(payload, id)
-          : await bulkCreateLaundryReceiver(payload);
+      console.log(payload);
+      const response = await updateBulkReceiver(payload);
       if (response && response.success) {
-        showToast(response.message, true);
-        navigate("/laundry-receiver");
+        showToast("Record Updated", true);
+        // navigate("/laundry-receiver");
+        reset();
       } else {
         showToast(response.message, false);
       }
@@ -141,6 +151,7 @@ export const useAddEditLaundryManagement = (tag) => {
       // setValue("managerName", data?.managerName?.[0]?.nickName || localStorage.getItem("managerName"));
       setValue("detail", [{
         index: 0,
+        receiverId: data.receiverId,
         laundryManagementID: data?.laundryManagementID,
         laundryItemID: data?.laundryItemID,
         price: data?.px_laundry_management?.price,
@@ -184,11 +195,13 @@ export const useAddEditLaundryManagement = (tag) => {
         setLaundryManagementOption(response.data);
         setValue("detail", response.data.map((item, index) => ({
           index: index,
+          receiverId: item.receiverId,
           laundryManagementID: item.id,
           laundryItemID: item.laundryItemID,
           price: item.price,
           givenQty: item.givenQty,
-          receiveQty: item.receiveQty,
+          receiveQty: item.pendingQty === 0 ? 0 : '',
+          pendingQty: item.pendingQty
         })));
       } else {
         setLaundryManagementOption([]);

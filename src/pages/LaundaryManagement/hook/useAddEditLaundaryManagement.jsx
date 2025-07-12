@@ -75,9 +75,12 @@ export const useAddEditLaundryManagement = (tag) => {
 
   const onSubmit = async (data) => {
     try {
+      if(data.givenManagerID.length === 0) {
+        showToast('Manager is not selected', false);
+        return;
+      }
       dispatch(startLoading());
       let payload = { ...data };
-      console.log("payload", payload);
       if (tag === "add") {
         payload = {
           ...payload,

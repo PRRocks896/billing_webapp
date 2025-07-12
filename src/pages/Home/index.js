@@ -21,9 +21,11 @@ import TableContainer from "@mui/material/TableContainer";
 import SalesExpense from "./component/saleExpense";
 import LowSale from "./component/lowSale";
 import ManagerSales from "./component/managerSales";
-
+import AttendanceList from "./component/attendanceList"
 import { DateRangePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
+
+
 
 const Home = () => {
   const {
@@ -70,35 +72,44 @@ const Home = () => {
           </Grid>
         </Box>
       </Box>
-      <br/>
-      {isAdmin && 
+      <br />
+      {isAdmin &&
         <>
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
-              <Typography variant="subtitle2" sx={{fontSize: 22}}>Top Sales Report</Typography>
-              <br/>
+              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Top Sales Report</Typography>
+              <br />
               <SalesExpense />
             </Box>
           </Box>
-          <br/>
+          <br />
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
-              <Typography variant="subtitle2" sx={{fontSize: 22}}>Low Sales Report</Typography>
-              <br/>
+              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Low Sales Report</Typography>
+              <br />
               <LowSale />
             </Box>
           </Box>
-          <br/>
+          <br />
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
-              <Typography variant="subtitle2" sx={{fontSize: 22}}>Manager Sales Report</Typography>
-              <br/>
+              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Manager Sales Report</Typography>
+              <br />
               <ManagerSales />
             </Box>
           </Box>
+          <br />
+          <Box className="card">
+            <Box className="activity-card-wrapper mb-24">
+              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Attendance</Typography>
+              <br />
+              <AttendanceList />
+            </Box>
+          </Box>
+
         </>
       }
-      <br/>
+      <br />
       {isAdmin &&
         <Box className="card">
           <Box className="activity-card-wrapper mb-24">
@@ -127,7 +138,7 @@ const Home = () => {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <br/>
+              <br />
               <TableContainer className="table-wrapper">
                 <Table>
                   <TableHead>
@@ -156,11 +167,13 @@ const Home = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-              
+
             </Grid>
           </Box>
         </Box>
       }
+
+
     </>
   );
 };

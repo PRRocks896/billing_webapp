@@ -53,6 +53,9 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                 error={!!error}
                                                 helperText={error?.message}
                                                 // InputProps={{ readOnly: true }}
+                                                inputProps={{
+                                                    max: new Date().toISOString().split("T")[0],
+                                                }}
                                                 disabled
                                             />
                                         </FormControl>
@@ -82,11 +85,15 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                 onBlur={onBlur}
                                                 error={!!error}
                                                 helperText={error?.message}
+                                                inputProps={{
+                                                    max: new Date().toISOString().split("T")[0],
+                                                }}
                                             />
                                         </FormControl>
                                     )}
                                     rules={{
-                                        required: 'Please Select Date'
+                                        required: 'Please Select Date',
+                                        max: 'Future date is not allowed'
                                     }}
                                 />
                             </Grid>
@@ -139,7 +146,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                 <Typography variant="subtitle2" fontSize={18} fontWeight={600}>Laundry Items</Typography>
                                 {fields.map((item, index) => (
                                     <Grid container spacing={2} key={item.id} style={{ padding: '10px 0px' }}>
-                                        <Grid item xs={12} sm={0.5}>
+                                        {/* <Grid item xs={12} sm={0.5}> */}
                                             {/* {isEdit ? null :
                                                 <Typography
                                                     component="span"
@@ -154,7 +161,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                         : null}
                                                 </Typography>
                                             } */}
-                                        </Grid>
+                                        {/* </Grid> */}
                                         <Grid item xs={12} sm={5}>
                                             <Controller
                                                 name={`detail.${index}.laundryItemID`}
@@ -228,7 +235,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={2}>
+                                        <Grid item xs={12} sm={1}>
                                             <Controller
                                                 name={`detail.${index}.givenQty`}
                                                 control={control}
@@ -240,6 +247,31 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                         <TextField
                                                             size="small"
                                                             label="Given Qty"
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                            disabled
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                                rules={{
+                                                    required: 'Please Enter Quantity'
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={1}>
+                                            <Controller
+                                                name={`detail.${index}.pendingQty`}
+                                                control={control}
+                                                render={({
+                                                    field: { onChange, value },
+                                                    fieldState: { error },
+                                                }) => (
+                                                    <FormControl size="small" fullWidth>
+                                                        <TextField
+                                                            size="small"
+                                                            label="Pending Qty"
                                                             value={value}
                                                             onChange={onChange}
                                                             error={!!error}
@@ -269,19 +301,20 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                             onChange={onChange}
                                                             error={!!error}
                                                             helperText={error?.message}
+                                                            disabled={fields[index].pendingQty === 0}
                                                         />
                                                     </FormControl>
                                                 )}
                                                 rules={{
                                                     required: 'Please Enter Quantity',
                                                     max: { 
-                                                        value: parseFloat(fields[index].givenQty) || 0,
-                                                        message: 'Receive Qty cannot be greater than Given Qty' 
+                                                        value: parseFloat(fields[index].pendingQty) || 0,
+                                                        message: `Receive Qty cannot be greater than ${fields[index].pendingQty} Qty`
                                                     }
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={0.5}>
+                                        {/* <Grid item xs={12} sm={0.5}> */}
                                             {/* {isEdit ? null :
                                                 <Typography
                                                     component="span"
@@ -296,7 +329,7 @@ const AddEditLaundryReceiver = ({ tag }) => {
                                                         : null}
                                                 </Typography>
                                             } */}
-                                        </Grid>
+                                        {/* </Grid> */}
                                     </Grid>
                                 ))}
                             </Grid>
