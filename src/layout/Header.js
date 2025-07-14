@@ -16,7 +16,9 @@ import Clock from "../components/Clock";
 import Avatar from "@mui/material/Avatar";
 import { useMediaQuery } from "@mui/material";
 import ProfileIcon from '../assets/images/profile icon.svg';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Popover from "@mui/material/Popover";
+
 
 const drawerWidth = 300;
 
@@ -62,6 +64,19 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
   }
   pageTitle = pageTitle.toUpperCase();
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
+  const id = openPopover ? "profile-popover" : undefined;
+
 
 
   const managerName = useMemo(() => {
@@ -99,7 +114,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             {pageTitle}
           </Typography>
           <Box className="manager-name">
-            <Button style={{ width: '180px' }}   className="btn btn-tertiary" onClick={() => setShowModal(true)}>
+            <Button style={{ width: '180px' }} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
               {/* {managerName} */}
               Select Manager
             </Button>
@@ -110,11 +125,34 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
               <Clock />
             </Box>
           </Box>
-          <Avatar className="profile-icon"
+          <Avatar
+            className="profile-icon"
             alt="User Name"
             src={ProfileIcon}
-            sx={{ width: 50, height: 50 }}
+            sx={{ width: 50, height: 50, cursor: "pointer" }}
+            aria-describedby={id}
+            onClick={handleClick}
           />
+
+          <Popover
+            id={id}
+            open={openPopover}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <Box sx={{ p: 2, minWidth: 150 }}>
+              <Typography variant="subtitle2">{data?.firstName} {data?.lastName}</Typography>
+              <Clock />
+            </Box>
+          </Popover>
         </Toolbar>
       </AppBar>
       <Drawer
