@@ -18,8 +18,6 @@ import { useMediaQuery } from "@mui/material";
 import ProfileIcon from '../assets/images/profile icon.svg';
 import { useEffect } from "react";
 
-
-
 const drawerWidth = 300;
 
 const AppBar = styled(MuiAppBar, {

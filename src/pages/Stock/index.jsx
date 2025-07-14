@@ -29,6 +29,7 @@ const switchStyles = {
 };
 
 const Stock = () => {
+
   const {
     page,
     count,
@@ -54,7 +55,7 @@ const Stock = () => {
         callAPI={searchStockHandler}
         addPermission={rights.add}
       />
-      
+
       <Box className="card">
         <TableContainer className="table-wrapper">
           <Table>
@@ -69,7 +70,7 @@ const Stock = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              
+
               {visibleRows?.length ? (
                 visibleRows?.map((row) => {
                   return (
