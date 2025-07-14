@@ -7,6 +7,10 @@ import {
 } from "../utils/constant";
 import { attachId, get, post, put, remove } from "./webRequest";
 
+export const compareStaffPhoto = async (body) => {
+  return post(`${CREATE_STAFF_API}/compare`, body);
+}
+
 export const getTherapistDropdown = async (body) => {
   return post(`${CREATE_STAFF_API}/therapist-dropdown`, body);
 }
