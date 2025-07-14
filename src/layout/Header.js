@@ -83,7 +83,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
     return localStorage.getItem("managerName") || "";
   }, [localStorage.getItem("managerName")]);
 
-  const isSmallScreen = useMediaQuery('(max-width:320px)');
+  const isSmallScreen = useMediaQuery('(max-width:768px)');
 
   useEffect(() => {
     if (isSmallScreen && open) {
@@ -110,6 +110,11 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             noWrap
             component="div"
             className="page-title"
+            sx={{
+              '@media (max-width:425px)': {
+                display: 'none',
+              },
+            }}
           >
             {pageTitle}
           </Typography>

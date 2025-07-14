@@ -183,7 +183,7 @@ const LayoutProvider = () => {
                 '@media (max-width: 320px)': {
                   display: 'block',
                 },
-                '@media (min-width: 321px)': {
+                '@media (min-width: 426px)': {
                   display: 'none',
                 }
               }}
