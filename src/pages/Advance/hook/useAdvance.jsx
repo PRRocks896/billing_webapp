@@ -44,8 +44,19 @@ const useAdvanceHooks = () => {
     const fetchAdvanceData = useCallback(async (searchValue = "") => {
         try {
             dispatch(startLoading());
-            const body = listPayload(page, { searchText: searchValue });
-    
+            let payload = {
+                isActive: true,
+                isDeleted: false,
+                searchText: searchValue,
+            }
+            if(!isAdmin) {
+                payload = {
+                    ...payload,
+                    createdBy: loggedInUser.id
+                }
+            }
+            const body = listPayload(page, payload);
+            
             const response = await getAdvanceList(body);
     
             if (response?.statusCode === 200) {
@@ -61,7 +72,7 @@ const useAdvanceHooks = () => {
         } finally {
             dispatch(stopLoading());
         }
-    }, [dispatch, page]);
+    }, [dispatch, page, isAdmin]);
 
     const deleteBtnClickHandler = (id) => {
         setDeleteId(id);
