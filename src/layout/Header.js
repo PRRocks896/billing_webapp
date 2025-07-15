@@ -92,6 +92,8 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  const showUsername = useMediaQuery('(max-width:425px)');
+
   return (
     <>
       <AppBar position="fixed" open={open} className="header">
@@ -119,17 +121,19 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             {pageTitle}
           </Typography>
           <Box className="manager-name">
-            <Button style={{ width: '180px' }} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
+            <Button style={{ width: '180px', }} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
               {/* {managerName} */}
               Select Manager
             </Button>
           </Box>
-          <Box className="username">
-            <Box sx={{ display: { xs: 'none', sm: 'flex', flexWrap: "wrap", gap: '10' }, alignItems: 'center' }}>
+          {!showUsername && (
+            <Box className="username">
+              {/* <Box sx={{ display: { xs: 'none', sm: 'flex', flexWrap: "wrap", gap: '10' }, alignItems: 'center' }}> */}
               <UserName firstName={data?.firstName} lastName={data?.lastName} />
               <Clock />
+              {/* </Box> */}
             </Box>
-          </Box>
+          )}
           <Avatar
             className="profile-icon"
             alt="User Name"
