@@ -21,31 +21,13 @@
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 490px) {
   .top-bar {
     .search-box {
       margin-top: 28px;
-      width: 350px;
+      margin-bottom: 15px;
       display: flex;
       flex-direction: column-reverse;
-    }
-  }
-}
-@media (max-width: 375px) {
-  .top-bar {
-    .search-box {
-      margin-top: 28px;
-      width: 300px;
-      display: flex;
-      flex-direction: column-reverse;
-    }
-  }
-}
-@media (max-width: 320px) {
-  .top-bar {
-    .search-box {
-      margin-top: 28px;
-      width: 250px;
     }
   }
 }
