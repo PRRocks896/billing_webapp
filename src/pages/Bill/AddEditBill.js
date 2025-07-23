@@ -30,6 +30,7 @@ import AddCustomer from "./AddCustomer";
 import AddStaff from "./AddStaff";
 import CustomerBillData from "../../components/CustomerBillData";
 import ViewDetail from "../../components/ViewDetailModal";
+import PaymentDetailsModle from "../../components/PaymentDetailsModal";
 
 const StyledTableCell = styled(TableCell)({
   padding: 0,
@@ -77,12 +78,15 @@ const AddEditBill = ({ tag }) => {
     setIsCustomerBillDataModalOpen,
 
     isViewDetailOpen,
-    toggleViewDetailOpen
+    toggleViewDetailOpen,
+    isPaymentModalOpen,
+    togglePaymentModal,
+    handlePaymentAmount
   } = useAddEditCreateBill(tag);
 
   return (
     <>
-      <form onSubmit={handleSubmit(toggleViewDetailOpen)}>
+      <form onSubmit={handleSubmit(togglePaymentModal)}>
         <Box className="card">
           {/* bill no, payment type, customer, sales person selection */}
           <FormGroup className="form-field">
@@ -113,7 +117,7 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid> */}
-            {/* </Grid>
+              {/* </Grid>
             <Grid container spacing={2}> */}
               {/* --------------------------------------------------- */}
               <Grid item xs={12} md={4} sm={6}>
@@ -159,7 +163,7 @@ const AddEditBill = ({ tag }) => {
                               label="Customer Ph No."
                               error={!!error}
                               helperText={error?.message}
-                              // onChange={(e) => searchCustomer(e.target.value)}
+                            // onChange={(e) => searchCustomer(e.target.value)}
                             />
                           )}
                         />
@@ -232,7 +236,7 @@ const AddEditBill = ({ tag }) => {
                         size="small"
                         name="date"
                         value={moment(value).format('DD/MM/yyyy')}
-                        />
+                      />
                     </FormControl>
                   )}
                 />
@@ -427,9 +431,9 @@ const AddEditBill = ({ tag }) => {
                 {isShowGst &&
                   <>
                     <TableRow>
-                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0}}></TableCell>
-                      <TableCell sx={{ padding: 0, margin: 0}}>CGST ({process.env.REACT_APP_CGST}%): </TableCell>
-                      <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0}}>
+                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0 }}></TableCell>
+                      <TableCell sx={{ padding: 0, margin: 0 }}>CGST ({process.env.REACT_APP_CGST}%): </TableCell>
+                      <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0 }}>
                         <Controller
                           name="csgst"
                           control={control}
@@ -450,9 +454,9 @@ const AddEditBill = ({ tag }) => {
                       <TableCell></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0}}></TableCell>
-                      <TableCell sx={{ padding: 0, margin: 0}}>SGST ({process.env.REACT_APP_SGST}%): </TableCell>
-                      <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0}}>
+                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0 }}></TableCell>
+                      <TableCell sx={{ padding: 0, margin: 0 }}>SGST ({process.env.REACT_APP_SGST}%): </TableCell>
+                      <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0 }}>
                         <Controller
                           name="sgst"
                           control={control}
@@ -475,9 +479,9 @@ const AddEditBill = ({ tag }) => {
                   </>
                 }
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ padding: 0, margin: 0}}></TableCell>
-                  <TableCell sx={{ padding: 0, margin: 0}}>Grand Total: </TableCell>
-                  <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0}}>
+                  <TableCell colSpan={5} sx={{ padding: 0, margin: 0 }}></TableCell>
+                  <TableCell sx={{ padding: 0, margin: 0 }}>Grand Total: </TableCell>
+                  <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0 }}>
                     <Controller
                       name="grandTotal"
                       control={control}
@@ -578,8 +582,8 @@ const AddEditBill = ({ tag }) => {
                   }}
                 />
               </Grid>
-            {/* </Grid>
-            <Grid container spacing={2}> */}
+              {/* </Grid>
+            // <Grid container spacing={2}> */}
               <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   control={control}
@@ -590,30 +594,30 @@ const AddEditBill = ({ tag }) => {
                   }) => {
                     return (
                       // <Box sx={{ display: "grid", gridTemplateColumns: "5fr 1fr" }}>
-                        <Autocomplete
-                          size="small"
-                          disablePortal
-                          id="staffID"
-                          options={staffOptions}
-                          value={value}
-                          onBlur={onBlur}
-                          onChange={(event, newValue) => onChange(newValue)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Staff Person"
-                              error={!!error}
-                              helperText={error?.message}
-                            />
-                          )}
-                        />
-                        // <Button
-                        //   type="button"
-                        //   className="btn"
-                        //   onClick={() => setIsStaffModalOpen(true)}
-                        // >
-                        //   <FiPlusCircle />
-                        // </Button>
+                      <Autocomplete
+                        size="small"
+                        disablePortal
+                        id="staffID"
+                        options={staffOptions}
+                        value={value}
+                        onBlur={onBlur}
+                        onChange={(event, newValue) => onChange(newValue)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Staff Person"
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                      // <Button
+                      //   type="button"
+                      //   className="btn"
+                      //   onClick={() => setIsStaffModalOpen(true)}
+                      // >
+                      //   <FiPlusCircle />
+                      // </Button>
                       // </Box>
                     );
                   }}
@@ -633,7 +637,7 @@ const AddEditBill = ({ tag }) => {
               </Grid> */}
             </Grid>
             {/* <br/> */}
-            <Grid container spacing={2}>
+            {/* <Grid container spacing={2}>
               <Grid item xs={12} md={3} sm={6}>
                 <Controller
                   control={control}
@@ -667,7 +671,7 @@ const AddEditBill = ({ tag }) => {
                       <FormControl>
                         <Typography variant="subtitle1" fontWeight={500} fontSize={16}>Payment Type:</Typography>
                         <RadioGroup
-                          sx={{ display: 'block'}}
+                          sx={{ display: 'block' }}
                           name="radio-buttons-group"
                           value={value}
                           onChange={(e) => {
@@ -679,10 +683,10 @@ const AddEditBill = ({ tag }) => {
                         >
                           {paymentTypeOptions.map((paymentType, ind) => (
                             <FormControlLabel key={`payment_${ind}`}
-                            value={paymentType?.value}
-                            control={<Radio checked={isSelectedPayment === paymentType?.value}/>}
-                            label={paymentType?.label}
-                          />
+                              value={paymentType?.value}
+                              control={<Radio checked={isSelectedPayment === paymentType?.value} />}
+                              label={paymentType?.label}
+                            />
                           ))}
                           {/* <FormControlLabel
                             value="Working"
@@ -698,7 +702,7 @@ const AddEditBill = ({ tag }) => {
                             value="Left"
                             control={<Radio/>}
                             label="Left"
-                          /> */}
+                          /> 
                         </RadioGroup>
                       </FormControl>
                     </>
@@ -767,7 +771,7 @@ const AddEditBill = ({ tag }) => {
                   />
                 )}
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
                 <Controller
@@ -791,7 +795,7 @@ const AddEditBill = ({ tag }) => {
                   )}
                 />
               </Grid>
-            {/* </Grid>
+              {/* </Grid>
             <Grid container spacing={2}> */}
               <Grid item xs={12} sm={3}>
                 <Controller
@@ -870,7 +874,6 @@ const AddEditBill = ({ tag }) => {
               className="btn btn-tertiary"
               onClick={(e) => {
                 e.stopPropagation();
-                // toggleViewDetailOpen();
                 setIsPrintBtn(true);
               }}
               // onClick={handleSubmit(printHandler)}
@@ -888,6 +891,19 @@ const AddEditBill = ({ tag }) => {
             </Button>
           </Grid>
         </Grid>
+        {isPaymentModalOpen && (
+          <PaymentDetailsModle
+            open={isPaymentModalOpen}
+            handleClose={togglePaymentModal}
+            handlePaymentAmount={handlePaymentAmount}
+            handleOk={() => {
+              togglePaymentModal()
+              toggleViewDetailOpen()
+            }}
+             grandTotal = {getValues("grandTotal")}
+          />
+        )}
+
         {isViewDetailOpen && (
           <ViewDetail
             open={isViewDetailOpen}
