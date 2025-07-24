@@ -155,6 +155,46 @@ export const useUser = () => {
     }
   }
 
+  const changeWebLoginHandler = async (e, id) => {
+    try {
+      const payload = {
+        isWebLogin: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updateUser(payload, id);
+
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
+        const payload2 = { id, isWebLogin: payload.isWebLogin };
+        dispatch(userAction.changeServiceWebLoginStatus(payload2));
+      } else {
+        showToast(response?.message, false);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }
+
+  const changeAppLoginHandler = async (e, id) => {
+    try {
+      const payload = {
+        isAppLogin: e.target.checked,
+        updatedBy: loggedInUser.id,
+      };
+      const response = await updateUser(payload, id);
+
+      if (response?.statusCode === 200) {
+        showToast(response?.message, true);
+        const payload2 = { id, isAppLogin: payload.isAppLogin };
+        dispatch(userAction.changeServiceAppLoginStatus(payload2));
+      } else {
+        showToast(response?.message, false);
+      }
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }
+
   return {
     isAdmin,
     isDeleteModalOpen,
@@ -164,6 +204,8 @@ export const useUser = () => {
     searchUserHandler,
     changeStatusHandler,
     changeWebDisplayHandler,
+    changeWebLoginHandler,
+    changeAppLoginHandler,
     page,
     handleChangePage,
     visibleRows,
