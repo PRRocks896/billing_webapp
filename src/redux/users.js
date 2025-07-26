@@ -29,6 +29,22 @@ const usersSlice = createSlice({
           : { ...row }
       );
       return { data: updatedState };
+    },
+    changeServiceWebLoginStatus(state, action) {
+      const updatedState = state.data.map((row) =>
+        row.id === action.payload.id
+          ? { ...row, isWebLogin: action.payload.isWebLogin }
+          : { ...row }
+      );
+      return { data: updatedState };
+    },
+    changeServiceAppLoginStatus(state, action) {
+      const updatedState = state.data.map((row) =>
+        row.id === action.payload.id
+          ? { ...row, isAppLogin: action.payload.isAppLogin }
+          : { ...row }
+      );
+      return { data: updatedState };
     }
   },
 });
