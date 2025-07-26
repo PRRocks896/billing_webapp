@@ -28,7 +28,7 @@ const AttendanceList = ({ attendanceData = [], onRefresh }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <br />
-                        <TableContainer className="table-wrapper">
+                        <TableContainer className="table-wrapper" sx={{ height: '350px'}}>
                             <Table>
                                 <TableHead>
                                     <TableRow>
