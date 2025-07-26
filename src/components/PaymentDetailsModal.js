@@ -80,7 +80,7 @@ const PaymentDetailsModle = ({
     okTitle = " Confirm",
     handleOk,
     handleClose,
-    grandTotal,
+    grandTotal = null,
 }) => {
 
     const [paymentType, setPaymentType] = useState([]);
@@ -99,7 +99,7 @@ const PaymentDetailsModle = ({
     }, [paymentDetail]);
 
     const handleConfirm = () => {
-        if (totalEntered !== parseFloat(grandTotal)) {
+        if (grandTotal && totalEntered !== parseFloat(grandTotal)) {
             setError(
                 `Total amount enter (${totalEntered}) must match Grand Total (${grandTotal})`
             );
