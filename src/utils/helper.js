@@ -217,3 +217,10 @@ export const convertAmountToWords = (amount) => {
   result = parts.join(" ").trim();
   return result;
 };
+
+export const capitalizeFirstLetter = (str) => {
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}

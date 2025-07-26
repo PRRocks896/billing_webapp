@@ -72,8 +72,6 @@ export const useAddEditCreateBill = (tag) => {
     formState: { isSubmitting, isValid }
   } = useForm({
     defaultValues: {
-      // billNo: "",
-      paymentID: "",
       date: new Date(),
       customerID: "",
       Phone: "",
@@ -97,6 +95,7 @@ export const useAddEditCreateBill = (tag) => {
           total: "",
         },
       ],
+      paymentDetail: [],
       roleID: "",
       billTitle: "",
       address: "",
@@ -249,6 +248,12 @@ export const useAddEditCreateBill = (tag) => {
       }
     }
   };
+
+  const handlePaymentDetail = (detail) => {
+    setValue('paymentDetail', detail);
+    togglePaymentModal()
+    toggleViewDetailOpen()
+  }
 
   useEffect(() => {
     const fetchDropDownList = async () => {
@@ -621,7 +626,6 @@ export const useAddEditCreateBill = (tag) => {
 
 
   const handlePaymentAmount = (field, value) => {
-    console.log("handlePaymentAmount", field, value);
     setValue(field, value);
   };
 
@@ -792,6 +796,7 @@ export const useAddEditCreateBill = (tag) => {
     setIsSaveModalOpen,
     newBtnClickHandler,
     dontSaveHandler,
+    handlePaymentDetail,
 
     isCustomerModalOpen,
     setIsCustomerModalOpen,

@@ -1,19 +1,78 @@
 /* eslint-disable no-undef */
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useReducer } from "react";
 import { useState } from "react";
-import {
-    Modal,
-    Box,
-    Typography,
-    FormGroup,
-    Checkbox,
-    TextField,
-    Button,
-    Grid,
-    CardContent,
-    CardActions,
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import FormGroup from "@mui/material/FormGroup";
+import Checkbox from "@mui/material/Checkbox";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import CardContent from "@mui/material/CardContent";
 
-} from "@mui/material";
+import { getPaymentTypeList } from "../service/paymentType";
+import {
+    listPayload,
+    capitalizeFirstLetter
+} from "../utils/helper";
+
+const paymentDetailReducer = (state, action) => {
+    switch (action.type) {
+        case "SET_DETAILS":
+            const detail = action.payload.map((item) => {
+                const base = {
+                    name: capitalizeFirstLetter(`${item.name} Sale`),
+                    amount: 0,
+                    enabled: false,
+                    id: item.id
+                }
+                if(item.name === 'CARD') {
+                    base.cardNo = "";
+                }
+                return base;
+            })
+            return {
+                ...state,
+                detail: detail
+            }
+        case "SET_CHECKBOX": 
+            const find = state.detail?.findIndex((item) => item.id === action.payload.id);
+            if(find >= 0) {
+                const updateDetail = state.detail;
+                updateDetail[find].enabled = action.payload.value;
+                
+                return {
+                    ...state,
+                    detail: updateDetail
+                }
+            }
+        case "SET_AMOUNT": 
+            const index = state.detail?.findIndex((item) => item.id === action.payload.id);
+            if(index >= 0) {
+                const updateDetail = state.detail;
+                updateDetail[index].amount = action.payload.value;
+                
+                return {
+                    ...state,
+                    detail: updateDetail
+                }
+            }
+        case "SET_CARD_NO": 
+            const cardIndex = state.detail?.findIndex((item) => item.id === action.payload.id);
+            if(cardIndex >= 0) {
+                const updateDetail = state.detail;
+                updateDetail[cardIndex].cardNo = action.payload.value;
+                
+                return {
+                    ...state,
+                    detail: updateDetail
+                }
+            }
+        default:
+            return state;
+    }
+}
 
 const PaymentDetailsModle = ({
     open,
@@ -24,23 +83,23 @@ const PaymentDetailsModle = ({
     handlePaymentAmount,
     grandTotal,
 }) => {
-    const [CardEnabled, setIsCardEnabled] = useState(false);
-    const [cashEnabled, setCashEnabled] = useState(false);
-    const [upiEnabled, setUpiEnabled] = useState(false);
-    const [cardNo, setCardNo] = useState("");
 
-    const [cashAmount, setCashAmount] = useState("");
-    const [upiAmount, setUpiAmount] = useState("");
-    const [cardAmount, setCardAmount] = useState("");
-
+    const [paymentType, setPaymentType] = useState([]);
+    const [ paymentDetail, dispath ] = useReducer(paymentDetailReducer, {
+        detail: null,
+        total: 0
+    })
+    
     const [error, setError] = useState("");
 
-    const handleConfirm = () => {
-        const totalEntered =
-            (parseFloat(cashAmount) || 0) +
-            (parseFloat(upiAmount) || 0) +
-            (parseFloat(cardAmount) || 0);
+    const totalEntered = useMemo(() => {
+        if(paymentDetail && paymentDetail.detail && paymentDetail.detail.length > 0) {
+            return paymentDetail.detail?.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        }
+        return 0;
+    }, [paymentDetail]);
 
+    const handleConfirm = () => {
         if (totalEntered !== parseFloat(grandTotal)) {
             setError(
                 `Total amount enter (${totalEntered}) must match Grand Total (${grandTotal})`
@@ -49,19 +108,37 @@ const PaymentDetailsModle = ({
         }
 
         setError("");
-        handleOk();
+        handleOk(paymentDetail.detail.filter((item) => parseFloat(item.amount) > 0));
     };
 
-    const totalEntered = useMemo(() => {
-        return (
-            (parseFloat(cashAmount) || 0) +
-            (parseFloat(upiAmount) || 0) +
-            (parseFloat(cardAmount) || 0)
-        );
-    }, [cashAmount, upiAmount, cardAmount]);
+    useEffect(() => {
+        const fetchPaymentTypes = async () => {
+            try {
+                const whereCondition = {
+                    isActive: true,
+                    isDeleted: false
+                };
+                const payload = listPayload(0, whereCondition, 100000);
+                const response = await getPaymentTypeList(payload);
+                if (response?.data) {
+                    setPaymentType(response.data.rows);
+                    dispath({
+                        type: "SET_DETAILS",
+                        payload: response.data.rows,
+                    })
+                }
+            } catch (error) {
+                console.error("Error fetching payment types:", error);
+            }
+        };
+        if(open) {
+            fetchPaymentTypes();
+        }
+    }, [open]);
 
     return (
         <Modal
+            disableEscapeKeyDown
             aria-labelledby="payment-breakdown-title"
             open={open}
             onClose={handleClose}
@@ -70,14 +147,14 @@ const PaymentDetailsModle = ({
                 bgcolor: "white",
                 p: 3,
                 borderRadius: 2,
-                width: {
-                    xs: "80%",
-                    sm: "80%",
-                    md: "60%",
-                    lg: "50%",
-                },
-                maxHeight: "auto",
-                overflowY: "hidden",
+                // width: {
+                //     xs: "80%",
+                //     sm: "80%",
+                //     md: "60%",
+                //     lg: "50%",
+                // },
+                // maxHeight: "auto",
+                // overflowY: "hidden",
                 mx: "auto",
                 mt: 5,
             }}
@@ -95,17 +172,79 @@ const PaymentDetailsModle = ({
                     variant="h6"
                     component="h6"
                     className="text-black modal-title"
-
-                // sx={{ display: "flex", justifyContent: "space-between" }}
                 >
                     Payment Option
                 </Typography>
-
-                <CardContent className="modal-body" sx={{ mt: 2 }}>
+                <Box className="modal-body">
                     <FormGroup>
                         <Grid container spacing={1}>
                             <Grid item xs={12} sm={12}>
-                                <Box sx={{
+                                {paymentDetail?.detail?.map((item, index) => (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        alignItems: "center",
+                                        gap: 1,
+                                        mb: 1,
+                                    }}>
+                                        <Checkbox
+                                            checked={item.enabled}
+                                            onChange={(e) => {
+                                                dispath({
+                                                    type: 'SET_CHECKBOX',
+                                                    payload: {
+                                                        id: item.id,
+                                                        value: e.target.checked
+                                                    }
+                                                })
+                                            }}
+                                        />
+                                        <Typography sx={{ minWidth: 90, flexShrink: 0 }}>{item.name}</Typography>
+                                        <TextField
+                                            size="small"
+                                            type="number"
+                                            label="Amount"
+                                            sx={{ width: { xs: "100%", sm: 200 } }}
+                                            disabled={!item.enabled}
+                                            value={item.amount}
+                                            onChange={(e) => {
+                                                dispath({
+                                                    type: "SET_AMOUNT",
+                                                    payload: {
+                                                        id: item.id,
+                                                        value: e.target.value
+                                                    }
+                                                })
+                                            }}
+                                        />
+                                        {/* <Box sx={{ width: '28%'}}> */}
+                                            {['card sale', 'CARD SALE', 'Card Sale'].includes(item.name) &&
+                                                <TextField
+                                                    size="small"
+                                                    type="text"
+                                                    label="Card No"
+                                                    inputProps={{ maxLength: 4 }}
+                                                    sx={{
+                                                        width: { xs: '100%', sm: 100 },
+                                                        flexGrow: { xs: 1, sm: 0 },
+                                                    }}
+                                                    disabled={!item.enabled}
+                                                    value={item.cardNo}
+                                                    onChange={(e) => {
+                                                        dispath({
+                                                            type: "SET_CARD_NO",
+                                                            payload: {
+                                                                id: item.id,
+                                                                value: e.target.value
+                                                            }
+                                                        })
+                                                    }}
+                                                />
+                                            }
+                                        {/* </Box> */}
+                                    </Box>
+                                ))}
+                                {/* <Box sx={{
                                     display: "flex",
                                     // flexWrap: "wrap",           
                                     alignItems: "center",
@@ -129,9 +268,10 @@ const PaymentDetailsModle = ({
                                             handlePaymentAmount("cashSale", e.target.value);
                                         }}
                                     />
-                                </Box>
+                                    
+                                </Box> */}
                             </Grid>
-                            <Grid item xs={12} sm={12}>
+                            {/* <Grid item xs={12} sm={12}>
                                 <Box sx={{
                                     display: "flex",
                                     // flexWrap: "wrap",           
@@ -194,7 +334,7 @@ const PaymentDetailsModle = ({
 
                                         />
 
-                                        {/* </Grid> */}
+                                        {/* </Grid> 
                                     </Box>
                                     <Grid item xs={6} sm={6}>
                                         <Box sx={{display: 'flex',}}>
@@ -220,34 +360,32 @@ const PaymentDetailsModle = ({
                                         </Box>
                                     </Grid>
                                 </Box>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </FormGroup>
-                    <CardContent container spacing={2}>
-                        <Box sx={{ mr: 10, mb: 0, }} >
-                            <Grid item xs={8}>
-                                <Typography color="black" sx={{
-                                    fontWeight: "bold",
-                                    textAlign: { xs: "center", sm: "center" },
-                                    px: 2,
-                                }}>
-                                    Grand Total: {totalEntered}
-                                </Typography>
-                            </Grid>
-                        </Box>
-                        <Grid item xs={12}>
-                            <Box>
-                                {error && (
-                                    <Typography color="error" sx={{ mb: 2 }}>
-                                        {error}
-                                    </Typography>
-                                )}
-                            </Box>
-                        </Grid>
-                    </CardContent>
-                </CardContent>
-
-                <Box className="modal-footer">
+                    <Box sx={{ mr: 10, mb: 0, }} >
+                        <Typography color="black" sx={{
+                            fontWeight: "bold",
+                            textAlign: { xs: "center", sm: "center" },
+                            px: 2,
+                        }}>
+                            Grand Total: {totalEntered}
+                        </Typography>
+                    </Box>
+                    <Box>
+                        {error && (
+                            <Typography color="error" sx={{ mb: 0 }}>
+                                {error}
+                            </Typography>
+                        )}
+                    </Box>
+                </Box>
+                
+                <Box className="modal-footer" sx={{
+                    position: 'relative !important',
+                    bottom: '0px !important',
+                    right: '0px !important'
+                }}>
                     <Grid container spacing={2}>
                         <Grid item md={6} xs={6}>
                             <Button className="btn btn-tertiary" onClick={handleConfirm}>
@@ -262,7 +400,6 @@ const PaymentDetailsModle = ({
                     </Grid>
                 </Box>
             </CardContent>
-
         </Modal >
     );
 };
