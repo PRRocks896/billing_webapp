@@ -772,8 +772,8 @@ const AddEditBill = ({ tag }) => {
                 )}
               </Grid>
             </Grid> */}
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={3}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid item xs={12} sm={3} >
                 <Controller
                   name="referenceBy"
                   control={control}
