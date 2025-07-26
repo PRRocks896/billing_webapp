@@ -80,7 +80,6 @@ const PaymentDetailsModle = ({
     okTitle = " Confirm",
     handleOk,
     handleClose,
-    handlePaymentAmount,
     grandTotal,
 }) => {
 

@@ -66,8 +66,6 @@ const AddEditBill = ({ tag }) => {
     fetchStaffData,
     setQtyRateValuesHandler,
     printHandler,
-    handlePaymentChange,
-    isCardSelect,
     getValues,
 
     handlePaymentDetail,
@@ -328,6 +326,7 @@ const AddEditBill = ({ tag }) => {
                               onBlur={onBlur}
                               error={!!error}
                               helperText={error?.message}
+                              disabled
                             />
                           </FormControl>
                         )}
@@ -896,7 +895,6 @@ const AddEditBill = ({ tag }) => {
           <PaymentDetailsModle
             open={isPaymentModalOpen}
             handleClose={togglePaymentModal}
-            handlePaymentAmount={handlePaymentAmount}
             handleOk={handlePaymentDetail}
             grandTotal = {getValues("grandTotal")}
           />
