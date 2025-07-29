@@ -27,7 +27,7 @@ const paymentDetailReducer = (state, action) => {
                     enabled: false,
                     id: item.id
                 }
-                if(item.name === 'CARD') {
+                if (item.name === 'CARD') {
                     base.cardNo = "";
                 }
                 return base;
@@ -36,34 +36,34 @@ const paymentDetailReducer = (state, action) => {
                 ...state,
                 detail: detail
             }
-        case "SET_CHECKBOX": 
+        case "SET_CHECKBOX":
             const find = state.detail?.findIndex((item) => item.id === action.payload.id);
-            if(find >= 0) {
+            if (find >= 0) {
                 const updateDetail = state.detail;
                 updateDetail[find].enabled = action.payload.value;
-                
+
                 return {
                     ...state,
                     detail: updateDetail
                 }
             }
-        case "SET_AMOUNT": 
+        case "SET_AMOUNT":
             const index = state.detail?.findIndex((item) => item.id === action.payload.id);
-            if(index >= 0) {
+            if (index >= 0) {
                 const updateDetail = state.detail;
                 updateDetail[index].amount = action.payload.value;
-                
+
                 return {
                     ...state,
                     detail: updateDetail
                 }
             }
-        case "SET_CARD_NO": 
+        case "SET_CARD_NO":
             const cardIndex = state.detail?.findIndex((item) => item.id === action.payload.id);
-            if(cardIndex >= 0) {
+            if (cardIndex >= 0) {
                 const updateDetail = state.detail;
                 updateDetail[cardIndex].cardNo = action.payload.value;
-                
+
                 return {
                     ...state,
                     detail: updateDetail
@@ -84,21 +84,34 @@ const PaymentDetailsModle = ({
 }) => {
 
     const [paymentType, setPaymentType] = useState([]);
-    const [ paymentDetail, dispath ] = useReducer(paymentDetailReducer, {
+    const [paymentDetail, dispath] = useReducer(paymentDetailReducer, {
         detail: null,
         total: 0
     })
-    
+
     const [error, setError] = useState("");
 
     const totalEntered = useMemo(() => {
-        if(paymentDetail && paymentDetail.detail && paymentDetail.detail.length > 0) {
+        if (paymentDetail && paymentDetail.detail && paymentDetail.detail.length > 0) {
             return paymentDetail.detail?.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
         }
         return 0;
+
     }, [paymentDetail]);
 
     const handleConfirm = () => {
+
+        const cardError = paymentDetail.detail?.find(
+            (item) =>
+                item.enabled &&
+                (!item.cardNo || item.cardNo.length !== 4)
+        );
+
+        if(cardError) {
+            setError("Please enter a last 4-digit card no.");
+            return;
+        }
+
         if (grandTotal && totalEntered !== parseFloat(grandTotal)) {
             setError(
                 `Total amount enter (${totalEntered}) must match Grand Total (${grandTotal})`
@@ -130,7 +143,7 @@ const PaymentDetailsModle = ({
                 console.error("Error fetching payment types:", error);
             }
         };
-        if(open) {
+        if (open) {
             fetchPaymentTypes();
         }
     }, [open]);
@@ -217,29 +230,29 @@ const PaymentDetailsModle = ({
                                             }}
                                         />
                                         {/* <Box sx={{ width: '28%'}}> */}
-                                            {['card sale', 'CARD SALE', 'Card Sale'].includes(item.name) &&
-                                                <TextField
-                                                    size="small"
-                                                    type="text"
-                                                    label="Card No"
-                                                    inputProps={{ maxLength: 4 }}
-                                                    sx={{
-                                                        width: { xs: '100%', sm: 100 },
-                                                        flexGrow: { xs: 1, sm: 0 },
-                                                    }}
-                                                    disabled={!item.enabled}
-                                                    value={item.cardNo}
-                                                    onChange={(e) => {
-                                                        dispath({
-                                                            type: "SET_CARD_NO",
-                                                            payload: {
-                                                                id: item.id,
-                                                                value: e.target.value
-                                                            }
-                                                        })
-                                                    }}
-                                                />
-                                            }
+                                        {['card sale', 'CARD SALE', 'Card Sale'].includes(item.name) &&
+                                            <TextField
+                                                size="small"
+                                                type="text"
+                                                label="Card No"
+                                                inputProps={{ maxLength: 4 }}
+                                                sx={{
+                                                    width: { xs: '100%', sm: 100 },
+                                                    flexGrow: { xs: 1, sm: 0 },
+                                                }}
+                                                disabled={!item.enabled}
+                                                value={item.cardNo}
+                                                onChange={(e) => {
+                                                    dispath({
+                                                        type: "SET_CARD_NO",
+                                                        payload: {
+                                                            id: item.id,
+                                                            value: e.target.value
+                                                        }
+                                                    })
+                                                }}
+                                            />
+                                        }
                                         {/* </Box> */}
                                     </Box>
                                 ))}
@@ -373,13 +386,13 @@ const PaymentDetailsModle = ({
                     </Box>
                     <Box>
                         {error && (
-                            <Typography color="error" sx={{ mb: 0 }}>
+                            <Typography color="error" sx={{ mb: 0, textAlign: "center", mt: 1}}>
                                 {error}
                             </Typography>
                         )}
                     </Box>
                 </Box>
-                
+
                 <Box className="modal-footer" sx={{
                     position: 'relative !important',
                     bottom: '0px !important',
