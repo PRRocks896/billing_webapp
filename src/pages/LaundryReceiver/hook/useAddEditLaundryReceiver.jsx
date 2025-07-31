@@ -118,7 +118,6 @@ export const useAddEditLaundryManagement = (tag) => {
       //   };
       // }
       delete payload.detail;
-      console.log(payload);
       const response = await updateBulkReceiver(payload);
       if (response && response.success) {
         showToast("Record Updated", true);

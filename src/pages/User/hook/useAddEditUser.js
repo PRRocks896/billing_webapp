@@ -150,7 +150,6 @@ export const useAddEditUser = (tag) => {
     try {
       dispatch(startLoading());
       let payload = {...data};
-      console.log(payload);
       const formData = new FormData();
       if (tag === "add") {
         formData.append("createdBy", "" + loggedInUser?.id);
@@ -272,7 +271,6 @@ export const useAddEditUser = (tag) => {
       // }
       // dispatch(stopLoading());
     } catch (error) {
-      console.log(error);
       showToast(error.message, false);
     } finally {
       dispatch(stopLoading());

@@ -162,7 +162,6 @@ const Report = () => {
               getOptionLabel={(option) => option.label}
               // value={branch}
               onChange={(_, newValue) => {
-                console.log("newValue", newValue);
                 const selected = JSON.parse(JSON.stringify(newValue));
                 if(selected && selected?.value) {
                   setSelectedService(selected?.value);
@@ -216,7 +215,6 @@ const Report = () => {
                 getOptionLabel={(option) => option.label}
                 // value={branch}
                 onChange={(_, newValue) => {
-                  console.log("newValue", newValue);
                   handleBranchChange(newValue)
                   fetchUserList(newValue?.value);
                 }}

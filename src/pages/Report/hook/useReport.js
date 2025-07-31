@@ -259,7 +259,6 @@ export const useReport = () => {
         month: month,
       };
       const response = await getStaffSalaryReport(body, generateSlug(`${selectedCompany?.label}_salary_report_${year}_${month}.xlsx`.toLowerCase()));
-      console.log("Attendance Report Response: ", response);
       setPdfData(response);
     } catch(error) {
       showToast("No report found", false);

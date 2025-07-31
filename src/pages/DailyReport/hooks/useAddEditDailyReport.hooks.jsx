@@ -195,7 +195,6 @@ export const useAddEditDailyReportHook = (tag) => {
                 if (response?.statusCode === 200) {
                     const { data } = response;
                     const { managerName } = data;
-                    console.log("managerName", managerName);
                     reset({
                         userID: data.userID,
                         dailyReportDate: moment(new Date(data.dailyReportDate)).format('yyyy-MM-DD'),
