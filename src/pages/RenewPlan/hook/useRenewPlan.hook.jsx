@@ -89,13 +89,13 @@ export const useRenewPlan = () => {
                         roomID: 1,
                         paymentID: payment.id,
                         customerID: data.customerID,
-                        detail: JSON.stringify([{
+                        detail: [{
                             discount: 0,
                             quantity: 1,
                             rate: total,
                             membershipPlanID: selectedMemberShipPlan.id,
                             total: total
-                        }]),
+                        }],
                         cardNo: payment.cardNo || '',
                         grandTotal: (total + parseFloat(cgst) + parseFloat(sgst)),
                         managerName: data.managerName,
