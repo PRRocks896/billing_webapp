@@ -175,13 +175,13 @@ export const useAddEditMembershipRedeem = (tag) => {
                     userID: loggedInUser.id,
                     paymentID: 1,
                     customerID: customer?.id,
-                    detail: JSON.stringify([{
+                    detail: [{
                         discount: 1,
                         quantity: 1,
                         rate: 1,
                         total: 1,
                         serviceID: info.serviceID,
-                    }]),
+                    }],
                     cardNo: "",
                     grandTotal: 1,
                     managerName: localStorage.getItem('managerId'),
@@ -220,12 +220,21 @@ export const useAddEditMembershipRedeem = (tag) => {
         try {
             const { success, message, data } = await getMembershipRedeemById(id);
             if(success) {
-                const billData = {
-                    subTotal: 1,
+                const tableData = [{
+                    item: data?.px_service?.name,
+                    quantity: 1,
+                    rate: 1,
                     total: 1,
-                    billNo: data?.billNo,
+                    subTotal: 1,
+                    cgst: 0,
+                    sgst: 0,
                     payment: 'CASH',
+                    paymentId: 1,
                     cardNo: '',
+                    billNo: data?.billNo,
+                    grandTotal: 1
+                }]
+                const billData = {
                     date: new Date(data?.createdAt),
                     customer: data?.px_customer?.name,
                     customerID: data?.customerID,
@@ -245,7 +254,8 @@ export const useAddEditMembershipRedeem = (tag) => {
                     roleID: loggedInUser.roleID,
                     gstNo: loggedInUser?.gstNo,
                     isShowGst: false,
-                    reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
+                    reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null,
+                    tableData
                 }
                 const branchData = {
                     title: billData.billTitle
