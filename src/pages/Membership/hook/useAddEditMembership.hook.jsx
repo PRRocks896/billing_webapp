@@ -93,7 +93,7 @@ export const useAddEditMembership = (tag) => {
                         }],
                         cardNo: payment.cardNo || '',
                         grandTotal: (total + parseFloat(cgst) + parseFloat(sgst)),
-                        managerName: data.managerName,
+                        managerName: localStorage.getItem('managerId'),
                         createdBy: loggedInUser.id,
                         cgst: cgst,
                         sgst: sgst,
