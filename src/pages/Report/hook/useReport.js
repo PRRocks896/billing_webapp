@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
-import { getReportList, getGstReportList, getManagerList, getStaffSalaryReport, getAttendanceStaffReport } from "../../../service/report";
+import { getReportList, getGstReportList, getManagerList, getStaffSalaryReport, getAttendanceStaffReport, getManagerInsentiveReport } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { getCompanyList } from "../../../service/company";
@@ -14,6 +14,7 @@ import { generateSlug } from "../../../utils/helper";
 
 export const useReport = () => {
   const dispatch = useDispatch();
+  const loggedInUser = useSelector((state) => state.loggedInUser);
   const [pdfData, setPdfData] = useState(null);
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [gstDateRange, setGstDateRange] = useState([new Date(), new Date()]);
@@ -39,6 +40,10 @@ export const useReport = () => {
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [attYear, setAttYear] = useState(new Date().getFullYear());
   const [attMonth, setAttMonth] = useState(new Date().getMonth() + 1);
+
+  const [selectedInsentiveManager, setSelectedInsentiveManager] = useState(null);
+  const [insentiveManagerYear, setInsentiveManagerYear] = useState(new Date().getFullYear());
+  const [insentiveManagerMonth, setInsentiveManagerMonth] = useState(new Date().getMonth() + 1);
 
   const serviceList = [
     { value: 'bill', label: 'Bill' },
@@ -189,11 +194,9 @@ export const useReport = () => {
         isActive: true,
         isDeleted: false
       };
-      const response = await getManager(
-        whereCondition
-      );
+      const response = await getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "MANAGER"} : {...whereCondition, searchText: "MANAGER", createdBy: loggedInUser.id}, 100000)); //getManager(whereCondition);
       if(response && response.success) {
-        const payload = response.data;
+        const payload = response.data?.rows;
         setManagerList(payload);
       } else {
         setManagerList([]);
@@ -260,6 +263,24 @@ export const useReport = () => {
       };
       const response = await getStaffSalaryReport(body, generateSlug(`${selectedCompany?.label}_salary_report_${year}_${month}.xlsx`.toLowerCase()));
       setPdfData(response);
+    } catch(error) {
+      showToast("No report found", false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
+  const fetchInsentiveManagerReportData = async () => {
+    try {
+      dispatch(startLoading());
+      setPdfData(null);
+      const body = {
+        manegerID: selectedInsentiveManager,
+        year: insentiveManagerYear,
+        month: insentiveManagerMonth,
+      };
+      const response = await getManagerInsentiveReport(body, generateSlug(`manager_insentive_report_${year}_${month}.xlsx`.toLowerCase()));
+      // setPdfData(response);
     } catch(error) {
       showToast("No report found", false);
     } finally {
@@ -373,6 +394,12 @@ export const useReport = () => {
     serviceList,
     selectedService,
     roleId: user.roleID,
+    selectedInsentiveManager,
+    setSelectedInsentiveManager,
+    insentiveManagerYear,
+    setInsentiveManagerYear,
+    insentiveManagerMonth,
+    setInsentiveManagerMonth,
     setYear,
     setMonth,
     fetchUserList,
@@ -388,6 +415,7 @@ export const useReport = () => {
     handleManagerChange,
     setSelectedService,
     fetchAttendanceReportData,
-    fetchStaffAttendanceReportData
+    fetchStaffAttendanceReportData,
+    fetchInsentiveManagerReportData
   };
 };
