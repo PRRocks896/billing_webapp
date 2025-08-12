@@ -267,16 +267,6 @@ const StaffReport = () => {
                     <Grid item xs={12} sm={2}>
                         <Button className="btn btn-tertiary" onClick={() => fetchInsentiveManagerReportData()}>Search</Button>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
-                        {pdfData && (
-                            <iframe
-                                title="PDF Viewer"
-                                src={pdfData}
-                                width="100%"
-                                style={{ height: "calc(100vh - 100px)" }}
-                            />
-                        )}
-                    </Grid>
                 </Grid>
             </Box>
             <br />
@@ -317,7 +307,8 @@ const StaffReport = () => {
                             // multiple
                             id="staffID"
                             options={staffList || []}
-                            getOptionLabel={(option) => option.label}
+                            getOptionLabel={(option) => `${option?.nickName} (${option?.label})`}
+                            // getOptionLabel={(option) => option.label}
                             // value={branch}
                             onChange={(_, newValue) => {
                                 const selected = JSON.parse(JSON.stringify(newValue));

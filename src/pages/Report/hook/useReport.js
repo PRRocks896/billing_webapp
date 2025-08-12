@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
-import { getReportList, getGstReportList, getManagerList, getStaffSalaryReport, getAttendanceStaffReport, getManagerInsentiveReport } from "../../../service/report";
+import { getReportList, getGstReportList, getManagerList, getStaffSalaryReport, getAttendanceStaffReport, getManagerInsentiveReport, getAuditorReport } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { getCompanyList } from "../../../service/company";
@@ -19,6 +19,7 @@ export const useReport = () => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [gstDateRange, setGstDateRange] = useState([new Date(), new Date()]);
   const [managerDateRange, setManagerDateRange] = useState([new Date(), new Date()]);
+  
   // const [branchOptions, setBranchOptions] = useState([]);
   // const [branch, setBranch] = useState([]);
   const [company, setCompany] = useState([]);
@@ -45,6 +46,10 @@ export const useReport = () => {
   const [insentiveManagerYear, setInsentiveManagerYear] = useState(new Date().getFullYear());
   const [insentiveManagerMonth, setInsentiveManagerMonth] = useState(new Date().getMonth() + 1);
 
+  const [auditoDateRange, setAuditoDateRange] = useState([new Date(), new Date()]);
+  const [auditorSelectedCompany, setAuditorSelectedCompany] = useState(null);
+  const [selectedAuditorPayment, setSelectedAuditorPayment] = useState([]);
+
   const serviceList = [
     { value: 'bill', label: 'Bill' },
     { value: 'membership', label: 'Membership' },
@@ -63,6 +68,10 @@ export const useReport = () => {
     return data;
   }, [company]);
 
+  const handleAuditorDateChange = (value) => {
+    setAuditoDateRange(value);
+  };
+  
   const handleManagerDateChange = (value) => {
     setManagerDateRange(value);
   };
@@ -274,12 +283,13 @@ export const useReport = () => {
     try {
       dispatch(startLoading());
       setPdfData(null);
+      const managerName = managerList.find((manager) => manager.id === selectedInsentiveManager);
       const body = {
         manegerID: selectedInsentiveManager,
         year: insentiveManagerYear,
         month: insentiveManagerMonth,
       };
-      const response = await getManagerInsentiveReport(body, generateSlug(`manager_insentive_report_${year}_${month}.xlsx`.toLowerCase()));
+      const response = await getManagerInsentiveReport(body, generateSlug(`${managerName.nickName}_(${managerName.name})_insentive_report_${year}_${month}.xlsx`.toLowerCase()));
       // setPdfData(response);
     } catch(error) {
       showToast("No report found", false);
@@ -326,6 +336,7 @@ export const useReport = () => {
         const items = response?.data?.rows?.map((row) => ({
           value: row.id,
           label: row.name,
+          nickName: row.nickName
         }));
         setStaffList(items);
       } else {
@@ -348,6 +359,34 @@ export const useReport = () => {
         month: attMonth,
       }
       const response = await getAttendanceStaffReport(payload, generateSlug(`attendance_report_${selectedAttUser ? selectedAttUser.label : 'all'}_${attYear}_${attMonth}.pdf`.toLowerCase()));
+      if(response?.success) {
+        setPdfData(response.data);
+      } else {
+        setPdfData(null);
+      }
+    } catch (error) {
+      showToast("No report found", false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
+  const fetchAuditorReportData = async () => {
+    try {
+      dispatch(stopLoading());
+      setPdfData(null);
+      const payload = {
+        paymentID: selectedAuditorPayment,
+        companyID: auditorSelectedCompany && auditorSelectedCompany?.value,
+        // startDate: auditoDateRange[0],
+        // endDate: auditoDateRange[1],
+        // companyID: selectedCompany && selectedCompany?.value,
+        // paymentID: selectedPayment,
+        // userID: user.roleID !== 1 ? user.id : branch.value,
+        startDate: moment(auditoDateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
+        endDate: moment(auditoDateRange[1]).format('yyyy-MM-DD') //formatDate(dateRange[1]),
+      }
+      const response = await getAuditorReport(payload, generateSlug(`${auditorSelectedCompany?.label}_report_${moment(auditoDateRange[0]).format('yyyy-MM-DD')}_to_${moment(auditoDateRange[1]).format('yyyy-MM-DD')}.xlsx`.toLowerCase()));
       if(response?.success) {
         setPdfData(response.data);
       } else {
@@ -386,6 +425,13 @@ export const useReport = () => {
     dateRange,
     gstDateRange,
     managerDateRange,
+    auditoDateRange,
+    auditorSelectedCompany,
+    setAuditorSelectedCompany,
+    selectedAuditorPayment,
+    setSelectedAuditorPayment,
+    handleAuditorDateChange,
+    fetchAuditorReportData,
     managerList,
     paymentList,
     // branchOptions,

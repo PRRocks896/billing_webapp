@@ -26,3 +26,7 @@ export const getAttendanceStaffReport = async (body, fileName) => {
 export const getManagerInsentiveReport = async (body, fileName) => {
 return await getXlsx(`api/report/manager-incentive-details`, body, fileName);
 }
+
+export const getAuditorReport = async (body, fileName) => {
+  return await getXlsx(`api/report/gst-sale-purchase`, body, fileName);
+}

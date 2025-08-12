@@ -55,6 +55,13 @@ const SalesReport = () => {
         insentiveManagerMonth,
         setInsentiveManagerMonth,
         fetchInsentiveManagerReportData,
+        auditoDateRange,
+        auditorSelectedCompany,
+        setAuditorSelectedCompany,
+        selectedAuditorPayment,
+        setSelectedAuditorPayment,
+        handleAuditorDateChange,
+        fetchAuditorReportData,
     } = useReport();
     return (
         <>
@@ -146,6 +153,63 @@ const SalesReport = () => {
                     </Grid>
                     <Grid item xs={12} sm={3}>
                         <Button className="btn btn-tertiary" onClick={fetchGstReportData}>Export</Button>
+                    </Grid>
+                </Grid>
+            </Box>
+            <br />
+            <Box className="card">
+                <Typography variant="h5">Auditor Report</Typography>
+                <br />
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={3}>
+                        <DateRangePicker value={auditoDateRange} onChange={handleAuditorDateChange} />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        {roleId === 1 && (
+                            <>
+                                <Autocomplete
+                                    freeSolo
+                                    size="small"
+                                    disablePortal
+                                    // multiple
+                                    id="Comapny"
+                                    options={companyOptions || []}
+                                    getOptionLabel={(option) => option.label}
+                                    // value={branch}
+                                    onChange={(_, newValue) => setAuditorSelectedCompany(newValue)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Company" />
+                                    )}
+                                />
+                            </>
+                        )}
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        {roleId === 1 && (
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                multiple
+                                id="paymentID"
+                                options={paymentList || []}
+                                getOptionLabel={(option) => option.label}
+                                // value={value}
+                                // onBlur={onBlur}
+                                onChange={(event, newValue) => {
+                                    setSelectedAuditorPayment(newValue)
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Payment Type"
+                                    />
+                                )}
+                            />
+                        )}
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <Button className="btn btn-tertiary" onClick={fetchAuditorReportData}>Export</Button>
                     </Grid>
                 </Grid>
             </Box>
