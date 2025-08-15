@@ -55,6 +55,14 @@ const StaffReport = () => {
         insentiveManagerMonth,
         setInsentiveManagerMonth,
         fetchInsentiveManagerReportData,
+        weekDays,
+        weekDaysPercentage,
+        weekEnd,
+        weekEndPercentage,
+        setWeekDays,
+        setWeekDaysPercentage,
+        setweekEnd,
+        setWeekEndPercentage
     } = useReport();
     return (
         <>
@@ -210,6 +218,7 @@ const StaffReport = () => {
                     <Grid item xs={12} sm={3}>
                         <Autocomplete
                             freeSolo
+                            fullWidth
                             size="small"
                             disablePortal
                             // multiple
@@ -228,11 +237,12 @@ const StaffReport = () => {
                             )}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item xs={12} sm={1}>
                         <Autocomplete
                             freeSolo
                             size="small"
                             disablePortal
+                            fullWidth
                             // multiple
                             id="year"
                             options={[...Array(10)].map((_, index) => new Date().getFullYear() - index) || []}
@@ -246,11 +256,12 @@ const StaffReport = () => {
                             )}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item xs={12} sm={1}>
                         <Autocomplete
                             freeSolo
                             size="small"
                             disablePortal
+                            fullWidth
                             // multiple
                             id="month"
                             options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
@@ -262,6 +273,109 @@ const StaffReport = () => {
                             renderInput={(params) => (
                                 <TextField {...params} label="Month" />
                             )}
+                        />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={2}>
+                        <TextField
+                            fullWidth
+                            label="Mon to Fri (₹)"
+                            size="small"
+                            name="name"
+                            value={weekDays || ''}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                // Allow empty for typing
+                                if (val === "") {
+                                    setWeekDays("");
+                                    return;
+                                }
+                                if (!/^\d{0,10}$/.test(val)) return;
+                                setWeekDays(e.target.value);
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <TextField
+                            fullWidth
+                            label="Mon to Fri (%)"
+                            size="small"
+                            name="name"
+                            value={weekDaysPercentage || ''}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                // Allow empty for typing
+                                if (val === "") {
+                                    setWeekDaysPercentage("");
+                                    return;
+                                }
+
+                                // Allow only digits
+                                if (!/^\d{0,3}$/.test(val)) return;
+
+                                // Convert to number
+                                const num = Number(val);
+
+                                // Block if > 100
+                                if (num > 100) return;
+
+                                setWeekDaysPercentage(val);
+                                // if (/^\d{0,3}$/.test(value)) {
+                                //     setWeekDaysPercentage(value);
+                                // }
+                                // if (value === "" || /^\d+(\.\d{1,2})?$/.test(value) || /^(100|[0-9]{1,2})$/.test(value)) {
+                                //     setWeekDaysPercentage(value);
+                                // }
+                            }}
+                            
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={2}></Grid>
+                    <Grid item xs={12} sm={2}>
+                        <TextField
+                            fullWidth
+                            label="Sat Sun (₹)"
+                            size="small"
+                            name="name"
+                            value={weekEnd}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                // Allow empty for typing
+                                if (val === "") {
+                                    setweekEnd("");
+                                    return;
+                                }
+                                if (!/^\d{0,10}$/.test(val)) return;
+                                setweekEnd(e.target.value);
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <TextField
+                            fullWidth
+                            label="Sat Sun (%)"
+                            size="small"
+                            name="name"
+                            value={weekEndPercentage || ''}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                // Allow empty for typing
+                                if (val === "") {
+                                    setWeekEndPercentage("");
+                                return;
+                                }
+
+                                // Allow only digits
+                                if (!/^\d{0,3}$/.test(val)) return;
+
+                                // Convert to number
+                                const num = Number(val);
+
+                                // Block if > 100
+                                if (num > 100) return;
+
+                                setWeekEndPercentage(val);
+                            }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={2}>

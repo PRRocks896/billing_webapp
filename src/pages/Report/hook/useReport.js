@@ -45,6 +45,10 @@ export const useReport = () => {
   const [selectedInsentiveManager, setSelectedInsentiveManager] = useState(null);
   const [insentiveManagerYear, setInsentiveManagerYear] = useState(new Date().getFullYear());
   const [insentiveManagerMonth, setInsentiveManagerMonth] = useState(new Date().getMonth() + 1);
+  const [weekDays, setWeekDays] = useState(null);
+  const [weekDaysPercentage, setWeekDaysPercentage] = useState(null);
+  const [weekEnd, setweekEnd] = useState(null);
+  const [weekEndPercentage, setWeekEndPercentage] = useState(null);
 
   const [auditoDateRange, setAuditoDateRange] = useState([new Date(), new Date()]);
   const [auditorSelectedCompany, setAuditorSelectedCompany] = useState(null);
@@ -288,8 +292,12 @@ export const useReport = () => {
         manegerID: selectedInsentiveManager,
         year: insentiveManagerYear,
         month: insentiveManagerMonth,
+        weekDays: weekDays,
+        weekDaysPercentage: weekDaysPercentage,
+        weekEnd: weekEnd,
+        weekEndPercentage: weekEndPercentage
       };
-      const response = await getManagerInsentiveReport(body, generateSlug(`${managerName.nickName}_(${managerName.name})_insentive_report_${year}_${month}.xlsx`.toLowerCase()));
+      const response = await getManagerInsentiveReport(body, generateSlug(`${managerName.nickName}_(${managerName.name})_insentive_report_${insentiveManagerYear}_${insentiveManagerMonth}.xlsx`.toLowerCase()));
       // setPdfData(response);
     } catch(error) {
       showToast("No report found", false);
@@ -462,6 +470,14 @@ export const useReport = () => {
     setSelectedService,
     fetchAttendanceReportData,
     fetchStaffAttendanceReportData,
-    fetchInsentiveManagerReportData
+    fetchInsentiveManagerReportData,
+    weekDays,
+    weekDaysPercentage,
+    weekEnd,
+    weekEndPercentage,
+    setWeekDays,
+    setWeekDaysPercentage,
+    setweekEnd,
+    setWeekEndPercentage
   };
 };
