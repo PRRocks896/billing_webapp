@@ -379,7 +379,7 @@ const StaffReport = () => {
                         />
                     </Grid>
                     <Grid item xs={12} sm={2}>
-                        <Button className="btn btn-tertiary" onClick={() => fetchInsentiveManagerReportData()}>Search</Button>
+                        <Button className="btn btn-tertiary" onClick={() => fetchInsentiveManagerReportData()}>Export</Button>
                     </Grid>
                 </Grid>
             </Box>
