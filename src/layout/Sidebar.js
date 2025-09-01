@@ -90,7 +90,7 @@ const Sidebar = () => {
       return [];
     }
   }, [accessModules]);
-  
+
   const mainMenuListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
@@ -103,6 +103,8 @@ const Sidebar = () => {
             "membership redeem",
             "daily report",
             "website booking",
+            "daily task",
+            "bike details"
           ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
@@ -140,7 +142,9 @@ const Sidebar = () => {
             "daily report",
             "website booking",
             "send courier",
-            "receive courier"
+            "receive courier",
+            "daily task",
+            "bike details"
           ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
@@ -253,9 +257,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -299,9 +302,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -344,9 +346,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -389,9 +390,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -432,49 +432,47 @@ const Sidebar = () => {
               <AccordionDetails className="sub-menu-list">
                 {/* {reportListArray?.map((item, index) => {
                   return ( */}
-                    <Box
-                      // key={index}
-                      className={`sub-menu-link ${
-                        activeTab === "staff report" && "active"
-                      }`}
-                      onClick={() =>
-                        navigate('/staff-report', {
-                          state: {
-                            add: true,
-                            edit: true,
-                            delete: true,
-                            view: true,
-                          },
-                        })
-                      }
-                    >
-                      <Typography>
-                        <FiSquare />
-                        Staff Report
-                      </Typography>
-                    </Box>
-                    <Box
-                      // key={index}
-                      className={`sub-menu-link ${
-                        activeTab === "sales report" && "active"
-                      }`}
-                      onClick={() =>
-                        navigate('/sales-report', {
-                          state: {
-                            add: true,
-                            edit: true,
-                            delete: true,
-                            view: true,
-                          },
-                        })
-                      }
-                    >
-                      <Typography>
-                        <FiSquare />
-                        Sales Report
-                      </Typography>
-                    </Box>
-                  {/* );
+                <Box
+                  // key={index}
+                  className={`sub-menu-link ${activeTab === "staff report" && "active"
+                    }`}
+                  onClick={() =>
+                    navigate('/staff-report', {
+                      state: {
+                        add: true,
+                        edit: true,
+                        delete: true,
+                        view: true,
+                      },
+                    })
+                  }
+                >
+                  <Typography>
+                    <FiSquare />
+                    Staff Report
+                  </Typography>
+                </Box>
+                <Box
+                  // key={index}
+                  className={`sub-menu-link ${activeTab === "sales report" && "active"
+                    }`}
+                  onClick={() =>
+                    navigate('/sales-report', {
+                      state: {
+                        add: true,
+                        edit: true,
+                        delete: true,
+                        view: true,
+                      },
+                    })
+                  }
+                >
+                  <Typography>
+                    <FiSquare />
+                    Sales Report
+                  </Typography>
+                </Box>
+                {/* );
                 })} */}
               </AccordionDetails>
             </Accordion>

@@ -1,4 +1,4 @@
-import React, {  useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Navigate,
   RouterProvider,
@@ -82,7 +82,7 @@ import Advance from "./pages/Advance";
 import AddEditAdvance from "./pages/Advance/AddEditAdvance";
 import HomePage from "./pages/HomePage";
 import AddEditHomePage from "./pages/HomePage/addEditHomePage";
-import BarcodePage from "./pages/Barcode"; 
+import BarcodePage from "./pages/Barcode";
 import SendCourier from "./pages/SendCourier";
 import ReceiveCourier from "./pages/ReceiveCourier";
 import Material from "./pages/Material";
@@ -99,6 +99,9 @@ import LaundryReceiver from "./pages/LaundryReceiver";
 import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiver";
 import StaffReport from "./pages/Report/StaffReport";
 import SalesReport from "./pages/Report/SalesReport";
+import DailyTask from "./pages/DailyTask";
+import AddEditDailyTask from "./pages/DailyTask/AddEditDailyTask"
+import BikeDetails from "./pages/BikeDetails";
 
 
 const token = getAuthToken();
@@ -328,6 +331,63 @@ const App = () => {
           ),
         },
         {
+          path: "bike-details",
+          element: (
+            <ProtectedRoute
+              path="bike-details"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <BikeDetails />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "daily-task",
+          element: (
+            <ProtectedRoute
+              path="daily-task"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <DailyTask />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "add-daily-task",
+          element: (
+            <ProtectedRoute
+              path="add-daily-task"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditDailyTask tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
           path: "website-booking",
           element: (
             <ProtectedRoute
@@ -517,7 +577,7 @@ const App = () => {
             />
           )
         },
-         {
+        {
           path: "add-laundry-item",
           element: (
             <ProtectedRoute
@@ -546,7 +606,7 @@ const App = () => {
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <AddEditLaundryItem tag="edit"/>
+                    <AddEditLaundryItem tag="edit" />
                   )
                 ) : (
                   <NoConnection />
@@ -603,7 +663,7 @@ const App = () => {
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <AddEditLaundryManagement tag="edit"/>
+                    <AddEditLaundryManagement tag="edit" />
                   )
                 ) : (
                   <NoConnection />
@@ -678,7 +738,7 @@ const App = () => {
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <AddEditLaundryReceiver tag="add"/>
+                    <AddEditLaundryReceiver tag="add" />
                   )
                 ) : (
                   <NoConnection />
@@ -744,7 +804,7 @@ const App = () => {
             />
           ),
         },
-         {
+        {
           path: "add-stock",
           element: (
             <ProtectedRoute
@@ -763,7 +823,7 @@ const App = () => {
             />
           ),
         },
-         {
+        {
           path: "edit-stock/:id",
           element: (
             <ProtectedRoute
@@ -1029,7 +1089,7 @@ const App = () => {
                   <NoConnection />
                 )
               }
-              // Component={isOnline ? <MemberShipRedeem/> : <NoConnection/>}
+            // Component={isOnline ? <MemberShipRedeem/> : <NoConnection/>}
             />
           ),
         },
@@ -2004,22 +2064,22 @@ const App = () => {
         },
         {
           path: 'staff-report',
-          element: isOnline ? ( isPendingDailyReport ? (
-              <LastDailyReportPending />
-            ) : (
-              <StaffReport />
-            )
+          element: isOnline ? (isPendingDailyReport ? (
+            <LastDailyReportPending />
+          ) : (
+            <StaffReport />
+          )
           ) : (
             <NoConnection />
           )
         },
         {
           path: 'sales-report',
-          element: isOnline ? ( isPendingDailyReport ? (
-              <LastDailyReportPending />
-            ) : (
-              <SalesReport />
-            )
+          element: isOnline ? (isPendingDailyReport ? (
+            <LastDailyReportPending />
+          ) : (
+            <SalesReport />
+          )
           ) : (
             <NoConnection />
           )
