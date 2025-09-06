@@ -120,26 +120,24 @@ const AddEditDailyTask = ({ tag }) => {
                   <Controller
                     name="status"
                     control={control}
-                    render={({
-                      field: { onBlur, onChange, value },
-                      fieldState: { error },
-                    }) => (
-                      <FormControl size="small" fullWidth error={!!error}>
-                        <InputLabel id="status-label">Status</InputLabel>
-                        <Select
-                          id="status"
-                          labelId="status-label"
-                          value={value}
-                          onChange={(e) => onChange(e.target.value)}
-                          onBlur={onBlur}
-                        >
-                          <MenuItem value="Assign">Assign</MenuItem>
-                          <MenuItem value="Pending">Pending</MenuItem>
-                          <MenuItem value="Working">Working</MenuItem>
-                          <MenuItem value="Completed">Completed</MenuItem>
-                        </Select>
-                        {error && <FormHelperText>{error.message}</FormHelperText>}
-                      </FormControl>
+                    render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                      <Autocomplete
+                        size="small"
+                        id="status"
+                        options={["Assign", "Pending", "Working", "Completed"]}
+                        value={value || null}
+                        onChange={(_event, newValue) => {
+                          onChange(newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Status"
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
                     )}
                     rules={{ required: "Add status" }}
                   />
@@ -182,7 +180,7 @@ const AddEditDailyTask = ({ tag }) => {
                       fieldState: { error },
                     }) => (
                       <ImageUpload
-                        title="photo"
+                        title="Photo"
                         key={'img-upload'}
                         value={value}
                         onChange={onChange}

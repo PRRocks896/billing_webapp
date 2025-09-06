@@ -114,9 +114,9 @@ const App = () => {
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const isPendingDailyReport = useMemo(() => {
-    if (loggedInUser && loggedInUser.hasOwnProperty("isLastDailyReportAdded")) {
-      return loggedInUser.isLastDailyReportAdded;
-    }
+    // if (loggedInUser && loggedInUser.hasOwnProperty("isLastDailyReportAdded")) {
+    //   return loggedInUser.isLastDailyReportAdded;
+    // }
     return false;
   }, [loggedInUser]);
 

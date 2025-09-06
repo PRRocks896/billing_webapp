@@ -85,22 +85,23 @@ export const useAddEditBikeDetails = (tag) => {
   }
 
   useEffect(() => {
-    try {
-      const fetchDropDownData = async () => {
-        const [
-          cityResponse
-        ] = await (
-          getCityByFind({ isActive: true, isDeleted: false })
-        );
-        if (cityResponse.statusCode === 200) {
-          const payload = cityResponse?.data;
+    const fetchDropDownData = async () => {
+      try {
+        const cityResponse = await getCityByFind({ isActive: true, isDeleted: false });
+
+        if (cityResponse?.statusCode === 200) {
+          const payload = Array.isArray(cityResponse.data) ? cityResponse.data : [];
           setCities(payload);
+        } else {
+          setCities([]);
         }
-      };
-      fetchDropDownData();
-    } catch (error) {
-      showToast(error.message, false);
-    }
+      } catch (error) {
+        showToast(error.message, false);
+        setCities([]);
+      }
+    };
+
+    fetchDropDownData();
   }, []);
 
   const fetchEdiBikeDetails = useCallback(async () => {

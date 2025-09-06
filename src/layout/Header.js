@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import Sidebar from "./Sidebar";
@@ -11,8 +11,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Clock from "../components/Clock";
+import Popover from "@mui/material/Popover";
+import { useMediaQuery } from "@mui/material";
+import ProfileIcon from '../assets/images/8608769.png';
 
 
 const drawerWidth = 300;
@@ -63,6 +67,28 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
     return localStorage.getItem("managerName") || "";
   }, [localStorage.getItem("managerName")]);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
+  const id = openPopover ? "profile-popover" : undefined;
+
+  const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
+  useEffect(() => {
+    if (isSmallScreen && open) {
+      handleDrawerClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
   return (
     <>
       <AppBar position="fixed" open={open} className="header">
@@ -81,6 +107,9 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             noWrap
             component="div"
             className="page-title"
+            sx={{
+              display: { xs: 'none', sm: 'block' }}}
+
           >
             {pageTitle}
           </Typography>
@@ -90,9 +119,45 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             </Button> */}
           </Box>
           <Box className="username">
+            <Box sx={{ display: { xs: 'none', sm: 'flex', flexWrap: "wrap", gap: '10' }, alignItems: 'center' }}>
               <UserName firstName={data?.firstName} lastName={data?.lastName} />
               <Clock />
+            </Box>
           </Box>
+          <Avatar
+            className="profile-icon"
+            alt="User Name"
+            src={ProfileIcon}
+            sx={{
+              display: { xs: 'block', sm: 'none' },
+              flexWrap: "wrap",
+              gap: '10px',
+              alignItems: 'center',
+              width: 50, height: 50, cursor: "pointer"
+            }}
+            aria-describedby={id}
+            onClick={handleClick}
+          />
+
+          <Popover
+            id={id}
+            open={openPopover}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <Box sx={{ p: 2, minWidth: 150 }}>
+              <Typography variant="subtitle2">{data?.firstName} {data?.lastName}</Typography>
+              <Clock />
+            </Box>
+          </Popover>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -109,7 +174,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
         <DrawerHeader className="site-logo">
           <img src={SiteLogo} alt="Sitelogo" width={140} height={80} />
         </DrawerHeader>
-        <Sidebar/>
+        <Sidebar />
       </Drawer>
     </>
   );

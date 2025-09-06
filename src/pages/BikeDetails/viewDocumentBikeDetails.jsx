@@ -9,6 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { useParams } from "react-router-dom";
 import { FiDownload, FiEye } from "react-icons/fi";
 import useViewBikeDetailsDocument from "./hook/useViewDocumentBikeDetails.";
+import { useMediaQuery } from "@mui/material";
 
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
@@ -52,6 +53,8 @@ const ViewBikeDetailsDocument = () => {
         setPreviewPath("");
     };
 
+    const isSmall = useMediaQuery("(max-width:490px)");
+
     const showDetail = (title, path) => {
         return (
             <Box>
@@ -69,21 +72,30 @@ const ViewBikeDetailsDocument = () => {
                                 <>
                                     <Grid item xs={6} sm={6}>
                                         <Button
-                                            size="small"
-                                            style={{ marginRight: "5px" }}
+                                            size={isSmall ? "extraSmall" : "small"} // custom condition
+                                            style={{
+                                                marginRight: "5px",
+                                                fontSize: isSmall ? "10px" : "14px",
+                                                padding: isSmall ? "2px 6px" : "4px 10px",
+                                            }}
                                             className="btn btn-primary"
                                             onClick={() => handleView(title, path)}
                                         >
-                                            <FiEye size={15} />
+                                            <FiEye size={isSmall ? 12 : 15} />
                                         </Button>
                                     </Grid>
+
                                     <Grid item xs={6} sm={6}>
                                         <Button
-                                            size="small"
+                                            size={isSmall ? "extraSmall" : "small"}
+                                            style={{
+                                                fontSize: isSmall ? "10px" : "14px",
+                                                padding: isSmall ? "2px 6px" : "4px 10px",
+                                            }}
                                             className="btn btn-primary"
                                             onClick={() => download(title, imagePath(path))}
                                         >
-                                            <FiDownload fontSize={18} />
+                                            <FiDownload size={isSmall ? 14 : 18} />
                                         </Button>
                                     </Grid>
                                 </>
@@ -147,7 +159,7 @@ const ViewBikeDetailsDocument = () => {
                 <br />
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={12}>
-                        {showDetail("Rc Book", rcBookDoc)}
+
                         {selectedBike ? (
                             <div>
                                 <span>Bike Name : {selectedBike.bikeName}</span>
@@ -163,11 +175,12 @@ const ViewBikeDetailsDocument = () => {
                         ) : (
                             <div>No data found</div>
                         )}
+                        {showDetail("Rc Book", rcBookDoc)}
 
                     </Grid>
 
                     <Grid item xs={12} sm={12}>
-                        {showDetail("Insurance Policy", insurancePolicyDoc)}
+
                         {selectedBike ? (
                             <div>
                                 <span>Insurance Number : {selectedBike.insuranceNumber}</span>
@@ -180,7 +193,7 @@ const ViewBikeDetailsDocument = () => {
                         ) : (
                             <div>No data found</div>
                         )}
-
+                        {showDetail("Insurance Policy", insurancePolicyDoc)}
                     </Grid>
                 </Grid>
             </Box>
