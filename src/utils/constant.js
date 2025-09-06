@@ -161,3 +161,7 @@ export const LAUNDARYMANAGEMENT = "api/laundry-management";
 export const STOCK = "api/stock";
 
 export const LAUNDRYRECEIVER = "api/laundry-receiver";
+
+export const DAILYTASK = "api/task";
+
+export const BIKEDETAILS = "api/bike-data";

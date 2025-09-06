@@ -18,6 +18,7 @@ import ImageUpload from "../../components/ImageUpload";
 import Editor from "../../components/Editor";
 import useAddEditHomePageHook from "./hook/useAddEditHomePage.hook";
 
+
 const AddEditHomePage = ({ tag }) => {
   const {
     control,
@@ -26,45 +27,45 @@ const AddEditHomePage = ({ tag }) => {
     handleSubmit,
     cancelHandler,
   } = useAddEditHomePageHook(tag);
-  
-  return  (
+
+  return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box className="card">
           <FormGroup className="form-field">
             <Grid container spacing={1}>
               <Grid item xs={8}>
-                <Grid container spacing={1}>
+               
                   <Grid item xs={12} sm={6}>
                     <Controller
                       name="title"
                       control={control}
                       render={({
-                          field: { onBlur, onChange, value },
-                          fieldState: { error },
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
                       }) => (
-                          <FormControl
-                              size="small"
-                              variant="standard"
-                              className="form-control"
-                          >
-                              <TextField
-                                  label="Title"
-                                  size="small"
-                                  name="name"
-                                  value={value}
-                                  onChange={(e) => {
-                                      onChange(e.target.value.toUpperCase())
-                                      setValue("slug", generateSlug(e.target.value));
-                                  }}
-                                  onBlur={onBlur}
-                                  error={!!error}
-                                  helperText={error?.message}
-                              />
-                          </FormControl>
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            label="Title"
+                            size="small"
+                            name="name"
+                            value={value}
+                            onChange={(e) => {
+                              onChange(e.target.value.toUpperCase())
+                              setValue("slug", generateSlug(e.target.value));
+                            }}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
                       )}
                       rules={{
-                          required: "Title field required",
+                        required: "Title field required",
                       }}
                     />
                   </Grid>
@@ -78,28 +79,28 @@ const AddEditHomePage = ({ tag }) => {
                       }) => (
                         <FormControl fullWidth size="small">
                           <InputLabel id="tag">Tag</InputLabel>
-                            <Select
-                              size="small"
-                              labelId="tag"
-                              id="tag-select"
-                              value={value}
-                              label="Tag"
-                              onChange={onChange}
-                              onBlur={onBlur}
-                            >
-                              <MenuItem style={{ textTransform: "capitalize" }} value="banner">Banner</MenuItem>
-                              <MenuItem style={{ textTransform: "capitalize" }} value="service">Service</MenuItem>
-                              <MenuItem style={{ textTransform: "capitalize" }} value="aboutUs">About Us</MenuItem>
-                              <MenuItem style={{ textTransform: "capitalize" }} value="membershipPlan">Membership Plan</MenuItem>
-                              <MenuItem style={{ textTransform: "capitalize" }} value="testimony">Testimony</MenuItem>
-                            </Select>
-                            {error && error.message &&
-                              <FormHelpText error={true}>{error.message}</FormHelpText>
-                            }
+                          <Select
+                            size="small"
+                            labelId="tag"
+                            id="tag-select"
+                            value={value}
+                            label="Tag"
+                            onChange={onChange}
+                            onBlur={onBlur}
+                          >
+                            <MenuItem style={{ textTransform: "capitalize" }} value="banner">Banner</MenuItem>
+                            <MenuItem style={{ textTransform: "capitalize" }} value="service">Service</MenuItem>
+                            <MenuItem style={{ textTransform: "capitalize" }} value="aboutUs">About Us</MenuItem>
+                            <MenuItem style={{ textTransform: "capitalize" }} value="membershipPlan">Membership Plan</MenuItem>
+                            <MenuItem style={{ textTransform: "capitalize" }} value="testimony">Testimony</MenuItem>
+                          </Select>
+                          {error && error.message &&
+                            <FormHelpText error={true}>{error.message}</FormHelpText>
+                          }
                         </FormControl>
                       )}
                       rules={{
-                          required: 'Please Select Paid By'
+                        required: 'Please Select Paid By'
                       }}
                     />
                   </Grid>
@@ -163,7 +164,7 @@ const AddEditHomePage = ({ tag }) => {
                       }}
                     />
                   </Grid>
-                </Grid>
+
               </Grid>
               <Grid item xs={4}>
                 <Grid container spacing={1}>
@@ -204,9 +205,9 @@ const AddEditHomePage = ({ tag }) => {
                           error={error}
                         />
                       )}
-                      // rules={{
-                      //   required: 'Please Upload File'
-                      // }}
+                    // rules={{
+                    //   required: 'Please Upload File'
+                    // }}
                     />
                   </Grid>
                 </Grid>

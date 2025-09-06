@@ -100,8 +100,11 @@ import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiv
 import StaffReport from "./pages/Report/StaffReport";
 import SalesReport from "./pages/Report/SalesReport";
 import DailyTask from "./pages/DailyTask";
-import AddEditDailyTask from "./pages/DailyTask/AddEditDailyTask"
+import AddEditDailyTask from "./pages/DailyTask/AddEditDailyTask";
+import ViewDailyTaskDetailsDocument from "./pages/DailyTask/ViewDocumentDailyTaskDetails";
 import BikeDetails from "./pages/BikeDetails";
+import AddEditBikeDetails from "./pages/BikeDetails/AddEditBikeDetails"
+import ViewBikeDetailsDocument from "./pages/BikeDetails/viewDocumentBikeDetails"
 
 
 const token = getAuthToken();
@@ -350,6 +353,63 @@ const App = () => {
           ),
         },
         {
+          path: "add-bike-details",
+          element: (
+            <ProtectedRoute
+              path="add-bike-details"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditBikeDetails tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-bike-details/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-bike-details/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditBikeDetails tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: "view-bike-details/:id",
+          element: (
+            <ProtectedRoute
+              path="view-bike-details/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <ViewBikeDetailsDocument />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
           path: "daily-task",
           element: (
             <ProtectedRoute
@@ -379,6 +439,44 @@ const App = () => {
                     <LastDailyReportPending />
                   ) : (
                     <AddEditDailyTask tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "view-daily-task/:id",
+          element: (
+            <ProtectedRoute
+              path="view-daily-task/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <ViewDailyTaskDetailsDocument />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-daily-task/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-daily-task/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditDailyTask tag="edit" />
                   )
                 ) : (
                   <NoConnection />

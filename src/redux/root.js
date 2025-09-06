@@ -31,7 +31,10 @@ import LaundryItemReducer from "./laundryItem";
 import LaundryWasherReducer from "./laundryWasher";
 import LaundryManagementReducer from "./laundryManagement";
 import StockReducer from "./stock";
-import LaundryReceiverReducer from "./laundryReceiver" 
+import LaundryReceiverReducer from "./laundryReceiver"
+import DailyTaskReducer from "./dailyTask"
+import BikeDetailsReducer from "./bikeDetails";
+
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -67,7 +70,8 @@ const rootReducer = combineReducers({
   laundryManagement: LaundryManagementReducer,
   stock: StockReducer,
   laundryReceiver: LaundryReceiverReducer,
-
+  dailyTask: DailyTaskReducer,
+  bikeDetails: BikeDetailsReducer
 });
 
 export default rootReducer;
