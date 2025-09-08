@@ -30,6 +30,7 @@ const AddEditUser = ({ tag }) => {
     cancelHandler,
     role,
     isNotAdmin,
+    countryCodeList,
     setValue,
     isChangePasswordOpen,
     setIsChangePasswordOpen,
@@ -372,39 +373,79 @@ const AddEditUser = ({ tag }) => {
                 />
               </Grid>
               <Grid item xs={4}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        type="number"
-                        label="Phone*"
-                        size="small"
-                        name="phoneNumber"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    </FormControl>
-                  )}
-                  rules={{
-                    required: "Please Enter Phone",
-                    pattern: {
-                      value: /^\d{10}$/,
-                      message: "please enter at leats 10 digits.",
-                    },
-                  }}
-                />
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <Controller
+                      name="countryCode"
+                      control={control}
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error }
+                      }) => (
+                        <Autocomplete
+                          freeSolo
+                          size="small"
+                          id="countryCode"
+                          options={countryCodeList}
+                          value={countryCodeList.find((country) => country.value === value)?.value || null}
+                          disableClearable
+                          onChange={(event, newValue) => onChange(newValue.value)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Country Code"
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <li {...props} key={option.id}>
+                              {option.label}
+                            </li>
+                          )}
+                        />
+                      )}
+                      rules={{
+                        required: "Please Select County Code",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={8}>
+                    <Controller
+                      name="phoneNumber"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            type="number"
+                            label="Phone*"
+                            size="small"
+                            name="phoneNumber"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Please Enter Phone",
+                        pattern: {
+                          value: /^\+?[1-9]\d{1,14}$/,
+                          message: "please enter valid number",
+                        },
+                      }}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
               {/* </Grid>
               <Grid container spacing={2}> */}

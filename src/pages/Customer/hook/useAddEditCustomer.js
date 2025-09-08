@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { showToast } from "../../../utils/helper";
-import { useCallback, useEffect } from "react";
+import { showToast, countries } from "../../../utils/helper";
+import { useCallback, useEffect, useMemo } from "react";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import {
   getCustomerById,
@@ -18,9 +18,19 @@ export const useAddEditCustomer = (tag, flag = 1) => {
   const { id } = useParams();
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
+  const countryCodeList = useMemo(() => {
+    return countries?.map((country) => {
+      return {
+        label: `${country.phone} (${country.label})`,
+        value: country.phone.split('+')[1]
+      }
+    })
+  }, [countries]);
+
   const { control, setValue, handleSubmit } = useForm({
     defaultValues: {
       name: "",
+      countryCode: "",
       phoneNumber: "",
       dob: "",
       gender: tag === "add" ? "male" : "",
@@ -60,6 +70,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
         const response = await getCustomerById(id);
         if (response?.statusCode === 200) {
           setValue("name", response.data.name);
+          setValue("countryCode", response.data.countryCode);
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("gender", response.data.gender);
           setValue("dob", response.data.dob);
@@ -84,6 +95,7 @@ export const useAddEditCustomer = (tag, flag = 1) => {
 
   return {
     control,
+    countryCodeList,
     handleSubmit,
     onSubmit,
     cancelHandler,

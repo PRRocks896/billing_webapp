@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { listPayload, showToast } from "../../../utils/helper";
+import { listPayload, showToast, countries } from "../../../utils/helper";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +38,7 @@ export const useAddEditUser = (tag) => {
       password: "",
       billCode: "",
       billName: "",
+      countryCode: "",
       phoneNumber: "",
       phoneNumberSecond: "",
       address: "",
@@ -72,6 +73,15 @@ export const useAddEditUser = (tag) => {
     const newUserName = formattedFirstName + formattedLastName;
     setValue("userName", newUserName.replace(/\s+/g, ""));
   }, [firstName, lastName, setValue]);
+
+  const countryCodeList = useMemo(() => {
+    return countries?.map((country) => {
+      return {
+        label: `${country.phone} (${country.label})`,
+        value: country.phone.split('+')[1]
+      }
+    })
+  }, [countries]);
 
   // genrate roles options for drop down
   const roleOptions = useMemo(() => {
@@ -316,6 +326,7 @@ export const useAddEditUser = (tag) => {
           setValue("images", response.data.images ? response.data.images : '');
           setValue("thumbnilImage", response.data.thumbnilImage ? [response.data.thumbnilImage] : '');
           setValue("iFrameMap", response.data.iFrameMap);
+          setValue("countryCode", response.data.countryCode);
           if (response.data.roleID !== 1) {
             setValue("phoneNumberSecond", response?.data?.phoneNumber2);
             setValue("billName", response?.data?.billTitle);
@@ -349,6 +360,7 @@ export const useAddEditUser = (tag) => {
     setValue,
     onSubmit,
     cancelHandler,
+    countryCodeList,
     cityOptions,
     companyOptions,
     company: loggedInUser?.px_company?.companyName.toLowerCase(),

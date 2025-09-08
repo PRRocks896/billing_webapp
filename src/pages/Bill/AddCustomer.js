@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Fade,
@@ -20,7 +21,7 @@ const AddCustomer = ({
   setCustomerSelectedHandler,
   userID = null,
 }) => {
-  const { control, handleSubmit, onSubmit, reset } = useAddCustomer(
+  const { control, countryCodeList, handleSubmit, onSubmit, reset } = useAddCustomer(
     setIsCustomerModalOpen,
     setCustomerSelectedHandler,
     userID
@@ -57,7 +58,7 @@ const AddCustomer = ({
               <Box className="modal-body">
                 <FormGroup className="form-field">
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                       <Controller
                         name="customer_name"
                         control={control}
@@ -92,44 +93,84 @@ const AddCustomer = ({
                       />
                     </Grid>
                     {/*  */}
-                    <Grid item xs={6}>
-                      <Controller
-                        name="phone"
-                        control={control}
-                        render={({
-                          field: { onBlur, onChange, value },
-                          fieldState: { error },
-                        }) => (
-                          <FormControl
-                            size="small"
-                            variant="standard"
-                            className="form-control"
-                          >
-                            <TextField
-                              type="number"
-                              label="Phone"
-                              size="small"
-                              name="phone"
-                              value={value}
-                              onChange={onChange}
-                              onBlur={onBlur}
-                              error={!!error}
-                              helperText={error?.message}
-                            />
-                          </FormControl>
-                        )}
-                        rules={{
-                          required: "Phone number is required",
-                          maxLength: {
-                            value: 10,
-                            message: "Phone number must be 10 digit",
-                          },
-                          minLength: {
-                            value: 10,
-                            message: "Phone number must be 10 digit",
-                          },
-                        }}
-                      />
+                    <Grid item xs={12}>
+                      <Grid container spacing={1}>
+                        <Grid item xs={4}>
+                          <Controller
+                            name="countryCode"
+                            control={control}
+                            render={({
+                              field: { value, onChange },
+                              fieldState: { error }
+                            }) => (
+                              <Autocomplete
+                                freeSolo
+                                size="small"
+                                id="countryCode"
+                                options={countryCodeList}
+                                value={countryCodeList.find((country) => country.value === value)?.value || null}
+                                disableClearable
+                                onChange={(event, newValue) => onChange(newValue.value)}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Country Code"
+                                    error={!!error}
+                                    helperText={error?.message}
+                                  />
+                                )}
+                                renderOption={(props, option) => (
+                                  <li {...props} key={option.id}>
+                                    {option.label}
+                                  </li>
+                                )}
+                              />
+                            )}
+                            rules={{
+                              required: "Please Select County Code",
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={8}>
+                          <Controller
+                            name="phone"
+                            control={control}
+                            render={({
+                              field: { onBlur, onChange, value },
+                              fieldState: { error },
+                            }) => (
+                              <FormControl
+                                size="small"
+                                variant="standard"
+                                className="form-control"
+                              >
+                                <TextField
+                                  type="number"
+                                  label="Phone"
+                                  size="small"
+                                  name="phone"
+                                  value={value}
+                                  onChange={onChange}
+                                  onBlur={onBlur}
+                                  error={!!error}
+                                  helperText={error?.message}
+                                />
+                              </FormControl>
+                            )}
+                            rules={{
+                              required: "Phone number is required",
+                              maxLength: {
+                                value: 10,
+                                message: "Phone number must be 10 digit",
+                              },
+                              minLength: {
+                                value: 10,
+                                message: "Phone number must be 10 digit",
+                              },
+                            }}
+                          />
+                        </Grid>
+                      </Grid>
                     </Grid>
                     <Grid item xs={6}>
                       <Controller
