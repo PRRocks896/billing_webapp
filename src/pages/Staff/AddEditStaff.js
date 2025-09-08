@@ -26,6 +26,7 @@ const AddEditStaff = ({ tag }) => {
     branchList,
     verifiedOtp,
     isEditByBranch,
+    countryCodeList,
     isShowBankDetail,
     employeeTypeList,
     isStaffNoOtpSend,
@@ -182,44 +183,88 @@ const AddEditStaff = ({ tag }) => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <Controller
-                      name="phoneNumber"
-                      control={control}
-                      render={({
-                        field: { onBlur, onChange, value },
-                        fieldState: { error },
-                      }) => (
-                        <FormControl size="small" fullWidth>
-                          <TextField
-                            id="phoneNumber"
-                            type="number"
-                            label="Whatsapp Number"
-                            size="small"
-                            name="phoneNumber"
-                            value={value}
-                            onChange={(e) => {
-                              if(e.target.value.length < 11) {
-                                onChange(e)
-                              }
-                            }}
-                            onBlur={onBlur}
-                            error={!!error}
-                            helperText={error?.message}
-                          />
-                        </FormControl>
-                      )}
-                      rules={{
-                        required: "Whatsapp Number is required",
-                        maxLength: {
-                          value: 10,
-                          message: "Whatsapp Number must be 10 digit",
-                        },
-                        minLength: {
-                          value: 10,
-                          message: "Whatsapp Number must be 10 digit",
-                        },
-                      }}
-                    />
+                    <Grid container spacing={1}>
+                      <Grid item xs={4}>
+                        <Controller
+                          name="countryCode"
+                          control={control}
+                          render={({
+                            field: { value, onChange },
+                            fieldState: { error }
+                          }) => (
+                            <Autocomplete
+                              freeSolo
+                              size="small"
+                              id="countryCode"
+                              options={countryCodeList}
+                              value={countryCodeList.find((country) => country.value === value)?.value || null}
+                              disableClearable
+                              onChange={(event, newValue) => onChange(newValue.value)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Country Code"
+                                  error={!!error}
+                                  helperText={error?.message}
+                                />
+                              )}
+                              renderOption={(props, option) => (
+                                <li {...props} key={option.id}>
+                                  {option.label}
+                                </li>
+                              )}
+                            />
+                          )}
+                          rules={{
+                            required: "Please Select County Code",
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={8}>
+                        <Controller
+                          name="phoneNumber"
+                          control={control}
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <FormControl size="small" fullWidth>
+                              <TextField
+                                id="phoneNumber"
+                                type="number"
+                                label="Whatsapp Number"
+                                size="small"
+                                name="phoneNumber"
+                                value={value}
+                                onChange={(e) => {
+                                  if(e.target.value.length < 11) {
+                                    onChange(e)
+                                  }
+                                }}
+                                onBlur={onBlur}
+                                error={!!error}
+                                helperText={error?.message}
+                              />
+                            </FormControl>
+                          )}
+                          rules={{
+                            required: "Whatsapp Number is required",
+                            pattern: {
+                              value: /^\+?[1-9]\d{1,14}$/,
+                              message: "please enter valid number",
+                            },
+                            // maxLength: {
+                            //   value: 10,
+                            //   message: "Whatsapp Number must be 10 digit",
+                            // },
+                            // minLength: {
+                            //   value: 10,
+                            //   message: "Whatsapp Number must be 10 digit",
+                            // },
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <Controller

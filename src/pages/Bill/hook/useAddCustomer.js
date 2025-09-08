@@ -1,7 +1,8 @@
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { createCustomer } from "../../../service/customer";
-import { showToast } from "../../../utils/helper";
+import { showToast, countries } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 
 export const useAddCustomer = (
@@ -13,9 +14,19 @@ export const useAddCustomer = (
 
   const loggedInUser = useSelector((state) => state.loggedInUser);
 
+  const countryCodeList = useMemo(() => {
+    return countries?.map((country) => {
+      return {
+        label: `${country.phone} (${country.label})`,
+        value: country.phone.split('+')[1]
+      }
+    })
+  }, [countries]);
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       customer_name: "",
+      countryCode: "",
       phone: "",
       dob: new Date(),
       gender: "male",
@@ -32,6 +43,7 @@ export const useAddCustomer = (
         gender: data.gender,
         name: data.customer_name,
         dob: data.dob,
+        countryCode: data.countryCode,
         createdBy: userID ? userID : loggedInUser.id,
       };
 
@@ -58,6 +70,7 @@ export const useAddCustomer = (
 
   return {
     control,
+    countryCodeList,
     handleSubmit,
     onSubmit,
     reset,
