@@ -207,7 +207,21 @@ export const useBill = () => {
     const response = await getBillById(id);
     if (response?.success) {
       const body = response.data;
+      const detailData = body?.detail[0] || null;
       const billData = {
+        tableData: [{
+          billNo: body.billNo,
+          item: detailData?.serviceID ? detailData.service?.name : detailData.membershipPlan?.planName,
+          quantity: detailData?.quantity,
+          total: detailData?.total,
+          subTotal: detailData?.total,
+          cgst: body?.px_user?.isShowGst ? body?.cgst : 0,
+          sgst: body?.px_user?.isShowGst ? body?.sgst : 0,
+          payment: body?.px_payment_type?.name,
+          paymentId: body?.px_payment_type?.id,
+          cardNo: body.cardNo,
+          grandTotal: body.grandTotal
+        }],
         subTotal: body?.detail[0]?.total, //body?.grandTotal,
         total: body?.grandTotal,
         billNo: body?.billNo,

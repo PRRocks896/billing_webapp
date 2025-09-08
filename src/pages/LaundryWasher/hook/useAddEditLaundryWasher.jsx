@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { listPayload, showToast } from "../../../utils/helper";
+import { listPayload, showToast, countries } from "../../../utils/helper";
 import { createLaundryWasher, getLaundryWasher, UpdateLaundryWasher } from "../../../service/laundryWasher";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -26,10 +26,20 @@ export const useAddEditLaundryWasher = (tag) => {
   const [openVerifyOtpModal] = useState(false);
   const [isStaffNoOtpSend ] = useState(false);
 
+  const countryCodeList = useMemo(() => {
+    return countries?.map((country) => {
+      return {
+        label: `${country.phone} (${country.label})`,
+        value: country.phone.split('+')[1]
+      }
+    })
+  }, [countries]);
+
   const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: {
       userID: loggedInUser.id,
       name: "",
+      countryCode: "",
       phoneNumber: "",
       address: ""
     },
@@ -118,6 +128,7 @@ export const useAddEditLaundryWasher = (tag) => {
         if (response?.statusCode === 200) {
           setValue("userID", response.data.userID);
           setValue("name", response.data.name);
+          setValue("countryCode", response.data.countryCode);
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("address", response.data.address);
         } else {
@@ -144,6 +155,7 @@ export const useAddEditLaundryWasher = (tag) => {
   return {
     control,
     isAdmin,
+    countryCodeList,
     laundryWasherList,
     isEditByBranch,
     employeeTypeList,

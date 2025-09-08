@@ -4,19 +4,10 @@ import { showTwoDecimal, convertAmountToWords } from '../utils/helper';
 const { REACT_APP_CGST, REACT_APP_SGST } = process.env;
 
 const PrintContent = (billData, branchData, isShowSecondPage = true) => {
+  console.log(billData);
   const date = moment(billData.date || new Date()).format('DD/MM/yyyy');
-  /*new Date(billData?.date).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });*/
   const time = moment(billData.date || new Date()).format('hh:mm:ss A');
-  /*new Date(billData?.date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });*/
-
+  
   return `
   <html>
     <head>
@@ -45,7 +36,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
     </head>
     <body>
       <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
-
+        ${billData.tableData?.map((bill) => (`
           <div style="page-break-after: always; border: 0px solid black; min-height: max-content;">
             <p style="text-transform: capitalize;font-size: 20px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
               branchData.title
@@ -59,7 +50,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                   branchData.phone1
                 }, ${branchData.phone2}  </p>
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Bill No: ${
-                  billData.billNo
+                  bill.billNo
                 }</p>
               </div>
               <div>
@@ -100,36 +91,33 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                 </tr>
               </thead>
               <tbody>
-                ${billData.detail?.map(
-                  (row, index) =>
-                    `<tr style="text-align:center;font-size: 14px;">
-                      <td>${index + 1}</td>
-                      <td>${row.item}</td>
-                      <td>${row.quantity}</td>
-                      <td>${showTwoDecimal(row.total)}</td>
-                      <td>${showTwoDecimal(row.total)}</td>
-                    </tr>`
-                )}
+                <tr style="text-align:center;font-size: 14px;">
+                  <td>1</td>
+                  <td>${bill.item}</td>
+                  <td>${bill.quantity}</td>
+                  <td>${showTwoDecimal(bill.total)}</td>
+                  <td>${showTwoDecimal(bill.total)}</td>
+                </tr>
               </tbody>
             </table>
             <div style="width: 100%; border-top: 1px dashed black;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 14px;">
               <p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">Sub Total: </p>
               <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
-                showTwoDecimal(billData.subTotal)
+                showTwoDecimal(bill.subTotal)
               }</p>
             </div>
             ${billData.isShowGst ? 
               `<div style="width: 100%; border-top: 1px dashed black;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 14px;">
-                ${billData.cgst &&
+                ${bill.cgst &&
                   `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">CGST (${REACT_APP_CGST}%): </p>
                   <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
-                    showTwoDecimal(billData.cgst)
+                    showTwoDecimal(bill.cgst)
                   },</p>`
                 }
-                ${billData.sgst &&
+                ${bill.sgst &&
                   `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">SGST (${REACT_APP_SGST}%): </p>
                   <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
-                    showTwoDecimal(billData.sgst)
+                    showTwoDecimal(bill.sgst)
                   }</p>`
                 }
               </div>`
@@ -137,27 +125,27 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
             <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 20px;">
               <p style="margin: 5px 0px; margin-right: 14px; font-weight: 600;">Grand Total : </p>
               <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
-                showTwoDecimal(billData.total)
+                showTwoDecimal(bill.grandTotal)
               }</p>
             </div>
             <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start;font-size: 10px;">
               <p style="margin: 5px 0px;">Amount in Words: </p>
               <p style="margin: 5px 0px; margin-left: 10px;">${
-                convertAmountToWords(billData.total).toUpperCase()
+                convertAmountToWords(bill.grandTotal).toUpperCase()
               } RUPEES</p>
             </div>
             <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: start; flex-direction: column; font-size: 14px;">
               <div>
                 ${
-                  billData.payment.toLowerCase().includes("card")
-                    ? `<p style={{margin: "5px 0px"}}> CARD NO : ${billData.cardNo}</p>`
+                  bill.payment.toLowerCase().includes("card")
+                    ? `<p style={{margin: "5px 0px"}}> CARD NO : ${bill.cardNo}</p>`
                     : ""
                 }
               </div>
               <div style="display: flex;">
-                <p style="margin: 5px 0px; ">${billData.payment}: </p>
+                <p style="margin: 5px 0px; ">${bill.payment}: </p>
                 <p style="margin: 5px 0px; margin-left: 10px;">${
-                  showTwoDecimal(billData.total)
+                  showTwoDecimal(bill.grandTotal)
                 }</p>
               </div>
             </div>
@@ -171,6 +159,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
               </p>
               <p style="text-align: center; margin: 0;font-size: 12px;">Thank You.... Visit Again....</p>
           </div>
+        `)).join('')}
           ${isShowSecondPage ?
             `<div style="page-break-after: always; height: max-content; border: 0px solid black;">
               <table style="font-size: 20px;">
@@ -198,9 +187,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                   <tr>
                     <td style="padding: 10px 0;">Service Name</td>
                     <td style="padding: 0px 18px;">:</td>
-                    <td>${billData.detail
-                      ?.map((row, index) => row.item)
-                      .join(", ")}</td>
+                    <td>${billData?.tableData[0]?.item}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 0;">Therapists Name</td>

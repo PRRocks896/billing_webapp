@@ -36,6 +36,8 @@ const User = () => {
     deleteBtnClickHandler,
     searchUserHandler,
     changeStatusHandler,
+    changeWebLoginHandler,
+    changeAppLoginHandler,
     changeWebDisplayHandler,
     page,
     handleChangePage,
@@ -71,6 +73,8 @@ const User = () => {
                 {isAdmin &&
                   <TableCell>OTP</TableCell>
                 }
+                {rights.edit && <TableCell>Web Login</TableCell>}
+                {rights.edit && <TableCell>App Login</TableCell>}
                 {rights.edit && <TableCell>Web Display</TableCell>}
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
@@ -94,6 +98,24 @@ const User = () => {
                       {isAdmin &&
                         <TableCell align="left">{row?.otp || 'N/A'}</TableCell>
                       }
+                      {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isWebLogin}
+                            onChange={(e) => changeWebLoginHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )}
+                      {rights.edit && (
+                        <TableCell>
+                          <Switch
+                            style={switchStyles}
+                            checked={row.isAppLogin}
+                            onChange={(e) => changeAppLoginHandler(e, row.id)}
+                          />
+                        </TableCell>
+                      )}
                       {rights.edit && (
                         <TableCell>
                           <Switch

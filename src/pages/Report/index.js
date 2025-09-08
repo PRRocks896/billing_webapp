@@ -47,7 +47,14 @@ const Report = () => {
     handleManagerChange,
     setSelectedService,
     fetchAttendanceReportData,
-    fetchStaffAttendanceReportData
+    fetchStaffAttendanceReportData,
+    selectedInsentiveManager,
+    setSelectedInsentiveManager,
+    insentiveManagerYear,
+    setInsentiveManagerYear,
+    insentiveManagerMonth,
+    setInsentiveManagerMonth,
+    fetchInsentiveManagerReportData,
   } = useReport();
 
   return (
@@ -162,7 +169,6 @@ const Report = () => {
               getOptionLabel={(option) => option.label}
               // value={branch}
               onChange={(_, newValue) => {
-                console.log("newValue", newValue);
                 const selected = JSON.parse(JSON.stringify(newValue));
                 if(selected && selected?.value) {
                   setSelectedService(selected?.value);
@@ -216,7 +222,6 @@ const Report = () => {
                 getOptionLabel={(option) => option.label}
                 // value={branch}
                 onChange={(_, newValue) => {
-                  console.log("newValue", newValue);
                   handleBranchChange(newValue)
                   fetchUserList(newValue?.value);
                 }}
@@ -381,6 +386,82 @@ const Report = () => {
           </Grid>
           <Grid item xs={12} sm={2}>
             <Button className="btn btn-tertiary" onClick={() => fetchStaffAttendanceReportData()}>Search</Button>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+              {pdfData && (
+                <iframe
+                  title="PDF Viewer"
+                  src={pdfData}
+                  width="100%"
+                  style={{ height: "calc(100vh - 100px)" }}
+                />
+              )}
+          </Grid>
+        </Grid>
+      </Box>
+      <Box className="card">
+        <Typography variant="h5">Manager Incentive Report</Typography>
+        <br/>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={3}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="manager"
+              options={managerList || []}
+              getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
+              // value={branch}
+              onChange={(_, newValue) => {
+                const selected = JSON.parse(JSON.stringify(newValue));
+                if(selected && selected?.id) {
+                  setSelectedInsentiveManager(selected?.id);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Manager" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="year"
+              options={[...Array(10)].map((_, index) => new Date().getFullYear() - index) || []}
+              getOptionLabel={(option) => option}
+              value={insentiveManagerYear}
+              onChange={(_, newValue) => {
+                setInsentiveManagerYear(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Year" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Autocomplete
+              freeSolo
+              size="small"
+              disablePortal
+              // multiple
+              id="month"
+              options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
+              getOptionLabel={(option) => option}
+              value={insentiveManagerMonth}
+              onChange={(_, newValue) => {
+                setInsentiveManagerMonth(newValue);
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Month" />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <Button className="btn btn-tertiary" onClick={() => fetchInsentiveManagerReportData()}>Search</Button>
           </Grid>
           <Grid item xs={12} sm={12}>
               {pdfData && (

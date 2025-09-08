@@ -97,7 +97,8 @@ import Stock from "./pages/Stock";
 import AddEditStock from "./pages/Stock/AddEditStock";
 import LaundryReceiver from "./pages/LaundryReceiver";
 import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiver";
-
+import StaffReport from "./pages/Report/StaffReport";
+import SalesReport from "./pages/Report/SalesReport";
 
 
 const token = getAuthToken();
@@ -677,7 +678,7 @@ const App = () => {
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <LaundryReceiver />
+                    <AddEditLaundryReceiver tag="add"/>
                   )
                 ) : (
                   <NoConnection />
@@ -2000,6 +2001,28 @@ const App = () => {
               }
             />
           ),
+        },
+        {
+          path: 'staff-report',
+          element: isOnline ? ( isPendingDailyReport ? (
+              <LastDailyReportPending />
+            ) : (
+              <StaffReport />
+            )
+          ) : (
+            <NoConnection />
+          )
+        },
+        {
+          path: 'sales-report',
+          element: isOnline ? ( isPendingDailyReport ? (
+              <LastDailyReportPending />
+            ) : (
+              <SalesReport />
+            )
+          ) : (
+            <NoConnection />
+          )
         },
         {
           path: "report",

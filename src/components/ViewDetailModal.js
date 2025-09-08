@@ -23,6 +23,12 @@ const ViewDetail = ({
         open={open}
         onClose={handleClose}
         closeAfterTransition
+         BackdropProps={{
+                sx: {
+                    backgroundColor: 'rgba(0,0,0,0.3)',  
+                    backdropFilter: 'blur(5px)',          
+                },
+            }}
         slotProps={{
           backdrop: {
             timeout: 500,

@@ -20,12 +20,14 @@ import TextField from "@mui/material/TextField";
 
 import VerifyOtp from "../../components/VerifyOTPModel";
 import VerifyOtpMerchant from "../../components/VerifyOTPMerchantModel";
+import PaymentDetailsModle from "../../components/PaymentDetailsModal";
 
 import { useRenewPlan } from "./hook/useRenewPlan.hook";
 
 const RenewPlan = () => {
     const {
         control,
+        isPayment,
         isOtpSend,
         paymentType,
         currentDate,
@@ -34,17 +36,21 @@ const RenewPlan = () => {
         isCardSelected,
         membershipPlan,
         membershipDetail,
+        isPaymentModalOpen,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         openVerifyMembershipByMerchantModal,
         setOtp,
         getOtp,
         onSubmit,
+        getValues,
         verifyOtp,
         setIsOtpSend,
         cancelHandler,
         handleSubmit,
         setVerifiedOtp,
+        togglePaymentModal,
+        handlePaymentDetail,
         handleVerifyMembership,
         handleSendOtpForMembership,
         handleCancelVerifyPermission,
@@ -52,7 +58,7 @@ const RenewPlan = () => {
     } = useRenewPlan();
     return (
         <>
-            <form onSubmit={handleSubmit(!isOtpSend ? getOtp : verifyCustomerMembership ? onSubmit : handleSendOtpForMembership)}>
+            <form onSubmit={handleSubmit(isPayment ? !isOtpSend ? getOtp : verifyCustomerMembership ? onSubmit : handleSendOtpForMembership : togglePaymentModal)}>
                 <Card>
                     <CardContent>
                         <Grid container spacing={2}>
@@ -216,10 +222,10 @@ const RenewPlan = () => {
                                             }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={12}>
+                                    {/* <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="paymentID"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -249,12 +255,12 @@ const RenewPlan = () => {
                                                 required: 'Please Select Paid By'
                                             }}
                                         />
-                                    </Grid>
-                                    {isCardSelected &&
+                                    </Grid> */}
+                                    {/* {isCardSelected &&
                                         <Grid item xs={12} sm={12}>
                                             <Controller
-                                                control={control}
                                                 name="cardNo"
+                                                control={control}
                                                 render={({
                                                     field: { onBlur, onChange, value },
                                                     fieldState: { error },
@@ -285,7 +291,7 @@ const RenewPlan = () => {
                                                 }}
                                             />
                                         </Grid>
-                                    }
+                                    } */}
                                     <Grid item xs={12} sm={8}>
                                         <Controller
                                             control={control}
@@ -412,6 +418,14 @@ const RenewPlan = () => {
                 handleEnterOtp={handleVerifyMembership}
                 resendOtp={() => {}}
             />
+            {isPaymentModalOpen && (
+                <PaymentDetailsModle
+                    open={isPaymentModalOpen}
+                    handleClose={togglePaymentModal}
+                    handleOk={handlePaymentDetail}
+                    grandTotal = {getValues("grandTotal")}
+                />
+            )}
         </>
     )
 }
