@@ -100,7 +100,6 @@ const PaymentDetailsModle = ({
     }, [paymentDetail]);
 
     const handleConfirm = () => {
-        console.log(paymentDetail);
         const cardError = paymentDetail.detail?.find(
             (item) =>
                 item.enabled && typeof item.cardNo === 'string' && item.cardNo.length !== 4

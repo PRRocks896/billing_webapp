@@ -37,6 +37,7 @@ const RenewPlan = () => {
         membershipPlan,
         membershipDetail,
         isPaymentModalOpen,
+        selectedMemberShipPlan,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         openVerifyMembershipByMerchantModal,
@@ -423,7 +424,7 @@ const RenewPlan = () => {
                     open={isPaymentModalOpen}
                     handleClose={togglePaymentModal}
                     handleOk={handlePaymentDetail}
-                    grandTotal = {getValues("grandTotal")}
+                    grandTotal={selectedMemberShipPlan?.price}
                 />
             )}
         </>

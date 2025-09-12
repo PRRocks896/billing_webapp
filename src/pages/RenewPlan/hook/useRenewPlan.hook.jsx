@@ -401,6 +401,14 @@ export const useRenewPlan = () => {
         setOpenVerifyMembershipByMerchantModal(false);
         setOpenVerifyMembershipModal(false);
     }
+
+    const selectedMemberShipPlan = useMemo(() => {
+        const selectedMemberShip = getValues('membershipPlanID');
+        if(selectedMemberShip && membershipPlan && membershipPlan.length > 0) {
+            return membershipPlan.find(item => item.id === selectedMemberShip);
+        }
+    }, [watch('membershipPlanID'), membershipPlan]);
+
     return {
         otp,
         control,
@@ -415,6 +423,7 @@ export const useRenewPlan = () => {
         membershipPlan,
         membershipDetail,
         isPaymentModalOpen,
+        selectedMemberShipPlan,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         openVerifyMembershipByMerchantModal,

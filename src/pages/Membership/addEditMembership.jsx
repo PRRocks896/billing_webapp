@@ -40,6 +40,7 @@ const AddEditMembership = ({tag}) => {
         disabledButton,
         isCardSelected,
         membershipPlan,
+        selectedMemberShipPlan,
         isPaymentModalOpen,
         isCustomerModalOpen,
         verifyCustomerMembership,
@@ -470,7 +471,7 @@ const AddEditMembership = ({tag}) => {
                     open={isPaymentModalOpen}
                     handleClose={togglePaymentModal}
                     handleOk={handlePaymentDetail}
-                    grandTotal = {getValues("grandTotal")}
+                    grandTotal={selectedMemberShipPlan?.price}
                 />
             )}
         </>

@@ -143,6 +143,7 @@ export const useAddEditStaff = (tag) => {
     try {
       dispatch(startLoading());
       const {success, message} = await sendStaffOtp({
+        countryCode: getValues("countryCode"),
         mobile: getValues("phoneNumber"),
         petName: getValues("nickName"),
         originalName: getValues("name"),

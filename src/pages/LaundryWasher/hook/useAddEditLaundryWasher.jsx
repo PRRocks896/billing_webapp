@@ -41,7 +41,12 @@ export const useAddEditLaundryWasher = (tag) => {
       name: "",
       countryCode: "",
       phoneNumber: "",
-      address: ""
+      address: "",
+      laundryName: "",
+      ifscCode: "",
+      accountHolder: "",
+      accountNumber: "",
+      reEnterAccountNumber: "",
     },
     mode: "onBlur",
   });
@@ -131,6 +136,11 @@ export const useAddEditLaundryWasher = (tag) => {
           setValue("countryCode", response.data.countryCode);
           setValue("phoneNumber", response.data.phoneNumber);
           setValue("address", response.data.address);
+          setValue("laundryName", response.data.laundryName);
+          setValue("ifscCode", response.data.ifscCode);
+          setValue("accountHolder", response.data.accountHolder);
+          setValue("accountNumber", response.data.accountNumber);
+          setValue("reEnterAccountNumber", response.data.accountNumber);
         } else {
           showToast(response?.message, false);
         }

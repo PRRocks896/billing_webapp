@@ -101,26 +101,27 @@ export const useAddEditMembership = (tag) => {
                 }),
                 minutes: totalMinutes,
             };
-            const response = tag === "add"
-                ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id, managerName: localStorage.getItem('managerId') })
-                : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
-            if (response?.statusCode === 200) {
-                tag === "add" && handlePrint(response.data?.id);
-                const { success, data } = await fetchLoggedInUserData();
-                if (success) {
-                    const latestBillNo = data.latestBillNo;
-                    const latestCustomerNo = data.latestCustomerNo;
-                    localStorage.setItem('latestBillNo', latestBillNo);
-                    localStorage.setItem("latestCustomerNo", latestCustomerNo);
-                    dispatch(loggedInUserAction.storeLoggedInUserData(data));
-                } else {
-                    showToast(response.message, false);
-                }
-                showToast(response?.message, true);
-                navigate("/membership");
-            } else {
-                showToast(response?.messageCode, false);
-            }
+            console.log(payload);
+            // const response = tag === "add"
+            //     ? await createMembership({ ...payload, createdBy: loggedInUser.id, updatedBy: loggedInUser.id, managerName: localStorage.getItem('managerId') })
+            //     : await updateMembership({ ...data, updatedBy: loggedInUser.id }, id);
+            // if (response?.statusCode === 200) {
+            //     tag === "add" && handlePrint(response.data?.id);
+            //     const { success, data } = await fetchLoggedInUserData();
+            //     if (success) {
+            //         const latestBillNo = data.latestBillNo;
+            //         const latestCustomerNo = data.latestCustomerNo;
+            //         localStorage.setItem('latestBillNo', latestBillNo);
+            //         localStorage.setItem("latestCustomerNo", latestCustomerNo);
+            //         dispatch(loggedInUserAction.storeLoggedInUserData(data));
+            //     } else {
+            //         showToast(response.message, false);
+            //     }
+            //     showToast(response?.message, true);
+            //     navigate("/membership");
+            // } else {
+            //     showToast(response?.messageCode, false);
+            // }
         } catch (error) {
             console.error(error);
             showToast(error?.message, false);
@@ -427,6 +428,14 @@ export const useAddEditMembership = (tag) => {
         setOpenVerifyMembershipByMerchantModal(false);
         setOpenVerifyMembershipModal(false);
     }
+
+    const selectedMemberShipPlan = useMemo(() => {
+        const selectedMemberShip = getValues('membershipPlanID');
+        if(selectedMemberShip && membershipPlan && membershipPlan.length > 0) {
+            return membershipPlan.find(item => item.id === selectedMemberShip);
+        }
+    }, [watch('membershipPlanID'), membershipPlan]);
+
     return {
         otp,
         control,
@@ -440,6 +449,7 @@ export const useAddEditMembership = (tag) => {
         disabledButton,
         isCardSelected,
         membershipPlan,
+        selectedMemberShipPlan,
         isPaymentModalOpen,
         isCustomerModalOpen,
         verifyCustomerMembership,
