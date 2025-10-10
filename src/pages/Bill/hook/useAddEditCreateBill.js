@@ -597,7 +597,7 @@ export const useAddEditCreateBill = (tag) => {
 
   const printHandler = async (info) => {
     if (!isSubmitting) {
-      setIsViewDetailOpen(true);
+      setIsViewDetailOpen(false);
       setIsPrintBtn(false);
       const detail = getValues("detail");
       const detailData = detail.map((item) => {

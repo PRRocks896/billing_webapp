@@ -912,8 +912,8 @@ const AddEditBill = ({ tag }) => {
               payment: getValues('paymentDetail')?.map((item) => item.name.split(' ')[0]).join(', '), //typeof getValues('paymentID') === 'object' ? getValues('paymentID')['label'] : paymentTypeOptions.find((paymentType) => paymentType.value === parseInt(getValues('paymentID')))?.label,
               rate: getValues('detail')[0].rate,
             }}
-            handleOk={isPrintBtn ? handleSubmit(printHandler) : handleSubmit(onSubmit)}
-            okTitle={isPrintBtn ? 'Print' : 'Save'}
+            handleOk={!isSubmitting ? handleSubmit(printHandler) : () => {}} //: !isSubmitting && handleSubmit(onSubmit)}
+            okTitle={'Print'}
           />
         )}
       </form>
