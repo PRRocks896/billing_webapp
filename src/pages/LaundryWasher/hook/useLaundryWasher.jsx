@@ -27,7 +27,7 @@ export const useLaundryWasher = () => {
 
   const isAdmin = useMemo(() => {
     if(loggedInUser && loggedInUser.px_role && ['Admin', 'Super Admin'].includes(loggedInUser.px_role.name)) {
-        return true;
+      return true;
     }
     return false;
   }, [loggedInUser]);
@@ -81,7 +81,7 @@ export const useLaundryWasher = () => {
 
   useEffect(() => {
     fetchLaundryWasher();
-  }, [fetchLaundryWasher]);
+  }, []);
 
   const deleteBtnClickHandler = (id) => {
     setDeleteId(id);

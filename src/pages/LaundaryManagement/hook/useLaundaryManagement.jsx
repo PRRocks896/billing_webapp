@@ -44,7 +44,15 @@ const useLaundryManagement = () => {
     const fetchLaundryManagementData = useCallback(async (searchValue = "") => {
         try {
             dispatch(startLoading());
-            const body = listPayload(page, { isDeleted: false, searchText: searchValue });
+            const whereCondition = {
+                isDeleted: false,
+                searchText: searchValue,
+            }
+
+            const body = listPayload(page, isAdmin ? whereCondition : {
+                ...whereCondition,
+                createdBy: loggedInUser.id
+            });
     
             const response = await getLaundryManagementList(body);
     

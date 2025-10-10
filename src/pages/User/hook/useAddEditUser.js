@@ -176,6 +176,7 @@ export const useAddEditUser = (tag) => {
         formData.append("lastName", data.lastName);
         formData.append("branchName", data.branchName);
         formData.append("userName", data.userName);
+        formData.append("countryCode", data.countryCode);
         formData.append("phoneNumber", data.phoneNumber);
         formData.append("email", data.email);
         formData.append("gstNo", data.gstNo);
@@ -230,6 +231,7 @@ export const useAddEditUser = (tag) => {
         formData.append("lastName", data.lastName);
         formData.append("branchName", data.branchName);
         formData.append("userName", data.userName);
+        formData.append("countryCode", data.countryCode);
         formData.append("phoneNumber", data.phoneNumber);
         formData.append("email", data.email);
         formData.append("gstNo", data.gstNo);
