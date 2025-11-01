@@ -1,10 +1,8 @@
 import moment from 'moment';
 import reviewImg from '../assets/images/review_image.png'
 import { showTwoDecimal, convertAmountToWords } from '../utils/helper';
-const { REACT_APP_CGST, REACT_APP_SGST } = process.env;
 
 const PrintContent = (billData, branchData, isShowSecondPage = true) => {
-  console.log(billData);
   const date = moment(billData.date || new Date()).format('DD/MM/yyyy');
   const time = moment(billData.date || new Date()).format('hh:mm:ss A');
   
@@ -85,6 +83,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                 <tr style="text-align:center;font-size: 14px;border: 1px solid black;">
                   <td>SR</td>
                   <td>Item Name</td>
+                  <td>HSN</td>
                   <td>Qty</td>
                   <td>Rate</td>
                   <td>Value</td>
@@ -94,6 +93,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                 <tr style="text-align:center;font-size: 14px;">
                   <td>1</td>
                   <td>${bill.item}</td>
+                  <td>${bill?.hsnCode || ''}</td>
                   <td>${bill.quantity}</td>
                   <td>${showTwoDecimal(bill.total)}</td>
                   <td>${showTwoDecimal(bill.total)}</td>
@@ -109,13 +109,13 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
             ${billData.isShowGst ? 
               `<div style="width: 100%; border-top: 1px dashed black;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 14px;">
                 ${bill.cgst &&
-                  `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">CGST (${REACT_APP_CGST}%): </p>
+                  `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">CGST (${billData.cgstPercentage}%): </p>
                   <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
                     showTwoDecimal(bill.cgst)
                   },</p>`
                 }
                 ${bill.sgst &&
-                  `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">SGST (${REACT_APP_SGST}%): </p>
+                  `<p style="margin: 5px 0px; margin-right: 10px; font-weight: 600;">SGST (${billData.sgstPercentage}%): </p>
                   <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
                     showTwoDecimal(bill.sgst)
                   }</p>`

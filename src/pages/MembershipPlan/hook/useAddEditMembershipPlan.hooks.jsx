@@ -25,6 +25,7 @@ export const useAddEditMembershipPlan = (tag) => {
             planName: "",
             hours: "",
             price: "",
+            hsnCode: "",
             validity: "",
             images: [],
             featureList: [{
@@ -104,6 +105,7 @@ export const useAddEditMembershipPlan = (tag) => {
                 if (response?.statusCode === 200) {
                     setValue("planName", response.data.planName);
                     setValue("hours", response.data.hours);
+                    setValue("hsnCode", response.data.hsnCode);
                     setValue("price", response.data.price);
                     setValue("validity", response.data.validity);
                     setValue("images", response.data && response.data.images ? [response.data.images] : []);

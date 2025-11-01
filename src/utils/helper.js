@@ -14,7 +14,21 @@ export const imagePath = (path) => {
 export const generateSlug = (value) => {
   return value?.trim().toLowerCase().replace(/\s+/g, '_') || "";
 }
+export const convertGstStringToNumber = (str) => {
+    // safe parse: trim, remove commas, handle empty/invalid
+    const cleaned = (str ?? "").toString().trim().replace(/,/g, "");
+    if (cleaned === "") return { formatted: "0.00", numeric: 0 };
+    const n = parseFloat(cleaned);
+    if (Number.isNaN(n)) return { formatted: "0.00", numeric: 0 };
+    const formatted = (n / 100).toFixed(2); // "0.09"
+    return { formatted, numeric: Number(formatted) };
+};
 
+export const getBaseAmountFromGST = (amountWithGST, gstPercent) => {
+  if (!amountWithGST || !gstPercent) return 0;
+  const base = (parseFloat(amountWithGST) / (100 + parseFloat(gstPercent))) * 100;
+  return parseFloat(base.toFixed(2)); // round to 2 decimals
+};
 export const generateUrl = (value) => {
   return `/${value
         .toLowerCase()

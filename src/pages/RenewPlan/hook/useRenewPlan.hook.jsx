@@ -5,7 +5,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { listPayload, showToast, showTwoDecimalWithoutRound } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimalWithoutRound, convertGstStringToNumber, getBaseAmountFromGST } from "../../../utils/helper";
 
 import {
     addExtraHours,
@@ -65,6 +65,19 @@ export const useRenewPlan = () => {
         mode: "onBlur",
     });
 
+    const gstValue = useMemo(() => {
+        if(loggedInUser && loggedInUser.px_company && loggedInUser.px_company.CGST && loggedInUser.px_company.SGST) {
+            return {
+                CGST: loggedInUser.px_company.CGST,
+                SGST: loggedInUser.px_company.SGST
+            }
+        }
+        return {
+            CGST: 0,
+            SGST: 0
+        }
+    }, [loggedInUser]);
+
     const togglePaymentModal = () => {
         setIsPaymentModalOpen(!isPaymentModalOpen);
     }
@@ -80,8 +93,8 @@ export const useRenewPlan = () => {
                 managerName: localStorage.getItem('managerId'),
                 billDetail: data.paymentDetail.map((payment) => {
                     let total = parseFloat(payment.amount || '0');
-                    const cgst = (total * 0.09).toFixed(2);
-                    const sgst = (total * 0.09).toFixed(2);
+                    const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+                    const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
                     total = total - cgst - sgst;
                     return {
                         staffID: 1,
@@ -94,6 +107,7 @@ export const useRenewPlan = () => {
                             quantity: 1,
                             rate: total,
                             membershipPlanID: selectedMemberShipPlan.id,
+                            hsnCode: selectedMemberShipPlan?.hsnCode || '',
                             total: total
                         }],
                         cardNo: payment.cardNo || '',
@@ -140,11 +154,12 @@ export const useRenewPlan = () => {
             const { success, message, data } = await getRenewPlanById(id); //getMembershipById(id);
             if (success) {
                 const tableData = data.billDetail?.map((payment) => {
-                    const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(parseFloat((payment?.grandTotal / 118) * 100).toString()) : payment?.grandTotal;
-                    const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0; 
-                    const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0;
+                    const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(getBaseAmountFromGST(payment?.grandTotal, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)))).toString() : payment?.grandTotal;
+                    const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2) : 0; 
+                    const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2) : 0;
                     return {
                         item: data?.px_membership_plan?.planName,
+                        hsnCode: data?.px_membership_plan?.hsnCode,
                         quantity: 1,
                         total: tempTotal,
                         subTotal: tempTotal,
@@ -170,6 +185,8 @@ export const useRenewPlan = () => {
                     gstNo: loggedInUser?.gstNo,
                     isShowGst: loggedInUser?.isShowGst,
                     tableData: tableData,
+                    cgstPercentage: gstValue.CGST,
+                    sgstPercentage: gstValue.SGST,
                     reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
                 }
                 const branchData = {

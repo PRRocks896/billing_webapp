@@ -9,12 +9,10 @@ import { getStaffList, getTherapistDropdown } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { getRoomList } from "../../../service/room";
 import { fetchLoggedInUserData } from "../../../service/loggedInUser";
-import { listPayload, showToast, showTwoDecimal, showTwoDecimalWithoutRound } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimal, showTwoDecimalWithoutRound, convertGstStringToNumber, getBaseAmountFromGST } from "../../../utils/helper";
 import { getBillById, updateBill, createBill, createBulkBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
-
-// const { REACT_APP_CGST, REACT_APP_SGST} = process.env;
 
 let editCardNo = "";
 
@@ -91,6 +89,7 @@ export const useAddEditCreateBill = (tag) => {
           serviceID: "",
           quantity: "",
           rate: "",
+          hsnCode: "",
           discount: "",
           total: "",
         },
@@ -111,6 +110,19 @@ export const useAddEditCreateBill = (tag) => {
     name: "detail",
     control: control,
   });
+
+  const gstValue = useMemo(() => {
+    if(loggedInUser && loggedInUser.px_company && loggedInUser.px_company.CGST && loggedInUser.px_company.SGST) {
+      return {
+        CGST: loggedInUser.px_company.CGST,
+        SGST: loggedInUser.px_company.SGST
+      }
+    }
+    return {
+      CGST: 0,
+      SGST: 0
+    }
+  }, [loggedInUser]);
 
   useEffect(() => {
     setValue("phoneNumber", loggedInUser.phoneNumber);
@@ -442,7 +454,7 @@ export const useAddEditCreateBill = (tag) => {
       total = total - (total * discount) / 100;
     }
     if (loggedInUser.isShowGst) {
-      calculateGst(total > 0 ? parseFloat((total / 118) * 100).toString() : total.toString(), index);
+      calculateGst(total > 0 ? getBaseAmountFromGST(total, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST))).toString() : total.toString(), index);
     } else {
       setValue(`detail.${index}.total`, total.toFixed(2));
       calculateGrandTotal();
@@ -451,8 +463,8 @@ export const useAddEditCreateBill = (tag) => {
 
   const calculateGst = (total, index) => {
     const tempTotal = showTwoDecimalWithoutRound(total);
-    const cgst = (parseFloat(tempTotal) * 0.09).toFixed(2); //parseFloat(((total * parseFloat(REACT_APP_CGST)) / 100).toFixed(2));
-    const sgst = (parseFloat(tempTotal) * 0.09).toFixed(2);//parseFloat(((total * parseFloat(REACT_APP_SGST)) / 100).toFixed(2));
+    const cgst = (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2); //parseFloat(((total * parseFloat(REACT_APP_CGST)) / 100).toFixed(2));
+    const sgst = (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);//parseFloat(((total * parseFloat(REACT_APP_SGST)) / 100).toFixed(2));
     setValue(`detail.${index}.total`, tempTotal);
     setValue('csgst', cgst);
     setValue('sgst', sgst);
@@ -478,6 +490,7 @@ export const useAddEditCreateBill = (tag) => {
     setValue(`detail.${index}.discount`, 0);
     const ser = service.find((row) => row.id === id);
     setValue(`detail.${index}.rate`, ser.amount);
+    setValue(`detail.${index}.hsnCode`, ser.hsnCode);
     calculateTotal(index);
     clearErrors(`detail.${index}`);
   };
@@ -608,15 +621,17 @@ export const useAddEditCreateBill = (tag) => {
           rate: +item.rate,
           discount: +item.discount,
           total: +item.total,
+          hsnCode: item.hsnCode
         };
       });
       const paymentDetail = getValues('paymentDetail');
       const tableData = paymentDetail?.map((payment) => {
         let total = parseFloat(payment.amount || '0');
-        const cgst = (total * 0.09).toFixed(2);
-        const sgst = (total * 0.09).toFixed(2);
+        const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+        const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
         total = total - cgst - sgst;
         return {
+          hsnCode: getValues('detail')[0].hsnCode || '',
           item: getValues('detail')[0].serviceID?.label,
           quantity: getValues('detail')[0].quantity,
           total: total,
@@ -649,6 +664,8 @@ export const useAddEditCreateBill = (tag) => {
         isShowGst: loggedInUser.isShowGst,
         cgst: loggedInUser.isShowGst ? getValues('csgst') : 0,
         sgst: loggedInUser.isShowGst ? getValues('sgst') : 0,
+        cgstPercentage: gstValue.CGST,
+        sgstPercentage: gstValue.SGST,
         reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null,
         tableData
       };
@@ -658,8 +675,8 @@ export const useAddEditCreateBill = (tag) => {
         if (tag === "add") {
           const payload = paymentDetail?.map((payment) => {
             let total = parseFloat(payment.amount || '0');
-            const cgst = (total * 0.09).toFixed(2);
-            const sgst = (total * 0.09).toFixed(2);
+            const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+            const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
             total = total - cgst - sgst;
             return {
               id: null, //getValues("billNo"),
@@ -790,6 +807,7 @@ export const useAddEditCreateBill = (tag) => {
     isViewDetailOpen,
     isCardSelect,
     isShowGst: loggedInUser.isShowGst,
+    gstValue,
 
     setStaffSelectedHandler,
     setCustomerSelectedHandler,

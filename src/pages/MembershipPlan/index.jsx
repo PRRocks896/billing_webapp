@@ -66,6 +66,7 @@ const MembershipPlan = () => {
                                 <TableCell>Plan Name</TableCell>
                                 <TableCell>Price</TableCell>
                                 <TableCell>Hours</TableCell>
+                                <TableCell>HSN Code</TableCell>
                                 <TableCell>Web Display</TableCell>
                                 {rights.edit && <TableCell>Status</TableCell>}
                                 {(rights.edit || rights.delete) && (
@@ -82,6 +83,7 @@ const MembershipPlan = () => {
                                             <TableCell align="left">{row.planName}</TableCell>
                                             <TableCell align="left">{row.price}</TableCell>
                                             <TableCell align="left">{row.hours}</TableCell>
+                                            <TableCell align="left">{row.hsnCode}</TableCell>
                                             {rights.edit && (
                                                 <TableCell>
                                                     <Switch

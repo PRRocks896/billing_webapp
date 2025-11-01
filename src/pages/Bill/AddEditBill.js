@@ -50,6 +50,7 @@ const AddEditBill = ({ tag }) => {
     isShowGst,
     isSelectedPayment,
     isPrintBtn,
+    gstValue,
     setIsPrintBtn,
     onSubmit,
     navigate,
@@ -253,10 +254,11 @@ const AddEditBill = ({ tag }) => {
                   <StyledTableCell width={"3%"}></StyledTableCell>
                   <StyledTableCell width={"2%"}>Sl.</StyledTableCell>
                   <StyledTableCell width={"40%"}>Item Name</StyledTableCell>
-                  <StyledTableCell width={"10%"}>Quantity</StyledTableCell>
-                  <StyledTableCell width={"20%"}>Rate</StyledTableCell>
+                  <StyledTableCell width={"10%"}>HSN Code</StyledTableCell>
+                  <StyledTableCell width={"5%"}>Qty</StyledTableCell>
+                  <StyledTableCell width={"15%"}>Rate</StyledTableCell>
                   <StyledTableCell width={"10%"}>Dis %</StyledTableCell>
-                  <StyledTableCell width={"20%"}>Value</StyledTableCell>
+                  <StyledTableCell width={"30%"}>Value</StyledTableCell>
                   <StyledTableCell width={"2%"}></StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -298,6 +300,35 @@ const AddEditBill = ({ tag }) => {
                         )}
                         rules={{
                           required: "Item Required",
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`detail.${index}.hsnCode`}
+                        control={control}
+                        render={({
+                          field: { value },
+                          fieldState: { error },
+                        }) => (
+                          <FormControl
+                            size="small"
+                            variant="standard"
+                            fullWidth
+                          >
+                            <TextField
+                              size="small"
+                              name="quantity"
+                              className="text-center"
+                              value={value}
+                              error={!!error}
+                              helperText={error?.message}
+                              disabled
+                            />
+                          </FormControl>
+                        )}
+                        rules={{
+                          required: "Required Qty",
                         }}
                       />
                     </TableCell>
@@ -431,8 +462,8 @@ const AddEditBill = ({ tag }) => {
                 {isShowGst &&
                   <>
                     <TableRow>
-                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0 }}></TableCell>
-                      <TableCell sx={{ padding: 0, margin: 0 }}>CGST ({process.env.REACT_APP_CGST}%): </TableCell>
+                      <TableCell colSpan={6} sx={{ padding: 0, margin: 0 }}></TableCell>
+                      <TableCell sx={{ padding: 0, margin: 0 }}>CGST ({gstValue.CGST}%): </TableCell>
                       <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0 }}>
                         <Controller
                           name="csgst"
@@ -454,8 +485,8 @@ const AddEditBill = ({ tag }) => {
                       <TableCell></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell colSpan={5} sx={{ padding: 0, margin: 0 }}></TableCell>
-                      <TableCell sx={{ padding: 0, margin: 0 }}>SGST ({process.env.REACT_APP_SGST}%): </TableCell>
+                      <TableCell colSpan={6} sx={{ padding: 0, margin: 0 }}></TableCell>
+                      <TableCell sx={{ padding: 0, margin: 0 }}>SGST ({gstValue.SGST}%): </TableCell>
                       <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0 }}>
                         <Controller
                           name="sgst"
@@ -479,7 +510,7 @@ const AddEditBill = ({ tag }) => {
                   </>
                 }
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ padding: 0, margin: 0 }}></TableCell>
+                  <TableCell colSpan={6} sx={{ padding: 0, margin: 0 }}></TableCell>
                   <TableCell sx={{ padding: 0, margin: 0 }}>Grand Total: </TableCell>
                   <TableCell sx={{ textAlign: 'end', padding: 1, margin: 0 }}>
                     <Controller

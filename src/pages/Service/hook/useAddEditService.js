@@ -33,6 +33,7 @@ export const useAddEditService = (tag) => {
         index: 0,
         value: ""
       }],
+      hsnCode: "",
       slug: "",
       video: "",
       thumbnilImage: "",
@@ -140,6 +141,7 @@ export const useAddEditService = (tag) => {
           setValue("description", response.data.description);
           setValue("webPrice", response.data.webPrice);
           setValue("slug", response.data.slug);
+          setValue("hsnCode", response.data.hsnCode);
           setValue("video", response.data.video ? [response.data.video] : []);
           setValue("thumbnilImage", response.data.thumbnilImage ? [response.data.thumbnilImage] : []);
           setValue("backgrandImage", response.data.backgrandImage ? [response.data.backgrandImage] : []);
