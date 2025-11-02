@@ -14,6 +14,49 @@ export const imagePath = (path) => {
 export const generateSlug = (value) => {
   return value?.trim().toLowerCase().replace(/\s+/g, '_') || "";
 }
+
+/**
+ * Calculate GST breakup (CGST, SGST, Total)
+ * 
+ * @param {number} amount - Base amount or total amount
+ * @param {number} gstPercent - GST percentage (5, 12, 18, 28)
+ * @param {boolean} [isInclusive=false] - Whether the amount already includes GST
+ * @returns {object} { baseAmount, cgst, sgst, totalAmount }
+ */
+export function calculateGSTDetails(amount, gstPercent, isInclusive = false) {
+  const amt = parseFloat(amount) || 0;
+  const gst = parseFloat(gstPercent) || 0;
+
+  if (amt === 0 || gst === 0) {
+    return { baseAmount: amt, cgst: 0, sgst: 0, totalAmount: amt };
+  }
+
+  let baseAmount, cgst, sgst, totalAmount;
+
+  if (isInclusive) {
+    // When amount already includes GST
+    baseAmount = (amt / (100 + gst)) * 100;
+    const gstTotal = amt - baseAmount;
+    cgst = gstTotal / 2;
+    sgst = gstTotal / 2;
+    totalAmount = amt;
+  } else {
+    // When amount is before GST
+    const gstTotal = (amt * gst) / 100;
+    cgst = gstTotal / 2;
+    sgst = gstTotal / 2;
+    totalAmount = amt + gstTotal;
+    baseAmount = amt;
+  }
+
+  return {
+    baseAmount: parseFloat(baseAmount.toFixed(2)),
+    cgst: parseFloat(cgst.toFixed(2)),
+    sgst: parseFloat(sgst.toFixed(2)),
+    totalAmount: parseFloat(totalAmount.toFixed(2)),
+  };
+}
+
 export const convertGstStringToNumber = (str) => {
     // safe parse: trim, remove commas, handle empty/invalid
     const cleaned = (str ?? "").toString().trim().replace(/,/g, "");

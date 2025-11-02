@@ -5,7 +5,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { listPayload, showToast, showTwoDecimalWithoutRound, showTwoDecimal, convertGstStringToNumber, getBaseAmountFromGST } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimalWithoutRound, showTwoDecimal, convertGstStringToNumber, calculateGSTDetails } from "../../../utils/helper";
 
 import {
     addExtraHours,
@@ -156,9 +156,16 @@ export const useAddEditMembership = (tag) => {
             const { success, message, data } = await getMembershipById(id);
             if (success) {
                 const tableData = data.billDetail?.map((payment) => {
-                    const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(getBaseAmountFromGST(payment?.grandTotal, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)))).toString() : payment?.grandTotal;
-                    const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2) : 0; 
-                    const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2) : 0;
+                    let tempTotal = payment?.grandTotal;
+                    let cgst = 0; 
+                    let sgst = 0;
+                    if(loggedInUser && loggedInUser.isShowGst) {
+                        const calcGst = calculateGSTDetails(tempTotal, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
+                        tempTotal = calcGst.baseAmount;
+                        cgst = calcGst.cgst;
+                        sgst = calcGst.sgst;
+                    }
+
                     return {
                         item: data?.px_membership_plan?.planName,
                         hsnCode: data?.px_membership_plan?.hsnCode,

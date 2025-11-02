@@ -9,7 +9,7 @@ import { getStaffList, getTherapistDropdown } from "../../../service/staff";
 import { getServiceList } from "../../../service/service";
 import { getRoomList } from "../../../service/room";
 import { fetchLoggedInUserData } from "../../../service/loggedInUser";
-import { listPayload, showToast, showTwoDecimal, showTwoDecimalWithoutRound, convertGstStringToNumber, getBaseAmountFromGST } from "../../../utils/helper";
+import { listPayload, showToast, showTwoDecimal, showTwoDecimalWithoutRound, convertGstStringToNumber, calculateGSTDetails } from "../../../utils/helper";
 import { getBillById, updateBill, createBill, createBulkBill } from "../../../service/bill";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import PrintContent from "../../../components/PrintContent";
@@ -454,7 +454,7 @@ export const useAddEditCreateBill = (tag) => {
       total = total - (total * discount) / 100;
     }
     if (loggedInUser.isShowGst) {
-      calculateGst(total > 0 ? getBaseAmountFromGST(total, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST))).toString() : total.toString(), index);
+      calculateGst(total.toString(), index);
     } else {
       setValue(`detail.${index}.total`, total.toFixed(2));
       calculateGrandTotal();
@@ -462,10 +462,12 @@ export const useAddEditCreateBill = (tag) => {
   };
 
   const calculateGst = (total, index) => {
-    const tempTotal = showTwoDecimalWithoutRound(total);
-    const cgst = (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2); //parseFloat(((total * parseFloat(REACT_APP_CGST)) / 100).toFixed(2));
-    const sgst = (parseFloat(tempTotal) * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);//parseFloat(((total * parseFloat(REACT_APP_SGST)) / 100).toFixed(2));
-    setValue(`detail.${index}.total`, tempTotal);
+    const {
+      baseAmount,
+      cgst,
+      sgst,
+    } = calculateGSTDetails(total, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
+    setValue(`detail.${index}.total`, baseAmount);
     setValue('csgst', cgst);
     setValue('sgst', sgst);
     calculateGrandTotal();
