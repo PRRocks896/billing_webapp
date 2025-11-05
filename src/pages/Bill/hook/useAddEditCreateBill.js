@@ -627,23 +627,29 @@ export const useAddEditCreateBill = (tag) => {
         };
       });
       const paymentDetail = getValues('paymentDetail');
-      const tableData = paymentDetail?.map((payment) => {
-        let total = parseFloat(payment.amount || '0');
-        const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
-        const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
-        total = total - cgst - sgst;
+        const tableData = paymentDetail?.map((payment) => {
+        // let total = parseFloat(payment.amount || '0');
+        // const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+        // const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
+        // total = total - cgst - sgst;
+        const {
+          baseAmount,
+          cgst,
+          sgst,
+          totalAmount
+        } = calculateGSTDetails(payment.amount, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
         return {
           hsnCode: getValues('detail')[0].hsnCode || '',
           item: getValues('detail')[0].serviceID?.label,
           quantity: getValues('detail')[0].quantity,
-          total: total,
-          subTotal: total,
+          total: baseAmount,
+          subTotal: baseAmount,
           cgst: cgst,
           sgst: sgst,
           payment: payment.name.split(' ')[0],
           paymentId: payment.id,
           cardNo: payment.cardNo,
-          grandTotal: (total + parseFloat(cgst) + parseFloat(sgst))
+          grandTotal: totalAmount //(total + parseFloat(cgst) + parseFloat(sgst))
         }
       });
       // print Data start
@@ -676,10 +682,16 @@ export const useAddEditCreateBill = (tag) => {
         dispatch(startLoading());
         if (tag === "add") {
           const payload = paymentDetail?.map((payment) => {
-            let total = parseFloat(payment.amount || '0');
-            const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
-            const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
-            total = total - cgst - sgst;
+            const {
+              baseAmount,
+              cgst,
+              sgst,
+              totalAmount
+            } = calculateGSTDetails(payment.amount, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
+            // let total = parseFloat(payment.amount || '0');
+            // const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+            // const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
+            // total = total - cgst - sgst;
             return {
               id: null, //getValues("billNo"),
               userID: loggedInUser.id,
@@ -688,14 +700,14 @@ export const useAddEditCreateBill = (tag) => {
               detail: detailData.map((detail) => {
                 return {
                   ...detail,
-                  rate: total,
-                  total: total
+                  rate: baseAmount,
+                  total: baseAmount
                 }
               }),
               paymentID: payment.id, //getValues("paymentID"),
               cgst: cgst,
               sgst: sgst,
-              grandTotal: (total + parseFloat(cgst) + parseFloat(sgst)),
+              grandTotal: totalAmount, //(total + parseFloat(cgst) + parseFloat(sgst)),
               phoneNumber: getValues("customerID").label,
               roomID: getValues("roomID").value,
               cardNo: payment.cardNo || '',

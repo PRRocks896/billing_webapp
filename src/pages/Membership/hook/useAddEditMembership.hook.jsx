@@ -87,10 +87,16 @@ export const useAddEditMembership = (tag) => {
             const payload = {
                 ...data,
                 billDetail: data.paymentDetail.map((payment) => {
-                    let total = parseFloat(payment.amount || '0');
-                    const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
-                    const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
-                    total = total - cgst - sgst;
+                    // let total = parseFloat(payment.amount || '0');
+                    // const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+                    // const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
+                    // total = total - cgst - sgst;
+                    const {
+                        baseAmount,
+                        cgst,
+                        sgst,
+                        totalAmount
+                    } = calculateGSTDetails(payment.amount, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
                     return {
                         staffID: 1,
                         userID: loggedInUser.id,
@@ -100,13 +106,13 @@ export const useAddEditMembership = (tag) => {
                         detail: [{
                             discount: 0,
                             quantity: 1,
-                            rate: total,
+                            rate: baseAmount,
                             hsnCode: selectedMemberShipPlan?.hsnCode || '',
                             membershipPlanID: selectedMemberShipPlan.id,
-                            total: total
+                            total: baseAmount
                         }],
                         cardNo: payment.cardNo || '',
-                        grandTotal: (total + parseFloat(cgst) + parseFloat(sgst)),
+                        grandTotal: totalAmount,
                         managerName: localStorage.getItem('managerId'),
                         createdBy: loggedInUser.id,
                         cgst: cgst,
