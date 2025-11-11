@@ -19,7 +19,7 @@ import "./assets/styles/login.scss";
 import "./assets/styles/customer.scss";
 import "./assets/styles/home.scss";
 import "react-toastify/dist/ReactToastify.css";
-import Login from "./pages/Login";
+import Login from "./pages/Login/loginEmailPass";
 import LayoutProvider from "./layout";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";

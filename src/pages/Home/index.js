@@ -44,7 +44,7 @@ const Home = () => {
         {/* activity card */}
         <Box className="activity-card-wrapper mb-24">
           <Grid container spacing={3}>
-            <ActivityCard
+            {/* <ActivityCard
               ActivityTitle={"Customer"}
               ActivityNumber={details?.counts?.customerCount}
               ActivityIcon={<PiUsersThree />}
@@ -61,7 +61,7 @@ const Home = () => {
               ActivityNumber={details?.counts?.serviceCount}
               ActivityIcon={<SlSettings />}
               path="add-service"
-            />
+            /> */}
             <ActivityCard
               ActivityTitle={"Bill"}
               ActivityNumber={details?.counts?.billCount}
