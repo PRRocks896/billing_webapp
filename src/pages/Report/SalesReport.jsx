@@ -93,7 +93,7 @@ const SalesReport = () => {
                         )}
                     </Grid>
                     <Grid item xs={12} sm={3}>
-                        {roleId === 1 && (
+                        {/* {roleId === 1 && (
                             <Autocomplete
                                 freeSolo
                                 size="small"
@@ -114,14 +114,14 @@ const SalesReport = () => {
                                     />
                                 )}
                             />
-                        )}
+                        )} */}
                     </Grid>
                     <Grid item xs={12} sm={3}>
                         <Button className="btn btn-tertiary" onClick={fetchReportDate}>Export</Button>
                     </Grid>
                 </Grid>
             </Box>
-            <br />
+            {/* <br />
             <Box className="card">
                 <Typography variant="h5">GST Report</Typography>
                 <br />
@@ -212,7 +212,7 @@ const SalesReport = () => {
                         <Button className="btn btn-tertiary" onClick={fetchAuditorReportData}>Export</Button>
                     </Grid>
                 </Grid>
-            </Box>
+            </Box> */}
         </>
     )
 }

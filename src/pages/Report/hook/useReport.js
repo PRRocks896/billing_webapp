@@ -317,7 +317,7 @@ export const useReport = () => {
         //   label: user.lastName,
         // }] : branch,
         companyID: selectedCompany && selectedCompany?.value,
-        paymentID: selectedPayment,
+        paymentID: [{value: null, label: 'All'}],
         // userID: user.roleID !== 1 ? user.id : branch.value,
         startDate: moment(dateRange[0]).format('yyyy-MM-DD'), //formatDate(dateRange[0]),
         endDate: moment(dateRange[1]).format('yyyy-MM-DD') //formatDate(dateRange[1]),

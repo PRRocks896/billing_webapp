@@ -432,8 +432,7 @@ const Sidebar = () => {
               <AccordionDetails className="sub-menu-list">
                 {/* {reportListArray?.map((item, index) => {
                   return ( */}
-                    <Box
-                      // key={index}
+                    {/* <Box
                       className={`sub-menu-link ${
                         activeTab === "staff report" && "active"
                       }`}
@@ -452,7 +451,7 @@ const Sidebar = () => {
                         <FiSquare />
                         Staff Report
                       </Typography>
-                    </Box>
+                    </Box> */}
                     <Box
                       // key={index}
                       className={`sub-menu-link ${

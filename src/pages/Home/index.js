@@ -72,7 +72,7 @@ const Home = () => {
         </Box>
       </Box>
       <br />
-      {isAdmin &&
+      {/* {isAdmin &&
         <>
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
@@ -172,7 +172,7 @@ const Home = () => {
             </Grid>
           </Box>
         </Box>
-      }
+      } */}
 
 
     </>
