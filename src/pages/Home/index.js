@@ -33,6 +33,7 @@ const Home = () => {
     details,
     dateRange,
     branchOptions,
+    handleFileUpload,
     handleDateChange,
     fetchDailyReport,
     handleBranchChange
@@ -44,7 +45,7 @@ const Home = () => {
         {/* activity card */}
         <Box className="activity-card-wrapper mb-24">
           <Grid container spacing={3}>
-            <ActivityCard
+            {/* <ActivityCard
               ActivityTitle={"Customer"}
               ActivityNumber={details?.counts?.customerCount}
               ActivityIcon={<PiUsersThree />}
@@ -61,18 +62,24 @@ const Home = () => {
               ActivityNumber={details?.counts?.serviceCount}
               ActivityIcon={<SlSettings />}
               path="add-service"
-            />
-            <ActivityCard
+            /> */}
+            {/* <ActivityCard
               ActivityTitle={"Bill"}
-              ActivityNumber={details?.counts?.billCount}
+              ActivityNumber={0}
               ActivityIcon={<TbFileInvoice />}
               path="create-bill"
-            />
+            /> */}
           </Grid>
         </Box>
       </Box>
       <br />
-      {isAdmin &&
+      <Box className="card">
+        <Box className="activity-card-wrapper mb-24">
+          <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Upload File</Typography>
+          <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+        </Box>
+      </Box>
+      {/* {isAdmin &&
         <>
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
@@ -172,7 +179,7 @@ const Home = () => {
             </Grid>
           </Box>
         </Box>
-      }
+      } */}
 
 
     </>

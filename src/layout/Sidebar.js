@@ -232,7 +232,7 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion> */}
 
-          {subMenuListArray?.length > 0 && (
+          {/* {subMenuListArray?.length > 0 && (
             <Accordion
               expanded={expanded === "panel2"}
               onChange={handleChange("panel2")}
@@ -430,8 +430,6 @@ const Sidebar = () => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails className="sub-menu-list">
-                {/* {reportListArray?.map((item, index) => {
-                  return ( */}
                     <Box
                       // key={index}
                       className={`sub-menu-link ${
@@ -475,7 +473,7 @@ const Sidebar = () => {
                       </Typography>
                     </Box>
                   {/* );
-                })} */}
+                })}
               </AccordionDetails>
             </Accordion>
           )}
@@ -510,7 +508,7 @@ const Sidebar = () => {
                 </AccordionSummary>
               </Accordion>
             );
-          })}
+          })} */}
         </div>
 
         <div>

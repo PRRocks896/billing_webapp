@@ -7,6 +7,8 @@ import { searchViaDashboard } from "../../../service/bill";
 import { getUserList } from "../../../service/users";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { listPayload, showToast } from "../../../utils/helper";
+import BillPrintContent from "../../../components/BillPrintContent";
+import * as XLSX from "xlsx";
 // import { useSelector } from "react-redux";
 
 const currentDate = () => {
@@ -26,6 +28,119 @@ export const useHome = () => {
   const [branch, setBranch] = useState([]);
   const [billList, setBillList] = useState([]);
   const user = useSelector((state) => state.loggedInUser);
+  const [jsonData, setJsonData] = useState([]);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (evt) => {
+      const bstr = evt.target.result;
+      const workbook = XLSX.read(bstr, { type: "binary" });
+
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+
+      const json = XLSX.utils.sheet_to_json(worksheet);
+      setJsonData(json);
+      const billData = json.map((bill) => {
+        return {
+          billNo: bill['Bill No'],
+          date: bill['Date'],
+          customer: bill['Customer Name'],
+          isShowGst: true,
+          gstNo: bill['GST NO'],
+          cgst: bill['CGST'],
+          sgst: bill['SGST'],
+          cgstPercentage: bill['CGST Percentage'],
+          sgstPercentage: bill['SGST Percentage'],
+          tableData: [{
+            billNo: bill['Bill No'],
+            item: bill['Service/Membership'],
+            quantity: 1,
+            total: bill['Amount'],
+            subTotal: bill ['Amount'],
+            cgst: bill['CGST'],
+            sgst: bill['SGST'],
+            grandTotal: bill['Grand Total']
+          }],
+          branchData: {
+            title: bill['Company Name'],
+            address: bill['Address'],
+            phone1: bill['Branch Phone Number'],
+          }
+        }
+      });
+      if(billData.length > 0) {
+        const printWindow = window.open("", "_blank", "popup=yes,menubar=no,toolbap=no");
+        if(printWindow && printWindow.document) {
+          const finalHTML = `
+    <html>
+      <head>
+        <title>Bills</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+        <style>
+          * {
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+          }
+
+          body {
+            margin: 0;
+            padding: 10px;
+          }
+
+          .bill-container {
+            width: 95%;
+            margin: 0 auto 30px auto;
+            padding: 10px;
+          }
+            @media print {
+              body {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: auto;
+                row-gap: 10px;
+                column-gap: 10px;
+                padding: 10px;
+              }
+              .bill-container {
+                page-break-inside: avoid;
+                break-inside: avoid;
+              }
+            }
+        </style>
+      </head>
+
+      <body>
+  `;
+          let billsHtml = "";
+          billData.forEach((bill) => {
+            billsHtml += `
+            <div class="bill-container">
+            ${BillPrintContent(bill, bill.branchData, false)}
+            </div>`
+          })
+          const finalDoc = finalHTML + billsHtml + `</body></html>`
+          printWindow.document.write(finalDoc);
+          // printWindow.document.write(BillPrintContent(billData[0], billData[0].branchData, false));
+          printWindow.document.close();
+          printWindow.onload = () => {
+            printWindow.print();
+            printWindow.close();
+          };
+        }
+        e.target.value = null;
+      }
+    };
+
+    reader.readAsBinaryString(file);
+  };
+
   // const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const isAdmin = useMemo(() => {
@@ -179,6 +294,7 @@ export const useHome = () => {
     details,
     dateRange,
     branchOptions,
+    handleFileUpload,
     fetchDailyReport,
     handleDateChange,
     handleBranchChange
