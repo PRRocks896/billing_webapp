@@ -99,7 +99,7 @@ import LaundryReceiver from "./pages/LaundryReceiver";
 import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiver";
 import StaffReport from "./pages/Report/StaffReport";
 import SalesReport from "./pages/Report/SalesReport";
-
+import UnderMaintainance from "./pages/Maintainance";
 
 const token = getAuthToken();
 
@@ -113,6 +113,13 @@ const App = () => {
     }
     return false;
   }, [loggedInUser]);
+
+  const routes3 = createBrowserRouter([
+    {
+      path: '/',
+      element: <UnderMaintainance/>
+    }
+  ])
 
   const routes2 = createBrowserRouter([
     {
@@ -2053,7 +2060,7 @@ const App = () => {
     <>
       <ToastContainer />
       <Loader />
-      <RouterProvider router={routes2} />
+      <RouterProvider router={routes3} />
     </>
   );
 };
