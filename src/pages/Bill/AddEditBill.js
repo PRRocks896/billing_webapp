@@ -328,7 +328,7 @@ const AddEditBill = ({ tag }) => {
                           </FormControl>
                         )}
                         rules={{
-                          required: "Required Qty",
+                          // required: "Required Qty",
                         }}
                       />
                     </TableCell>

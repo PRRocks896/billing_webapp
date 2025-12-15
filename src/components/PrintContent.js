@@ -33,20 +33,26 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
       </style>
     </head>
     <body>
-      <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
+      <div style="padding: 0mm; margin: 0 auto; width: 80mm;">
         ${billData.tableData?.map((bill) => (`
           <div style="page-break-after: always; border: 0px solid black; min-height: max-content;">
-            <p style="text-transform: capitalize;font-size: 20px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
+            <p style="text-transform: capitalize;font-size: 14px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
               branchData.title
             }</p>
             <p style="text-transform: capitalize; font-size: 12px; margin: 0px; text-align: center;">
               ${branchData.address}
             </p>
+            ${billData.isShowGst ?
+            `<p style="text-transform: capitalize; font-size: 12px; margin: 0px; text-align: center;">
+              GST NO: ${billData.gstNo}
+            </p>`
+            : ''}
             <div style="display: flex; justify-content: space-between;margin-top: 7px;">
               <div>
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Ph: ${
                   branchData.phone1
-                }, ${branchData.phone2}  </p>
+                }
+                </p>
                 <p style="text-align: start; margin: 0px; font-size: 14px;">Bill No: ${
                   bill.billNo
                 }</p>
@@ -60,22 +66,6 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
               <p style="text-align: start; margin: 0px; font-size: 14px;">
                 Customer Name : Cash Customer
               </p>
-            </div>
-            <div style="width: 100%;display: flex;justify-content: space-between;margin-top: 7px;">
-              
-              <div>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Name: ${
-                  billData.customer
-                }</p>
-                <p style="text-align: start; margin: 0px; font-size: 14px;">Ph: ${
-                  billData.phone
-                }</p>
-              </div>
-              ${billData.isShowGst ?
-                `<div>
-                  <p style="text-align: start; margin: 0px; font-size: 14px;">GST NO: <br/>${billData.gstNo}</p>
-                </div>`
-              : ''}
             </div>
             <div style="width: 100%; border-top: 1px dashed black;margin: 0;margin-top: 7px;"></div>
             <table style="width: 100%;">
@@ -122,7 +112,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
                 }
               </div>`
             : ''}
-            <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 20px;">
+            <div style="width: 100%;border-bottom: 1px dashed black; display: flex; justify-content: end;font-size: 18px;">
               <p style="margin: 5px 0px; margin-right: 14px; font-weight: 600;">Grand Total : </p>
               <p style="margin: 5px 0px; margin-right: 4px; font-weight: 600; text-align: end;">${
                 showTwoDecimal(bill.grandTotal)
@@ -162,7 +152,7 @@ const PrintContent = (billData, branchData, isShowSecondPage = true) => {
         `)).join('')}
           ${isShowSecondPage ?
             `<div style="page-break-after: always; height: max-content; border: 0px solid black;">
-              <table style="font-size: 20px;">
+              <table style="font-size: 18px;">
                 <tbody>
                   <tr>
                     <td style="padding: 10px 0;">Date</td>
