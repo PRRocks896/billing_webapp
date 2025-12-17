@@ -57,6 +57,10 @@ export function calculateGSTDetails(amount, gstPercent, isInclusive = false) {
   };
 }
 
+export const randomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+export const shuffle = (array) => [...array].sort(() => Math.random() - 0.5);
+
 export const convertGstStringToNumber = (str) => {
     // safe parse: trim, remove commas, handle empty/invalid
     const cleaned = (str ?? "").toString().trim().replace(/,/g, "");
@@ -189,91 +193,79 @@ export const rightsAccess = (accessModules, pathname) => {
 };
 
 export const convertAmountToWords = (amount) => {
-  const singleDigits = [
-    "",
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
-  ];
-  const teens = [
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-    "fourteen",
-    "fifteen",
-    "sixteen",
-    "seventeen",
-    "eighteen",
-    "nineteen",
-  ];
-  const tens = [
-    "",
-    "",
-    "twenty",
-    "thirty",
-    "forty",
-    "fifty",
-    "sixty",
-    "seventy",
-    "eighty",
-    "ninety",
-  ];
-  const thousands = ["", "thousand", "lakh", "crore"];
+  if (amount === null || amount === undefined) return "";
 
-  function convertTwoDigits(num) {
-    if (num < 10) return singleDigits[num];
-    if (num < 20) return teens[num - 10];
-    let ten = Math.floor(num / 10);
-    let one = num % 10;
-    return tens[ten] + (one ? " " + singleDigits[one] : "");
+  const num = Number(amount);
+  if (isNaN(num)) return "";
+
+  const singleDigits = [
+    "", "one", "two", "three", "four",
+    "five", "six", "seven", "eight", "nine"
+  ];
+
+  const teens = [
+    "ten", "eleven", "twelve", "thirteen", "fourteen",
+    "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
+  ];
+
+  const tens = [
+    "", "", "twenty", "thirty", "forty",
+    "fifty", "sixty", "seventy", "eighty", "ninety"
+  ];
+
+  const scales = ["", "thousand", "lakh", "crore"];
+
+  function convertTwoDigits(n) {
+    if (n < 10) return singleDigits[n];
+    if (n < 20) return teens[n - 10];
+    return tens[Math.floor(n / 10)] + (n % 10 ? " " + singleDigits[n % 10] : "");
   }
 
-  function convertThreeDigits(num) {
-    let hundred = Math.floor(num / 100);
-    let remainder = num % 100;
+  function convertThreeDigits(n) {
     let result = "";
-    if (hundred) {
-      result += singleDigits[hundred] + " hundred";
-      if (remainder) {
-        result += " and ";
-      }
+    if (n >= 100) {
+      result += singleDigits[Math.floor(n / 100)] + " hundred";
+      n %= 100;
+      if (n) result += " and ";
     }
-    if (remainder) {
-      result += convertTwoDigits(remainder);
-    }
+    if (n) result += convertTwoDigits(n);
     return result;
   }
 
-  if (amount === 0) return "zero";
+  if (num === 0) return "zero";
 
-  let result = "";
-  let parts = [];
-  let i = 0;
+  const parts = num.toFixed(2).split(".");
+  let rupees = Number(parts[0]);
+  let paise = Number(parts[1]);
 
-  // Handle thousands separately
-  while (amount > 0) {
-    let part = amount % (i === 1 ? 100 : 1000);
-    if (part > 0) {
-      let partInWords = convertThreeDigits(part);
-      if (thousands[i]) {
-        partInWords += " " + thousands[i];
-      }
-      parts.unshift(partInWords);
+  let words = [];
+  let scaleIndex = 0;
+
+  while (rupees > 0) {
+    let chunk = scaleIndex === 0 ? rupees % 1000 : rupees % 100;
+
+    if (chunk) {
+      words.unshift(
+        convertThreeDigits(chunk) +
+          (scales[scaleIndex] ? " " + scales[scaleIndex] : "")
+      );
     }
-    amount = Math.floor(amount / (i === 1 ? 100 : 1000));
-    i++;
+
+    rupees = Math.floor(
+      scaleIndex === 0 ? rupees / 1000 : rupees / 100
+    );
+    scaleIndex++;
   }
 
-  result = parts.join(" ").trim();
-  return result;
-};
+  let result = words.join(" ").trim();
+
+  if (paise > 0) {
+    result += " and " + convertTwoDigits(paise) + " paise";
+  }
+
+  return result + " only";
+}
+
 
 export const capitalizeFirstLetter = (str) => {
   return str
