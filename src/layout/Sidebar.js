@@ -214,6 +214,22 @@ const Sidebar = () => {
               </Typography>
             </AccordionSummary>
           </Accordion>
+          <Accordion
+            expanded={expanded === "panel2"}
+            onChange={handleChange("panel2")}
+            className="menu-list"
+            onClick={() => navigate("/single-branch")}
+          >
+            <AccordionSummary
+              className="menu-title"
+              aria-controls="panel2bh-content"
+              id="panel2bh-header"
+            >
+              <Typography>
+                <GoHome /> Single Branch
+              </Typography>
+            </AccordionSummary>
+          </Accordion>
 
           {/* <Accordion
             expanded={expanded === "panel-barcode"}

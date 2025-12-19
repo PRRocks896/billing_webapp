@@ -99,7 +99,7 @@ import LaundryReceiver from "./pages/LaundryReceiver";
 import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiver";
 import StaffReport from "./pages/Report/StaffReport";
 import SalesReport from "./pages/Report/SalesReport";
-
+import SingleBranch from "./pages/Home/component/singleBranch";
 
 const token = getAuthToken();
 
@@ -136,6 +136,18 @@ const App = () => {
           ) : (
             <NoConnection />
           ),
+        },
+        {
+          path: 'single-branch',
+          element: (
+            <>
+              {isOnline ? (
+                <SingleBranch/>
+              ) : (
+                <NoConnection />
+              )} 
+            </>
+          )
         },
         {
           path: 'send-courier',

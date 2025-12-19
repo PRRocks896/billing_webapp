@@ -468,7 +468,7 @@ export const useHome = () => {
         }
       });
       // console.log(fileJsonData.slice(0, 10))
-      const finalBillArray = generateFinalBills(fileJsonData, branchDetail);//.slice(0, 1000)
+      const finalBillArray = generateFinalBills(fileJsonData.slice(0,100), branchDetail);//.slice(0, 1000)
       // console.log(finalBillArray.splice(0, 10));
       if (finalBillArray.length > 0) {
         const printWindow = window.open("", "_blank", "popup=yes,menubar=no,toolbap=no");
