@@ -7,9 +7,9 @@ const SingleBillPrintContent = (bill) => {
   // const time = moment(billData.date || new Date()).format('hh:mm:ss A');
   
   return `
-      <div style="padding: 0mm; margin: 0 auto; width: 88mm;">
+      <div style="padding: 0mm; margin: 0 auto; width: 78mm;">
           <div style="page-break-after: always; border: 0px solid black; min-height: max-content;">
-            <p style="text-transform: capitalize;font-size: 18px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
+            <p style="text-transform: capitalize;font-size: 16px; font-weight: 600; margin: 0px;text-align: center; margin-bottom: 0px">${
               bill.title
             }</p>
             <p style="text-transform: capitalize; font-size: 12px; margin: 0px; text-align: center;">
