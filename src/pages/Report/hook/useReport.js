@@ -45,6 +45,7 @@ export const useReport = () => {
   const [selectedInsentiveManager, setSelectedInsentiveManager] = useState(null);
   const [insentiveManagerYear, setInsentiveManagerYear] = useState(new Date().getFullYear());
   const [insentiveManagerMonth, setInsentiveManagerMonth] = useState(new Date().getMonth() + 1);
+  const [salesType, setSalesType] = useState(0);
   const [weekDays, setWeekDays] = useState(null);
   const [weekDaysPercentage, setWeekDaysPercentage] = useState(null);
   const [weekEnd, setweekEnd] = useState(null);
@@ -288,15 +289,32 @@ export const useReport = () => {
       dispatch(startLoading());
       setPdfData(null);
       const managerName = managerList.find((manager) => manager.id === selectedInsentiveManager);
-      const body = {
+      let body = {
         manegerID: selectedInsentiveManager,
         year: insentiveManagerYear,
         month: insentiveManagerMonth,
-        weekDays: weekDays,
-        weekDaysPercentage: weekDaysPercentage,
-        weekEnd: weekEnd,
-        weekEndPercentage: weekEndPercentage
+        // weekDays: weekDays,
+        // weekDaysPercentage: weekDaysPercentage,
+        // weekEnd: weekEnd,
+        // weekEndPercentage: weekEndPercentage
       };
+      if(salesType === 0) {
+        body = {
+          ...body,
+          amount1: weekDays,
+          percentage1: weekDaysPercentage,
+          amount2: weekEnd,
+          percentage2: weekEndPercentage
+        }
+      } else {
+        body = {
+          ...body,
+          weekDays: weekDays,
+          weekDaysPercentage: weekDaysPercentage,
+          weekEnd: weekEnd,
+          weekEndPercentage: weekEndPercentage
+        }
+      }
       const response = await getManagerInsentiveReport(body, generateSlug(`${managerName.nickName}_(${managerName.name})_insentive_report_${insentiveManagerYear}_${insentiveManagerMonth}.xlsx`.toLowerCase()));
       // setPdfData(response);
     } catch(error) {
@@ -471,6 +489,8 @@ export const useReport = () => {
     fetchAttendanceReportData,
     fetchStaffAttendanceReportData,
     fetchInsentiveManagerReportData,
+    setSalesType,
+    salesType,
     weekDays,
     weekDaysPercentage,
     weekEnd,
