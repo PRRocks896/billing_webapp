@@ -5,7 +5,7 @@ import moment from "moment";
 import dayjs from 'dayjs';
 import { set, useForm } from "react-hook-form";
 
-import { listPayload, rightsAccess, showToast } from "../../../utils/helper";
+import { listPayload, rightsAccess, showToast, convertGstStringToNumber } from "../../../utils/helper";
 import { billAction } from "../../../redux/bill";
 import {
   deleteBill,
@@ -38,6 +38,19 @@ export const useBill = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [count, setCount] = useState(0);
+
+  const gstValue = useMemo(() => {
+    if(loggedInUser && loggedInUser.px_company && loggedInUser.px_company.CGST && loggedInUser.px_company.SGST) {
+      return {
+        CGST: loggedInUser.px_company.CGST,
+        SGST: loggedInUser.px_company.SGST
+      }
+    }
+    return {
+      CGST: 0,
+      SGST: 0
+    }
+  }, [loggedInUser]);
 
   const {
     control,
@@ -207,7 +220,22 @@ export const useBill = () => {
     const response = await getBillById(id);
     if (response?.success) {
       const body = response.data;
+      const detailData = body?.detail[0] || null;
       const billData = {
+        tableData: [{
+          billNo: body.billNo,
+          hsnCode: detailData?.hsnCode || '',
+          item: detailData?.serviceID ? detailData.service?.name : detailData.membershipPlan?.planName,
+          quantity: detailData?.quantity,
+          total: detailData?.total,
+          subTotal: detailData?.total,
+          cgst: body?.px_user?.isShowGst ? body?.cgst : 0,
+          sgst: body?.px_user?.isShowGst ? body?.sgst : 0,
+          payment: body?.px_payment_type?.name,
+          paymentId: body?.px_payment_type?.id,
+          cardNo: body.cardNo,
+          grandTotal: body.grandTotal
+        }],
         subTotal: body?.detail[0]?.total, //body?.grandTotal,
         total: body?.grandTotal,
         billNo: body?.billNo,
@@ -231,6 +259,8 @@ export const useBill = () => {
         isShowGst: body?.px_user?.isShowGst,
         cgst: body?.px_user?.isShowGst ? body?.cgst : 0,
         sgst: body?.px_user?.isShowGst ? body?.sgst : 0,
+        cgstPercentage: gstValue.CGST,
+        sgstPercentage: gstValue.SGST,
         reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
       };
       doPrint(billData, billData.detail[0]?.membershipPlan ? false : true);

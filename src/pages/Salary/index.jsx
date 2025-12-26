@@ -125,7 +125,6 @@ const Salary = () => {
                             options={companyList || []}
                             // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
                             onChange={(_event, value) => {
-                                console.log(value);
                                 if(value && typeof value === 'object') {
                                     setSelectedCompany(value.id);
                                     // fetchBranch();

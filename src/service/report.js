@@ -22,3 +22,11 @@ export const getStaffSalaryReport = async (body, fileName) => {
 export const getAttendanceStaffReport = async (body, fileName) => {
   return await getPDF(`api/attendance/attendance-report`, body, true, fileName);
 }
+
+export const getManagerInsentiveReport = async (body, fileName) => {
+return await getXlsx(`api/report/manager-incentive-details`, body, fileName);
+}
+
+export const getAuditorReport = async (body, fileName) => {
+  return await getXlsx(`api/report/gst-sale-purchase`, body, fileName);
+}

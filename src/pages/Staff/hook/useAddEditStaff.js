@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { listPayload, showToast } from "../../../utils/helper";
+import { listPayload, showToast, countries } from "../../../utils/helper";
 import { sendOtp, sendStaffOtp, verifyOtp, createStaff, getStaffById, updateStaff } from "../../../service/staff";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -27,12 +27,22 @@ export const useAddEditStaff = (tag) => {
   const [openVerifyOtpModal, setOpenVerifyOtpModal] = useState(false);
   const [isStaffNoOtpSend, setIsStaffNoOtpSend] = useState(false);
 
+  const countryCodeList = useMemo(() => {
+    return countries?.map((country) => {
+      return {
+        label: `${country.phone} (${country.label})`,
+        value: country.phone.split('+')[1]
+      }
+    })
+  }, [countries]);
+
   const { control, handleSubmit, setValue, getValues, formState: { dirtyFields } } = useForm({
     defaultValues: {
       userID: loggedInUser.id,
       employeeTypeID: "",
       name: "",
       nickName: "",
+      countryCode: "",
       phoneNumber: "",
       fatherName: "",
       fatherPhone: "",
@@ -133,6 +143,7 @@ export const useAddEditStaff = (tag) => {
     try {
       dispatch(startLoading());
       const {success, message} = await sendStaffOtp({
+        countryCode: getValues("countryCode"),
         mobile: getValues("phoneNumber"),
         petName: getValues("nickName"),
         originalName: getValues("name"),
@@ -233,6 +244,7 @@ export const useAddEditStaff = (tag) => {
           setValue("accountType", response.data.accountType);
           setValue("refName", response.data.refName);
           setValue("refPhone", response.data.refPhone);
+          setValue("countryCode", response.data.countryCode);
         } else {
           showToast(response?.message, false);
         }
@@ -260,6 +272,7 @@ export const useAddEditStaff = (tag) => {
     branchList,
     verifiedOtp,
     isEditByBranch,
+    countryCodeList,
     isShowBankDetail,
     employeeTypeList,
     isStaffNoOtpSend,

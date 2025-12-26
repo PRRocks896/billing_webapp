@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import { FiAlignJustify } from "react-icons/fi";
 import SiteLogo from "../assets/images/logo.png";
 import Sidebar from "./Sidebar";
@@ -13,6 +13,11 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Clock from "../components/Clock";
+import Avatar from "@mui/material/Avatar";
+import { useMediaQuery } from "@mui/material";
+import ProfileIcon from '../assets/images/profile icon.svg';
+import { useEffect, useState } from "react";
+import Popover from "@mui/material/Popover";
 
 
 const drawerWidth = 300;
@@ -59,9 +64,35 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
   }
   pageTitle = pageTitle.toUpperCase();
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
+  const id = openPopover ? "profile-popover" : undefined;
+
+
+
   const managerName = useMemo(() => {
     return localStorage.getItem("managerName") || "";
   }, [localStorage.getItem("managerName")]);
+
+  const isSmallScreen = useMediaQuery('(max-width:768px)');
+
+  useEffect(() => {
+    if (isSmallScreen && open) {
+      handleDrawerClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  const showUsername = useMediaQuery('(max-width:425px)');
 
   return (
     <>
@@ -81,19 +112,55 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             noWrap
             component="div"
             className="page-title"
+            sx={{
+              '@media (max-width:425px)': {
+                display: 'none',
+              },
+            }}
           >
             {pageTitle}
           </Typography>
           <Box className="manager-name">
-            <Button style={{ width: '180px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
-              {/* {managerName} */}
+            {/* <Button style={{ width: '180px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
               Select Manager
-            </Button>
+            </Button> */}
           </Box>
-          <Box className="username">
+          {!showUsername && (
+            <Box className="username">
+              {/* <Box sx={{ display: { xs: 'none', sm: 'flex', flexWrap: "wrap", gap: '10' }, alignItems: 'center' }}> */}
               <UserName firstName={data?.firstName} lastName={data?.lastName} />
               <Clock />
-          </Box>
+              {/* </Box> */}
+            </Box>
+          )}
+          <Avatar
+            className="profile-icon"
+            alt="User Name"
+            src={ProfileIcon}
+            sx={{ width: 50, height: 50, cursor: "pointer" }}
+            aria-describedby={id}
+            onClick={handleClick}
+          />
+
+          <Popover
+            id={id}
+            open={openPopover}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <Box sx={{ p: 2, minWidth: 150 }}>
+              <Typography variant="subtitle2">{data?.firstName} {data?.lastName}</Typography>
+              <Clock />
+            </Box>
+          </Popover>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -110,7 +177,7 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
         <DrawerHeader className="site-logo">
           <img src={SiteLogo} alt="Sitelogo" width={140} height={80} />
         </DrawerHeader>
-        <Sidebar/>
+        <Sidebar />
       </Drawer>
     </>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -11,7 +12,7 @@ import { FormControlLabel, RadioGroup, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 const AddCustomer = ({ tag }) => {
-  const { control, handleSubmit, onSubmit, cancelHandler } =
+  const { control, countryCodeList, handleSubmit, onSubmit, cancelHandler } =
     useAddEditCustomer(tag);
 
   return (
@@ -56,43 +57,83 @@ const AddCustomer = ({ tag }) => {
               </Grid>
               {/*  */}
               <Grid item xs={4}>
-                <Controller
-                  name="phoneNumber"
-                  control={control}
-                  render={({
-                    field: { onBlur, onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <FormControl
-                      size="small"
-                      variant="standard"
-                      className="form-control"
-                    >
-                      <TextField
-                        type="number"
-                        label="Phone"
-                        size="small"
-                        name="phoneNumber"
-                        value={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    </FormControl>
-                  )}
-                  rules={{
-                    required: "Phone number is required",
-                    maxLength: {
-                      value: 10,
-                      message: "Phone number must be 10 digit",
-                    },
-                    minLength: {
-                      value: 10,
-                      message: "Phone number must be 10 digit",
-                    },
-                  }}
-                />
+                <Grid container spacing={1}>
+                  <Grid item xs={4}>
+                    <Controller
+                      name="countryCode"
+                      control={control}
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error }
+                      }) => (
+                        <Autocomplete
+                          freeSolo
+                          size="small"
+                          id="countryCode"
+                          options={countryCodeList}
+                          value={countryCodeList.find((country) => country.value === value)?.value || null}
+                          disableClearable
+                          onChange={(event, newValue) => onChange(newValue.value)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Country Code"
+                              error={!!error}
+                              helperText={error?.message}
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <li {...props} key={option.id}>
+                              {option.label}
+                            </li>
+                          )}
+                        />
+                      )}
+                      rules={{
+                        required: "Please Select County Code",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={8}>
+                    <Controller
+                      name="phoneNumber"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl
+                          size="small"
+                          variant="standard"
+                          className="form-control"
+                        >
+                          <TextField
+                            type="number"
+                            label="Phone"
+                            size="small"
+                            name="phoneNumber"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Phone number is required",
+                        maxLength: {
+                          value: 10,
+                          message: "Phone number must be 10 digit",
+                        },
+                        minLength: {
+                          value: 10,
+                          message: "Phone number must be 10 digit",
+                        },
+                      }}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid item xs={4}>
                   <Controller

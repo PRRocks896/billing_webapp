@@ -5,7 +5,7 @@ import moment from "moment";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { listPayload, showToast, showTwoDecimalWithoutRound } from "../../../utils/helper";
+import { listPayload, showToast, convertGstStringToNumber, calculateGSTDetails } from "../../../utils/helper";
 
 import {
     addExtraHours,
@@ -44,52 +44,86 @@ export const useRenewPlan = () => {
     const [verifyCustomerMembership, setVerifyCustomerMembership] = useState(false);
     const [openVerifyMembershipModal, setOpenVerifyMembershipModal] = useState(false);
     const [openVerifyMembershipByMerchantModal, setOpenVerifyMembershipByMerchantModal] = useState(false);
+    const [isPayment, setIsPayment] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
     const { setValue, control, handleSubmit, watch, getValues, formState: { isSubmitting } } = useForm({
         defaultValues: {
             userID: loggedInUser.id,
             customerID: customerID,
             membershipID: membershipID,
-            paymentID: "",
+            paymentID: null,
             membershipPlanID: "",
             managerName: localStorage.getItem("managerName") || "",
             customerPhoto: "",
             billNo: localStorage.getItem('latestBillNo'),
             extraHours: "0",
             validity: "6",
-            cardNo: ""
+            cardNo: "",
+            paymentDetail: [],
         },
         mode: "onBlur",
     });
+
+    const gstValue = useMemo(() => {
+        if(loggedInUser && loggedInUser.px_company && loggedInUser.px_company.CGST && loggedInUser.px_company.SGST) {
+            return {
+                CGST: loggedInUser.px_company.CGST,
+                SGST: loggedInUser.px_company.SGST
+            }
+        }
+        return {
+            CGST: 0,
+            SGST: 0
+        }
+    }, [loggedInUser]);
+
+    const togglePaymentModal = () => {
+        setIsPaymentModalOpen(!isPaymentModalOpen);
+    }
 
     const onSubmit = async (data) => {
         try {
             dispatch(startLoading());
             const selectedMemberShipPlan = membershipPlan.find(item => item.id === data.membershipPlanID);
             const totalMinutes = (selectedMemberShipPlan.hours + parseInt(data.extraHours)) * 60 || 0;
-            const cardNo = data.cardNo;
             const payload = {
                 ...data,
                 membershipID: parseInt(membershipID),
                 managerName: localStorage.getItem('managerId'),
-                billDetail: {
-                    billNo: localStorage.getItem('latestBillNo'),
-                    staffID: 1,
-                    userID: loggedInUser.id,
-                    paymentID: data.paymentID,
-                    customerID: data.customerID,
-                    detail: JSON.stringify([{
-                        discount: 0,
-                        quantity: 1,
-                        rate: selectedMemberShipPlan.price,
-                        membershipPlanID: selectedMemberShipPlan.id,
-                        total: selectedMemberShipPlan.price
-                    }]),
-                    cardNo: data.cardNo,
-                    grandTotal: selectedMemberShipPlan.price,
-                    managerName: localStorage.getItem('managerId'),
-                    createdBy: loggedInUser.id,
-                },
+                billDetail: data.paymentDetail.map((payment) => {
+                    // let total = parseFloat(payment.amount || '0');
+                    // const cgst = (total * convertGstStringToNumber(gstValue.CGST).numeric).toFixed(2);
+                    // const sgst = (total * convertGstStringToNumber(gstValue.SGST).numeric).toFixed(2);
+                    // total = total - cgst - sgst;
+                    const {
+                        baseAmount,
+                        cgst,
+                        sgst,
+                        totalAmount
+                    } = calculateGSTDetails(payment.amount, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
+                    return {
+                        staffID: 1,
+                        userID: loggedInUser.id,
+                        roomID: 1,
+                        paymentID: payment.id,
+                        customerID: data.customerID,
+                        detail: [{
+                            discount: 0,
+                            quantity: 1,
+                            rate: baseAmount,
+                            membershipPlanID: selectedMemberShipPlan.id,
+                            hsnCode: selectedMemberShipPlan?.hsnCode || '',
+                            total: baseAmount
+                        }],
+                        cardNo: payment.cardNo || '',
+                        grandTotal: totalAmount,//(total + parseFloat(cgst) + parseFloat(sgst)),
+                        managerName: localStorage.getItem('managerId'),
+                        createdBy: loggedInUser.id,
+                        cgst: cgst,
+                        sgst: sgst,
+                    }
+                }),
                 minutes: totalMinutes,
                 updatedMembershipMinutes: (membershipDetail.minutes + totalMinutes),
                 createdBy: loggedInUser?.id,
@@ -97,7 +131,7 @@ export const useRenewPlan = () => {
             };
             const response = await createRenewPlan(payload);
             if (response?.statusCode === 200) {
-                handlePrint(response.data?.id, cardNo);
+                handlePrint(response.data?.id);
                 const { success, data} = await fetchLoggedInUserData();
                 if (success) {
                     const latestBillNo = data.latestBillNo;
@@ -124,27 +158,37 @@ export const useRenewPlan = () => {
         try {
             startLoading();
             const { success, message, data } = await getRenewPlanById(id); //getMembershipById(id);
-            console.log(data);
             if (success) {
-                const tempTotal = loggedInUser?.isShowGst ? showTwoDecimalWithoutRound(parseFloat((data?.px_membership_plan?.price / 118) * 100).toString()) : data?.px_membership_plan?.price;
-                const cgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0; 
-                const sgst = loggedInUser?.isShowGst ? (parseFloat(tempTotal) * 0.09).toFixed(2) : 0;
+                const tableData = data.billDetail?.map((payment) => {
+                    let tempTotal = payment?.grandTotal;
+                    let cgst = 0; 
+                    let sgst = 0;
+                    if(loggedInUser && loggedInUser.isShowGst) {
+                        const calcGst = calculateGSTDetails(tempTotal, (parseFloat(gstValue.CGST) + parseFloat(gstValue.SGST)), true);
+                        tempTotal = calcGst.baseAmount;
+                        cgst = calcGst.cgst;
+                        sgst = calcGst.sgst;
+                    }
+                    return {
+                        item: data?.px_membership_plan?.planName,
+                        hsnCode: data?.px_membership_plan?.hsnCode,
+                        quantity: 1,
+                        total: tempTotal,
+                        subTotal: tempTotal,
+                        cgst: cgst,
+                        sgst: sgst,
+                        payment: payment?.px_payment_type?.name,
+                        paymentId: payment.id,
+                        cardNo: payment.cardNo,
+                        billNo: payment.billNo,
+                        grandTotal: Math.round(parseFloat(tempTotal) + parseFloat(cgst) + parseFloat(sgst))
+                    }
+                });
                 const billData = {
-                    subTotal: tempTotal,
-                    total: loggedInUser?.isShowGst ? parseFloat(tempTotal) + parseFloat(cgst) + parseFloat(sgst) : data?.px_membership_plan?.price,
-                    billNo: data?.billNo,
-                    payment: data?.px_payment_type?.name,
-                    cardNo: cardNo,
                     date: new Date(data?.createdAt),
                     customer: membershipDetail?.px_customer?.name, //data?.px_customer?.name,
                     customerID: data?.customerID,
                     phone: membershipDetail?.px_customer?.phoneNumber, //data?.px_customer?.phoneNumber,
-                    detail: [{
-                        item: data?.px_membership_plan?.planName,
-                        quantity: 1,
-                        rate: tempTotal,
-                        total: tempTotal
-                    }],
                     phoneNumber: loggedInUser.phoneNumber, //body?.px_customer?.phoneNumber,
                     billTitle: loggedInUser.billTitle,
                     address: loggedInUser.address,
@@ -152,8 +196,9 @@ export const useRenewPlan = () => {
                     roleID: loggedInUser.roleID,
                     gstNo: loggedInUser?.gstNo,
                     isShowGst: loggedInUser?.isShowGst,
-                    cgst: cgst,
-                    sgst: sgst,
+                    tableData: tableData,
+                    cgstPercentage: gstValue.CGST,
+                    sgstPercentage: gstValue.SGST,
                     reviewUrl: loggedInUser.reviewUrl && loggedInUser.reviewUrl.length ? loggedInUser.reviewUrl : null 
                 }
                 const branchData = {
@@ -168,12 +213,14 @@ export const useRenewPlan = () => {
                     reviewUrl: billData.reviewUrl
                 };
                 const printWindow = window.open("", "_blank", "popup=yes");
-                printWindow.document.write(PrintContent(billData, branchData, false));
-                printWindow.document.close();
-                printWindow.onload = () => {
-                    printWindow.print();
-                    printWindow.close();
-                };
+                if (printWindow && printWindow.document) {
+                    printWindow.document.write(PrintContent(billData, branchData, false));
+                    printWindow.document.close();
+                    printWindow.onload = () => {
+                        printWindow.print();
+                        printWindow.close();
+                    };
+                }
             } else {
                 showToast(message, false);
             }
@@ -182,6 +229,13 @@ export const useRenewPlan = () => {
         } finally {
             stopLoading();
         }
+    }
+
+    const handlePaymentDetail = (detail) => {
+        setValue('paymentDetail', detail);
+        togglePaymentModal()
+        setIsPayment(true);
+        getOtp();
     }
 
     const fetchDropDownList = async () => {
@@ -376,10 +430,19 @@ export const useRenewPlan = () => {
         setOpenVerifyMembershipByMerchantModal(false);
         setOpenVerifyMembershipModal(false);
     }
+
+    const selectedMemberShipPlan = useMemo(() => {
+        const selectedMemberShip = getValues('membershipPlanID');
+        if(selectedMemberShip && membershipPlan && membershipPlan.length > 0) {
+            return membershipPlan.find(item => item.id === selectedMemberShip);
+        }
+    }, [watch('membershipPlanID'), membershipPlan]);
+
     return {
         otp,
         control,
         isOtpSend,
+        isPayment,
         currentDate,
         verifiedOtp,
         paymentType,
@@ -388,17 +451,22 @@ export const useRenewPlan = () => {
         isCardSelected,
         membershipPlan,
         membershipDetail,
+        isPaymentModalOpen,
+        selectedMemberShipPlan,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         openVerifyMembershipByMerchantModal,
         getOtp,
         setOtp,
         onSubmit,
+        getValues,
         verifyOtp,
         setIsOtpSend,
         handleSubmit,
         cancelHandler,
         setVerifiedOtp,
+        togglePaymentModal,
+        handlePaymentDetail,
         handleVerifyMembership,
         setCustomerSelectedHandler,
         handleSendOtpForMembership,

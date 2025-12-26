@@ -23,6 +23,7 @@ import { useAddEditMembership } from "./hook/useAddEditMembership.hook";
 import AddCustomer from "../Bill/AddCustomer";
 import VerifyOtp from "../../components/VerifyOTPModel";
 import VerifyOtpMerchant from "../../components/VerifyOTPMerchantModel";
+import PaymentDetailsModle from "../../components/PaymentDetailsModal";
 
 const AddEditMembership = ({tag}) => {
     const {
@@ -31,6 +32,7 @@ const AddEditMembership = ({tag}) => {
         
         control,
         customer,
+        isPayment,
         isOtpSend,
         paymentType,
         currentDate,
@@ -38,6 +40,8 @@ const AddEditMembership = ({tag}) => {
         disabledButton,
         isCardSelected,
         membershipPlan,
+        selectedMemberShipPlan,
+        isPaymentModalOpen,
         isCustomerModalOpen,
         verifyCustomerMembership,
         openVerifyMembershipModal,
@@ -45,12 +49,15 @@ const AddEditMembership = ({tag}) => {
         setOtp,
         getOtp,
         onSubmit,
+        getValues,
         verifyOtp,
         setIsOtpSend,
         cancelHandler,
         handleSubmit,
         setVerifiedOtp,
         searchCustomer,
+        togglePaymentModal,
+        handlePaymentDetail,
         handleVerifyMembership,
         setIsCustomerModalOpen,
         setCustomerSelectedHandler,
@@ -63,7 +70,7 @@ const AddEditMembership = ({tag}) => {
     } = useAddEditMembership(tag);
     return (
         <>
-            <form onSubmit={handleSubmit(!isOtpSend ? getOtp : verifyCustomerMembership ? onSubmit : handleSendOtpForMembership)}>
+            <form onSubmit={handleSubmit(isPayment ? !isOtpSend ? getOtp : verifyCustomerMembership ? onSubmit : handleSendOtpForMembership : togglePaymentModal)}>
                 <Card>
                     <CardContent>
                         <Grid container spacing={2}>
@@ -107,8 +114,8 @@ const AddEditMembership = ({tag}) => {
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="customerID"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -163,8 +170,8 @@ const AddEditMembership = ({tag}) => {
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="membershipPlanID"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -197,8 +204,8 @@ const AddEditMembership = ({tag}) => {
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="managerName"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -228,8 +235,8 @@ const AddEditMembership = ({tag}) => {
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="validity"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -258,10 +265,10 @@ const AddEditMembership = ({tag}) => {
                                             }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={12}>
+                                    {/* <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="paymentID"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -291,12 +298,12 @@ const AddEditMembership = ({tag}) => {
                                                 required: 'Please Select Paid By'
                                             }}
                                         />
-                                    </Grid>
-                                    {isCardSelected &&
+                                    </Grid> */}
+                                    {/* {isCardSelected &&
                                         <Grid item xs={12} sm={12}>
                                             <Controller
-                                                control={control}
                                                 name="cardNo"
+                                                control={control}
                                                 render={({
                                                     field: { onBlur, onChange, value },
                                                     fieldState: { error },
@@ -327,11 +334,11 @@ const AddEditMembership = ({tag}) => {
                                                 }}
                                             />
                                         </Grid>
-                                    }
+                                    } */}
                                     <Grid item xs={12} sm={8}>
                                         <Controller
-                                            control={control}
                                             name="extraHours"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },
@@ -459,6 +466,14 @@ const AddEditMembership = ({tag}) => {
                 handleEnterOtp={handleVerifyMembership}
                 resendOtp={() => {}}
             />
+            {isPaymentModalOpen && (
+                <PaymentDetailsModle
+                    open={isPaymentModalOpen}
+                    handleClose={togglePaymentModal}
+                    handleOk={handlePaymentDetail}
+                    grandTotal={selectedMemberShipPlan?.price}
+                />
+            )}
         </>
     )
 };

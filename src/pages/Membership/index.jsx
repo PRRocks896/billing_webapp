@@ -127,12 +127,12 @@ const MembershipPlan = () => {
                                                                 <FiTrash2 size={15} />
                                                             </Button>
                                                         )}
-                                                        <Button
+                                                        {/* <Button
                                                             className="btn btn-primary"
                                                             onClick={() => handlePrint(row.id)}
                                                         >
                                                             <FiPrinter size={15} />
-                                                        </Button>
+                                                        </Button> */}
                                                     </Box>
                                                     {row?.minutes === 0 &&
                                                         <Button

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
@@ -27,7 +27,6 @@ import { DateRangePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
 
 
-
 const Home = () => {
   const {
     billList,
@@ -39,7 +38,7 @@ const Home = () => {
     fetchDailyReport,
     handleBranchChange
   } = useHome();
-
+  
   return (
     <>
       <Box className="card">
@@ -148,6 +147,7 @@ const Home = () => {
                       <TableCell>No</TableCell>
                       <TableCell>Branch Name</TableCell>
                       <TableCell>Total Customer</TableCell>
+                      <TableCell>Total Member</TableCell>
                       <TableCell>Cash Sales</TableCell>
                       <TableCell>UPI Sales</TableCell>
                       <TableCell>Card Sales</TableCell>
@@ -160,9 +160,10 @@ const Home = () => {
                         <TableCell>{(index + 1)}</TableCell>
                         <TableCell>{bill?.user?.lastName}</TableCell>
                         <TableCell>{bill?.totalCustomer}</TableCell>
-                        <TableCell>{bill?.totalCash}/-</TableCell>
-                        <TableCell>{bill?.totalUPI}/-</TableCell>
-                        <TableCell>{bill?.totalCard}/-</TableCell>
+                        <TableCell>{bill?.membershipCustomerCount}</TableCell>
+                        <TableCell>({bill?.cashCustomerCount}) {bill?.totalCash}/-</TableCell>
+                        <TableCell>({bill?.upiCustomerCount}) {bill?.totalUPI}/-</TableCell>
+                        <TableCell>({bill?.cardCustomerCount}) {bill?.totalCard}/-</TableCell>
                         <TableCell>{(bill?.totalCash) + (bill?.totalUPI) + (bill?.totalCard)}/-</TableCell>
                       </TableRow>
                     ))}

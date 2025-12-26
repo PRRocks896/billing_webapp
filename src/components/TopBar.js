@@ -16,7 +16,7 @@ const TopBar = ({
   btnTitle,
   inputName,
   navigatePath,
-  callAPI = () => {},
+  callAPI = () => { },
   addPermission = true,
 }) => {
   const navigate = useNavigate();
@@ -44,30 +44,39 @@ const TopBar = ({
         <Grid container justifyContent={"space-between"} alignItems={"center"}>
           <Grid item>
             {inputName && inputName.length > 0 &&
-            <Box className="search-box">
-              <InputBase
-                name={`${inputName}`}
-                placeholder={`Search ${inputName}`}
-                value={searchValue}
-                onChange={(e) => {
-                  setSearchValue(e.target.value.toUpperCase());
-                  searchValueHandler(e);
-                }}
-                endAdornment={
-                  <InputAdornment
-                    position="end"
-                    className="end-input-icon text-grey"
-                  >
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      edge="end"
+              <Box className="search-box">
+                <InputBase
+                  name={`${inputName}`}
+                  placeholder={`Search ${inputName}`}
+                  value={searchValue}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value.toUpperCase());
+                    searchValueHandler(e);
+                  }}
+                  endAdornment={
+                    <InputAdornment
+                      position="end"
+                      className="end-input-icon text-grey"
                     >
-                      <FiSearch />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
-            </Box>}
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        edge="end"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          '@media (max-width:425px)': {
+                            display: 'flex',
+                            marginRight: '50%'
+                          },
+                        }}
+                      >
+                        <FiSearch />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </Box>}
           </Grid>
           {addPermission && (
             <Grid item>

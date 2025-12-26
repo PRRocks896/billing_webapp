@@ -66,6 +66,7 @@ const Service = () => {
                 <TableCell>Name</TableCell>
                 <TableCell>Minutes</TableCell>
                 <TableCell>Amount</TableCell>
+                <TableCell>HSN Code</TableCell>
                 {rights.edit && <TableCell>Web Display</TableCell>}
                 {rights.edit && <TableCell>Status</TableCell>}
                 {(rights.edit || rights.delete) && (
@@ -85,6 +86,7 @@ const Service = () => {
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row?.mintues || 'N/A'}</TableCell>
                       <TableCell align="left">{row.amount}</TableCell>
+                      <TableCell align="left">{row.hsnCode}</TableCell>
                       {rights.edit && (
                         <TableCell>
                           <Switch

@@ -1,5 +1,5 @@
- // poppins fonts
- @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+// poppins fonts
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap");
 
 // @import "~slick-carousel/slick/slick.css";
 // @import "~slick-carousel/slick/slick-theme.css";
@@ -16,7 +16,7 @@
 * {
   outline: none !important;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -35,11 +35,11 @@
 body {
   margin: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
 }
 
 a {
@@ -51,17 +51,16 @@ img {
 }
 
 /* For Firefox */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* For other browsers */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
 
 .text-green {
   color: var(--color-green) !important;
@@ -105,7 +104,7 @@ h1 {
   margin-bottom: 0;
   font-weight: 400;
   line-height: normal;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: "Poppins", sans-serif !important;
 }
 
 p,
@@ -115,10 +114,10 @@ span {
   margin-bottom: 0;
   line-height: normal;
   line-height: 25.89px;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: "Poppins", sans-serif !important;
 }
 
-.btn-close{
+.btn-close {
   border-radius: 6px;
   padding: 10px 5px;
   cursor: pointer;
@@ -133,8 +132,8 @@ span {
 //   color: #fff /* Replace with your desired color */
 // }
 
-.text-center{
-  input{
+.text-center {
+  input {
     text-align: center;
   }
 }
@@ -149,11 +148,11 @@ span {
   width: 100%;
   border-radius: 6px !important;
   border: 1px solid var(--color-green);
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   text-transform: capitalize !important;
   color: var(--color-white);
   cursor: pointer;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: "Poppins", sans-serif !important;
 
   &.btn-primary {
     background-color: var(--color-green) !important;
@@ -176,6 +175,17 @@ span {
     background-color: var(--color-black) !important;
     border: 1px solid var(--color-black);
     color: var(--color-white);
+
+    @media (max-width: 425px) {
+      font-size: 14px !important;
+      height: 40px;
+      max-width: 100%;
+    }
+  }
+  @media (max-width: 600px) {
+    // font-size: 14px !important;
+    // height: 40px;
+    // max-width: 100%;
   }
 }
 
@@ -194,7 +204,9 @@ span {
     }
 
     .input-field {
-      input, select, textarea {
+      input,
+      select,
+      textarea {
         background: var(--color-white);
         border: 1px solid var(--color-grey);
         border-radius: 6px;
@@ -228,17 +240,19 @@ span {
         }
 
         &:focus {
-          border: 2px solid var(--color-black)
+          border: 2px solid var(--color-black);
         }
 
         &.Mui-disabled {
-          background-color: #EEEEEE;
+          background-color: #eeeeee;
           color: var(--color-grey);
         }
       }
     }
-    .border-error{
-      input, select, textarea {
+    .border-error {
+      input,
+      select,
+      textarea {
         background: var(--color-white);
         border: 1px solid red;
         border-radius: 6px;
@@ -258,7 +272,7 @@ span {
       font-size: 25px;
     }
 
-    .radio-field{
+    .radio-field {
       color: var(--color-black);
     }
     .checkbox-field {
@@ -285,7 +299,6 @@ span {
           }
         }
       }
-
     }
   }
 }
@@ -306,7 +319,7 @@ span {
       font-size: 20px;
       line-height: 30px;
 
-      @media(max-width:1280.98px) {
+      @media (max-width: 1280.98px) {
         font-size: 18px;
         line-height: 28px;
       }
@@ -320,7 +333,7 @@ span {
       display: block;
       line-height: 50px;
 
-      @media(max-width:1280.98px) {
+      @media (max-width: 1280.98px) {
         font-size: 35px;
         line-height: 40px;
       }
@@ -333,7 +346,7 @@ span {
       color: var(--color-green);
       stroke-width: 1.5;
 
-      @media(max-width:1280.98px) {
+      @media (max-width: 1280.98px) {
         width: 50px;
         height: 50px;
       }
@@ -400,8 +413,6 @@ span {
 //   }
 // }
 
-
-
 // modal style
 .modal-wrapper {
   position: absolute;
@@ -451,27 +462,27 @@ span {
   .modal-body {
     margin-top: 20px;
   }
-  .status-icon{
+  .status-icon {
     display: flex;
     justify-content: center;
     align-items: center;
   }
-  .fail-icon{
+  .fail-icon {
     align-self: center;
     color: red;
     font-size: 52px;
   }
-  .success-icon{
+  .success-icon {
     align-self: center;
     color: rgb(47, 255, 0);
     font-size: 52px;
   }
-  .warning-icon{
+  .warning-icon {
     align-self: center;
     color: rgb(238, 255, 0);
     font-size: 52px;
   }
-  .feedback-text{
+  .feedback-text {
     border-radius: 10px;
     padding: 20px;
 
@@ -483,15 +494,14 @@ span {
       line-height: 24px;
       color: var(--color-black);
     }
-
   }
-  .fail-text{
+  .fail-text {
     background: rgba(195, 90, 103, 0.2);
   }
-  .success-text{
+  .success-text {
     background: rgba(90, 195, 92, 0.2);
   }
-  .warning-text{
+  .warning-text {
     background: rgba(183, 195, 90, 0.2);
   }
   .confirmation-text {
@@ -530,7 +540,7 @@ span {
       }
     }
   }
-  textarea{
+  textarea {
     border: 1px solid var(--color-grey);
     border-radius: 10px;
     padding: 15px;
@@ -539,7 +549,7 @@ span {
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
   }
   .modal-footer {
     margin-top: 40px;
@@ -554,46 +564,46 @@ span {
 }
 
 // custom toast csss Toastify__toast--error
-.Toastify{
-  .Toastify__toast-container{
-    .Toastify__toast{
+.Toastify {
+  .Toastify__toast-container {
+    .Toastify__toast {
       background-color: var(--color-black);
       color: var(--color-white);
 
-      &.Toastify__toast--success{
-        .Toastify__toast-body{
-          .Toastify__toast-icon{
-            svg{
+      &.Toastify__toast--success {
+        .Toastify__toast-body {
+          .Toastify__toast-icon {
+            svg {
               fill: var(--color-green);
             }
           }
         }
-        .Toastify__close-button{
-          svg{
+        .Toastify__close-button {
+          svg {
             color: var(--color-white);
             fill: var(--color-white);
           }
         }
-        .Toastify__progress-bar{
+        .Toastify__progress-bar {
           background-color: var(--color-green);
         }
       }
 
-      &.Toastify__toast--errors{
-        .Toastify__toast-body{
-          .Toastify__toast-icon{
-            svg{
+      &.Toastify__toast--errors {
+        .Toastify__toast-body {
+          .Toastify__toast-icon {
+            svg {
               fill: red;
             }
           }
         }
-        .Toastify__close-button{
-          svg{
+        .Toastify__close-button {
+          svg {
             color: var(--color-white);
             fill: var(--color-white);
           }
         }
-        .Toastify__progress-bar{
+        .Toastify__progress-bar {
           background-color: red;
         }
       }
@@ -601,12 +611,12 @@ span {
   }
 }
 
-.right-table-wrapper{
+.right-table-wrapper {
   max-height: 360px; /* Set the maximum height for the table body to enable scrolling */
   overflow-y: auto; /* Enable vertical scrolling */
   position: relative;
 
-  thead{
+  thead {
     position: sticky;
     top: 0;
     z-index: 1;
@@ -637,21 +647,21 @@ span {
 //   flex-direction: column;
 // }
 
-  .rs-picker-toggle{
-    border-radius: 10px !important;
-  }
-  .rs-picker-toggle:hover{
-      border-color: var(--color-black) !important;
-  }
-  .rs-picker-toggle-active,
-  .rs-picker.rs-picker-focused {
-      box-shadow: none;
-      border-color: var(--color-black) !important;
+.rs-picker-toggle {
+  border-radius: 10px !important;
+}
+.rs-picker-toggle:hover {
+  border-color: var(--color-black) !important;
+}
+.rs-picker-toggle-active,
+.rs-picker.rs-picker-focused {
+  box-shadow: none;
+  border-color: var(--color-black) !important;
 
-      &:hover{
-          border-color: var(--color-black) !important;
-      }
+  &:hover {
+    border-color: var(--color-black) !important;
   }
+}
 
 .rs-btn-icon {
   background: var(--color-black);
@@ -664,8 +674,8 @@ span {
   font-size: 20px !important;
   color: #fff;
 
-  &:hover{
-    fill: #8CC714 !important;
+  &:hover {
+    fill: #8cc714 !important;
   }
 }
 
@@ -703,7 +713,10 @@ span {
   color: #fff;
 }
 
-.rs-picker-menu .rs-calendar .rs-calendar-table-cell-selected:hover .rs-calendar-table-cell-content {
+.rs-picker-menu
+  .rs-calendar
+  .rs-calendar-table-cell-selected:hover
+  .rs-calendar-table-cell-content {
   background-color: var(--color-black);
   color: #fff;
 }
@@ -712,7 +725,10 @@ span {
   background-color: transparent !important;
 }
 
-.rs-picker-menu .rs-calendar .rs-calendar-table-cell:hover .rs-calendar-table-cell-content {
+.rs-picker-menu
+  .rs-calendar
+  .rs-calendar-table-cell:hover
+  .rs-calendar-table-cell-content {
   background-color: var(--color-black);
   color: #fff;
 }
@@ -759,7 +775,8 @@ span {
   color: var(--color-black);
 }
 
-.rs-calendar-month-dropdown-cell-active .rs-calendar-month-dropdown-cell-content,
+.rs-calendar-month-dropdown-cell-active
+  .rs-calendar-month-dropdown-cell-content,
 .rs-picker-menu .rs-calendar .rs-calendar-month-dropdown-cell-content:hover {
   background-color: var(--color-black) !important;
   color: #fff !important;

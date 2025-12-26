@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { getAttendanceList } from "../../../service/staff";
 import { startLoading, stopLoading } from "../../../redux/loader";
@@ -11,16 +11,27 @@ export const useAttendanceListHomePage = () => {
 
   const [staffList, setStaffList] = useState([]);  
 
+  const user = useSelector((state) => state.loggedInUser);
+  const isAdmin = useMemo(() => {
+    return user && user.px_role && user.px_role.name && ['super admin', 'admin'].includes(user.px_role.name.toLowerCase())
+  }, [user]);
+
 const AttendanceList = async () => {
     try {
       dispatch(startLoading());
-      const body = {
-          isActive: true,
-          isDeleted: false,
+      let body = {
+        isActive: true,
+        isDeleted: false,
       };
+      if(!isAdmin) {
+        body = {
+          ...body,
+          createdBy: user?.id,
+        };
+      }
       const response = await getAttendanceList(body);
       if(response?.statusCode === 200) {
-        setStaffList(response.data)
+        setStaffList([...response.data, ...response.data, ...response.data, ...response.data])
       } else {
         showToast(response?.message);
       }

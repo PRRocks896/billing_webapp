@@ -195,7 +195,6 @@ export const useAddEditDailyReportHook = (tag) => {
                 if (response?.statusCode === 200) {
                     const { data } = response;
                     const { managerName } = data;
-                    console.log("managerName", managerName);
                     reset({
                         userID: data.userID,
                         dailyReportDate: moment(new Date(data.dailyReportDate)).format('yyyy-MM-DD'),
@@ -244,17 +243,17 @@ export const useAddEditDailyReportHook = (tag) => {
 
     const fetchDailySalesExpenseDetail = async () => {
         try {
-            const { success, data } = await getDailyDetail({
-                userID: isAdmin ? getValues('userID') : loggedInUser.id,
-                date: moment(new Date(getValues('dailyReportDate'))).format('yyyy-MM-DD')
-            });
-            if(success && data && data.length > 0) {
-                setValue('totalCustomer', data[0].totalCustomer || 0);
-                setValue('totalMemberGuest', data[0].membershipCustomer || 0);
-                setValue('cashSale', data[0].cashSales || 0);
-                setValue('cardSale', data[0].cardSales || 0);
-                setValue('upiSale', data[0].upiSales || 0);
-            }
+            // const { success, data } = await getDailyDetail({
+            //     userID: isAdmin ? getValues('userID') : loggedInUser.id,
+            //     date: moment(new Date(getValues('dailyReportDate'))).format('yyyy-MM-DD')
+            // });
+            // if(success && data && data.length > 0) {
+            //     setValue('totalCustomer', data[0].totalCustomer || 0);
+            //     setValue('totalMemberGuest', data[0].membershipCustomer || 0);
+            //     setValue('cashSale', data[0].cashSales || 0);
+            //     setValue('cardSale', data[0].cardSales || 0);
+            //     setValue('upiSale', data[0].upiSales || 0);
+            // }
         } catch (error) {
             showToast(error?.message, false);
         }

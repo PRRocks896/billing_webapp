@@ -157,7 +157,7 @@ const CustomerBillData = ({
                                     }</TableCell>
                                     <TableCell>{item?.service?.name}</TableCell>
                                     <TableCell>{item?.quantity}</TableCell>
-                                    <TableCell>{item.rate}</TableCell>
+                                    <TableCell>{row?.grandTotal}</TableCell>
                                   </TableRow>
                                 </>
                               );

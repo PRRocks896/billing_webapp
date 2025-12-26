@@ -1,6 +1,7 @@
 import React from "react";
 import { Controller } from "react-hook-form";
 
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -13,8 +14,10 @@ import { useAddEditLaundryWasher } from "./hook/useAddEditLaundryWasher";
 const AddEditLaundryWasher = ({ tag }) => {
   const {
     control,
+    countryCodeList,
     isEditByBranch,
     onSubmit,
+    getValues,
     handleSubmit,
     cancelHandler,
   } = useAddEditLaundryWasher(tag);
@@ -27,7 +30,36 @@ const AddEditLaundryWasher = ({ tag }) => {
             <Box className="card">
               <FormGroup className="form-field">
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={4}>
+                    <Controller
+                      name="laundryName"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl size="small" fullWidth>
+                          <TextField
+                            id="laundryName"
+                            label="Laundry Name"
+                            size="small"
+                            name="laundryName"
+                            value={value}
+                            onChange={(e) =>
+                              onChange(e.target.value.toUpperCase())
+                            }
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Laundry Name field required",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
                     <Controller
                       name="name"
                       control={control}
@@ -38,7 +70,7 @@ const AddEditLaundryWasher = ({ tag }) => {
                         <FormControl size="small" fullWidth>
                           <TextField
                             id="name"
-                            label="Name"
+                            label="Person Name"
                             size="small"
                             name="name"
                             value={value}
@@ -56,48 +88,91 @@ const AddEditLaundryWasher = ({ tag }) => {
                       }}
                     />
                   </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <Controller
-                      name="phoneNumber"
-                      control={control}
-                      render={({
-                        field: { onBlur, onChange, value },
-                        fieldState: { error },
-                      }) => (
-                        <FormControl size="small" fullWidth>
-                          <TextField
-                            id="phoneNumber"
-                            type="number"
-                            label="Phone Number"
-                            size="small"
-                            name="phoneNumber"
-                            value={value}
-                            onChange={(e) => {
-                              if (e.target.value.length < 11) {
-                                onChange(e);
-                              }
-                            }}
-                            onBlur={onBlur}
-                            error={!!error}
-                            helperText={error?.message}
-                          />
-                        </FormControl>
-                      )}
-                      rules={{
-                        required: "Phone Number is required",
-                        maxLength: {
-                          value: 10,
-                          message: "Phone Number must be 10 digit",
-                        },
-                        minLength: {
-                          value: 10,
-                          message: "Phone Number must be 10 digit",
-                        },
-                      }}
-                    />
+                  <Grid item xs={12} sm={4}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={4}>
+                        <Controller
+                          name="countryCode"
+                          control={control}
+                          render={({
+                            field: { value, onChange },
+                            fieldState: { error }
+                          }) => (
+                            <Autocomplete
+                              freeSolo
+                              size="small"
+                              id="countryCode"
+                              options={countryCodeList}
+                              value={countryCodeList.find((country) => country.value === value)?.value || null}
+                              disableClearable
+                              onChange={(event, newValue) => onChange(newValue.value)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Country Code"
+                                  error={!!error}
+                                  helperText={error?.message}
+                                />
+                              )}
+                              renderOption={(props, option) => (
+                                <li {...props} key={option.id}>
+                                  {option.label}
+                                </li>
+                              )}
+                            />
+                          )}
+                          rules={{
+                            required: "Please Select County Code",
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={8}>
+                        <Controller
+                          name="phoneNumber"
+                          control={control}
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <FormControl size="small" fullWidth>
+                              <TextField
+                                id="phoneNumber"
+                                type="number"
+                                label="Phone Number"
+                                size="small"
+                                name="phoneNumber"
+                                value={value}
+                                onChange={(e) => {
+                                  if (e.target.value.length < 11) {
+                                    onChange(e);
+                                  }
+                                }}
+                                onBlur={onBlur}
+                                error={!!error}
+                                helperText={error?.message}
+                              />
+                            </FormControl>
+                          )}
+                          rules={{
+                            required: "Phone Number is required",
+                            pattern: {
+                              value: /^\+?[1-9]\d{1,14}$/,
+                              message: "please enter valid number",
+                            },
+                            maxLength: {
+                              value: 10,
+                              message: "Phone Number must be 10 digit",
+                            },
+                            // minLength: {
+                            //   value: 10,
+                            //   message: "Phone Number must be 10 digit",
+                            // },
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={12}>
                     <Controller
                       name="address"
                       control={control}
@@ -125,6 +200,126 @@ const AddEditLaundryWasher = ({ tag }) => {
                       )}
                       rules={{
                         required: "Address field required",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="accountNumber"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl size="small" fullWidth>
+                          <TextField
+                            id="accountNumber"
+                            type="password"
+                            label="Account Number"
+                            size="small"
+                            name="accountNumber"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Account Number field required",
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="reEnterAccountNumber"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl size="small" fullWidth>
+                          <TextField
+                            id="reAccNo"
+                            type="number"
+                            label="Re Enter Account Number"
+                            size="small"
+                            name="name"
+                            value={value}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Re Enter Account Number field required",
+                        validate: (value) => {
+                          if (value !== getValues('accountNumber')) {
+                            return "Please Enter Correct Account Number"
+                          }
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="ifscCode"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl size="small" fullWidth>
+                          <TextField
+                            id="ifsc"
+                            label="IFSC Code"
+                            size="small"
+                            name="ifscCode"
+                            value={value}
+                            onChange={(e) => onChange(e.target.value.toUpperCase())}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "IFSC Code field required",
+                        pattern: {
+                          value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+                          message: 'Please Enter Valid IFSC Code'
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="accountHolder"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <FormControl size="small" fullWidth>
+                          <TextField
+                            id="accholderName"
+                            label="Account Holder Name"
+                            size="small"
+                            name="name"
+                            value={value}
+                            onChange={(e) => onChange(e.target.value.toUpperCase())}
+                            onBlur={onBlur}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        </FormControl>
+                      )}
+                      rules={{
+                        required: "Account Holder Name field required",
                       }}
                     />
                   </Grid>

@@ -49,8 +49,8 @@ const AddMemberShip = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={12}>
                                         <Controller
-                                            control={control}
                                             name="userID"
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value},
                                                 fieldState: { error }
@@ -92,8 +92,8 @@ const AddMemberShip = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Controller
-                                            control={control}
                                             name='billNo'
+                                            control={control}
                                             render={({
                                                 field: { onBlur, onChange, value },
                                                 fieldState: { error },

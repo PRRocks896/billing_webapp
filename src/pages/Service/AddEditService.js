@@ -205,6 +205,41 @@ const AddEditService = ({ tag }) => {
               </Grid>
               <Grid item xs={12} sm={3}>
                 <Controller
+                  name="hsnCode"
+                  control={control}
+                  render={({
+                    field: { onBlur, onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <FormControl
+                      size="small"
+                      variant="standard"
+                      className="form-control"
+                    >
+                      <TextField
+                        type="number"
+                        label="HSN Code*"
+                        size="small"
+                        name="hsnCode"
+                        value={value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    </FormControl>
+                  )}
+                  rules={{
+                    required: "HSN Code field required.",
+                    pattern: {
+                      value: /^\d*(\.\d{0,2})?$/i,
+                      message: "please enter digit only.",
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Controller
                   name="webPrice"
                   control={control}
                   render={({

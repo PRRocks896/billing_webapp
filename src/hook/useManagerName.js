@@ -30,6 +30,9 @@ const useManagerName = () => {
         );
         // const response = await getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "MANAGER"} : {...whereCondition, searchText: "MANAGER", createdBy: loggedInUser.id}, 100000));
         if(response && response.success) {
+            localStorage.setItem("managerId", response.data.map((item) => item.id).join(","));
+            localStorage.setItem("managerName", response.data.map((item) => item.nickName).join(","));
+            localStorage.setItem("serverDate", moment(new Date()).format("YYYY-MM-DD"));
             setManagerOption(response.data);
         }
     }
@@ -51,7 +54,7 @@ const useManagerName = () => {
 
     useEffect(() => {
         if(isDateChanged) {
-            setShowModal(true);
+            // setShowModal(true);
             localStorage.removeItem("managerId");
             localStorage.removeItem("managerName");
             localStorage.removeItem("serverDate");

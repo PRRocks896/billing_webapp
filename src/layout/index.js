@@ -49,6 +49,16 @@ const LayoutProvider = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  let location = useLocation();
+  let pageTitle = "";
+
+  if (location.pathname === "/") {
+    pageTitle = "Home";
+  } else if (location.pathname.includes("/")) {
+    pageTitle = location.pathname.split("/")[1];
+  }
+  pageTitle = pageTitle.toUpperCase();
+
   const {
     showModal,
     managerOption,
@@ -57,7 +67,7 @@ const LayoutProvider = () => {
     fetchManager,
     handleSelectManager
   } = useManagerName();
-  
+
   const token = getAuthToken();
 
   const [open, setOpen] = useState(true);
@@ -122,7 +132,7 @@ const LayoutProvider = () => {
     // eslint-disable-next-line
   }, [token]);
 
-  if(showModal) {
+  if (showModal) {
     return (
       <SelectManager
         fetchManager={fetchManager}
@@ -156,8 +166,30 @@ const LayoutProvider = () => {
             handleDrawerClose={handleDrawerClose}
             open={open}
           />
+
+
           <Main open={open} className="page-wrapper">
             <DrawerHeader theme={theme} />
+            <Box
+              sx={{
+                fontSize: "1.5rem",
+                fontWeight: 600,
+                textTransform: "capitalize",
+                textAlign: "center",
+                display: {
+                  xs: "block",  
+                  sm: "none",    
+                },
+                '@media (max-width: 320px)': {
+                  display: 'block',
+                },
+                '@media (min-width: 426px)': {
+                  display: 'none',
+                }
+              }}
+            >
+              {pageTitle}
+            </Box>
             <Outlet />
           </Main>
         </Box>

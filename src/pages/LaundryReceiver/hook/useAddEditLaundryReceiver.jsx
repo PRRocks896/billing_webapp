@@ -61,6 +61,13 @@ export const useAddEditLaundryManagement = (tag) => {
     control: control,
   });
 
+  const isAdmin = useMemo(() => {
+    if(loggedInUser && loggedInUser.px_role && ['super admin', 'admin'].includes(loggedInUser.px_role.name.toLowerCase())) {
+      return true;
+    }
+    return false;
+  }, [loggedInUser]);
+
   const addLaundryItem = () => {
     const index = getValues("detail").length;
     append({
@@ -118,7 +125,6 @@ export const useAddEditLaundryManagement = (tag) => {
       //   };
       // }
       delete payload.detail;
-      console.log(payload);
       const response = await updateBulkReceiver(payload);
       if (response && response.success) {
         showToast("Record Updated", true);
@@ -222,7 +228,7 @@ export const useAddEditLaundryManagement = (tag) => {
 
   useEffect(() => {
     const fetchDropDownList = async () => {
-      const whereCondition = {
+      let whereCondition = {
         isActive: true,
         isDeleted: false,
       };
@@ -230,7 +236,10 @@ export const useAddEditLaundryManagement = (tag) => {
         laundryWasherResponse,
         laundryItemResponse
       ] = await Promise.all([
-        getLaundryWasherDropdownList(whereCondition),
+        getLaundryWasherDropdownList(isAdmin ? whereCondition : {
+          ...whereCondition,
+          createdBy: loggedInUser.id
+        }),
         getLaundryItemDropdownList(whereCondition)
       ]);
       if (
@@ -252,7 +261,7 @@ export const useAddEditLaundryManagement = (tag) => {
     };
     fetchDropDownList();
     // eslint-disable-next-line
-  }, []);
+  }, [isAdmin]);
 
   useEffect(() => {
     tag === "edit" && fetchEditLaundryReceiver();

@@ -146,6 +146,7 @@ const useMembershipPlanHooks = () => {
             phone: data?.px_customer?.phoneNumber,
             detail: [{
               item: data?.px_membership_plan?.planName,
+              hsnCode: data?.px_membership_plan?.hsnCode,
               quantity: 1,
               rate: tempTotal,
               total: tempTotal
