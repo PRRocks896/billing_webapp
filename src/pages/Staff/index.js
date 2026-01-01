@@ -10,11 +10,12 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
-import { FiEdit3, FiTrash2, FiEye } from "react-icons/fi";
+import { FiEdit3, FiTrash2, FiEye, FiCamera } from "react-icons/fi";
 import TopBar from "../../components/TopBar";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { useStaff } from "./hook/useStaff";
 import { useNavigate } from "react-router-dom";
+import FaceAuthModal from "../../components/FaceAuthModal";
 
 const switchStyles = {
   color: "var(--color-black)",
@@ -28,6 +29,8 @@ const switchStyles = {
 
 const Staff = () => {
   const {
+    deleteId,
+    setDeleteId,
     isAdmin,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
@@ -40,6 +43,9 @@ const Staff = () => {
     visibleRows,
     count,
     rights,
+    openFaceAuth,
+    toggleOpenFaceAuth,
+    handleFaceRegister
   } = useStaff();
 
   const navigate = useNavigate();
@@ -69,6 +75,7 @@ const Staff = () => {
                 }
                 <TableCell>Emp. Type</TableCell>
                 {rights.edit && <TableCell>Status</TableCell>}
+                {/* {rights.edit && <TableCell>Face Register</TableCell>} */}
                 {(rights.edit || rights.delete) && (
                   <TableCell>Action</TableCell>
                 )}
@@ -95,9 +102,33 @@ const Staff = () => {
                           />
                         </TableCell>
                       )}
+                      {/* {(rights.edit && row.faceDetails === null) && (
+                        <TableCell width={50}>
+                          <Box className="table-action-btn">
+                            <Button className="btn btn-primary"
+                              onClick={() => {
+                                setDeleteId(row.id);
+                                toggleOpenFaceAuth();
+                              }}
+                            >
+                              <FiCamera size={15}/>
+                            </Button>
+                          </Box>
+                        </TableCell>
+                      )} */}
                       {(rights.edit || rights.delete) && (
                         <TableCell width={50}>
                           <Box className="table-action-btn">
+                            {row.faceDetails === null &&
+                              <Button className="btn btn-primary"
+                                onClick={() => {
+                                  setDeleteId(row.id);
+                                  toggleOpenFaceAuth();
+                                }}
+                              >
+                                <FiCamera size={15}/>
+                              </Button>
+                            }
                             {(rights.edit && rights.delete) && (
                               <Button
                                 className="btn btn-primary"
@@ -163,6 +194,15 @@ const Staff = () => {
           deleteHandler={deleteHandler}
         />
       )}
+      {openFaceAuth && 
+        <FaceAuthModal
+          open={openFaceAuth}
+          mode={'register'}
+          handleClose={toggleOpenFaceAuth}
+          staffId={deleteId}
+          onAuthSuccess={handleFaceRegister}
+        />
+      }
     </>
   );
 };

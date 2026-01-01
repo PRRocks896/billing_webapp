@@ -18,6 +18,7 @@ import { useMediaQuery } from "@mui/material";
 import ProfileIcon from '../assets/images/profile icon.svg';
 import { useEffect, useState } from "react";
 import Popover from "@mui/material/Popover";
+import FaceAuthModal from '../components/FaceAuthModal';
 
 
 const drawerWidth = 300;
@@ -56,6 +57,12 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
   const data = useSelector((state) => state.loggedInUser);
   let location = useLocation();
   let pageTitle = "";
+
+  const [openFaceAuth, setOpenFaceAuth] = useState(false);
+
+  const toggleOpenFaceAuth = () => {
+    setOpenFaceAuth(!openFaceAuth);
+  }
 
   if (location.pathname === "/") {
     pageTitle = "Home";
@@ -121,9 +128,9 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
             {pageTitle}
           </Typography>
           <Box className="manager-name">
-            {/* <Button style={{ width: '180px'}} className="btn btn-tertiary" onClick={() => setShowModal(true)}>
-              Select Manager
-            </Button> */}
+            <Button style={{ width: '180px'}} className="btn btn-tertiary" onClick={() => setOpenFaceAuth(true)}>
+              Attendance
+            </Button>
           </Box>
           {!showUsername && (
             <Box className="username">
@@ -179,6 +186,18 @@ const Header = ({ handleDrawerOpen, handleDrawerClose, open, setShowModal }) => 
         </DrawerHeader>
         <Sidebar />
       </Drawer>
+      {openFaceAuth && 
+        <FaceAuthModal
+          open={openFaceAuth}
+          mode={'attendance'}
+          handleClose={toggleOpenFaceAuth}
+          staffId={1}
+          onAuthSuccess={(data) => {
+            console.log(data);
+            toggleOpenFaceAuth();
+          }}
+        />
+      }
     </>
   );
 };

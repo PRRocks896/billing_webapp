@@ -20,6 +20,11 @@ export const useStaff = () => {
   // pagination start
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
+  const [openFaceAuth, setOpenFaceAuth] = useState(false);
+  
+  const toggleOpenFaceAuth = () => {
+    setOpenFaceAuth(!openFaceAuth);
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -138,7 +143,18 @@ export const useStaff = () => {
     }
   };
 
+  const handleFaceRegister = (data) => {
+    try {
+      console.log(data);
+      fetchStaffData();
+    } catch (error) {
+      showToast(error?.message, false);
+    }
+  }
+
   return {
+    deleteId,
+    setDeleteId,
     isAdmin,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
@@ -151,5 +167,8 @@ export const useStaff = () => {
     visibleRows,
     count,
     rights,
+    openFaceAuth,
+    toggleOpenFaceAuth,
+    handleFaceRegister
   };
 };

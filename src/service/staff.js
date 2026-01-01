@@ -63,3 +63,11 @@ export const updateStaff = async (payload, id) => {
   const response = await put(newUrl, payload);
   return response;
 };
+
+export const registerStaffPhoto = async (payload) => {
+  return await post(`${CREATE_STAFF_API}/register`, payload);
+}
+
+export const attendanceStaff = async (payload) => {
+  return await post(`${CREATE_STAFF_API}/attendance`, payload);
+}

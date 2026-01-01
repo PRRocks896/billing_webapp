@@ -22,7 +22,6 @@ import SalesExpense from "./component/saleExpense";
 import LowSale from "./component/lowSale";
 import ManagerSales from "./component/managerSales";
 import AttendanceList from "./component/attendanceList";
-import AttendanceCapture from "../../components/AttendanceCapture";
 import { DateRangePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
 
@@ -72,7 +71,6 @@ const Home = () => {
           </Grid>
         </Box>
       </Box>
-      <AttendanceCapture/>
       <br />
       {isAdmin &&
         <>
