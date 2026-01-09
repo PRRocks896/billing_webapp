@@ -22,6 +22,7 @@ import SalesExpense from "./component/saleExpense";
 import LowSale from "./component/lowSale";
 import ManagerSales from "./component/managerSales";
 import AttendanceList from "./component/attendanceList"
+import MonthWiseSale from "./component/monthWiseSale";
 import { DateRangePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
 
@@ -82,6 +83,14 @@ const Home = () => {
             </Box>
           </Box>
           <br />
+          <Box className="card">
+            <Box className="activity-card-wrapper mb-24">
+              <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Monthly Sales</Typography>
+              <br />
+              <MonthWiseSale/>
+            </Box>
+          </Box>
+          <br/>
           <Box className="card">
             <Box className="activity-card-wrapper mb-24">
               <Typography variant="subtitle2" sx={{ fontSize: 22 }}>Low Sales Report</Typography>

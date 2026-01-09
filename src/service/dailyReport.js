@@ -53,3 +53,7 @@ export const getManagerSalesReport = async (payload) => {
 export const getDailyDetail = async (payload) => {
     return await post(`${REPORT_LIST_API}/datails-api`, payload);
 }
+
+export const getMonthSale = async (payload) => {
+    return await post(`${REPORT_LIST_API}/chart-sales-reports`, payload);
+}
