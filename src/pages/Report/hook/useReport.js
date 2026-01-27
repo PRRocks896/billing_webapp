@@ -208,7 +208,7 @@ export const useReport = () => {
         isActive: true,
         isDeleted: false
       };
-      const response = await getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "MANAGER"} : {...whereCondition, searchText: "MANAGER", createdBy: loggedInUser.id}, 100000)); //getManager(whereCondition);
+      const response = await getStaffList(listPayload(0, ['admin', 'super admin'].includes(loggedInUser?.px_role?.name?.toLowerCase()) ? {...whereCondition, searchText: "MANAGER"} : {...whereCondition, searchText: "MANAGER"}, 100000)); //getManager(whereCondition);
       if(response && response.success) {
         const payload = response.data?.rows;
         setManagerList(payload);
@@ -222,12 +222,12 @@ export const useReport = () => {
   }
 
   useEffect(() => {
-    if (user.roleID === 1) {
+    // if (user.roleID === 1) {
       fetchBranch();
       fetchPaymentType();
       fetchManager();
       fetchAttUserList();
-    }
+    // }
   }, [user.roleID]);
 
   const fetchManagerReportData = async () => {

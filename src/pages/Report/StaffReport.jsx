@@ -70,6 +70,421 @@ const StaffReport = () => {
         setweekEnd,
         setWeekEndPercentage
     } = useReport();
+    if(roleId !== 1) {
+        return (
+            <>
+                <Box className="card">
+                    <Typography variant="h5">Manager Incentive Report</Typography>
+                    <br />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={3}>
+                            <Autocomplete
+                                freeSolo
+                                fullWidth
+                                size="small"
+                                disablePortal
+                                // multiple
+                                id="manager"
+                                options={managerList || []}
+                                getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
+                                // value={branch}
+                                onChange={(_, newValue) => {
+                                    const selected = JSON.parse(JSON.stringify(newValue));
+                                    if (selected && selected?.id) {
+                                        setSelectedInsentiveManager(selected?.id);
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Manager" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={1}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                fullWidth
+                                // multiple
+                                id="year"
+                                options={[...Array(10)].map((_, index) => new Date().getFullYear() - index) || []}
+                                getOptionLabel={(option) => option}
+                                value={insentiveManagerYear}
+                                onChange={(_, newValue) => {
+                                    setInsentiveManagerYear(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Year" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={1}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                fullWidth
+                                // multiple
+                                id="month"
+                                options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
+                                getOptionLabel={(option) => option}
+                                value={insentiveManagerMonth}
+                                onChange={(_, newValue) => {
+                                    setInsentiveManagerMonth(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Month" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl fullWidth>
+                                <Typography variant="subtitle1" fontWeight={500} fontSize={16}>Select:</Typography>
+                                <RadioGroup row={true}>
+                                    <FormControlLabel
+                                        value={0}
+                                        control={<Radio 
+                                            onChange={(e) => {
+                                                setSalesType(parseInt(e.target.value));
+                                                setWeekDays(null);
+                                                setWeekDaysPercentage(null);
+                                                setweekEnd(null);
+                                                setWeekEndPercentage(null);
+                                            }}
+                                            checked={salesType === 0}
+                                        />}
+                                        label={"All Days"}
+                                    />
+                                    <FormControlLabel
+                                        value={1}
+                                        control={<Radio
+                                            onChange={(e) => {
+                                                setSalesType(parseInt(e.target.value))
+                                                setWeekDays(null);
+                                                setWeekDaysPercentage(null);
+                                                setweekEnd(null);
+                                                setWeekEndPercentage(null);
+                                            }}
+                                            checked={salesType === 1}
+                                        />}
+                                        label={"Week Wise"}
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}></Grid>
+                        {salesType === 1 ?
+                            <>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Mon to Fri (₹)"
+                                        size="small"
+                                        value={weekDays || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setWeekDays("");
+                                                return;
+                                            }
+                                            if (!/^\d{0,10}$/.test(val)) return;
+                                            setWeekDays(e.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Mon to Fri (%)"
+                                        size="small"
+                                        value={weekDaysPercentage || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setWeekDaysPercentage("");
+                                                return;
+                                            }
+
+                                            // Allow only digits
+                                            if (!/^\d{0,3}$/.test(val)) return;
+
+                                            // Convert to number
+                                            const num = Number(val);
+
+                                            // Block if > 100
+                                            if (num > 100) return;
+
+                                            setWeekDaysPercentage(val);
+                                            // if (/^\d{0,3}$/.test(value)) {
+                                            //     setWeekDaysPercentage(value);
+                                            // }
+                                            // if (value === "" || /^\d+(\.\d{1,2})?$/.test(value) || /^(100|[0-9]{1,2})$/.test(value)) {
+                                            //     setWeekDaysPercentage(value);
+                                            // }
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Sat Sun (₹)"
+                                        size="small"
+                                        value={weekEnd}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setweekEnd("");
+                                                return;
+                                            }
+                                            if (!/^\d{0,10}$/.test(val)) return;
+                                            setweekEnd(e.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Sat Sun (%)"
+                                        size="small"
+                                        value={weekEndPercentage || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setWeekEndPercentage("");
+                                            return;
+                                            }
+
+                                            // Allow only digits
+                                            if (!/^\d{0,3}$/.test(val)) return;
+
+                                            // Convert to number
+                                            const num = Number(val);
+
+                                            // Block if > 100
+                                            if (num > 100) return;
+
+                                            setWeekEndPercentage(val);
+                                        }}
+                                    />
+                                </Grid>
+                            </>
+                        :
+                            <>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Amount (₹)"
+                                        size="small"
+                                        value={weekDays || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setWeekDays("");
+                                                return;
+                                            }
+                                            if (!/^\d{0,10}$/.test(val)) return;
+                                            setWeekDays(e.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Percentage (%)"
+                                        size="small"
+                                        value={weekDaysPercentage || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setWeekDaysPercentage("");
+                                                return;
+                                            }
+
+                                            // Allow only digits
+                                            if (!/^\d{0,3}$/.test(val)) return;
+
+                                            // Convert to number
+                                            const num = Number(val);
+
+                                            // Block if > 100
+                                            if (num > 100) return;
+
+                                            setWeekDaysPercentage(val);
+                                            // if (/^\d{0,3}$/.test(value)) {
+                                            //     setWeekDaysPercentage(value);
+                                            // }
+                                            // if (value === "" || /^\d+(\.\d{1,2})?$/.test(value) || /^(100|[0-9]{1,2})$/.test(value)) {
+                                            //     setWeekDaysPercentage(value);
+                                            // }
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Amount (₹)"
+                                        size="small"
+                                        value={weekEnd}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setweekEnd("");
+                                                return;
+                                            }
+                                            if (!/^\d{0,10}$/.test(val)) return;
+                                            setweekEnd(e.target.value);
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={2}>
+                                    <TextField
+                                        fullWidth
+                                        label="Percentage (%)"
+                                        size="small"
+                                        value={weekEndPercentage || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            // Allow empty for typing
+                                            if (val === "") {
+                                                setWeekEndPercentage("");
+                                            return;
+                                            }
+
+                                            // Allow only digits
+                                            if (!/^\d{0,3}$/.test(val)) return;
+
+                                            // Convert to number
+                                            const num = Number(val);
+
+                                            // Block if > 100
+                                            if (num > 100) return;
+
+                                            setWeekEndPercentage(val);
+                                        }}
+                                    />
+                                </Grid>  
+                            </>
+                        }
+                        <Grid item xs={12} sm={2}>
+                            <Button className="btn btn-tertiary" onClick={() => fetchInsentiveManagerReportData()}>Export</Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+                <br />
+                <Box className="card">
+                    <Typography variant="h5">Attendance Detail Staff Wise</Typography>
+                    <br />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={3}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                // multiple
+                                id="userID"
+                                options={attUserList || []}
+                                getOptionLabel={(option) => option.label}
+                                // value={branch}
+                                onChange={(_, newValue) => {
+                                    const selected = JSON.parse(JSON.stringify(newValue));
+                                    if (selected && selected?.value) {
+                                        setSelectedAttUser(selected?.value);
+                                        fetchStaffList(selected?.value);
+                                    } else {
+                                        setSelectedAttUser(null);
+                                        setSelectedStaff(null);
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="User" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                // multiple
+                                id="staffID"
+                                options={staffList || []}
+                                getOptionLabel={(option) => `${option?.nickName} (${option?.label})`}
+                                // getOptionLabel={(option) => option.label}
+                                // value={branch}
+                                onChange={(_, newValue) => {
+                                    const selected = JSON.parse(JSON.stringify(newValue));
+                                    if (selected && selected?.value) {
+                                        setSelectedStaff(selected?.value);
+                                    } else {
+                                        setSelectedStaff(null);
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Staff" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                // multiple
+                                id="year"
+                                options={[...Array(10)].map((_, index) => new Date().getFullYear() - index) || []}
+                                getOptionLabel={(option) => option}
+                                value={attYear}
+                                onChange={(_, newValue) => {
+                                    setAttYear(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Year" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Autocomplete
+                                freeSolo
+                                size="small"
+                                disablePortal
+                                // multiple
+                                id="month"
+                                options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
+                                getOptionLabel={(option) => option}
+                                value={attMonth}
+                                onChange={(_, newValue) => {
+                                    setAttMonth(newValue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Month" />
+                                )}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Button className="btn btn-tertiary" onClick={() => fetchStaffAttendanceReportData()}>Search</Button>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            {pdfData && (
+                                <iframe
+                                    title="PDF Viewer"
+                                    src={pdfData}
+                                    width="100%"
+                                    style={{ height: "calc(100vh - 100px)" }}
+                                />
+                            )}
+                        </Grid>
+                    </Grid>
+                </Box>
+            </>
+        )
+    }
     return (
         <>
             <Box className="card">

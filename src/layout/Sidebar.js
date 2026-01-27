@@ -56,7 +56,9 @@ const Sidebar = () => {
       return accessModules?.filter((row) => {
         if (
           [
+            "sales report",
             "report",
+            "staff report"
           ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
@@ -135,6 +137,8 @@ const Sidebar = () => {
             "user",
             "bill",
             "report",
+            "staff report",
+            "sales report",
             "membership",
             "membership redeem",
             "daily report",
