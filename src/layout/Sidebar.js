@@ -23,8 +23,14 @@ import { startLoading, stopLoading } from "../redux/loader";
 
 const Sidebar = () => {
   let panelNo = 3;
-  const { accessModules, id } = useSelector((state) => state.loggedInUser);
+  const { accessModules, id, px_role } = useSelector((state) => state.loggedInUser);
 
+  const isAdmin = useMemo(() => {
+    if(px_role && px_role.name) {
+      return ['admin', 'super admin'].includes(px_role?.name?.toLowerCase())
+    }
+    return false;
+  }, [px_role]);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -56,7 +62,6 @@ const Sidebar = () => {
       return accessModules?.filter((row) => {
         if (
           [
-            "sales report",
             "report",
             "staff report"
           ].includes(row.px_module.name.toLowerCase()) &&
@@ -71,6 +76,7 @@ const Sidebar = () => {
       return [];
     }
   }, [accessModules]);
+  
 
   const laundryManagementListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
@@ -433,10 +439,9 @@ const Sidebar = () => {
                   <FaTruckRampBox /> Reports
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails className="sub-menu-list">
-                {/* {reportListArray?.map((item, index) => {
-                  return ( */}
-                    <Box
+              {isAdmin ?
+                <AccordionDetails className="sub-menu-list">
+                  <Box
                       // key={index}
                       className={`sub-menu-link ${
                         activeTab === "staff report" && "active"
@@ -478,9 +483,36 @@ const Sidebar = () => {
                         Sales Report
                       </Typography>
                     </Box>
-                  {/* );
-                })} */}
-              </AccordionDetails>
+                </AccordionDetails>
+              :
+                <AccordionDetails className="sub-menu-list">
+                  {reportListArray?.map((item, index) => {
+                    return (
+                      <Box
+                        key={index}
+                        className={`sub-menu-link ${
+                          activeTab === item?.px_module?.path && "active"
+                        }`}
+                        onClick={() =>
+                          navigate(item?.px_module?.path, {
+                            state: {
+                              add: item.add,
+                              edit: item.edit,
+                              delete: item.delete,
+                              view: item.view,
+                            },
+                          })
+                        }
+                      >
+                        <Typography>
+                          <FiSquare />
+                          {item?.px_module?.name}
+                        </Typography>
+                      </Box>
+                    )
+                  })}
+                </AccordionDetails>
+              }
             </Accordion>
           )}
 
