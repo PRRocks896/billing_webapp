@@ -1,5 +1,5 @@
 import { REPORT_LIST_API, GST_REPORT_LIST_API } from "../utils/constant";
-import { getXlsx, getPDF } from "./webRequest";
+import { getXlsx, getPDF, post } from "./webRequest";
 
 export const getReportList = async (body) => {
   const response = await getXlsx(REPORT_LIST_API, body);
@@ -24,9 +24,13 @@ export const getAttendanceStaffReport = async (body, fileName) => {
 }
 
 export const getManagerInsentiveReport = async (body, fileName) => {
-return await getXlsx(`api/report/manager-incentive-details`, body, fileName);
+  return await getXlsx(`api/report/manager-incentive-details`, body, fileName);
 }
 
 export const getAuditorReport = async (body, fileName) => {
   return await getXlsx(`api/report/gst-sale-purchase`, body, fileName);
+}
+
+export const getSalaryBranchWiseReport = async (body) => {
+  return await post(`api/report/salary-branch-wise-list`, body);
 }

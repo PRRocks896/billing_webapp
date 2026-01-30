@@ -1,6 +1,6 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import { Controller } from "react-hook-form";
+
+import { FiTrash2 } from "react-icons/fi";
 
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import InputLabel from "@mui/material/InputLabel";
 import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
-import Switch from "@mui/material/Switch";
+import FormHelperText from "@mui/material/FormHelperText";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
@@ -20,52 +20,43 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TextField from "@mui/material/TextField";
 
-import TopBar from "../../components/TopBar";
-import ConfirmationModal from "../../components/ConfirmationModal";
-
 import useSalaryHooks from "./hooks/useSalary.hook";
 
-const switchStyles = {
-    color: "var(--color-black)",
-    "&.MuiChecked": {
-        color: "green",
-    },
-    "&.MuiChecked + .MuiSwitchTrack": {
-        backgroundColor: "lightgreen", // Customize the track color when checked
-    },
-};
-
 const Salary = () => {
-    const navigate = useNavigate();
     const {
         page,
         year,
         count,
         rights,
         month,
+        fields,
+        control,
         isAdmin,
         branchList,
         companyList,
         visibleRows,
+        isSubmitting,
         isDeleteModalOpen,
         setYear,
         setMonth,
         download,
+        onSubmit,
+        getValues,
+        resetForm,
         searchList,
+        handleRemove,
+        handleSubmit,
         deleteHandler,
         handleChangePage,
+        handleCalculation,
         setSelectedBranch,
         setSelectedCompany,
         changeStatusHandler,
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
+        handleValidateIfscCode,
+        handleCheckAdvanceMoreThenSalary
     } = useSalaryHooks();
-
-    let index = page * 10;
-
-    if(!isAdmin) {
-        navigate('/add-salary')
-    }
 
     return (
         <>
@@ -74,7 +65,7 @@ const Salary = () => {
                     <Grid item xs={12} sm={2}>
                         <FormControl fullWidth size="small">
                             <InputLabel id="month">Select Month</InputLabel>
-                            <Select 
+                            <Select
                                 size="small"
                                 label="Select Month"
                                 labelId="month"
@@ -105,7 +96,7 @@ const Salary = () => {
                                 name="year"
                                 value={year}
                                 onChange={(e) => {
-                                    if(e.target.value.length < 5) {
+                                    if (e.target.value.length < 5) {
                                         setYear(e.target.value);
                                     }
                                 }}
@@ -125,7 +116,7 @@ const Salary = () => {
                             options={companyList || []}
                             // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
                             onChange={(_event, value) => {
-                                if(value && typeof value === 'object') {
+                                if (value && typeof value === 'object') {
                                     setSelectedCompany(value.id);
                                     // fetchBranch();
                                 } else {
@@ -157,7 +148,7 @@ const Salary = () => {
                             options={branchList || []}
                             // value={branchList?.find((option) => option.id === selectedBranch) ?? ''}
                             onChange={(_event, value) => {
-                                if(value) {
+                                if (value) {
                                     setSelectedBranch(value?.id)
                                 } else {
                                     setSelectedBranch(null);
@@ -176,117 +167,261 @@ const Salary = () => {
                             )}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={2}>
+                    {/* <Grid item xs={12} sm={2}>
                         <Button fullWidth className="btn btn-tertiary" onClick={download}>Export</Button>
-                    </Grid>
-                    <Grid item xs={12} sm={2}>
-                        <Button fullWidth className="btn btn-tertiary" onClick={searchList}>Search</Button>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
+                <br />
+                <Button className="btn btn-tertiary" style={{ width: '100%' }} onClick={searchList}>Get Staff Detail</Button>
             </Box>
-            <br/>
-            <TopBar
-                btnTitle={"Add Salary"}
-                inputName=""
-                navigatePath="/add-salary"
-                // callAPI={searchEmployeeTypeHandler}
-                addPermission={rights.add}
-            />
-
-            {/* state listing */}
-            <Box className="card">
-                <TableContainer className="table-wrapper">
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">No</TableCell>
-                                <TableCell align="center">Name</TableCell>
-                                <TableCell align="center">Working Days</TableCell>
-                                <TableCell align="center">Week Off</TableCell>
-                                <TableCell align="center">Month</TableCell>
-                                <TableCell align="center">Year</TableCell>
-                                {rights.edit && <TableCell>Status</TableCell>}
-                                {(rights.edit || rights.delete) && (
-                                    <TableCell>Action</TableCell>
-                                )}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {visibleRows.length ? (
-                                visibleRows.map((row) => {
-                                    return (
-                                        <TableRow key={"membership_plan_" + row.id}>
-                                            <TableCell align="center">{(index += 1)}</TableCell>
-                                            <TableCell align="center">{row.px_staff?.nickName}</TableCell>
-                                            <TableCell align="center">{row.workingDays}</TableCell>
-                                            <TableCell align="center">{row.weekOff}</TableCell>
-                                            <TableCell align="center">{row.month}</TableCell>
-                                            <TableCell align="center">{row.year}</TableCell>
-                                            {rights.edit && (
-                                                <TableCell>
-                                                    <Switch
-                                                        style={switchStyles}
-                                                        checked={row.isActive}
-                                                        onChange={(e) => changeStatusHandler(e, row.id)}
-                                                    />
-                                                </TableCell>
-                                            )}
-                                            {(rights.edit || rights.delete) && (
-                                                <TableCell>
-                                                    <Box className="table-action-btn">
-                                                        {rights.edit && (
-                                                            <Button
-                                                                className="btn btn-primary"
-                                                                onClick={() =>
-                                                                    navigate(`/edit-salary/${row.id}`)
-                                                                }
-                                                            >
-                                                                <FiEdit3 size={15} />
-                                                            </Button>
-                                                        )}
-                                                        {rights.delete && (
-                                                            <Button
-                                                                className="btn btn-primary"
-                                                                onClick={deleteBtnClickHandler.bind(
-                                                                    null,
-                                                                    row.id
-                                                                )}
-                                                            >
-                                                                <FiTrash2 size={15} />
-                                                            </Button>
-                                                        )}
-                                                    </Box>
-                                                </TableCell>
-                                            )}
-                                        </TableRow>
-                                    );
-                                })
-                            ) : (
+            <br />
+            <form onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}>
+                <Box className="card">
+                    <TableContainer className="table-wrapper" style={{ height: 'calc(100vh - 200px)' }}>
+                        <Table style={{ width: '100%' }}>
+                            <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                                 <TableRow>
-                                    <TableCell sx={{ textAlign: "center" }} colSpan={7}>
-                                        No Salary Found
-                                    </TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Pet Name</TableCell>
+                                    <TableCell sx={{ width: '120px', minWidth: '120px' }}>Staff Type</TableCell>
+                                    <TableCell sx={{ width: '100px', minWidth: '100px' }}>Total Days</TableCell>
+                                    <TableCell sx={{ width: '120px', minWidth: '120px' }}>Working Days</TableCell>
+                                    <TableCell sx={{ width: '120px', minWidth: '120px' }}>Week Off</TableCell>
+                                    <TableCell sx={{ width: '100px', minWidth: '100px' }}>Leave</TableCell>
+                                    <TableCell sx={{ width: '120px', minWidth: '120px' }}>Salary</TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Expense Cut</TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Advance Taken</TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Advance Given</TableCell>
+                                    <TableCell sx={{ width: '120px', minWidth: '120px' }}>Leave Cut</TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Sub Salary</TableCell>
+                                    <TableCell sx={{ width: '100px', minWidth: '100px' }}>Tax</TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Payable Salary</TableCell>
+                                    <TableCell sx={{ width: '250px', minWidth: '350px' }}>Acc. Holder Name</TableCell>
+                                    <TableCell sx={{ width: '200px', minWidth: '250px' }}>Acc. Number</TableCell>
+                                    <TableCell sx={{ width: '175px', minWidth: '250px' }}>IFSC Code</TableCell>
+                                    <TableCell></TableCell>
                                 </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10]}
-                    component="div"
-                    count={count}
-                    rowsPerPage={10}
-                    page={page}
-                    onPageChange={handleChangePage}
-                />
-            </Box>
-
-            <ConfirmationModal
-                isDeleteModalOpen={isDeleteModalOpen}
-                setIsDeleteModalOpen={setIsDeleteModalOpen}
-                title="Salary"
-                deleteHandler={deleteHandler}
-            />
+                            </TableHead>
+                            <TableBody>
+                                {fields?.map((item, index) => (
+                                    <TableRow key={item.id}>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                            {item.staffName}
+                                        </TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.employeeType}</TableCell>
+                                        <TableCell sx={{ width: '100px', minWidth: '100px' }}>{item.totalDays}</TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.workingDays}</TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>
+                                            <Controller
+                                                name={`staff.${index}.weekOff`}
+                                                control={control}
+                                                render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <Select
+                                                            size="small"
+                                                            labelId="weekOff"
+                                                            value={value || ''}
+                                                            onChange={onChange}
+                                                            onBlur={onBlur}
+                                                        >
+                                                            <MenuItem value={0} selected={parseInt(value) === 0}>0</MenuItem>
+                                                            <MenuItem value={1} selected={parseInt(value) === 1}>1</MenuItem>
+                                                            <MenuItem value={2} selected={parseInt(value) === 2}>2</MenuItem>
+                                                            <MenuItem value={3} selected={parseInt(value) === 3}>3</MenuItem>
+                                                            <MenuItem value={4} selected={parseInt(value) === 4}>4</MenuItem>
+                                                        </Select>
+                                                        {error && error.message &&
+                                                            <FormHelperText error={true}>{error.message}</FormHelperText>
+                                                        }
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '100px', minWidth: '100px' }}>{item.leave}</TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.salary}</TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                            <Controller
+                                                name={`staff.${index}.expense`}
+                                                control={control}
+                                                rules={{
+                                                    required: "Expense cut is required",
+                                                    validate: (value) => {
+                                                        const regex = /^[0-9]*$/;
+                                                        return regex.test(value) || 'Invalid expense cut';
+                                                    }
+                                                }}
+                                                render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            value={value || '0'}
+                                                            id={`staff.${index}.expense`}
+                                                            onChange={(e) => {
+                                                                onChange(e.target.value)
+                                                                handleCalculation(index)
+                                                            }}
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>{item.takenAdvance}</TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                            <Controller
+                                                name={`staff.${index}.advance`}
+                                                control={control}
+                                                rules={{
+                                                    required: "Advance is required",
+                                                    pattern: {
+                                                        value: /^[0-9]*$/,
+                                                        message: "Invalid advance"
+                                                    },
+                                                    validate: (value) => {
+                                                        return handleCheckAdvanceMoreThenSalary(value, index)
+                                                    }
+                                                }}
+                                                render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            value={value || '0'}
+                                                            id={`staff.${index}.advance`}
+                                                            onChange={(e) => {
+                                                                onChange(e.target.value)
+                                                                handleCalculation(index)
+                                                            }}
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.leaveCut}</TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                            <Controller
+                                                name={`staff.${index}.subSalary`}
+                                                control={control}
+                                                render={({ field: { value } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            value={value}
+                                                            disabled
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '100px', minWidth: '100px' }}>{item.tax}</TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                            <Controller
+                                                name={`staff.${index}.payableSalary`}
+                                                control={control}
+                                                render={({ field: { value } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            value={value}
+                                                            disabled
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '250px', minWidth: '350px' }}>
+                                            <Controller
+                                                name={`staff.${index}.accountHolderName`}
+                                                control={control}
+                                                rules={{ required: 'Account holder name is required' }}
+                                                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            error={!!error}
+                                                            onChange={onChange}
+                                                            value={value || ''}
+                                                            placeholder="Enter Account Holder Name"
+                                                            helperText={error ? error.message : null}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '200px', minWidth: '250px' }}>
+                                            <Controller
+                                                name={`staff.${index}.accountNumber`}
+                                                control={control}
+                                                rules={{ required: 'Account number is required' }}
+                                                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            error={!!error}
+                                                            onChange={onChange}
+                                                            value={value || ''}
+                                                            placeholder="Enter Account Number"
+                                                            helperText={error ? error.message : null}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                            <Controller
+                                                name={`staff.${index}.ifscCode`}
+                                                control={control}
+                                                rules={{
+                                                    required: 'IFSC code is required',
+                                                    validate: async (value) => {
+                                                        if (!value) return true; // Skip validation if empty (required will handle it)
+                                                        return await handleValidateIfscCode(value);
+                                                    }
+                                                }}
+                                                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            error={!!error}
+                                                            onChange={(e) => onChange(e.target.value.toUpperCase())}
+                                                            value={value || ''}
+                                                            placeholder="Enter IFSC Code"
+                                                            helperText={error ? error.message : null}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                onClick={() => handleRemove(index)}
+                                            >
+                                                <FiTrash2 size={16} />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+                <br />
+                <Box className="card">
+                    <Grid container spacing={2} justifyContent="flex-end">
+                        <Grid item xs={12} sm={2}>
+                            <Button fullWidth disabled={isSubmitting} className="btn btn-primary" onClick={resetForm}>Reset</Button>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Button fullWidth disabled={isSubmitting} className="btn btn-tertiary" type="submit">
+                                {isSubmitting ? "Saving..." : "Save"}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </form>
         </>
     )
 }

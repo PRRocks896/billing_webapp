@@ -1,10 +1,15 @@
 import {
     SALARY
 } from "../utils/constant";
-import { get, post, remove, put, getXlxsWithFile } from "./webRequest";
+import { get, post, remove, put, getXlxsWithFile, getPDF } from "./webRequest";
 
 export const downloadSalary = async (body, fileName) => {
     return await getXlxsWithFile(`${SALARY}/report`, body, fileName);
+}
+
+export const validateIfscCode = async (payload) => {
+    const response = await post(`${SALARY}/validate-ifsc-code`, payload);
+    return response;
 }
 
 export const getSalary = async (body) => {
@@ -22,6 +27,10 @@ export const createSalary = async (body) => {
     return response;
 };
 
+export const createBulkSalary = async (body) => {
+    return await post(`${SALARY}/bulk-create`, body);
+}
+
 export const getSalaryById = async (id) => {
     const response = await get(`${SALARY}/${id}`);
     return response;
@@ -37,3 +46,6 @@ export const deleteSalary = async (id) => {
     return response;
 };
 
+export const exportCompanyWiseSalary = async (payload, fileName) => {
+    return await getPDF(`${SALARY}/company-salary-report`, payload, false, fileName);
+}

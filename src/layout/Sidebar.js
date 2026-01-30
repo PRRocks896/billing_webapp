@@ -26,7 +26,7 @@ const Sidebar = () => {
   const { accessModules, id, px_role } = useSelector((state) => state.loggedInUser);
 
   const isAdmin = useMemo(() => {
-    if(px_role && px_role.name) {
+    if (px_role && px_role.name) {
       return ['admin', 'super admin'].includes(px_role?.name?.toLowerCase())
     }
     return false;
@@ -76,7 +76,7 @@ const Sidebar = () => {
       return [];
     }
   }, [accessModules]);
-  
+
 
   const laundryManagementListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
@@ -98,7 +98,7 @@ const Sidebar = () => {
       return [];
     }
   }, [accessModules]);
-  
+
   const mainMenuListArray = useMemo(() => {
     if (accessModules && accessModules.length > 0) {
       return accessModules?.filter((row) => {
@@ -107,6 +107,7 @@ const Sidebar = () => {
             "user",
             "bill",
             // "report",
+            "salary report",
             "membership",
             "membership redeem",
             "daily report",
@@ -129,6 +130,7 @@ const Sidebar = () => {
       return accessModules?.filter((row) => {
         if (
           ![
+            "salary report",
             "laundry receiver",
             "laundry management",
             "laundry item",
@@ -263,9 +265,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -309,9 +310,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -354,9 +354,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -399,9 +398,8 @@ const Sidebar = () => {
                   return (
                     <Box
                       key={index}
-                      className={`sub-menu-link ${
-                        activeTab === item?.px_module?.path && "active"
-                      }`}
+                      className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                        }`}
                       onClick={() =>
                         navigate(item?.px_module?.path, {
                           state: {
@@ -442,57 +440,54 @@ const Sidebar = () => {
               {isAdmin ?
                 <AccordionDetails className="sub-menu-list">
                   <Box
-                      // key={index}
-                      className={`sub-menu-link ${
-                        activeTab === "staff report" && "active"
+                    // key={index}
+                    className={`sub-menu-link ${activeTab === "staff report" && "active"
                       }`}
-                      onClick={() =>
-                        navigate('/staff-report', {
-                          state: {
-                            add: true,
-                            edit: true,
-                            delete: true,
-                            view: true,
-                          },
-                        })
-                      }
-                    >
-                      <Typography>
-                        <FiSquare />
-                        Staff Report
-                      </Typography>
-                    </Box>
-                    <Box
-                      // key={index}
-                      className={`sub-menu-link ${
-                        activeTab === "sales report" && "active"
+                    onClick={() =>
+                      navigate('/staff-report', {
+                        state: {
+                          add: true,
+                          edit: true,
+                          delete: true,
+                          view: true,
+                        },
+                      })
+                    }
+                  >
+                    <Typography>
+                      <FiSquare />
+                      Staff Report
+                    </Typography>
+                  </Box>
+                  <Box
+                    // key={index}
+                    className={`sub-menu-link ${activeTab === "sales report" && "active"
                       }`}
-                      onClick={() =>
-                        navigate('/sales-report', {
-                          state: {
-                            add: true,
-                            edit: true,
-                            delete: true,
-                            view: true,
-                          },
-                        })
-                      }
-                    >
-                      <Typography>
-                        <FiSquare />
-                        Sales Report
-                      </Typography>
-                    </Box>
+                    onClick={() =>
+                      navigate('/sales-report', {
+                        state: {
+                          add: true,
+                          edit: true,
+                          delete: true,
+                          view: true,
+                        },
+                      })
+                    }
+                  >
+                    <Typography>
+                      <FiSquare />
+                      Sales Report
+                    </Typography>
+                  </Box>
                 </AccordionDetails>
-              :
+                :
                 <AccordionDetails className="sub-menu-list">
                   {reportListArray?.map((item, index) => {
                     return (
                       <Box
                         key={index}
-                        className={`sub-menu-link ${
-                          activeTab === item?.px_module?.path && "active"
-                        }`}
+                        className={`sub-menu-link ${activeTab === item?.px_module?.path && "active"
+                          }`}
                         onClick={() =>
                           navigate(item?.px_module?.path, {
                             state: {
