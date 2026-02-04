@@ -87,6 +87,7 @@ const Sidebar = () => {
             "laundry item",
             "laundry washer",
             "laundry receiver",
+            "laundry report"
           ].includes(row.px_module.name.toLowerCase()) && row.view
         ) {
           return row;
@@ -130,6 +131,7 @@ const Sidebar = () => {
       return accessModules?.filter((row) => {
         if (
           ![
+            "laundry report",
             "salary report",
             "laundry receiver",
             "laundry management",

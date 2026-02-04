@@ -231,7 +231,9 @@ const useSalaryHooks = () => {
           append({
             ...item,
             expense: '0',
-            advance: '0'
+            advance: '0',
+            isLeft: false,
+            isPaid: false
           })
         })
       }
@@ -334,15 +336,46 @@ const useSalaryHooks = () => {
     return true;
   }
 
+  const handleLeaveCalculation = (index) => {
+    const selectedStaffRecord = staffList.find((staff) => staff.staffId === getValues(`staff.${index}.staffId`));
+    const editableStaffRecord = getValues(`staff.${index}`);
+    const totalLeave = parseInt(editableStaffRecord.leave || '0'); //+ parseInt(editableStaffRecord.weekOff || '0');
+    let workingDays = editableStaffRecord.totalDays - totalLeave;
+    setValue(`staff.${index}.workingDays`, workingDays);
+    const perDaySalary = parseFloat(selectedStaffRecord.salary) / editableStaffRecord.totalDays;
+    setValue(`staff.${index}.leaveCut`, showTwoDecimal(perDaySalary * totalLeave));
+    const subSalary = (parseFloat(selectedStaffRecord.salary) - (perDaySalary * totalLeave));
+    setValue(`staff.${index}.subSalary`, showTwoDecimal(subSalary));
+    setStaffList(staffList.map((staff) => {
+      if(staff.staffID === selectedStaffRecord.staffID) {
+        return {
+          ...staff,
+          subSalary: showTwoDecimal(subSalary)
+        }
+      } else {
+        return staff;
+      }
+    }));
+  }
+
   const handleCalculation = (index) => {
     const selectedStaff = staffList.find((staff) => staff.staffId === getValues(`staff.${index}.staffId`));
-    if (selectedStaff && selectedStaff.subSalary) {
-      const expense = parseFloat(getValues(`staff.${index}.expense`)) || 0;
-      const advance = parseFloat(getValues(`staff.${index}.advance`)) || 0;
-      const total = selectedStaff.subSalary - expense - advance;
-      setValue(`staff.${index}.subSalary`, showTwoDecimal(total));
-      handlePayableSalary(index);
-    }
+    // if (selectedStaff && selectedStaff.subSalary) {
+    const editableStaffRecord = getValues(`staff.${index}`);
+    const totalLeave = parseInt(editableStaffRecord.leave || '0'); //+ parseInt(editableStaffRecord.weekOff || '0');
+    let workingDays = editableStaffRecord.totalDays - totalLeave;
+    setValue(`staff.${index}.workingDays`, workingDays);
+    const perDaySalary = parseFloat(selectedStaff.salary) / editableStaffRecord.totalDays;
+    setValue(`staff.${index}.leaveCut`, showTwoDecimal(perDaySalary * totalLeave));
+    const subSalary = (parseFloat(selectedStaff.salary) - (perDaySalary * totalLeave));
+    setValue(`staff.${index}.subSalary`, showTwoDecimal(subSalary));
+
+    const expense = parseFloat(getValues(`staff.${index}.expense`)) || 0;
+    const advance = parseFloat(getValues(`staff.${index}.advance`)) || 0;
+    const total = subSalary - expense - advance;
+    setValue(`staff.${index}.subSalary`, showTwoDecimal(total));
+    handlePayableSalary(index);
+    // }
   }
 
   const handlePayableSalary = (index) => {
@@ -436,6 +469,7 @@ const useSalaryHooks = () => {
     setIsDeleteModalOpen,
     deleteBtnClickHandler,
     handleValidateIfscCode,
+    handleLeaveCalculation,
     handleCheckAdvanceMoreThenSalary,
   }
 }

@@ -1,5 +1,5 @@
 import { LAUNDARYMANAGEMENT } from "../utils/constant";
-import { post, put, get, remove } from "./webRequest";
+import { post, put, get, remove, getPDF } from "./webRequest";
 
 export const getLaundryManagementList = async (body) => {
   return await post(`${LAUNDARYMANAGEMENT}/list`, body);
@@ -22,5 +22,9 @@ export const updateLaundaryManagement = async (payload, id) => {
 };
 
 export const fetchLaundryManagementViaPayload = async (payload) => {
-  return await post(`${LAUNDARYMANAGEMENT}/find`, payload);  
+  return await post(`${LAUNDARYMANAGEMENT}/find`, payload);
+};
+
+export const fetchReportLaundryManagement = async (payload, fileName) => {
+  return await getPDF(`${LAUNDARYMANAGEMENT}/item-report`, payload, false, fileName);
 };

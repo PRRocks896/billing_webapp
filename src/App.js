@@ -100,7 +100,7 @@ import AddEditLaundryReceiver from "./pages/LaundryReceiver/AddEditLaundryReceiv
 import StaffReport from "./pages/Report/StaffReport";
 import SalesReport from "./pages/Report/SalesReport";
 import CompanyStaffSalaryReport from "./pages/Report/CompanyStaffSalaryReport";
-
+import LaundryReport from "./pages/Report/laundryReport";
 
 const token = getAuthToken();
 
@@ -2056,6 +2056,17 @@ const App = () => {
             />
           ),
         },
+        {
+          path: 'laundry-report',
+          element: isOnline ? (isPendingDailyReport ? (
+            <LastDailyReportPending />
+          ) : (
+            <LaundryReport />
+          )
+          ) : (
+            <NoConnection />
+          )
+        }
       ],
     },
     { path: "login", element: !token ? <Login /> : <Navigate to="/" /> },

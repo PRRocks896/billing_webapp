@@ -19,6 +19,7 @@ import TableRow from "@mui/material/TableRow"
 import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import TextField from "@mui/material/TextField";
+import Switch from "@mui/material/Switch";
 
 import useSalaryHooks from "./hooks/useSalary.hook";
 
@@ -55,6 +56,7 @@ const Salary = () => {
         setIsDeleteModalOpen,
         deleteBtnClickHandler,
         handleValidateIfscCode,
+        handleLeaveCalculation,
         handleCheckAdvanceMoreThenSalary
     } = useSalaryHooks();
 
@@ -177,11 +179,13 @@ const Salary = () => {
             <br />
             <form onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}>
                 <Box className="card">
-                    <TableContainer className="table-wrapper" style={{ height: 'calc(100vh - 200px)' }}>
+                    <TableContainer className="table-wrapper">
                         <Table style={{ width: '100%' }}>
                             <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                                 <TableRow>
                                     <TableCell sx={{ width: '150px', minWidth: '150px' }}>Pet Name</TableCell>
+                                    <TableCell sx={{ width: '50px', minWidth: '50px' }}>Left</TableCell>
+                                    <TableCell sx={{ width: '50px', minWidth: '50px' }}>Paid</TableCell>
                                     <TableCell sx={{ width: '120px', minWidth: '120px' }}>Staff Type</TableCell>
                                     <TableCell sx={{ width: '100px', minWidth: '100px' }}>Total Days</TableCell>
                                     <TableCell sx={{ width: '120px', minWidth: '120px' }}>Working Days</TableCell>
@@ -207,9 +211,44 @@ const Salary = () => {
                                         <TableCell sx={{ width: '150px', minWidth: '150px' }}>
                                             {item.staffName}
                                         </TableCell>
+                                        <TableCell sx={{ width: '50px', minWidth: '50px' }}>
+                                            <Controller
+                                                name={`staff.${index}.isLeft`}
+                                                control={control}
+                                                render={({ field: {value, onChange}, fieldState: { error }}) => (
+                                                    <Switch
+                                                        // style={switchStyles}
+                                                        checked={value}
+                                                        onChange={onChange}
+                                                    />
+                                                )}
+                                            />
+                                        </TableCell>
+                                        <TableCell sx={{ width: '50px', minWidth: '50px' }}>
+                                            <Controller
+                                                name={`staff.${index}.isPaid`}
+                                                control={control}
+                                                render={({ field: {value, onChange}, fieldState: { error }}) => (
+                                                    <Switch
+                                                        // style={switchStyles}
+                                                        checked={value}
+                                                        onChange={onChange}
+                                                    />
+                                                )}
+                                            />
+                                        </TableCell>
                                         <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.employeeType}</TableCell>
                                         <TableCell sx={{ width: '100px', minWidth: '100px' }}>{item.totalDays}</TableCell>
-                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.workingDays}</TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>
+                                            {/* {item.workingDays} */}
+                                            <Controller
+                                                name={`staff.${index}.workingDays`}
+                                                control={control}
+                                                render={({ field: { value }}) => (
+                                                    <>{value}</>
+                                                )}
+                                            />
+                                        </TableCell>
                                         <TableCell sx={{ width: '120px', minWidth: '120px' }}>
                                             <Controller
                                                 name={`staff.${index}.weekOff`}
@@ -236,7 +275,34 @@ const Salary = () => {
                                                 )}
                                             />
                                         </TableCell>
-                                        <TableCell sx={{ width: '100px', minWidth: '100px' }}>{item.leave}</TableCell>
+                                        <TableCell sx={{ width: '100px', minWidth: '100px' }}>
+                                            <Controller
+                                                name={`staff.${index}.leave`}
+                                                control={control}
+                                                rules={{
+                                                    required: "Leave is required",
+                                                    validate: (value) => {
+                                                        const regex = /^[0-9]*$/;
+                                                        return regex.test(value) || 'Invalid Leave';
+                                                    }
+                                                }}
+                                                render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                                    <FormControl fullWidth size="small">
+                                                        <TextField
+                                                            size="small"
+                                                            value={value}
+                                                            id={`staff.${index}.leave`}
+                                                            onChange={(e) => {
+                                                                onChange(e.target.value);
+                                                                handleCalculation(index);
+                                                            }}
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    </FormControl>
+                                                )}
+                                            />
+                                        </TableCell>
                                         <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.salary}</TableCell>
                                         <TableCell sx={{ width: '150px', minWidth: '150px' }}>
                                             <Controller
@@ -253,7 +319,7 @@ const Salary = () => {
                                                     <FormControl fullWidth size="small">
                                                         <TextField
                                                             size="small"
-                                                            value={value || '0'}
+                                                            value={value}
                                                             id={`staff.${index}.expense`}
                                                             onChange={(e) => {
                                                                 onChange(e.target.value)
@@ -285,7 +351,7 @@ const Salary = () => {
                                                     <FormControl fullWidth size="small">
                                                         <TextField
                                                             size="small"
-                                                            value={value || '0'}
+                                                            value={value}
                                                             id={`staff.${index}.advance`}
                                                             onChange={(e) => {
                                                                 onChange(e.target.value)
@@ -298,7 +364,16 @@ const Salary = () => {
                                                 )}
                                             />
                                         </TableCell>
-                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>{item.leaveCut}</TableCell>
+                                        <TableCell sx={{ width: '120px', minWidth: '120px' }}>
+                                            {/* {item.leaveCut} */}
+                                            <Controller
+                                                name={`staff.${index}.leaveCut`}
+                                                control={control}
+                                                render={({ field: { value }}) => (
+                                                    <>{value}</>
+                                                )}
+                                            />
+                                        </TableCell>
                                         <TableCell sx={{ width: '150px', minWidth: '150px' }}>
                                             <Controller
                                                 name={`staff.${index}.subSalary`}

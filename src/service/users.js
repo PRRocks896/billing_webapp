@@ -23,6 +23,11 @@ export const createUser = async (body) => {
   return response;
 };
 
+export const dropdownUserList = async (body) => {
+  const response = await post(`${CREATE_USER_API}/findall`, body);
+  return response;
+}
+
 export const getUserById = async (id) => {
   const newUrl = await attachId(GET_SINGLE_USER_API, id);
   const response = await get(newUrl);
