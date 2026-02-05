@@ -179,11 +179,12 @@ const Salary = () => {
             <br />
             <form onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}>
                 <Box className="card">
-                    <TableContainer className="table-wrapper">
+                    <TableContainer className="table-wrapper" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                         <Table style={{ width: '100%' }}>
-                            <TableHead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                            <TableHead style={{ position: 'sticky', top: 0, zIndex: 2 }}>
                                 <TableRow>
-                                    <TableCell sx={{ width: '150px', minWidth: '150px' }}>Pet Name</TableCell>
+                                    <TableCell>No</TableCell>
+                                    <TableCell sx={{ width: '150px', minWidth: '150px', position: 'sticky', left: 0, zIndex: 1, backgroundColor: '#364865' }}>Pet Name</TableCell>
                                     <TableCell sx={{ width: '50px', minWidth: '50px' }}>Left</TableCell>
                                     <TableCell sx={{ width: '50px', minWidth: '50px' }}>Paid</TableCell>
                                     <TableCell sx={{ width: '120px', minWidth: '120px' }}>Staff Type</TableCell>
@@ -208,14 +209,15 @@ const Salary = () => {
                             <TableBody>
                                 {fields?.map((item, index) => (
                                     <TableRow key={item.id}>
-                                        <TableCell sx={{ width: '150px', minWidth: '150px' }}>
+                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell sx={{ width: '150px', minWidth: '150px', position: 'sticky', left: 0, zIndex: 1, backgroundColor: '#fff' }}>
                                             {item.staffName}
                                         </TableCell>
                                         <TableCell sx={{ width: '50px', minWidth: '50px' }}>
                                             <Controller
                                                 name={`staff.${index}.isLeft`}
                                                 control={control}
-                                                render={({ field: {value, onChange}, fieldState: { error }}) => (
+                                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                                     <Switch
                                                         // style={switchStyles}
                                                         checked={value}
@@ -228,7 +230,7 @@ const Salary = () => {
                                             <Controller
                                                 name={`staff.${index}.isPaid`}
                                                 control={control}
-                                                render={({ field: {value, onChange}, fieldState: { error }}) => (
+                                                render={({ field: { value, onChange }, fieldState: { error } }) => (
                                                     <Switch
                                                         // style={switchStyles}
                                                         checked={value}
@@ -244,7 +246,7 @@ const Salary = () => {
                                             <Controller
                                                 name={`staff.${index}.workingDays`}
                                                 control={control}
-                                                render={({ field: { value }}) => (
+                                                render={({ field: { value } }) => (
                                                     <>{value}</>
                                                 )}
                                             />
@@ -258,7 +260,7 @@ const Salary = () => {
                                                         <Select
                                                             size="small"
                                                             labelId="weekOff"
-                                                            value={value || ''}
+                                                            value={value || '0'}
                                                             onChange={onChange}
                                                             onBlur={onBlur}
                                                         >
@@ -369,7 +371,7 @@ const Salary = () => {
                                             <Controller
                                                 name={`staff.${index}.leaveCut`}
                                                 control={control}
-                                                render={({ field: { value }}) => (
+                                                render={({ field: { value } }) => (
                                                     <>{value}</>
                                                 )}
                                             />
