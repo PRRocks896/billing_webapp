@@ -101,6 +101,8 @@ import StaffReport from "./pages/Report/StaffReport";
 import SalesReport from "./pages/Report/SalesReport";
 import CompanyStaffSalaryReport from "./pages/Report/CompanyStaffSalaryReport";
 import LaundryReport from "./pages/Report/laundryReport";
+import PaymentBank from "./pages/PaymentBank";
+import AddEditPaymentBank from "./pages/PaymentBank/addEditPaymentBank";
 
 const token = getAuthToken();
 
@@ -303,16 +305,16 @@ const App = () => {
           ),
         },
         {
-          path: "add-advance",
+          path: "payment-bank",
           element: (
             <ProtectedRoute
-              path="add-advance"
+              path="payment-bank"
               Component={
                 isOnline ? (
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <AddEditAdvance tag="add" />
+                    <PaymentBank />
                   )
                 ) : (
                   <NoConnection />
@@ -322,16 +324,35 @@ const App = () => {
           ),
         },
         {
-          path: "edit-advance/:id",
+          path: "add-payment-bank",
           element: (
             <ProtectedRoute
-              path="edit-advance/:id"
+              path="add-payment-bank"
               Component={
                 isOnline ? (
                   isPendingDailyReport ? (
                     <LastDailyReportPending />
                   ) : (
-                    <AddEditAdvance tag="edit" />
+                    <AddEditPaymentBank tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          ),
+        },
+        {
+          path: "edit-payment-bank/:id",
+          element: (
+            <ProtectedRoute
+              path="edit-payment-bank/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditPaymentBank tag="edit" />
                   )
                 ) : (
                   <NoConnection />

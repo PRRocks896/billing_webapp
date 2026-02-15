@@ -161,3 +161,5 @@ export const LAUNDARYMANAGEMENT = "api/laundry-management";
 export const STOCK = "api/stock";
 
 export const LAUNDRYRECEIVER = "api/laundry-receiver";
+
+export const PAYMENTBANK = "api/payment-banks";

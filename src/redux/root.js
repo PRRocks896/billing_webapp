@@ -31,7 +31,8 @@ import LaundryItemReducer from "./laundryItem";
 import LaundryWasherReducer from "./laundryWasher";
 import LaundryManagementReducer from "./laundryManagement";
 import StockReducer from "./stock";
-import LaundryReceiverReducer from "./laundryReceiver" 
+import LaundryReceiverReducer from "./laundryReceiver"
+import PaymentBankReducer from "./paymentBank";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -63,10 +64,11 @@ const rootReducer = combineReducers({
   homePage: HomePageReducer,
   material: MaterialReducer,
   laundryItem: LaundryItemReducer,
-  laundryWasher: LaundryWasherReducer ,
+  laundryWasher: LaundryWasherReducer,
   laundryManagement: LaundryManagementReducer,
   stock: StockReducer,
   laundryReceiver: LaundryReceiverReducer,
+  paymentBank: PaymentBankReducer,
 
 });
 
