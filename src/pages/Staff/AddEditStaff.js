@@ -51,7 +51,86 @@ const AddEditStaff = ({ tag }) => {
               <Typography variant="subtitle1" fontWeight={700} fontSize={22}>Basic Detail</Typography>
               <FormGroup className="form-field">
                 <Grid container spacing={2}>
+                  {isAdmin &&
+                    <Grid item xs={12} sm={6}>
+                        <Controller
+                          name="userID"
+                          control={control}
+                          render={({
+                            field: { onBlur, onChange, value },
+                            fieldState: { error },
+                          }) => (
+                            <Autocomplete
+                              size="small"
+                              disablePortal
+                              id="branchId"
+                              label="Branch"
+                              options={branchList}
+                              getOptionLabel={(option) => option.branchName || ""}
+                              isOptionEqualToValue={(option, value) => {
+                                return value === option?.id;
+                              }}
+                              value={branchList.find((item) => item.id === value) || ''}
+                              onBlur={onBlur}
+                              onChange={(_event, newValue) => {
+                                onChange(newValue?.id);
+                              }}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Branch"
+                                  error={!!error}
+                                  helperText={error?.message}
+                                  // onChange={(e) => searchCustomer(e.target.value)}
+                                />
+                              )}
+                            />
+                          )}
+                        />
+                    </Grid>
+                  }
                   <Grid item xs={12} sm={6}>
+                    <Controller
+                      name="gender"
+                      control={control}
+                      render={({
+                        field: { onBlur, onChange, value },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          <FormControl>
+                          <Typography variant="subtitle1" fontWeight={500} fontSize={16}>Gender:</Typography>
+                            <RadioGroup
+                              sx={{ display: 'block'}}
+                              name="radio-buttons-group"
+                              value={value}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              error={!!error}
+                            >
+                              <FormControlLabel
+                                value="Male"
+                                control={<Radio />}
+                                label={"Male"}
+                              />
+                              <FormControlLabel
+                                value="Female"
+                                control={<Radio />}
+                                label={"Female"}
+                              />
+                            </RadioGroup>
+                          </FormControl>
+                          { error && error.message &&
+                            <FormHelperText error={true} >{error.message}</FormHelperText>
+                          }
+                        </>
+                      )}
+                      rules={{
+                        required: "Gender field required",
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
                     <Controller
                       name="employeeTypeID"
                       control={control}
@@ -89,44 +168,6 @@ const AddEditStaff = ({ tag }) => {
                         required: "Employee Type field required",
                       }}
                     />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    {isAdmin &&
-                      <Controller
-                        name="userID"
-                        control={control}
-                        render={({
-                          field: { onBlur, onChange, value },
-                          fieldState: { error },
-                        }) => (
-                          <Autocomplete
-                            size="small"
-                            disablePortal
-                            id="branchId"
-                            label="Branch"
-                            options={branchList}
-                            getOptionLabel={(option) => option.branchName || ""}
-                            isOptionEqualToValue={(option, value) => {
-                              return value === option?.id;
-                            }}
-                            value={branchList.find((item) => item.id === value) || ''}
-                            onBlur={onBlur}
-                            onChange={(_event, newValue) => {
-                              onChange(newValue?.id);
-                            }}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Branch"
-                                error={!!error}
-                                helperText={error?.message}
-                                // onChange={(e) => searchCustomer(e.target.value)}
-                              />
-                            )}
-                          />
-                        )}
-                      />
-                    }
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <Controller

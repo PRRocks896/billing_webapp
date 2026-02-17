@@ -40,6 +40,7 @@ export const useAddEditStaff = (tag) => {
     defaultValues: {
       userID: loggedInUser.id,
       employeeTypeID: "",
+      gender: "",
       name: "",
       nickName: "",
       countryCode: "",
@@ -245,6 +246,7 @@ export const useAddEditStaff = (tag) => {
           setValue("refName", response.data.refName);
           setValue("refPhone", response.data.refPhone);
           setValue("countryCode", response.data.countryCode);
+          setValue("gender", response.data.gender);
         } else {
           showToast(response?.message, false);
         }
