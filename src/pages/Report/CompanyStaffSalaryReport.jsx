@@ -8,6 +8,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 
+import CompanyStaffPaymentReport from "./CompanyStaffPayment";
 import UseCompanyStaffSalary from "./hook/useCompanyStaffSalary";
 
 const CompanyStaffSalaryReport = () => {
@@ -102,6 +103,7 @@ const CompanyStaffSalaryReport = () => {
                 <br />
                 <Button className="btn btn-tertiary" style={{ width: '100%' }} onClick={getReport}>Get Salary Report</Button>
             </Box>
+            <CompanyStaffPaymentReport/>
         </>
     )
 }

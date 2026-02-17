@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from 'moment';
 
-import { getReportList, getGstReportList, getManagerList, getStaffSalaryReport, getAttendanceStaffReport, getManagerInsentiveReport, getAuditorReport } from "../../../service/report";
+import { getAuditorStaffDetailReport, getReportList, getGstReportList, getManagerList, getStaffSalaryReport, getAttendanceStaffReport, getManagerInsentiveReport, getAuditorReport } from "../../../service/report";
 import { listPayload, showToast } from "../../../utils/helper";
 import { startLoading, stopLoading } from "../../../redux/loader";
 import { getCompanyList } from "../../../service/company";
@@ -54,6 +54,9 @@ export const useReport = () => {
   const [auditoDateRange, setAuditoDateRange] = useState([new Date(), new Date()]);
   const [auditorSelectedCompany, setAuditorSelectedCompany] = useState(null);
   const [selectedAuditorPayment, setSelectedAuditorPayment] = useState([]);
+
+  const [auditorStaffSelectedCompany, setAuditorStaffSelectedCompany] = useState(null);
+  const [auditorStaffSelectedBranch, setAuditorStaffSelectedBranch] = useState([]);
 
   const serviceList = [
     { value: 'bill', label: 'Bill' },
@@ -397,9 +400,31 @@ export const useReport = () => {
     }
   }
 
+  const fetchAuditorStaffReportData = async () => {
+    try {
+      dispatch(startLoading());
+      const branches = auditorStaffSelectedBranch.filter((item) => item.value).map((item) => item?.value)
+      let payload = {
+        companyID: auditorStaffSelectedCompany,
+        // branchID: auditorStaffSelectedBranch.filter((item) => item.value).map((item) => item?.value)
+      }
+      if(branches.length > 0) {
+        payload = {
+          ...payload,
+          branchID: branches
+        }
+      }
+      await getAuditorStaffDetailReport(payload, generateSlug(`${companyOptions.find((item) => item.value === auditorStaffSelectedCompany)?.label}_auditor_staff_detail_report.xlsx`.toLowerCase()));
+    } catch (error) {
+      showToast("No report found", false);
+    } finally {
+      dispatch(stopLoading());
+    }
+  }
+
   const fetchAuditorReportData = async () => {
     try {
-      dispatch(stopLoading());
+      dispatch(startLoading());
       setPdfData(null);
       const payload = {
         paymentID: selectedAuditorPayment,
@@ -498,6 +523,11 @@ export const useReport = () => {
     setWeekDays,
     setWeekDaysPercentage,
     setweekEnd,
-    setWeekEndPercentage
+    setWeekEndPercentage,
+    auditorStaffSelectedBranch,
+    auditorStaffSelectedCompany,
+    setAuditorStaffSelectedBranch,
+    setAuditorStaffSelectedCompany,
+    fetchAuditorStaffReportData
   };
 };

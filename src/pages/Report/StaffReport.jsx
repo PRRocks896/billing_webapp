@@ -68,7 +68,12 @@ const StaffReport = () => {
         setWeekDays,
         setWeekDaysPercentage,
         setweekEnd,
-        setWeekEndPercentage
+        setWeekEndPercentage,
+        auditorStaffSelectedBranch,
+        auditorStaffSelectedCompany,
+        setAuditorStaffSelectedBranch,
+        setAuditorStaffSelectedCompany,
+        fetchAuditorStaffReportData
     } = useReport();
     if(roleId !== 1) {
         return (
@@ -1038,6 +1043,59 @@ const StaffReport = () => {
                                 style={{ height: "calc(100vh - 100px)" }}
                             />
                         )}
+                    </Grid>
+                </Grid>
+            </Box>
+            <br/>
+            <Box className="card">
+                <Typography variant="h5">Auditor Staff Report</Typography>
+                <br />
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={3}>
+                        <Autocomplete
+                            freeSolo
+                            size="small"
+                            disablePortal
+                            // multiple
+                            id="Comapny"
+                            options={companyOptions || []}
+                            getOptionLabel={(option) => option.label}
+                            // value={branch}
+                            onChange={(_, newValue) => {
+                                handleBranchChange(newValue)
+                                fetchUserList(newValue?.value);
+                                setAuditorStaffSelectedCompany(newValue?.value);
+                            }}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Company" />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <Autocomplete
+                            freeSolo
+                            size="small"
+                            disablePortal
+                            multiple
+                            id="userID"
+                            options={userList || []}
+                            getOptionLabel={(option) => option.label}
+                            // value={branch}
+                            onChange={(_, newValue) => {
+                                const selected = JSON.parse(JSON.stringify(newValue));
+                                if (selected && Array.isArray(selected) && selected.length > 0) {
+                                    setAuditorStaffSelectedBranch(selected);
+                                } else {
+                                    setAuditorStaffSelectedBranch([]);
+                                }
+                            }}
+                            renderInput={(params) => (
+                                <TextField {...params} label="User" />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <Button className="btn btn-tertiary" onClick={() => fetchAuditorStaffReportData()}>Export</Button>
                     </Grid>
                 </Grid>
             </Box>

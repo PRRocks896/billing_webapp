@@ -34,3 +34,7 @@ export const getAuditorReport = async (body, fileName) => {
 export const getSalaryBranchWiseReport = async (body) => {
   return await post(`api/report/salary-branch-wise-list`, body);
 }
+
+export const getAuditorStaffDetailReport = async (body, fileName) => {
+  return await getXlsx(`api/staff/auditor-staff-details-fetch`, body, fileName);
+}
