@@ -69,8 +69,8 @@ const StaffReport = () => {
         setWeekDaysPercentage,
         setweekEnd,
         setWeekEndPercentage,
-        auditorStaffSelectedBranch,
-        auditorStaffSelectedCompany,
+        setAuditorStaffSelectedYear,
+        setAuditorStaffSelectedMonth,
         setAuditorStaffSelectedBranch,
         setAuditorStaffSelectedCompany,
         fetchAuditorStaffReportData
@@ -1051,6 +1051,42 @@ const StaffReport = () => {
                 <Typography variant="h5">Auditor Staff Report</Typography>
                 <br />
                 <Grid container spacing={2}>
+                    <Grid item xs={12} sm={2}>
+                        <Autocomplete
+                            freeSolo
+                            size="small"
+                            disablePortal
+                            // multiple
+                            id="year"
+                            options={[...Array(10)].map((_, index) => new Date().getFullYear() - index) || []}
+                            getOptionLabel={(option) => option}
+                            value={year}
+                            onChange={(_, newValue) => {
+                                setAuditorStaffSelectedYear(newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Year" />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                        <Autocomplete
+                            freeSolo
+                            size="small"
+                            disablePortal
+                            // multiple
+                            id="month"
+                            options={[...Array(12)].map((_, index) => (new Date(`01-01-${new Date().getFullYear()}`).getMonth() + 1) + index) || []}
+                            getOptionLabel={(option) => option}
+                            value={month}
+                            onChange={(_, newValue) => {
+                                setAuditorStaffSelectedMonth(newValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Month" />
+                            )}
+                        />
+                    </Grid>
                     <Grid item xs={12} sm={3}>
                         <Autocomplete
                             freeSolo

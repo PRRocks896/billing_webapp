@@ -55,6 +55,8 @@ export const useReport = () => {
   const [auditorSelectedCompany, setAuditorSelectedCompany] = useState(null);
   const [selectedAuditorPayment, setSelectedAuditorPayment] = useState([]);
 
+  const [auditorStaffSelectedYear, setAuditorStaffSelectedYear] = useState(new Date().getFullYear());
+  const [auditorStaffSelectedMonth, setAuditorStaffSelectedMonth] = useState(new Date().getMonth() + 1);
   const [auditorStaffSelectedCompany, setAuditorStaffSelectedCompany] = useState(null);
   const [auditorStaffSelectedBranch, setAuditorStaffSelectedBranch] = useState([]);
 
@@ -406,6 +408,8 @@ export const useReport = () => {
       const branches = auditorStaffSelectedBranch.filter((item) => item.value).map((item) => item?.value)
       let payload = {
         companyID: auditorStaffSelectedCompany,
+        year: auditorStaffSelectedYear,
+        month: auditorStaffSelectedMonth
         // branchID: auditorStaffSelectedBranch.filter((item) => item.value).map((item) => item?.value)
       }
       if(branches.length > 0) {
@@ -526,6 +530,8 @@ export const useReport = () => {
     setWeekEndPercentage,
     auditorStaffSelectedBranch,
     auditorStaffSelectedCompany,
+    setAuditorStaffSelectedMonth,
+    setAuditorStaffSelectedYear,
     setAuditorStaffSelectedBranch,
     setAuditorStaffSelectedCompany,
     fetchAuditorStaffReportData

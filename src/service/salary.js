@@ -49,3 +49,7 @@ export const deleteSalary = async (id) => {
 export const exportCompanyWiseSalary = async (payload, fileName) => {
     return await getPDF(`${SALARY}/company-salary-report`, payload, false, fileName);
 }
+
+export const exportCompanyWiseSalaryPayment = async (payload, fileName) => {
+    return await getXlxsWithFile(`${SALARY}/salary-payment-sheet`, payload, fileName);
+}

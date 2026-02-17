@@ -29,5 +29,5 @@ export const updatePaymentBank = async (payload, id) => {
 };
 
 export const getPaymentBankDropdownList = async (body) => {
-    return await post(`${PAYMENTBANK}/dropdown`, body);
+    return await post(`${PAYMENTBANK}/findAll`, body);
 };

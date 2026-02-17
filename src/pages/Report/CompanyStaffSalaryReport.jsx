@@ -103,6 +103,7 @@ const CompanyStaffSalaryReport = () => {
                 <br />
                 <Button className="btn btn-tertiary" style={{ width: '100%' }} onClick={getReport}>Get Salary Report</Button>
             </Box>
+            <br/>
             <CompanyStaffPaymentReport/>
         </>
     )
