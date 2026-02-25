@@ -33,7 +33,8 @@ const AttendanceList = async () => {
       if(response?.statusCode === 200) {
         setStaffList([...response.data, ...response.data, ...response.data, ...response.data])
       } else {
-        showToast(response?.message);
+        setStaffList([]);
+        // showToast(response?.message);
       }
     } catch(err) {
       showToast(err?.message, false);

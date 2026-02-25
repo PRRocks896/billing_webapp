@@ -130,8 +130,8 @@ export const useAddEditService = (tag) => {
         const response = await getServiceById(id);
         if (response?.statusCode === 200) {
           const category = {
-            value: response.data.px_service_category.id,
-            label: response.data.px_service_category.name,
+            value: response.data.px_service_categorie.id,
+            label: response.data.px_service_categorie.name,
           };
           setValue("name", response.data.name);
           setValue("amount", response.data.amount);

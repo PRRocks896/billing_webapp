@@ -99,7 +99,7 @@ const Room = () => {
                                                         {rights.edit && (
                                                             <Button
                                                                 className="btn btn-primary"
-                                                                onClick={() => navigate(`/edit-company/${row.id}`)}
+                                                                onClick={() => navigate(`/edit-room/${row.id}`)}
                                                             >
                                                                 <FiEdit3 size={15} />
                                                             </Button>

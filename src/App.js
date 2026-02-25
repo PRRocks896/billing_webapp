@@ -248,6 +248,44 @@ const App = () => {
           ),
         },
         {
+          path: 'add-advance',
+          element: (
+            <ProtectedRoute
+              path="add-advance"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditAdvance tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: 'edit-advance/:id',
+          element: (
+            <ProtectedRoute
+              path="add-advance/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditAdvance tag="edit" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
           path: "home-page",
           element: (
             <ProtectedRoute
