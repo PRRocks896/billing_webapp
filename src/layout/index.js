@@ -167,7 +167,7 @@ const LayoutProvider = () => {
             handleDrawerClose={handleDrawerClose}
             open={open}
           />
-          <GlobalChatListener />
+          {/* <GlobalChatListener /> */}
 
 
           <Main open={open} className="page-wrapper">

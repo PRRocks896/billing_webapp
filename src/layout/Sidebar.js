@@ -230,6 +230,7 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion>
 
+{/* 
           <Accordion
             expanded={expanded === "panel-chat"}
             onChange={handleChange("panel-chat")}
@@ -246,6 +247,7 @@ const Sidebar = () => {
               </Typography>
             </AccordionSummary>
           </Accordion>
+*/}
 
 
           {/* <Accordion
