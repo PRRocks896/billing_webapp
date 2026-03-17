@@ -12,6 +12,7 @@ import {
   FiGrid,
   FiSquare,
   FiRepeat,
+  FiMessageSquare
 } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 import { FaTruckRampBox } from "react-icons/fa6";
@@ -228,6 +229,24 @@ const Sidebar = () => {
               </Typography>
             </AccordionSummary>
           </Accordion>
+
+          <Accordion
+            expanded={expanded === "panel-chat"}
+            onChange={handleChange("panel-chat")}
+            className="menu-list"
+            onClick={() => navigate("/chat")}
+          >
+            <AccordionSummary
+              className="menu-title"
+              aria-controls="panel-chat-content"
+              id="panel-chat-header"
+            >
+              <Typography>
+                <FiMessageSquare /> Customer Chat
+              </Typography>
+            </AccordionSummary>
+          </Accordion>
+
 
           {/* <Accordion
             expanded={expanded === "panel-barcode"}

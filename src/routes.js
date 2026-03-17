@@ -34,6 +34,7 @@ import AddEditMembership from "./pages/Membership/addEditMembership";
 import Coupon from "./pages/Coupon";
 import AddEditCoupon from "./pages/Coupon/addEditCoupon";
 import BarCode from "../src/pages/Barcode/index";
+import Chat from "./pages/Chat";
 
 const token = getAuthToken();
 
@@ -44,7 +45,9 @@ const routes = createBrowserRouter([
     loader: checkIsAuthenticated,
     children: [
       { index: true, element: <Home /> },
+      { path: "chat", element: <Chat /> },
       { path: "barcode", element: <BarCode /> },
+
       { path: "coupon", element: <Coupon /> },
       { path: "add-coupon", element: <AddEditCoupon /> },
       { path: "edit-coupon/:id", element: <AddEditCoupon /> },

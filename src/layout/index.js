@@ -6,6 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
 
 import Header from "./Header";
+import GlobalChatListener from "../components/GlobalChatListener";
 import { getAuthToken, showToast } from "../utils/helper";
 import { loggedInUserAction } from "../redux/loggedInUser";
 import { fetchLoggedInUserData, fetchServerDate } from "../service/loggedInUser";
@@ -166,6 +167,7 @@ const LayoutProvider = () => {
             handleDrawerClose={handleDrawerClose}
             open={open}
           />
+          <GlobalChatListener />
 
 
           <Main open={open} className="page-wrapper">

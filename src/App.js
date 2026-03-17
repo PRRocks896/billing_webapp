@@ -103,6 +103,7 @@ import CompanyStaffSalaryReport from "./pages/Report/CompanyStaffSalaryReport";
 import LaundryReport from "./pages/Report/laundryReport";
 import PaymentBank from "./pages/PaymentBank";
 import AddEditPaymentBank from "./pages/PaymentBank/addEditPaymentBank";
+import Chat from "./pages/Chat";
 
 const token = getAuthToken();
 
@@ -227,6 +228,25 @@ const App = () => {
               }
             />
           ),
+        },
+        {
+          path: 'chat',
+          element: (
+            <ProtectedRoute
+              path="chat"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <Chat />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
         },
         {
           path: "advance",
