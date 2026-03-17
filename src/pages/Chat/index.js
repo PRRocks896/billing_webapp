@@ -57,13 +57,19 @@ const ChatPage = () => {
         setActiveRoomKey(defaultRoom.key);
     }, [user]);
 
+    const joinedRoomsRef = useRef(new Set());
+
     // 2. Join all rooms & Listen
     useEffect(() => {
         if (!socket || availableRooms.length === 0) return;
 
         // Join everyone in the possible rooms
         availableRooms.forEach(r => {
-            socket.emit('join_room', { type: r.type, id: r.id.toLowerCase() });
+            const roomKey = `${r.type}_${r.id.toLowerCase()}`;
+            if (!joinedRoomsRef.current.has(roomKey)) {
+                socket.emit('join_room', { type: r.type, id: r.id.toLowerCase() });
+                joinedRoomsRef.current.add(roomKey);
+            }
         });
 
         const handleUserJoined = (data) => {
@@ -96,7 +102,6 @@ const ChatPage = () => {
             if (!senderId || senderId === socket.id) return;
 
             setConversations((prev) => {
-                const isCurrent = selectedId === senderId;
                 const existing = prev[senderId] || {
                     messages: [],
                     name: `Customer ${senderId.slice(0, 4)}`,
@@ -104,6 +109,7 @@ const ChatPage = () => {
                     room: data.room // Fallback room from message payload
                 };
 
+                // Notification sound only for customer messages
                 if (data.sender === 'User' && isSoundEnabled) {
                     audioRef.current.play().catch(e => console.log('Audio blocked:', e));
                 }
@@ -113,7 +119,7 @@ const ChatPage = () => {
                     [senderId]: {
                         ...existing,
                         lastMessage: data.text,
-                        unread: (isCurrent || data.sender !== 'User') ? 0 : (existing.unread + 1),
+                        unread: (selectedId === senderId || data.sender !== 'User') ? 0 : (existing.unread + 1),
                         messages: [...existing.messages, {
                             id: Date.now() + Math.random(),
                             text: data.text,
@@ -160,7 +166,7 @@ const ChatPage = () => {
             socket.off('receive_message', messageHandler);
             socket.off('room_members', handleRoomMembers);
         };
-    }, [socket, availableRooms, selectedId, isSoundEnabled]);
+    }, [socket, availableRooms]); // Removed selectedId and isSoundEnabled
 
     useEffect(() => {
         if (selectedId && conversations[selectedId]?.unread > 0) {
