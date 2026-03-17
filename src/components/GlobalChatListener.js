@@ -15,6 +15,12 @@ const GlobalChatListener = () => {
     const [socket, setSocket] = useState(null);
     const audioRef = useRef(new Audio(NOTIFICATION_SOUND_URL));
 
+    const locationRef = useRef(location.pathname);
+
+    useEffect(() => {
+        locationRef.current = location.pathname;
+    }, [location.pathname]);
+
     useEffect(() => {
         if (!user || !user.id) return;
 
@@ -42,7 +48,7 @@ const GlobalChatListener = () => {
 
         const handleMessage = (data) => {
             // Only notify if NOT on the chat page
-            if (location.pathname !== '/chat' && data.sender === 'User') {
+            if (locationRef.current !== '/chat' && data.sender === 'User') {
                 audioRef.current.play().catch(e => console.log('Global audio blocked:', e));
                 
                 const roomName = data.room.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -73,7 +79,7 @@ const GlobalChatListener = () => {
         };
 
         const handleUserJoined = (data) => {
-            if (location.pathname !== '/chat' && data.userId !== newSocket.id) {
+            if (locationRef.current !== '/chat' && data.userId !== newSocket.id) {
                 // Determine user-friendly room name
                 const roomParts = data.room.split('_');
                 const roomType = roomParts[0].charAt(0).toUpperCase() + roomParts[0].slice(1);
@@ -94,7 +100,7 @@ const GlobalChatListener = () => {
         return () => {
             newSocket.disconnect();
         };
-    }, [user, location.pathname, navigate]);
+    }, [user, navigate]);
 
     return null; // This component doesn't render anything visible
 };
