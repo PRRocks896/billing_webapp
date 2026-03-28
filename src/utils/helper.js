@@ -2,7 +2,7 @@ import { redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const baseUrl = process.env.REACT_APP_BASE_URL;
+const baseUrl = "https://green-bill-api-dev.myjilo.com/"; //process.env.REACT_APP_BASE_URL;
 const apiUrl = `${baseUrl}`;
 const modifiedapiUrl = apiUrl.replace(/\/api\/?$/, '');
 const formattedApiUrl = modifiedapiUrl
@@ -58,13 +58,13 @@ export function calculateGSTDetails(amount, gstPercent, isInclusive = false) {
 }
 
 export const convertGstStringToNumber = (str) => {
-    // safe parse: trim, remove commas, handle empty/invalid
-    const cleaned = (str ?? "").toString().trim().replace(/,/g, "");
-    if (cleaned === "") return { formatted: "0.00", numeric: 0 };
-    const n = parseFloat(cleaned);
-    if (Number.isNaN(n)) return { formatted: "0.00", numeric: 0 };
-    const formatted = (n / 100).toFixed(2); // "0.09"
-    return { formatted, numeric: Number(formatted) };
+  // safe parse: trim, remove commas, handle empty/invalid
+  const cleaned = (str ?? "").toString().trim().replace(/,/g, "");
+  if (cleaned === "") return { formatted: "0.00", numeric: 0 };
+  const n = parseFloat(cleaned);
+  if (Number.isNaN(n)) return { formatted: "0.00", numeric: 0 };
+  const formatted = (n / 100).toFixed(2); // "0.09"
+  return { formatted, numeric: Number(formatted) };
 };
 
 export const getBaseAmountFromGST = (amountWithGST, gstPercent) => {
@@ -74,11 +74,11 @@ export const getBaseAmountFromGST = (amountWithGST, gstPercent) => {
 };
 export const generateUrl = (value) => {
   return `/${value
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, '')  // Remove special characters
-        .replace(/\s+/g, '-')       // Replace spaces with hyphens
-        .replace(/-+/g, '-')}`;       // Remove duplicate hyphens
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')  // Remove special characters
+    .replace(/\s+/g, '-')       // Replace spaces with hyphens
+    .replace(/-+/g, '-')}`;       // Remove duplicate hyphens
 }
 
 export const showTwoDecimalWithoutRound = (value) => {

@@ -81,7 +81,7 @@ const Service = () => {
                     <TableRow key={"service_" + row.id}>
                       <TableCell align="left">{(index += 1)}</TableCell>
                       <TableCell align="left">
-                        {row.px_service_category?.name}
+                        {row.px_service_categorie?.name}
                       </TableCell>
                       <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="left">{row?.mintues || 'N/A'}</TableCell>

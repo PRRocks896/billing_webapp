@@ -28,13 +28,22 @@ const AddEditService = ({ tag }) => {
   const {
     fields,
     control,
+    scrubsFields,
     categoryOptions,
+    recommendedFields,
+    therapyOptionsFields,
     addRow,
     onSubmit,
     setValue,
     removeRow,
     handleSubmit,
     cancelHandler,
+    addRecommendedRow,
+    removeRecommendedRow,
+    addScrubsRow,
+    removeScrubsRow,
+    addTherapyOptionsRow,
+    removeTherapyOptionsRow
   } = useAddEditService(tag);
 
   return (
@@ -336,7 +345,7 @@ const AddEditService = ({ tag }) => {
             </Grid>
           </FormGroup>
         </Box>
-        <br/>
+        <br />
         <Box className="card">
           <Controller
             name="thumbnilImage"
@@ -359,30 +368,30 @@ const AddEditService = ({ tag }) => {
             }}
           />
         </Box>
-        <br/>
+        <br />
         <Box className="card">
           <Controller
             name="images"
             control={control}
             render={({
-                field: { onChange, value },
-                fieldState: { error },
+              field: { onChange, value },
+              fieldState: { error },
             }) => (
-                <ImageUpload
-                    key={'img-upload'}
-                    value={value}
-                    onChange={onChange}
-                    error={error}
-                    multiple={true}
-                    accept={'image/*'}
-                />
+              <ImageUpload
+                key={'img-upload'}
+                value={value}
+                onChange={onChange}
+                error={error}
+                multiple={true}
+                accept={'image/*'}
+              />
             )}
             rules={{
-                required: 'Please Upload File'
+              required: 'Please Upload File'
             }}
           />
         </Box>
-        <br/>
+        <br />
         <Box className="card">
           <Controller
             name="backgrandImage"
@@ -400,35 +409,35 @@ const AddEditService = ({ tag }) => {
                 accept={'image/*'}
               />
             )}
-            rules={{
-              required: 'Please Upload File'
-            }}
+          // rules={{
+          //   required: 'Please Upload File'
+          // }}
           />
         </Box>
-        <br/>
+        <br />
         <Box className="card">
           <Controller
             name="video"
             control={control}
             render={({
-                field: { onChange, value },
-                fieldState: { error },
+              field: { onChange, value },
+              fieldState: { error },
             }) => (
-                <ImageUpload
-                    key={'video-upload'}
-                    title="Video Upload"
-                    value={value}
-                    onChange={onChange}
-                    error={error}
-                    accept={"video/mp4,video/x-m4v,video/*"}
-                />
+              <ImageUpload
+                key={'video-upload'}
+                title="Video Upload"
+                value={value}
+                onChange={onChange}
+                error={error}
+                accept={"video/mp4,video/x-m4v,video/*"}
+              />
             )}
-            rules={{
-                required: 'Please Upload File'
-            }}
+          // rules={{
+          //     required: 'Please Upload File'
+          // }}
           />
         </Box>
-        <br/>
+        <br />
         <Box className="card">
           <Typography variant="h6">Feature List</Typography>
           <TableContainer className="table-wrapper">
@@ -460,33 +469,33 @@ const AddEditService = ({ tag }) => {
                         name={`featureList.${index}.value`}
                         control={control}
                         render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
-                            <FormControl size="small" fullWidth>
-                                <TextField
-                                    type="text"
-                                    label=""
-                                    size="small"
-                                    value={value || ""}
-                                    onChange={(e) => onChange(e.target.value)}
-                                    onBlur={onBlur}
-                                    error={Boolean(error)}
-                                    helperText={error?.message ? error.message : ""}
-                                />
-                            </FormControl>
+                          <FormControl size="small" fullWidth>
+                            <TextField
+                              type="text"
+                              label=""
+                              size="small"
+                              value={value || ""}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={Boolean(error)}
+                              helperText={error?.message ? error.message : ""}
+                            />
+                          </FormControl>
                         )}
                       />
                     </TableCell>
                     <TableCell>
                       <Typography
-                          component="span"
-                          variant="caption"
-                          color="text"
-                          fontWeight="medium"
-                          onClick={() => removeRow(index)}
-                          style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center", color: 'red' }}
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={() => removeRow(index)}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center", color: 'red' }}
                       >
-                          {fields.length !== 1 ?
-                              <FiMinusCircle size={26} />
-                              : null}
+                        {fields.length !== 1 ?
+                          <FiMinusCircle size={26} />
+                          : null}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -495,6 +504,208 @@ const AddEditService = ({ tag }) => {
             </Table>
           </TableContainer>
         </Box>
+        <br />
+        <Box className="card">
+          <Typography variant="h6">Recommended For</Typography>
+          <TableContainer className="table-wrapper">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell width={"2%"}></TableCell>
+                  <TableCell>Value</TableCell>
+                  <TableCell width={"2%"}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {recommendedFields.fields.map((field, index) => (
+                  <TableRow key={field.id} id={field.id}>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={addRecommendedRow}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center" }}
+                      >
+                        {recommendedFields.fields.length === (index + 1) ? <FiPlusCircle size={26} /> : null}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`recommended.${index}.value`}
+                        control={control}
+                        render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                          <FormControl size="small" fullWidth>
+                            <TextField
+                              type="text"
+                              label=""
+                              size="small"
+                              value={value || ""}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={Boolean(error)}
+                              helperText={error?.message ? error.message : ""}
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={() => removeRecommendedRow(index)}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center", color: 'red' }}
+                      >
+                        {recommendedFields.fields.length !== 1 ?
+                          <FiMinusCircle size={26} />
+                          : null}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+        <br />
+        <Box className="card">
+          <Typography variant="h6">Scrub</Typography>
+          <TableContainer className="table-wrapper">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell width={"2%"}></TableCell>
+                  <TableCell>Value</TableCell>
+                  <TableCell width={"2%"}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {scrubsFields.fields.map((field, index) => (
+                  <TableRow key={field.id} id={field.id}>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={addScrubsRow}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center" }}
+                      >
+                        {scrubsFields.fields.length === (index + 1) ? <FiPlusCircle size={26} /> : null}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`scrubs.${index}.value`}
+                        control={control}
+                        render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                          <FormControl size="small" fullWidth>
+                            <TextField
+                              type="text"
+                              label=""
+                              size="small"
+                              value={value || ""}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={Boolean(error)}
+                              helperText={error?.message ? error.message : ""}
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={() => removeScrubsRow(index)}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center", color: 'red' }}
+                      >
+                        {scrubsFields.fields.length !== 1 ?
+                          <FiMinusCircle size={26} />
+                          : null}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+        <br />
+        <Box className="card">
+          <Typography variant="h6">Therapy Options</Typography>
+          <TableContainer className="table-wrapper">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell width={"2%"}></TableCell>
+                  <TableCell>Value</TableCell>
+                  <TableCell width={"2%"}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {therapyOptionsFields.fields.map((field, index) => (
+                  <TableRow key={field.id} id={field.id}>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={addTherapyOptionsRow}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center" }}
+                      >
+                        {therapyOptionsFields.fields.length === (index + 1) ? <FiPlusCircle size={26} /> : null}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`therapyOptions.${index}.value`}
+                        control={control}
+                        render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                          <FormControl size="small" fullWidth>
+                            <TextField
+                              type="text"
+                              label=""
+                              size="small"
+                              value={value || ""}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={Boolean(error)}
+                              helperText={error?.message ? error.message : ""}
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={() => removeTherapyOptionsRow(index)}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center", color: 'red' }}
+                      >
+                        {therapyOptionsFields.fields.length !== 1 ?
+                          <FiMinusCircle size={26} />
+                          : null}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+        <br />
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item md={1.5}>
             <Button type="submit" className="btn btn-tertiary">

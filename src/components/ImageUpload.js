@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { FiMinusCircle } from "react-icons/fi";
 import Box from '@mui/material/Box';
-import Input from '@mui/material/Input';
 import FormHelperText from '@mui/material/FormHelperText';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -11,24 +10,27 @@ import { useDropzone } from "react-dropzone";
 
 const ImageUpload = ({
     title = 'Image Upload',
-    value = [],
+    value,
     onChange,
     error,
     multiple = false,
     accept = 'image/*'
 }) => {
-    const handleFileChange = (event) => {
-        const files = Array.from(event.target.files);
-        onChange(multiple ? [...value, ...files] : [files[0]]);
-    };
-
     const handleRemoveImage = (index) => {
-        const newImages = value.filter((_, i) => i !== index);
-        onChange(newImages);
+        if (multiple) {
+            const newImages = (value || []).filter((_, i) => i !== index);
+            onChange(newImages);
+        } else {
+            onChange(null);
+        }
     };
 
     const onDrop = (acceptedFiles) => {
-        onChange(multiple ? [...value, ...acceptedFiles] : [acceptedFiles[0]]);
+        if (multiple) {
+            onChange([...(value || []), ...acceptedFiles]);
+        } else {
+            onChange(acceptedFiles[0] || null);
+        }
     };
 
     const { getRootProps, getInputProps } = useDropzone({
@@ -37,6 +39,27 @@ const ImageUpload = ({
         multiple: multiple
     });
 
+    const displayValues = multiple
+        ? (Array.isArray(value) ? value : (value ? [value] : []))
+        : (value ? [value] : []);
+
+    const getSource = (file) => {
+        if (!file) return '';
+        if (Array.isArray(file) && file.length === 0) return '';
+        if (Array.isArray(file) && file.length > 0) {
+            if (typeof file[0] === 'string') {
+                return imagePath(file[0]);
+            }
+            return URL.createObjectURL(file[0]);
+        } else if (typeof file === 'string') {
+            // return file.startsWith('http') || file.startsWith('blob:') || file.startsWith('data:') ? file : imagePath(file);
+            return imagePath(file);
+        } else {
+            return URL.createObjectURL(file);
+        }
+    };
+
+    const isVideo = accept && accept.includes('video');
 
     return (
         <Paper elevation={3} style={{ padding: '20px', margin: 'auto' }}>
@@ -45,15 +68,20 @@ const ImageUpload = ({
                 <input {...getInputProps()} accept={accept} />
                 <p>Drag & drop some files here, or click to select files</p>
             </div>
-            {/* <Input type="file" accept="image/*" multiple={multiple} onChange={handleFileChange} style={{ margin: '10px 0' }} /> */}
-            <br/>
+            <br />
             <Box sx={{
                 display: 'flex !important',
                 flexDirection: 'row !important',
+                flexWrap: 'wrap',
+                gap: '10px'
             }}>
-                {value.length > 0 && value.map((file, index) => (
-                    <Box key={index} sx={{ position: 'relative', marginBottom: '10px', width: 'auto' }}>
-                        <img style={{ height: '100px', width: '250px' }} crossOrigin="anonymous" src={typeof file === 'object' ? URL.createObjectURL(file) : imagePath(file)} alt={`uploaded_img_${index}`} />
+                {displayValues.length > 0 && displayValues.map((file, index) => (
+                    <Box key={index} sx={{ position: 'relative', width: 'auto' }}>
+                        {isVideo ? (
+                            <video style={{ height: '100px', width: '250px', objectFit: 'cover', backgroundColor: '#000' }} crossOrigin="anonymous" src={getSource(file)} controls />
+                        ) : (
+                            <img style={{ height: '100px', width: '250px', objectFit: 'cover' }} crossOrigin="anonymous" src={getSource(file)} alt={`uploaded_img_${index}`} />
+                        )}
                         <span
                             style={{
                                 zIndex: 99,
@@ -62,7 +90,10 @@ const ImageUpload = ({
                                 cursor: 'pointer',
                                 position: 'absolute',
                             }}
-                            onClick={() => handleRemoveImage(index)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveImage(index);
+                            }}
                         >
                             <FiMinusCircle size={26} style={{ backgroundColor: 'white', borderRadius: '50%' }} />
                         </span>
@@ -75,71 +106,3 @@ const ImageUpload = ({
 };
 
 export default ImageUpload;
-
-// // ImageUpload.js
-// import React from 'react';
-
-// import { FiMinusCircle } from "react-icons/fi";
-
-// import Box from '@mui/material/Box';
-// import Input from '@mui/material/Input';
-// import FormHelperText from '@mui/material/FormHelperText';
-// import Paper from '@mui/material/Paper';
-// import Typography from '@mui/material/Typography';
-// import { imagePath } from '../utils/helper';
-
-// const ImageUpload = ({
-//     title = 'Image Upload',
-//     value,
-//     onChange,
-//     error,
-//     multiple = false
-// }) => {
-//     const handleFileChange = (event) => {
-//         console.log(event.target.files);
-//         onChange(event.target.files[0]);
-//         // setSelectedFile(event.target.files[0]);
-//     };
-
-//     //   const handleUpload = () => {
-//     //     // Implement your upload logic here
-//     //     if (selectedFile) {
-//     //         console.log('File uploaded:', selectedFile);
-//     //         onChange(selectedFile);
-//     //       // You can send the file to the server or perform any other actions
-//     //     } else {
-//     //         console.log('No file selected');
-//     //         onChange(null);
-//     //     }
-//     //   };
-
-//     return (
-//         <Paper elevation={3} style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
-//             <Typography variant="h6">{title}</Typography>
-//             {value ?
-//                 <Box sx={{
-//                     display: 'flex',
-//                     position: 'relative'
-//                 }}>
-//                     <img style={{ width: '100%', height: '250px'}} crossOrigin="anonymous" src={typeof value === 'object' ? URL.createObjectURL(value) : typeof value === 'string' ? imagePath(value) : ''} alt="uploaded_img" />
-//                     <span style={{
-//                         zIndex: 99,
-//                         top: '-10px',
-//                         right: '-10px',
-//                         cursor: 'pointer',
-//                         position: 'absolute',
-//                     }} onClick={() => onChange(null)}>
-//                         <FiMinusCircle size={26} style={{ backgroundColor: 'white', borderRadius: '50%'}}/>
-//                     </span>
-//                 </Box>
-//                 :
-//                 <Input type="file" accept="image/*" onChange={handleFileChange} style={{ margin: '10px 0' }} />
-//             }
-//             {error && error.message &&
-//                 <FormHelperText error={true}>{error.message}</FormHelperText>
-//             }
-//         </Paper>
-//     );
-// };
-
-// export default ImageUpload;
