@@ -132,6 +132,7 @@ const Sidebar = () => {
       return accessModules?.filter((row) => {
         if (
           ![
+            "web setting",
             "laundry report",
             "salary report",
             "laundry receiver",
@@ -179,6 +180,7 @@ const Sidebar = () => {
             "seo",
             "city",
             "state",
+            "web setting"
           ].includes(row.px_module.name.toLowerCase()) &&
           row.view
         ) {
@@ -230,7 +232,7 @@ const Sidebar = () => {
             </AccordionSummary>
           </Accordion>
 
-{/* 
+          {/* 
           <Accordion
             expanded={expanded === "panel-chat"}
             onChange={handleChange("panel-chat")}

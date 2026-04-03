@@ -45,6 +45,11 @@ export const useAddEditService = (tag) => {
         index: 0,
         value: ""
       }],
+      faq: [{
+        index: 0,
+        title: "",
+        description: ""
+      }],
       hsnCode: "",
       slug: "",
       video: "",
@@ -54,6 +59,11 @@ export const useAddEditService = (tag) => {
 
     },
     mode: "onBlur",
+  });
+
+  const faqFields = useFieldArray({
+    name: "faq",
+    control: control,
   });
 
   const recommendedFields = useFieldArray({
@@ -75,6 +85,19 @@ export const useAddEditService = (tag) => {
     name: "featureList",
     control: control,
   });
+
+  const addFaqRow = () => {
+    const index = getValues("faq").length;
+    faqFields.append({
+      index: index,
+      title: "",
+      description: ""
+    });
+  }
+
+  const removeFaqRow = (index) => {
+    faqFields.remove(index);
+  }
 
   const addRow = () => {
     const index = getValues("featureList").length;
@@ -139,18 +162,18 @@ export const useAddEditService = (tag) => {
         formData.append("updatedBy", "" + loggedInUser?.id);
       }
       (Object.keys(payload)).forEach(key => {
-        if (!['recommended', 'scrubs', 'therapyOptions', 'thumbnilImage', 'backgrandImage', 'video', 'images', 'featureList'].includes(key)) {
+        if (!['faq', 'recommended', 'scrubs', 'therapyOptions', 'thumbnilImage', 'backgrandImage', 'video', 'images', 'featureList'].includes(key)) {
           formData.append(key, payload[key]);
         }
       });
       if (payload && payload.video) {
-        formData.append('video', payload.video[0]);
+        formData.append('video', payload.video);
       }
       if (payload && payload.thumbnilImage) {
-        formData.append('thumbnilImage', payload.thumbnilImage[0]);
+        formData.append('thumbnilImage', payload.thumbnilImage);
       }
       if (payload && payload.backgrandImage) {
-        formData.append('backgrandImage', payload.backgrandImage[0]);
+        formData.append('backgrandImage', payload.backgrandImage);
       }
       if (payload && payload.images && Array.isArray(payload.images)) {
         payload.images.filter((image) => typeof image === 'object').forEach((image) => {
@@ -172,6 +195,10 @@ export const useAddEditService = (tag) => {
       }
       if (payload && payload.therapyOptions && Array.isArray(payload.therapyOptions)) {
         formData.append('therapyOptions', JSON.stringify(payload.therapyOptions.map((therapyOptions) => therapyOptions.value)));
+      }
+      if (payload && payload.faq && Array.isArray(payload.faq)) {
+        const faqData = payload.faq.map((faq) => ({ title: faq.title, description: faq.description }));
+        formData.append('faq', JSON.stringify(faqData));
       }
 
       const response =
@@ -222,6 +249,7 @@ export const useAddEditService = (tag) => {
           setValue("recommended", Array.isArray(response.data.recommended) ? response.data.recommended?.map((recommended, index) => ({ index, value: recommended })) : response.data.recommended.length > 0 ? JSON.parse(response.data.recommended).map((recommended, index) => ({ index, value: recommended })) : [{ index: 0, value: "" }]);
           setValue("scrubs", Array.isArray(response.data.scrubs) ? response.data.scrubs?.map((scrubs, index) => ({ index, value: scrubs })) : response.data.scrubs.length > 0 ? JSON.parse(response.data.scrubs).map((scrubs, index) => ({ index, value: scrubs })) : [{ index: 0, value: "" }]);
           setValue("therapyOptions", Array.isArray(response.data.therapyOptions) ? response.data.therapyOptions?.map((therapyOptions, index) => ({ index, value: therapyOptions })) : response.data.therapyOptions.length > 0 ? JSON.parse(response.data.therapyOptions).map((therapyOptions, index) => ({ index, value: therapyOptions })) : [{ index: 0, value: "" }]);
+          setValue("faq", Array.isArray(response.data.faq) ? response.data.faq?.map((faq, index) => ({ index, title: faq.title, description: faq.description })) : response.data.faq.length > 0 ? JSON.parse(response.data.faq).map((faq, index) => ({ index, title: faq.title, description: faq.description })) : [{ index: 0, title: "", description: "" }]);
         } else {
           showToast(response?.message, false);
         }
@@ -268,6 +296,7 @@ export const useAddEditService = (tag) => {
   return {
     fields,
     control,
+    faqFields,
     scrubsFields,
     categoryOptions,
     recommendedFields,
@@ -275,7 +304,9 @@ export const useAddEditService = (tag) => {
     addRow,
     onSubmit,
     setValue,
+    addFaqRow,
     removeRow,
+    removeFaqRow,
     handleSubmit,
     cancelHandler,
     addRecommendedRow,

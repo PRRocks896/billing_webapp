@@ -33,6 +33,7 @@ import LaundryManagementReducer from "./laundryManagement";
 import StockReducer from "./stock";
 import LaundryReceiverReducer from "./laundryReceiver"
 import PaymentBankReducer from "./paymentBank";
+import WebSettingReducer from "./webSetting";
 
 const rootReducer = combineReducers({
   loader: LoaderReducer,
@@ -69,7 +70,7 @@ const rootReducer = combineReducers({
   stock: StockReducer,
   laundryReceiver: LaundryReceiverReducer,
   paymentBank: PaymentBankReducer,
-
+  webSetting: WebSettingReducer
 });
 
 export default rootReducer;

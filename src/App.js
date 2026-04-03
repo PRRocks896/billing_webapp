@@ -104,7 +104,8 @@ import LaundryReport from "./pages/Report/laundryReport";
 import PaymentBank from "./pages/PaymentBank";
 import AddEditPaymentBank from "./pages/PaymentBank/addEditPaymentBank";
 import Chat from "./pages/Chat";
-
+import WebSetting from "./pages/WebSetting";
+import AddEditWebSetting from "./pages/WebSetting/addEditWebSetting";
 const token = getAuthToken();
 
 const App = () => {
@@ -240,6 +241,63 @@ const App = () => {
                     <LastDailyReportPending />
                   ) : (
                     <Chat />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: 'web-setting',
+          element: (
+            <ProtectedRoute
+              path="web-setting"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <WebSetting />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: 'add-web-setting',
+          element: (
+            <ProtectedRoute
+              path="add-web-setting"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditWebSetting tag="add" />
+                  )
+                ) : (
+                  <NoConnection />
+                )
+              }
+            />
+          )
+        },
+        {
+          path: 'edit-web-setting/:id',
+          element: (
+            <ProtectedRoute
+              path="edit-web-setting/:id"
+              Component={
+                isOnline ? (
+                  isPendingDailyReport ? (
+                    <LastDailyReportPending />
+                  ) : (
+                    <AddEditWebSetting tag="edit" />
                   )
                 ) : (
                   <NoConnection />

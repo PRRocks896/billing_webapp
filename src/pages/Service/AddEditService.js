@@ -16,9 +16,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import Radio from "@mui/material/Radio";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import RadioGroup from "@mui/material/RadioGroup";
 
 import ImageUpload from "../../components/ImageUpload";
 import { useAddEditService } from "./hook/useAddEditService";
@@ -28,6 +25,7 @@ const AddEditService = ({ tag }) => {
   const {
     fields,
     control,
+    faqFields,
     scrubsFields,
     categoryOptions,
     recommendedFields,
@@ -35,6 +33,8 @@ const AddEditService = ({ tag }) => {
     addRow,
     onSubmit,
     setValue,
+    addFaqRow,
+    removeFaqRow,
     removeRow,
     handleSubmit,
     cancelHandler,
@@ -91,7 +91,7 @@ const AddEditService = ({ tag }) => {
                   name="slug"
                   control={control}
                   render={({
-                    field: { value }
+                    field: { value, onChange, onBlur }
                   }) => (
                     <FormControl
                       size="small"
@@ -103,7 +103,8 @@ const AddEditService = ({ tag }) => {
                         size="small"
                         name="name"
                         value={value}
-                        disabled
+                        onChange={onChange}
+                        onBlur={onBlur}
                       />
                     </FormControl>
                   )}
@@ -706,6 +707,93 @@ const AddEditService = ({ tag }) => {
           </TableContainer>
         </Box>
         <br />
+        <Box className="card">
+          <Typography variant="h6">FAQ</Typography>
+          <TableContainer className="table-wrapper">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell width={"2%"}></TableCell>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell width={"2%"}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {faqFields.fields.map((field, index) => (
+                  <TableRow key={field.id} id={field.id}>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={addFaqRow}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center" }}
+                      >
+                        {faqFields.fields.length === (index + 1) ? <FiPlusCircle size={26} /> : null}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`faq.${index}.title`}
+                        control={control}
+                        render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                          <FormControl size="small" fullWidth>
+                            <TextField
+                              type="text"
+                              label=""
+                              size="small"
+                              value={value || ""}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={Boolean(error)}
+                              helperText={error?.message ? error.message : ""}
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Controller
+                        name={`faq.${index}.description`}
+                        control={control}
+                        render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                          <FormControl size="small" fullWidth>
+                            <TextField
+                              type="text"
+                              label=""
+                              size="small"
+                              value={value || ""}
+                              onChange={(e) => onChange(e.target.value)}
+                              onBlur={onBlur}
+                              error={Boolean(error)}
+                              helperText={error?.message ? error.message : ""}
+                            />
+                          </FormControl>
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text"
+                        fontWeight="medium"
+                        onClick={() => removeFaqRow(index)}
+                        style={{ padding: "0px 5px", cursor: "pointer", alignSelf: "center", color: 'red' }}
+                      >
+                        {faqFields.fields.length !== 1 ?
+                          <FiMinusCircle size={26} />
+                          : null}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
         <Grid container spacing={3} sx={{ marginTop: "6px" }}>
           <Grid item md={1.5}>
             <Button type="submit" className="btn btn-tertiary">
