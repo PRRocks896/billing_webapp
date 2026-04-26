@@ -1,5 +1,5 @@
 import { useRef, useState, ReactNode, SyntheticEvent, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';

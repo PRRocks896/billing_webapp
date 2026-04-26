@@ -30,6 +30,7 @@ const DonutChart = ({
     chartType = 'donut',
     customOptions
 }: DonutChartProps) => {
+    console.log(colors)
     const theme = useTheme();
     const { colorScheme } = useColorScheme();
     const {

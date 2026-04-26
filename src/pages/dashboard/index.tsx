@@ -16,7 +16,9 @@ import {
     Setting2,
     UserSquare,
     Add,
-    Chart21
+    Chart21,
+    ArrowUp,
+    ArrowDown
 } from "iconsax-reactjs";
 
 // project-imports
@@ -33,6 +35,8 @@ import DailySale from './component/dailySale';
 import ChartContainer from 'components/chart/chartContainer';
 import DataChart from 'components/chart/dataChart';
 import DonutChart from 'components/chart/donutChart';
+import MainCard from 'components/MainCard';
+import Dot from 'components/@extended/Dot';
 
 const Dashboard = () => {
     const theme = useTheme();
@@ -167,20 +171,53 @@ const Dashboard = () => {
                                     { label: 'Last 1 Year', action: () => handleBranchWiseIncomeDateChange(12) },
                                 ]}
                             >
-                                <DonutChart
-                                    chartType='donut'
-                                    series={Object.values(branchWiseIncomeData)}
-                                    labels={Object.keys(branchWiseIncomeData).map(k => k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}
-                                    colors={Object.keys(branchWiseIncomeData).map(key => {
-                                        switch (key) {
-                                            case 'totalExpanse': return theme.palette.error.main;
-                                            case 'otherExpanse': return theme.palette.error.light;
-                                            case 'totalIncome': return theme.palette.success.main;
-                                            case 'totalRent': return theme.palette.success.light;
-                                            default: return theme.palette.primary.main;
-                                        }
-                                    })}
-                                />
+                                <Grid container spacing={GRID_COMMON_SPACING}>
+                                    <Grid size={12}>
+                                        <DonutChart
+                                            chartType='donut'
+                                            series={Object.values(branchWiseIncomeData)}
+                                            labels={Object.keys(branchWiseIncomeData).map(k => k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}
+                                            colors={Object.keys(branchWiseIncomeData).map(key => {
+                                                switch (key) {
+                                                    case 'totalExpanse': return theme.palette.error.main;
+                                                    case 'otherExpanse': return theme.palette.error.light;
+                                                    case 'totalIncome': return theme.palette.success.main;
+                                                    case 'totalRent': return theme.palette.success.light;
+                                                    default: return theme.palette.primary.main;
+                                                }
+                                            })}
+                                        />
+                                    </Grid>
+                                    {Object.keys(branchWiseIncomeData)?.map((item: any, index: number) => (
+                                        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
+                                            <MainCard content={false} border={false} sx={{ bgcolor: 'secondary.lighter', boxShadow: 'none' }}>
+                                                <Stack sx={{ gap: 0.5, alignItems: 'flex-start', p: 2 }}>
+                                                    <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
+                                                        <Dot componentDiv sx={{
+                                                            bgcolor: `${item === 'totalExpanse' ? theme.palette.error.main :
+                                                                    item === 'otherExpanse' ? theme.palette.error.light :
+                                                                        item === 'totalIncome' ? theme.palette.success.main :
+                                                                            item === 'totalRent' ? theme.palette.success.light :
+                                                                                theme.palette.primary.main
+                                                                }`
+                                                        }} />
+                                                        <Typography>{Object.keys(branchWiseIncomeData)[index].replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</Typography>
+                                                    </Stack>
+
+                                                    <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                        ₹{Object.values(branchWiseIncomeData)[index] || 0}
+                                                        {/* <Typography
+                                                            variant="caption"
+                                                            sx={{ color: 'text.secondary', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}
+                                                        >
+                                                            {item.isProfit !== false ? <ArrowUp size={14} /> : <ArrowDown size={14} />} +${item.change}
+                                                        </Typography> */}
+                                                    </Typography>
+                                                </Stack>
+                                            </MainCard>
+                                        </Grid>
+                                    ))}
+                                </Grid>
                             </ChartContainer>
                         </Grid>
                     </>
