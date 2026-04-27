@@ -16,3 +16,7 @@ export const fetchBranchWiseIncome = async (body: any) => {
 export const repeatCustomer = async (body: any) => {
     return await post(`${CREATE_BILL_API}/repeat-customer`, body);
 }
+
+export const fetchReferenceChart = async (body: any) => {
+    return await post(`${CREATE_BILL_API}/reference-chart`, body);
+}

@@ -3,7 +3,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { ApexOptions } from "apexcharts";
 import { ThemeMode } from "config";
 import useConfig from "hooks/useConfig";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import ReactApexChart from "react-apexcharts";
 
 // default chart options
@@ -30,7 +30,6 @@ const DonutChart = ({
     chartType = 'donut',
     customOptions
 }: DonutChartProps) => {
-    console.log(colors)
     const theme = useTheme();
     const { colorScheme } = useColorScheme();
     const {
@@ -41,18 +40,16 @@ const DonutChart = ({
     const defaultHeight = downSM ? 280 : 320;
     const finalHeight = height || defaultHeight;
 
-    const [options, setOptions] = useState<ApexOptions>(defaultPieChartOptions);
-
     const primaryMain = theme.vars.palette.primary.main;
     const errorMain = theme.vars.palette.error.main;
     const warningMain = theme.vars.palette.warning.main;
     const successMain = theme.vars.palette.success.main;
     const backgroundPaper = theme.vars.palette.background.paper;
 
-    const defaultColors = [primaryMain, warningMain, successMain, errorMain];
+    const defaultColors = useMemo(() => [primaryMain, warningMain, successMain, errorMain], [primaryMain, warningMain, successMain, errorMain]);
 
-    useEffect(() => {
-        setOptions((prevState) => ({
+    const options = useMemo<ApexOptions>(() => {
+        return {
             ...defaultPieChartOptions,
             ...customOptions,
             chart: {
@@ -68,10 +65,15 @@ const DonutChart = ({
                 mode: colorScheme === ThemeMode.DARK ? 'dark' : 'light',
                 ...(customOptions?.theme || {})
             }
-        }));
-    }, [colorScheme, fontFamily, backgroundPaper, chartType, labels, colors, customOptions, primaryMain, warningMain, successMain, errorMain]);
+        };
+    }, [colorScheme, fontFamily, backgroundPaper, chartType, labels, colors, customOptions, defaultColors]);
 
-    return <ReactApexChart key={series.length} options={options} series={series} type={chartType} height={finalHeight} />;
+    // Force remount when series length, labels, or colors change to ensure ApexCharts properly applies updates
+    const chartKey = useMemo(() => {
+        return `${series.length}-${labels?.join(',')}-${colors?.join(',')}`;
+    }, [series.length, labels, colors]);
+
+    return <ReactApexChart key={chartKey} options={options} series={series} type={chartType} height={finalHeight} />;
 }
 
 export default DonutChart;

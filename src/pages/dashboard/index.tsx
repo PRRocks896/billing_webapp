@@ -13,12 +13,8 @@ import Button from "@mui/material/Button";
 import {
     Bill,
     People,
-    Setting2,
     UserSquare,
-    Add,
-    Chart21,
-    ArrowUp,
-    ArrowDown
+    Add
 } from "iconsax-reactjs";
 
 // project-imports
@@ -37,6 +33,7 @@ import DataChart from 'components/chart/dataChart';
 import DonutChart from 'components/chart/donutChart';
 import MainCard from 'components/MainCard';
 import Dot from 'components/@extended/Dot';
+import PieChart from 'components/chart/pieChart';
 
 const Dashboard = () => {
     const theme = useTheme();
@@ -50,8 +47,10 @@ const Dashboard = () => {
         repeatCustomerData,
         repeatCustomerLabel,
         branchWiseIncomeData,
+        referenceChartData,
         handleDateChange,
         handleNewCustomerDateChange,
+        handleReferenceChartDateChange,
         handleBranchWiseIncomeDateChange
     } = UseDashboard();
 
@@ -62,11 +61,109 @@ const Dashboard = () => {
         return 'Good Evening';
     }, []);
 
-    const quickActions = [
+    const quickActions = useMemo(() => [
         { label: 'New Bill', icon: <Add />, path: '/bill/add', color: 'primary' },
         { label: 'Add Customer', icon: <UserSquare />, path: '/customer/add', color: 'info' },
-        // { label: 'View Reports', icon: <Chart21 />, path: '/report/daily-report', color: 'success' },
-    ];
+    ], []);
+
+    const repeatCustomerMenuItems = useMemo(() => [
+        { label: 'Current Month', action: () => handleDateChange(0) },
+        { label: 'Last Month', action: () => handleDateChange(1) },
+        { label: 'Last 3 Months', action: () => handleDateChange(3) },
+        { label: 'Last 6 Months', action: () => handleDateChange(6) },
+    ], [handleDateChange]);
+
+    const newCustomerMenuItems = useMemo(() => [
+        { label: 'Current Month', action: () => handleNewCustomerDateChange(0) },
+        { label: 'Last Month', action: () => handleNewCustomerDateChange(1) },
+        { label: 'Last 3 Months', action: () => handleNewCustomerDateChange(3) },
+        { label: 'Last 6 Months', action: () => handleNewCustomerDateChange(6) },
+    ], [handleNewCustomerDateChange]);
+
+    const referenceChartMenuItems = useMemo(() => [
+        { label: 'Current Month', action: () => handleReferenceChartDateChange(0) },
+        { label: 'Last Month', action: () => handleReferenceChartDateChange(1) },
+        { label: 'Last 3 Months', action: () => handleReferenceChartDateChange(3) },
+        { label: 'Last 6 Months', action: () => handleReferenceChartDateChange(6) },
+        { label: 'Last 1 Year', action: () => handleReferenceChartDateChange(12) },
+    ], [handleReferenceChartDateChange]);
+
+    const branchWiseIncomeMenuItems = useMemo(() => [
+        { label: 'Current Month', action: () => handleBranchWiseIncomeDateChange(0) },
+        { label: 'Last Month', action: () => handleBranchWiseIncomeDateChange(1) },
+        { label: 'Last 3 Months', action: () => handleBranchWiseIncomeDateChange(3) },
+        { label: 'Last 6 Months', action: () => handleBranchWiseIncomeDateChange(6) },
+        { label: 'Last 1 Year', action: () => handleBranchWiseIncomeDateChange(12) },
+    ], [handleBranchWiseIncomeDateChange]);
+
+    const pieChartConfig = useMemo(() => {
+        if (!referenceChartData) return { series: [], labels: [], colors: [] };
+        const series = referenceChartData.map((item: any) => item.value);
+        const labels = referenceChartData.map((item: any) =>
+            item.label.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/^./, (str: any) => str.toUpperCase())
+        );
+        const colors = referenceChartData.map((item: any) => {
+            const lbl = item.label;
+            if (lbl === 'google') return theme.palette.primary.main;
+            if (lbl === 'social') return '#00d1ff';
+            if (lbl === 'whatsapp') return '#fca311';
+            if (lbl === 'justdial') return '#c2410c';
+            if (lbl === 'other') return '#38bdf8';
+            if (lbl === 'relative') return '#10b981';
+            if (lbl === 'website') return '#8b5cf6';
+            return theme.palette.secondary.dark;
+        });
+        return { series, labels, colors, raw: referenceChartData };
+    }, [referenceChartData, theme]);
+
+    const donutChartConfig = useMemo(() => {
+        if (!branchWiseIncomeData) return { keys: [], values: [], series: [], labels: [], colors: [] };
+        const keys = Object.keys(branchWiseIncomeData);
+        const values = Object.values(branchWiseIncomeData) as number[];
+        const labels = keys.map(k => k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()));
+        const colors = keys.map(key => {
+            switch (key) {
+                case 'totalExpanse': return '#dc2626';
+                case 'otherExpanse': return '#4680ff';
+                case 'totalIncome': return '#2ca87f';
+                case 'totalRent': return '#e58a00';
+                default: return theme.palette.primary.main;
+            }
+        });
+        return { keys, values, series: values, labels, colors };
+    }, [branchWiseIncomeData, theme]);
+
+    const adminReports = useMemo(() => {
+        if (!isAdmin) return null;
+        return (
+            <>
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Sales vs Expense Analysis</Typography>
+                    <SalesReport />
+                </Box>
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Monthly Sales Analysis</Typography>
+                    <MonthlySale />
+                </Box>
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Low Sales Analysis</Typography>
+                    <LowSale />
+                </Box>
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Manager Sale Analysis</Typography>
+                    <ManagerSale />
+                </Box>
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Attendance List</Typography>
+                    <AttendanceList />
+                </Box>
+                <Box>
+                    <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Daily Sales Analysis</Typography>
+                    <DailySale />
+                </Box>
+            </>
+        );
+    }, [isAdmin]);
 
     return (
         <Stack spacing={GRID_COMMON_SPACING}>
@@ -136,13 +233,9 @@ const Dashboard = () => {
                                 title='Repeat Customer'
                                 iconPrimary={<Bill />}
                                 color='primary'
-                                menuItems={[
-                                    { label: 'Last Month', action: () => handleDateChange(1) },
-                                    { label: 'Last 3 Months', action: () => handleDateChange(3) },
-                                    { label: 'Last 6 Months', action: () => handleDateChange(6) },
-                                ]}
+                                menuItems={repeatCustomerMenuItems}
                             >
-                                <DataChart xaxisLabels={repeatCustomerLabel} data={repeatCustomerData} color={theme.vars.palette.success.main} label="Repeat Customer" />
+                                <DataChart xaxisLabels={repeatCustomerLabel} data={repeatCustomerData} color={(theme as any).vars?.palette?.success?.main || theme.palette.success.main} label="Repeat Customer" />
                             </ChartContainer>
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
@@ -150,13 +243,40 @@ const Dashboard = () => {
                                 title='New Customer'
                                 iconPrimary={<Bill />}
                                 color='primary'
-                                menuItems={[
-                                    { label: 'Last Month', action: () => handleNewCustomerDateChange(1) },
-                                    { label: 'Last 3 Months', action: () => handleNewCustomerDateChange(3) },
-                                    { label: 'Last 6 Months', action: () => handleNewCustomerDateChange(6) },
-                                ]}
+                                menuItems={newCustomerMenuItems}
                             >
-                                <DataChart xaxisLabels={newCustomerLabel} data={newCustomerData} color={theme.vars.palette.success.main} label="New Customer" />
+                                <DataChart xaxisLabels={newCustomerLabel} data={newCustomerData} color={(theme as any).vars?.palette?.success?.main || theme.palette.success.main} label="New Customer" />
+                            </ChartContainer>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                            <ChartContainer
+                                title="Reference By"
+                                iconPrimary={<Bill />}
+                                color='primary'
+                                menuItems={referenceChartMenuItems}
+                            >
+                                <Grid container spacing={GRID_COMMON_SPACING}>
+                                    <Grid size={{ xs: 12, sm: 12 }}>
+                                        <PieChart
+                                            series={pieChartConfig.series}
+                                            labels={pieChartConfig.labels}
+                                            colors={pieChartConfig.colors}
+                                        />
+                                    </Grid>
+                                    {pieChartConfig.raw?.map((item: any, index: number) => (
+                                        <Grid size={{ xs: 12, sm: 4 }} key={`pie_${index}`}>
+                                            <MainCard content={false}>
+                                                <Stack sx={{ alignItems: 'center', py: 1.5 }}>
+                                                    <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
+                                                        <Dot size={6} componentDiv sx={{ bgcolor: pieChartConfig.colors[index] }} />
+                                                        <Typography>{pieChartConfig.labels[index]}</Typography>
+                                                    </Stack>
+                                                    <Typography variant="subtitle1">{item.value}</Typography>
+                                                </Stack>
+                                            </MainCard>
+                                        </Grid>
+                                    ))}
+                                </Grid>
                             </ChartContainer>
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
@@ -164,54 +284,27 @@ const Dashboard = () => {
                                 title="Income & Expense"
                                 iconPrimary={<Bill />}
                                 color='primary'
-                                menuItems={[
-                                    { label: 'Last Month', action: () => handleBranchWiseIncomeDateChange(1) },
-                                    { label: 'Last 3 Months', action: () => handleBranchWiseIncomeDateChange(3) },
-                                    { label: 'Last 6 Months', action: () => handleBranchWiseIncomeDateChange(6) },
-                                    { label: 'Last 1 Year', action: () => handleBranchWiseIncomeDateChange(12) },
-                                ]}
+                                menuItems={branchWiseIncomeMenuItems}
                             >
                                 <Grid container spacing={GRID_COMMON_SPACING}>
                                     <Grid size={12}>
                                         <DonutChart
                                             chartType='donut'
-                                            series={Object.values(branchWiseIncomeData)}
-                                            labels={Object.keys(branchWiseIncomeData).map(k => k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()))}
-                                            colors={Object.keys(branchWiseIncomeData).map(key => {
-                                                switch (key) {
-                                                    case 'totalExpanse': return theme.palette.error.main;
-                                                    case 'otherExpanse': return theme.palette.error.light;
-                                                    case 'totalIncome': return theme.palette.success.main;
-                                                    case 'totalRent': return theme.palette.success.light;
-                                                    default: return theme.palette.primary.main;
-                                                }
-                                            })}
+                                            series={donutChartConfig.series}
+                                            labels={donutChartConfig.labels}
+                                            colors={donutChartConfig.colors}
                                         />
                                     </Grid>
-                                    {Object.keys(branchWiseIncomeData)?.map((item: any, index: number) => (
-                                        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={index}>
-                                            <MainCard content={false} border={false} sx={{ bgcolor: 'secondary.lighter', boxShadow: 'none' }}>
-                                                <Stack sx={{ gap: 0.5, alignItems: 'flex-start', p: 2 }}>
+                                    {donutChartConfig.keys?.map((keyName: string, index: number) => (
+                                        <Grid size={{ xs: 12, sm: 6 }} key={index}>
+                                            <MainCard content={false} border={false} sx={{ boxShadow: 'none' }}>
+                                                <Stack sx={{ gap: 0.5, alignItems: 'flex-start', px: 1.5, py: 1.2 }}>
                                                     <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
-                                                        <Dot componentDiv sx={{
-                                                            bgcolor: `${item === 'totalExpanse' ? theme.palette.error.main :
-                                                                    item === 'otherExpanse' ? theme.palette.error.light :
-                                                                        item === 'totalIncome' ? theme.palette.success.main :
-                                                                            item === 'totalRent' ? theme.palette.success.light :
-                                                                                theme.palette.primary.main
-                                                                }`
-                                                        }} />
-                                                        <Typography>{Object.keys(branchWiseIncomeData)[index].replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</Typography>
+                                                        <Dot componentDiv sx={{ bgcolor: donutChartConfig.colors[index] }} />
+                                                        <Typography>{donutChartConfig.labels[index]}</Typography>
                                                     </Stack>
-
                                                     <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                        ₹{Object.values(branchWiseIncomeData)[index] || 0}
-                                                        {/* <Typography
-                                                            variant="caption"
-                                                            sx={{ color: 'text.secondary', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.25 }}
-                                                        >
-                                                            {item.isProfit !== false ? <ArrowUp size={14} /> : <ArrowDown size={14} />} +${item.change}
-                                                        </Typography> */}
+                                                        ₹{donutChartConfig.values[index] || 0}
                                                     </Typography>
                                                 </Stack>
                                             </MainCard>
@@ -225,48 +318,9 @@ const Dashboard = () => {
             </Grid>
 
             {/* Sales Report Section */}
-            {isAdmin && (
-                <>
-                    <Box>
-                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
-                            Sales vs Expense Analysis
-                        </Typography>
-                        <SalesReport />
-                    </Box>
-                    <Box>
-                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
-                            Monthly Sales Analysis
-                        </Typography>
-                        <MonthlySale />
-                    </Box>
-                    <Box>
-                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
-                            Low Sales Analysis
-                        </Typography>
-                        <LowSale />
-                    </Box>
-                    <Box>
-                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
-                            Manager Sale Analysis
-                        </Typography>
-                        <ManagerSale />
-                    </Box>
-                    <Box>
-                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
-                            Attendance List
-                        </Typography>
-                        <AttendanceList />
-                    </Box>
-                    <Box>
-                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
-                            Daily Sales Analysis
-                        </Typography>
-                        <DailySale />
-                    </Box>
-                </>
-            )}
+            {adminReports}
         </Stack>
-    )
-}
+    );
+};
 
 export default Dashboard;
