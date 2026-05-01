@@ -180,3 +180,5 @@ export const FRANCHISE = "api/franchise";
 export const WHATSAPP = "api/whatsapp";
 
 export const CONTACTUS = "api/contactus";
+
+export const RENT = "api/rent";

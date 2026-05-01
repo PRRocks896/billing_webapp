@@ -241,6 +241,8 @@ const Franchise = Loadable(lazy(() => import('pages/website-management/franchise
 const Whatsapp = Loadable(lazy(() => import('pages/website-management/whatsapp')));
 const AddEditWhatsapp = Loadable(lazy(() => import('pages/website-management/whatsapp/addEditWhatsapp')));
 const ContactUs = Loadable(lazy(() => import('pages/website-management/contact-us')));
+const Rent = Loadable(lazy(() => import('pages/rent-management/rent')));
+const AddEditRent = Loadable(lazy(() => import('pages/rent-management/rent/compnent/addEditRent')));
 
 // ==============================|| MAIN ROUTES ||============================== //
 
@@ -546,6 +548,23 @@ const MainRoutes: RouteObject = {
             {
               path: ':mode/:id',
               element: <AddEditDailyReport />
+            }
+          ]
+        },
+        {
+          path: 'rent-management',
+          children: [
+            {
+              path: 'rent',
+              element: <Rent />
+            },
+            {
+              path: 'rent/:mode',
+              element: <AddEditRent />
+            },
+            {
+              path: 'rent/:mode/:id',
+              element: <AddEditRent />
             }
           ]
         },

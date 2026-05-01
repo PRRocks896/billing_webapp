@@ -322,6 +322,21 @@ const menuItems: { items: NavItemType[] } = {
           ]
         },
         {
+          id: 'rent-management',
+          title: 'Rent Management',
+          type: 'collapse',
+          icon: KyberNetwork,
+          children: [
+            {
+              id: 'rent',
+              title: 'Rent',
+              type: 'item',
+              url: '/rent-management/rent',
+              breadcrumbs: false
+            }
+          ]
+        },
+        {
           id: 'contact-us',
           title: 'Contact Us',
           type: 'item',
