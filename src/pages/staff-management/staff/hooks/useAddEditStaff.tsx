@@ -72,8 +72,7 @@ const defaultValues: StaffFormValue = {
 const UseAddEditStaff = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
-    const { user,/*isAdmin,*/ startLoading, stopLoading } = useAuth();
-    const isAdmin = false;
+    const { user, isAdmin, startLoading, stopLoading } = useAuth();
 
     const [employeeTypeList, setEmployeeTypeList] = useState<any[]>([]);
     const [branchList, setBranchList] = useState<any[]>([]);
