@@ -12,8 +12,8 @@ const UseMonthlySale = () => {
     const [isShowCustom, setIsShowCustom] = useState<boolean>(false);
     const [slot, setSlot] = useState<number>(0);
 
-    const [fromDate, setFromDate] = useState<Date>(moment().startOf('month').toDate());
-    const [toDate, setToDate] = useState<Date>(moment().endOf('month').toDate());
+    const [fromDate, setFromDate] = useState<Date>(moment().toDate());
+    const [toDate, setToDate] = useState<Date>(moment().toDate());
     const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
     const [branchOptions, setBranchOptions] = useState<any[]>([]);
     const [labels, setLabels] = useState<string[]>([]);
@@ -68,21 +68,24 @@ const UseMonthlySale = () => {
     }, [fromDate, toDate, selectedBranch, isShowCustom]);
 
     useEffect(() => {
-        if (slot === 4) {
+        if (slot === 5) {
             setIsShowCustom(true);
             return;
         }
         setIsShowCustom(false);
         if (slot === 0) {
+            setFromDate(moment().toDate());
+            setToDate(moment().toDate());
+        } else if (slot === 1) {
             setFromDate(moment().startOf('month').toDate());
             setToDate(moment().endOf('month').toDate());
-        } else if (slot === 1) {
+        } else if (slot === 2) {
             setFromDate(moment().subtract(3, 'months').startOf('month').toDate());
             setToDate(moment().endOf('month').toDate());
-        } else if (slot === 2) {
+        } else if (slot === 3) {
             setFromDate(moment().subtract(6, 'months').startOf('month').toDate());
             setToDate(moment().endOf('month').toDate());
-        } else if (slot === 3) {
+        } else if (slot === 4) {
             setFromDate(moment().subtract(12, 'months').startOf('month').toDate());
             setToDate(moment().endOf('month').toDate());
         }

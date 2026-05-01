@@ -224,22 +224,48 @@ const UseMembership = () => {
 
     const fetchMembershipDropDown = useCallback(async () => {
         const whereCondition = { isActive: true, isDeleted: false };
-        const payload = listPayload(0, whereCondition, 1000);
 
         const roomWhereCondition = isAdmin
             ? whereCondition
             : { ...whereCondition, createdBy: user?.id };
 
-        const [staffRes, serviceRes, roomRes]: any[] = await Promise.all([
+        const [staffRes, roomRes]: any[] = await Promise.all([
             getTherapistDropdown({ ...whereCondition, searchText: "THERAPIST" }),
-            getServiceList(payload),
+            // getServiceList(payload),
             getRoomList(listPayload(0, roomWhereCondition, 100000)),
         ]);
 
         setTherapistList(staffRes?.success && staffRes.data ? staffRes.data : []);
-        setServiceList(serviceRes?.success && serviceRes.data ? serviceRes.data?.rows?.filter((service: any) => [60, 120].includes(service.minutes)) : []);
+        // setServiceList(serviceRes?.success && serviceRes.data ? serviceRes.data?.rows?.filter((service: any) => [60, 120].includes(service.minutes)) : []);
         setRoomList(roomRes?.success && roomRes.data ? roomRes.data?.rows : []);
     }, [user]);
+
+    const fetchServiceDropDown = useCallback(async () => {
+        try {
+            if (!MembershipRedeemForm.getValues('minutes')) {
+                setServiceList([]);
+                return;
+            }
+            startLoading();
+            const whereCondition = { isWebDisplay: false, isActive: true, isDeleted: false, minutes: MembershipRedeemForm.getValues('minutes') };
+            const payload = listPayload(0, whereCondition, 1000);
+            const { success, message, data }: any = await getServiceList(payload);
+            if (!success) {
+                showError({ message });
+                setServiceList([]);
+                return;
+            }
+            setServiceList(data?.rows || []);
+        } catch (error) {
+            showError(error);
+        } finally {
+            stopLoading();
+        }
+    }, [MembershipRedeemForm.watch('minutes')]);
+
+    useEffect(() => {
+        fetchServiceDropDown();
+    }, [fetchServiceDropDown]);
 
     const handleFindMembership = async (body: BasicFormValue) => {
         try {

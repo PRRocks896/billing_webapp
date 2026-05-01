@@ -65,7 +65,7 @@ const MonthlySale = () => {
             toolbar: { show: false },
             zoom: { enabled: false }
         },
-        dataLabels: { enabled: true },
+        dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 3 },
         xaxis: {
             categories: labels || [],
@@ -169,11 +169,12 @@ const MonthlySale = () => {
                         }
                     }}
                 >
-                    <ToggleButton value={0}>Month</ToggleButton>
-                    <ToggleButton value={1}>Last 3 Months</ToggleButton>
-                    <ToggleButton value={2}>Last 6 Months</ToggleButton>
+                    <ToggleButton value={0}>Today</ToggleButton>
+                    <ToggleButton value={1}>Month</ToggleButton>
+                    <ToggleButton value={2}>Last 3 Months</ToggleButton>
+                    <ToggleButton value={3}>Last 6 Months</ToggleButton>
                     {/* <ToggleButton value={3}>Last 12 Months</ToggleButton> */}
-                    <ToggleButton value={4}>Custom</ToggleButton>
+                    <ToggleButton value={5}>Custom</ToggleButton>
                 </ToggleButtonGroup>
             </Stack>
 

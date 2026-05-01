@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEmployeeTypePayload } from "service/employee-type";
-import { createStaff, getStaffById, getStaff, updateStaff, staffTransferRequest, staffTransferVerify } from "service/staff";
+import { createStaff, getStaffById, getStaff, updateStaff, staffTransferRequest, staffTransferVerify, verifyIfscCode } from "service/staff";
 import { getUserList } from "service/user";
 import { convertToFormData } from "utils/helper";
 
@@ -72,7 +72,8 @@ const defaultValues: StaffFormValue = {
 const UseAddEditStaff = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
-    const { user, isAdmin, startLoading, stopLoading } = useAuth();
+    const { user,/*isAdmin,*/ startLoading, stopLoading } = useAuth();
+    const isAdmin = false;
 
     const [employeeTypeList, setEmployeeTypeList] = useState<any[]>([]);
     const [branchList, setBranchList] = useState<any[]>([]);
@@ -94,11 +95,15 @@ const UseAddEditStaff = () => {
         })
     }, [countries]);
 
+    const [ifscVerified, setIfscVerified] = useState<boolean | null>(null);
+
     const {
         control,
         formState: { isSubmitting },
         setValue,
         getValues,
+        setError,
+        clearErrors,
         handleSubmit,
     } = useForm<StaffFormValue>({
         defaultValues,
@@ -108,6 +113,34 @@ const UseAddEditStaff = () => {
     const toggleIsStaffFound = useCallback(() => setIsStaffFound((prev: boolean | null) => prev === null ? false : !prev), []);
 
     const handleBack = () => navigate("/staff");
+
+    /**
+     * Verifies an IFSC code against the backend API.
+     * Called via react-hook-form's async `validate` rule on the ifscCode field.
+     * Returns `true` on success, or an error message string on failure.
+     */
+    const handleIfscVerify = useCallback(async (ifsc: string): Promise<true | string> => {
+        const IFSC_REGEX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+        // Skip API call if the format is already invalid (the `pattern` rule handles that message)
+        if (!ifsc || !IFSC_REGEX.test(ifsc)) {
+            setIfscVerified(null);
+            return true; // Let the `pattern` rule display the format error
+        }
+        try {
+            const { success, message }: any = await verifyIfscCode({ ifscCode: ifsc });
+            if (success) {
+                setIfscVerified(true);
+                clearErrors('ifscCode');
+                return true;
+            } else {
+                setIfscVerified(false);
+                return message || 'IFSC Code not found. Please check and try again.';
+            }
+        } catch (error: any) {
+            setIfscVerified(false);
+            return error?.message || 'Failed to verify IFSC Code. Please try again.';
+        }
+    }, [clearErrors]);
 
     const fetch = async () => {
         try {
@@ -140,6 +173,10 @@ const UseAddEditStaff = () => {
                 setValue("motherAddress", data.motherAddress);
                 setValue("motherIdPhoto", data.motherIdPhoto);
                 setValue("gender", data.gender);
+                // setIsStaffFound(true);
+                // setStaffPhoneNumber(data.phoneNumber);
+                setStaffData(data);
+                setIsShowBankDetail(true);
             } else {
                 openSnackbar({
                     open: true,
@@ -252,15 +289,15 @@ const UseAddEditStaff = () => {
             startLoading();
             const { success, message, data }: any = await getStaff({ phoneNumber: staffPhoneNumber });
             if (success) {
-                openSnackbar({
-                    open: true,
-                    message: message || 'Staff found successfully',
-                    variant: 'alert',
-                    severity: 'success',
-                    alert: {
-                        color: 'success'
-                    }
-                });
+                // openSnackbar({
+                //     open: true,
+                //     message: message || 'Staff found successfully',
+                //     variant: 'alert',
+                //     severity: 'success',
+                //     alert: {
+                //         color: 'success'
+                //     }
+                // });
                 setIsStaffFound(true);
                 setStaffData(data);
             } else {
@@ -462,6 +499,10 @@ const UseAddEditStaff = () => {
         }
     }, [isAdmin]);
 
+    const isEdit: boolean = useMemo(() => {
+        return mode && mode === 'edit' ? true : false;
+    }, [mode]);
+
     const title: string = useMemo(() => {
         if (mode && mode === 'edit' && id) {
             return 'Edit Staff';
@@ -478,6 +519,7 @@ const UseAddEditStaff = () => {
     return {
         mode,
         title,
+        isEdit,
         isAdmin,
         control,
         staffData,
@@ -485,6 +527,7 @@ const UseAddEditStaff = () => {
         verifiedOtp,
         isStaffFound,
         isSubmitting,
+        ifscVerified,
         staffPhoneNumber,
         countryCodeList,
         isStaffNoOtpSend,
@@ -502,6 +545,7 @@ const UseAddEditStaff = () => {
         setStaffPhoneNumber,
         setIsShowBankDetail,
         setOpenVerifyOtpModal,
+        handleIfscVerify,
         handleStaffTransferVerify,
         handleStaffTransferRequest
     }

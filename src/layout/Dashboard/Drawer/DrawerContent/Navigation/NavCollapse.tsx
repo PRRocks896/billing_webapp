@@ -1,5 +1,5 @@
 import { Activity, useEffect, useState, useMemo, Dispatch, MouseEvent, SetStateAction } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, matchPath } from 'react-router-dom';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -167,7 +167,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
   useMenuCollapse(menu, pathname, miniMenuOpened, setSelected, setOpen, setAnchorEl);
 
   useEffect(() => {
-    if (menu.url === pathname) {
+    if (menu.url && !!matchPath({ path: menu.url, end: false }, pathname)) {
       setSelected(menu.id);
       setAnchorEl(null);
       setOpen(true);

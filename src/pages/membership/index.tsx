@@ -983,26 +983,26 @@ const Membership = () => {
                                                                                         px: 2.5,
                                                                                         borderRadius: 2,
                                                                                         cursor: 'pointer',
-                                                                                        border: `2px solid ${active ? t.palette.warning.main : t.palette.divider}`,
+                                                                                        border: `2px solid ${active ? t.palette.primary.main : t.palette.divider}`,
                                                                                         background: active
-                                                                                            ? `linear-gradient(135deg, ${alpha(t.palette.warning.main, 0.1)}, ${alpha(t.palette.warning.light, 0.05)})`
+                                                                                            ? `linear-gradient(135deg, ${alpha(t.palette.primary.main, 0.1)}, ${alpha(t.palette.primary.light, 0.05)})`
                                                                                             : t.palette.background.paper,
                                                                                         transition: 'all 0.18s ease',
                                                                                         '&:hover': {
-                                                                                            borderColor: t.palette.warning.main,
-                                                                                            boxShadow: `0 4px 14px ${alpha(t.palette.warning.main, 0.18)}`,
+                                                                                            borderColor: t.palette.primary.main,
+                                                                                            boxShadow: `0 4px 14px ${alpha(t.palette.primary.main, 0.18)}`,
                                                                                         },
                                                                                     })}
                                                                                 >
                                                                                     <Typography
                                                                                         variant="body1"
                                                                                         fontWeight={active ? 800 : 500}
-                                                                                        color={active ? 'warning.dark' : 'text.primary'}
+                                                                                        color={active ? 'primary.dark' : 'text.primary'}
                                                                                         lineHeight={1.1}
                                                                                     >
                                                                                         {opt.label}
                                                                                     </Typography>
-                                                                                    <Typography variant="caption" color={active ? 'warning.main' : 'text.disabled'}>
+                                                                                    <Typography variant="caption" color={active ? 'primary.main' : 'text.disabled'}>
                                                                                         {opt.sub}
                                                                                     </Typography>
                                                                                 </Box>
@@ -1234,13 +1234,13 @@ const Membership = () => {
                                                     <Button
                                                         type="submit"
                                                         variant="contained"
-                                                        color="warning"
+                                                        color="primary"
                                                         disabled={MembershipRedeemForm.formState.isSubmitting}
                                                         startIcon={MembershipRedeemForm.formState.isSubmitting ? <CircularProgress size={14} color="inherit" /> : null}
                                                         sx={(t) => ({
                                                             minWidth: 140,
-                                                            boxShadow: `0 4px 14px ${alpha(t.palette.warning.main, 0.35)}`,
-                                                            '&:hover': { boxShadow: `0 6px 20px ${alpha(t.palette.warning.main, 0.5)}` },
+                                                            boxShadow: `0 4px 14px ${alpha(t.palette.primary.main, 0.35)}`,
+                                                            '&:hover': { boxShadow: `0 6px 20px ${alpha(t.palette.primary.main, 0.5)}` },
                                                         })}
                                                     >
                                                         {MembershipRedeemForm.formState.isSubmitting ? 'Processing...' : isMembershipRedeemOtpSend ? 'Redeem' : 'Verify'}

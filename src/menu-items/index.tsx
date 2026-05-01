@@ -311,6 +311,13 @@ const menuItems: { items: NavItemType[] } = {
               type: 'item',
               url: '/staff',
               breadcrumbs: false
+            },
+            {
+              id: 'salary-report',
+              title: 'Salary report',
+              type: 'item',
+              url: '/salary-report',
+              breadcrumbs: false,
             }
           ]
         },
@@ -321,14 +328,6 @@ const menuItems: { items: NavItemType[] } = {
           url: '/contact-us',
           icon: KyberNetwork,
           breadcrumbs: false
-        },
-        {
-          id: 'salary-report',
-          title: 'Salary report',
-          type: 'item',
-          url: '/salary-report',
-          breadcrumbs: false,
-          icon: Bill,
         },
         {
           id: 'daily-report',

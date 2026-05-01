@@ -124,7 +124,7 @@ export default function NavGroup({
         checkOpenForParent(ele.children, currentItem.id!);
       }
 
-      if (ele.url && !!matchPath({ path: ele?.link ? ele.link : ele.url, end: true }, pathname)) {
+      if (ele.url && !!matchPath({ path: ele?.link ? ele.link : ele.url, end: false }, pathname)) {
         setSelectedID(id);
       }
     });
@@ -136,7 +136,7 @@ export default function NavGroup({
         checkOpenForParent(itemCheck.children, currentItem.id!);
       }
 
-      if (itemCheck.url && !!matchPath({ path: itemCheck?.link ? itemCheck.link : itemCheck.url, end: true }, pathname)) {
+      if (itemCheck.url && !!matchPath({ path: itemCheck?.link ? itemCheck.link : itemCheck.url, end: false }, pathname)) {
         setSelectedID(currentItem.id!);
       }
     });

@@ -4,9 +4,11 @@ import { Controller } from 'react-hook-form';
 import { alpha, useTheme } from '@mui/material/styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -35,18 +37,11 @@ import {
     People,
     Location,
     Bank,
-    DirectboxReceive,
     ArrowLeft,
     Wallet,
-    Award,
-    Global,
     ShieldTick,
-    Star1,
     DirectboxSend,
-    TickCircle,
-    UserTag,
 } from 'iconsax-reactjs';
-import { FormControl } from '@mui/material';
 import OtpModal from 'components/OtpModal';
 import FileUpload from 'components/FileUpload';
 
@@ -55,6 +50,7 @@ const AddEditStaff = () => {
     const {
         mode,
         title,
+        isEdit,
         isAdmin,
         control,
         staffData,
@@ -66,12 +62,14 @@ const AddEditStaff = () => {
         isShowBankDetail,
         staffPhoneNumber,
         openVerifyOtpModal,
+        ifscVerified,
         setValue,
         onSubmit,
         findStaff,
         getValues,
         handleBack,
         handleSubmit,
+        handleIfscVerify,
         setIsStaffFound,
         toggleIsStaffFound,
         setStaffPhoneNumber,
@@ -81,137 +79,144 @@ const AddEditStaff = () => {
         handleStaffTransferRequest
     } = useAddEditStaff();
 
+    // Non-admin: bank details always visible when the form is active
+    // isFormActive covers: edit mode, new staff (not found), OR found staff for a non-admin bank update
+    const isFormActive = isEdit || isStaffFound === false || (isStaffFound === true && !isAdmin);
+    const showBankDetail = isShowBankDetail || (!isAdmin && isFormActive);
+
     return (
         <>
-            <MainCard
-                content={false}
-                sx={{
-                    overflow: 'visible',
-                    border: (t) => `1px solid ${t.palette.divider}`,
-                    borderRadius: '16px',
-                    boxShadow: (t: any) => t.customShadows?.z1 || 1,
-                }}
-            >
-                {/* ── Hero Header ──────────────────────────────────────── */}
-                <Box
-                    sx={(t) => ({
-                        px: 3,
-                        py: 3,
-                        background: `linear-gradient(135deg, ${alpha(t.palette.primary.main, 0.1)} 0%, ${alpha(t.palette.primary.light, 0.05)} 100%)`,
-                        borderBottom: `1px solid ${t.palette.divider}`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        flexWrap: 'wrap',
-                        gap: 2,
-                    })}
+            {!isEdit &&
+                <MainCard
+                    content={false}
+                    sx={{
+                        overflow: 'visible',
+                        border: (t) => `1px solid ${t.palette.divider}`,
+                        borderRadius: '16px',
+                        boxShadow: (t: any) => t.customShadows?.z1 || 1,
+                    }}
                 >
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                        <Box
-                            sx={(t) => ({
-                                width: 48,
-                                height: 48,
-                                borderRadius: '14px',
-                                background: `linear-gradient(135deg, ${t.palette.primary.main}, ${t.palette.primary.dark})`,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: `0 8px 16px ${alpha(t.palette.primary.main, 0.35)}`,
-                            })}
-                        >
-                            <People size={24} color="#fff" variant="Bold" />
-                        </Box>
-                        <Box>
-                            <Typography variant="h4" fontWeight={700} lineHeight={1.2}>
-                                Staff Registration
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                                Search for existing staff or register a new team member
-                            </Typography>
-                        </Box>
-                    </Stack>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleBack}
-                        startIcon={<ArrowLeft size={16} />}
-                        sx={{ borderRadius: '10px', px: 2 }}
+                    {/* ── Hero Header ──────────────────────────────────────── */}
+                    <Box
+                        sx={(t) => ({
+                            px: 3,
+                            py: 3,
+                            background: `linear-gradient(135deg, ${alpha(t.palette.primary.main, 0.1)} 0%, ${alpha(t.palette.primary.light, 0.05)} 100%)`,
+                            borderBottom: `1px solid ${t.palette.divider}`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            flexWrap: 'wrap',
+                            gap: 2,
+                        })}
                     >
-                        Back to List
-                    </Button>
-                </Box>
-
-                {/* ── Search Row ───────────────────────────────────────── */}
-                <Box sx={{ p: 4 }}>
-                    <Stack spacing={1} sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" fontWeight={700}>
-                            Quick Search
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Enter the staff member's phone number to check if they are already in the system.
-                        </Typography>
-                    </Stack>
-
-                    <Grid container spacing={2} alignItems="flex-start">
-                        <Grid size={{ xs: 12, md: 8, lg: 9 }}>
-                            <TextField
-                                fullWidth
-                                type="text"
-                                value={staffPhoneNumber}
-                                onChange={(e) => {
-                                    const value = e.target.value.trim();
-                                    if (value === '' || value.match(/^[0-9]+$/)) {
-                                        setStaffPhoneNumber(value)
-                                    }
-                                }}
-                                placeholder="Search by staff phone number (e.g. 9876543210)"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Call size={22} color={theme.palette.primary.main} variant="Bold" />
-                                        </InputAdornment>
-                                    ),
-                                    sx: {
-                                        borderRadius: '14px',
-                                        height: '56px',
-                                        fontSize: '1rem',
-                                        bgcolor: alpha(theme.palette.primary.main, 0.02),
-                                        '& fieldset': {
-                                            borderColor: alpha(theme.palette.divider, 0.1),
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: alpha(theme.palette.primary.main, 0.2),
-                                        },
-                                    }
-                                }}
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 4, lg: 3 }}>
-                            <Button
-                                fullWidth
-                                size="large"
-                                variant="contained"
-                                onClick={findStaff}
-                                startIcon={<Personalcard size={22} variant="Bold" />}
+                        <Stack direction="row" alignItems="center" spacing={2}>
+                            <Box
                                 sx={(t) => ({
-                                    height: 56,
+                                    width: 48,
+                                    height: 48,
                                     borderRadius: '14px',
-                                    fontWeight: 700,
-                                    fontSize: '1rem',
-                                    boxShadow: `0 8px 16px ${alpha(t.palette.primary.main, 0.3)}`,
-                                    '&:hover': {
-                                        boxShadow: `0 12px 24px ${alpha(t.palette.primary.main, 0.4)}`,
-                                        transform: 'translateY(-2px)',
-                                    },
-                                    transition: 'all 0.2s ease',
+                                    background: `linear-gradient(135deg, ${t.palette.primary.main}, ${t.palette.primary.dark})`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: `0 8px 16px ${alpha(t.palette.primary.main, 0.35)}`,
                                 })}
                             >
-                                Find Staff
-                            </Button>
+                                <People size={24} color="#fff" variant="Bold" />
+                            </Box>
+                            <Box>
+                                <Typography variant="h4" fontWeight={700} lineHeight={1.2}>
+                                    Staff Registration
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    Search for existing staff or register a new team member
+                                </Typography>
+                            </Box>
+                        </Stack>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={handleBack}
+                            startIcon={<ArrowLeft size={16} />}
+                            sx={{ borderRadius: '10px', px: 2 }}
+                        >
+                            Back to List
+                        </Button>
+                    </Box>
+
+                    {/* ── Search Row ───────────────────────────────────────── */}
+                    <Box sx={{ p: 4 }}>
+                        <Stack spacing={1} sx={{ mb: 3 }}>
+                            <Typography variant="subtitle1" fontWeight={700}>
+                                Quick Search
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Enter the staff member's phone number to check if they are already in the system.
+                            </Typography>
+                        </Stack>
+
+                        <Grid container spacing={2} alignItems="flex-start">
+                            <Grid size={{ xs: 12, md: 8, lg: 9 }}>
+                                <TextField
+                                    fullWidth
+                                    type="text"
+                                    value={staffPhoneNumber}
+                                    onChange={(e) => {
+                                        const value = e.target.value.trim();
+                                        if (value === '' || value.match(/^[0-9]+$/)) {
+                                            setStaffPhoneNumber(value)
+                                        }
+                                    }}
+                                    placeholder="Search by staff phone number (e.g. 9876543210)"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Call size={22} color={theme.palette.primary.main} variant="Bold" />
+                                            </InputAdornment>
+                                        ),
+                                        sx: {
+                                            borderRadius: '14px',
+                                            height: '56px',
+                                            fontSize: '1rem',
+                                            bgcolor: alpha(theme.palette.primary.main, 0.02),
+                                            '& fieldset': {
+                                                borderColor: alpha(theme.palette.divider, 0.1),
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: alpha(theme.palette.primary.main, 0.2),
+                                            },
+                                        }
+                                    }}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12, md: 4, lg: 3 }}>
+                                <Button
+                                    fullWidth
+                                    size="large"
+                                    variant="contained"
+                                    onClick={findStaff}
+                                    startIcon={<Personalcard size={22} variant="Bold" />}
+                                    sx={(t) => ({
+                                        height: 56,
+                                        borderRadius: '14px',
+                                        fontWeight: 700,
+                                        fontSize: '1rem',
+                                        boxShadow: `0 8px 16px ${alpha(t.palette.primary.main, 0.3)}`,
+                                        '&:hover': {
+                                            boxShadow: `0 12px 24px ${alpha(t.palette.primary.main, 0.4)}`,
+                                            transform: 'translateY(-2px)',
+                                        },
+                                        transition: 'all 0.2s ease',
+                                    })}
+                                >
+                                    Find Staff
+                                </Button>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Box>
-            </MainCard>
+                    </Box>
+                </MainCard>
+            }
 
             <Box sx={{ my: 3 }}>
                 {isStaffFound !== null && isStaffFound === true && (
@@ -381,7 +386,7 @@ const AddEditStaff = () => {
                     />
                 )}
             </Box>
-            {isStaffFound !== null && isStaffFound === false &&
+            {(isEdit || (isStaffFound !== null && isStaffFound === false) || (isStaffFound === true && !isAdmin)) &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <MainCard content={false} sx={{ overflow: 'visible', border: `1px solid ${theme.palette.divider}` }}>
                         {/* ── Hero Header ──────────────────────────────────────── */}
@@ -414,10 +419,12 @@ const AddEditStaff = () => {
                                 </Box>
                                 <Box>
                                     <Typography variant="h4" fontWeight={700}>
-                                        {title}
+                                        {isStaffFound === true && !isAdmin ? 'Update Bank Details' : title}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">
-                                        Manage staff profiling, employment terms, and financial records.
+                                        {isStaffFound === true && !isAdmin
+                                            ? 'Update bank account details for salary transfers.'
+                                            : 'Manage staff profiling, employment terms, and financial records.'}
                                     </Typography>
                                 </Box>
                             </Stack>
@@ -434,398 +441,400 @@ const AddEditStaff = () => {
 
                         <Box sx={{ p: 3 }}>
                             <Grid container spacing={4}>
-                                {/* ── Section 1: Employment Classification ─────────────── */}
-                                <Grid size={{ xs: 12 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-                                        <Personalcard size={20} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h5" fontWeight={600}>Employment Classification</Typography>
-                                    </Stack>
-                                    <Grid container spacing={2.5} alignItems="center">
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="employeeTypeID"
-                                                control={control}
-                                                rules={{ required: 'Employee Type is required' }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <Box sx={{ p: 1, px: 2, bgcolor: alpha(theme.palette.primary.main, 0.02), borderRadius: 2, border: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
-                                                        <FormLabel sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5, display: 'block', color: theme.palette.text.secondary }}>Staff Employee Type</FormLabel>
-                                                        <RadioGroup row {...field}>
-                                                            {employeeTypeList.map((type: any) => (
-                                                                <FormControlLabel key={type.id} value={type.id} control={<Radio size="small" />} label={<Typography variant="body2">{type.name}</Typography>} />
-                                                            ))}
-                                                        </RadioGroup>
-                                                        <FormHelperText error>{error?.message}</FormHelperText>
-                                                    </Box>
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            {isAdmin && (
+                                {!(isStaffFound === true && !isAdmin) && (<>
+                                    {/* ── Section 1: Employment Classification ─────────────── */}
+                                    <Grid size={{ xs: 12 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+                                            <Personalcard size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                            <Typography variant="h5" fontWeight={600}>Employment Classification</Typography>
+                                        </Stack>
+                                        <Grid container spacing={2.5} alignItems="center">
+                                            <Grid size={{ xs: 12, sm: 6 }}>
                                                 <Controller
-                                                    name="userID"
+                                                    name="employeeTypeID"
                                                     control={control}
-                                                    rules={{ required: 'Branch is required' }}
-                                                    render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
-                                                        <Autocomplete
-                                                            fullWidth
-                                                            value={branchList?.find((branch: any) => branch.id === value) || null}
-                                                            onChange={(_, newValue) => onChange(newValue ? newValue.id : null)}
-                                                            onBlur={onBlur}
-                                                            options={branchList}
-                                                            getOptionLabel={(option: any) => option.lastName}
-                                                            renderInput={(params) => (
-                                                                <TextField {...params} label="Assigned Branch" error={!!error} helperText={error?.message} />
-                                                            )}
-                                                        />
+                                                    rules={{ required: 'Employee Type is required' }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <Box sx={{ p: 1, px: 2, bgcolor: alpha(theme.palette.primary.main, 0.02), borderRadius: 2, border: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
+                                                            <FormLabel sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5, display: 'block', color: theme.palette.text.secondary }}>Staff Employee Type</FormLabel>
+                                                            <RadioGroup row {...field}>
+                                                                {employeeTypeList.map((type: any) => (
+                                                                    <FormControlLabel key={type.id} value={type.id} control={<Radio size="small" />} label={<Typography variant="body2">{type.name}</Typography>} />
+                                                                ))}
+                                                            </RadioGroup>
+                                                            <FormHelperText error>{error?.message}</FormHelperText>
+                                                        </Box>
                                                     )}
                                                 />
-                                            )}
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid size={{ xs: 12 }}><Divider /></Grid>
-
-                                {/* ── Section 2: Personal Profile ─────────────────────── */}
-                                <Grid size={{ xs: 12 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-                                        <User size={20} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h5" fontWeight={600}>Personal Profile</Typography>
-                                    </Stack>
-                                    <Grid container spacing={2.5}>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="name"
-                                                control={control}
-                                                rules={{ required: 'Full Name is required' }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        fullWidth
-                                                        label="Official Name (As per Govt. ID)"
-                                                        error={!!error}
-                                                        helperText={error?.message}
-                                                        InputProps={{ startAdornment: <InputAdornment position="start"><User size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="nickName"
-                                                control={control}
-                                                rules={{ required: "Display Name is required" }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        fullWidth
-                                                        label="Display / Nick Name"
-                                                        error={!!error}
-                                                        helperText={error?.message}
-                                                        InputProps={{ startAdornment: <InputAdornment position="start"><ShieldTick size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Grid container spacing={1.5}>
-                                                <Grid size={{ xs: 4 }}>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                {isAdmin && (
                                                     <Controller
-                                                        name='countryCode'
+                                                        name="userID"
                                                         control={control}
-                                                        rules={{ required: 'Required' }}
+                                                        rules={{ required: 'Branch is required' }}
                                                         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
                                                             <Autocomplete
                                                                 fullWidth
-                                                                value={countryCodeList.find((c: any) => c.value === value) || null}
-                                                                onChange={(_, newValue) => onChange(newValue ? newValue.value : null)}
+                                                                value={branchList?.find((branch: any) => branch.id === value) || null}
+                                                                onChange={(_, newValue) => onChange(newValue ? newValue.id : null)}
                                                                 onBlur={onBlur}
-                                                                options={countryCodeList}
-                                                                getOptionLabel={(option: any) => option.label}
-                                                                renderInput={(params) => <TextField {...params} label="Exp" error={!!error} />}
+                                                                options={branchList}
+                                                                getOptionLabel={(option: any) => option.lastName}
+                                                                renderInput={(params) => (
+                                                                    <TextField {...params} label="Assigned Branch" error={!!error} helperText={error?.message} />
+                                                                )}
                                                             />
                                                         )}
                                                     />
-                                                </Grid>
-                                                <Grid size={{ xs: 8 }}>
-                                                    <Controller
-                                                        name='phoneNumber'
-                                                        control={control}
-                                                        rules={{ required: 'Phone required', pattern: { value: PHONE_REGEX, message: 'Invalid format' } }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField
-                                                                {...field}
-                                                                fullWidth
-                                                                label="Personal Phone"
-                                                                error={!!error}
-                                                                helperText={error?.message}
-                                                                InputProps={{ startAdornment: <InputAdornment position="start"><Call size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
-                                                            />
-                                                        )}
-                                                    />
-                                                </Grid>
+                                                )}
                                             </Grid>
                                         </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="gender"
-                                                control={control}
-                                                rules={{ required: "Gender is required" }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <Box>
-                                                        <FormLabel sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5, display: 'block', color: theme.palette.text.secondary }}>Gender</FormLabel>
-                                                        <RadioGroup row {...field}>
-                                                            <FormControlLabel value={"Male"} control={<Radio size="small" />} label={<Typography variant="body2">Male</Typography>} />
-                                                            <FormControlLabel value={"Female"} control={<Radio size="small" />} label={<Typography variant="body2">Female</Typography>} />
-                                                        </RadioGroup>
-                                                        <FormHelperText error>{error?.message}</FormHelperText>
-                                                    </Box>
-                                                )}
-                                            />
-                                        </Grid>
                                     </Grid>
-                                </Grid>
 
-                                <Grid size={{ xs: 12 }}><Divider /></Grid>
+                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
 
-                                {/* ── Section 3: Contact & Roots ──────────────────────── */}
-                                <Grid size={{ xs: 12 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-                                        <Call size={20} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h5" fontWeight={600}>Family Roots</Typography>
-                                    </Stack>
-                                    <Grid container spacing={2.5}>
-                                        <Grid size={{ xs: 12, sm: 8 }}>
-                                            <Grid container spacing={1.5}>
-                                                <Grid size={{ xs: 12, sm: 6 }}>
-                                                    <Controller
-                                                        name="fatherName"
-                                                        control={control}
-                                                        rules={{ required: 'Father Name is required' }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField {...field} fullWidth label="Father's Full Name" error={!!error} helperText={error?.message} />
-                                                        )}
-                                                    />
-                                                </Grid>
-                                                <Grid size={{ xs: 12, sm: 6 }}>
-                                                    <Controller
-                                                        name="fatherPhone"
-                                                        control={control}
-                                                        rules={{ required: 'Father Phone required', pattern: { value: PHONE_REGEX, message: 'Invalid format' } }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField {...field} fullWidth label="Father's Contact" error={!!error} helperText={error?.message} />
-                                                        )}
-                                                    />
-                                                </Grid>
-                                                <Grid size={{ xs: 12 }}>
-                                                    <Controller
-                                                        name="fatherIdNumber"
-                                                        control={control}
-                                                        rules={{ required: 'Father ID Number required' }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField {...field} fullWidth label="Father's ID Number" error={!!error} helperText={error?.message} />
-                                                        )}
-                                                    />
-                                                </Grid>
-                                                <Grid size={{ xs: 12 }}>
-                                                    <Controller
-                                                        name="fatherAddress"
-                                                        control={control}
-                                                        rules={{ required: 'Father Address required' }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField {...field} multiline rows={7} fullWidth label="Father's Address" error={!!error} helperText={error?.message} />
-                                                        )}
-                                                    />
-                                                </Grid>
-                                                <Grid size={{ xs: 12 }}><Divider /></Grid>
-                                                <Grid size={{ xs: 12 }}>
-                                                    <Controller
-                                                        name="motherIdNumber"
-                                                        control={control}
-                                                        rules={{ required: 'Mother ID Number required' }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField {...field} fullWidth label="Mother's ID Number" error={!!error} helperText={error?.message} />
-                                                        )}
-                                                    />
-                                                </Grid>
-                                                <Grid size={{ xs: 12 }}>
-                                                    <Controller
-                                                        name="motherAddress"
-                                                        control={control}
-                                                        rules={{ required: 'Mother Address required' }}
-                                                        render={({ field, fieldState: { error } }) => (
-                                                            <TextField {...field} multiline rows={7} fullWidth label="Mother's Address" error={!!error} helperText={error?.message} />
-                                                        )}
-                                                    />
+                                    {/* ── Section 2: Personal Profile ─────────────────────── */}
+                                    <Grid size={{ xs: 12 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+                                            <User size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                            <Typography variant="h5" fontWeight={600}>Personal Profile</Typography>
+                                        </Stack>
+                                        <Grid container spacing={2.5}>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="name"
+                                                    control={control}
+                                                    rules={{ required: 'Full Name is required' }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            fullWidth
+                                                            label="Official Name (As per Govt. ID)"
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                            InputProps={{ startAdornment: <InputAdornment position="start"><User size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="nickName"
+                                                    control={control}
+                                                    rules={{ required: "Display Name is required" }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            fullWidth
+                                                            label="Display / Nick Name"
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                            InputProps={{ startAdornment: <InputAdornment position="start"><ShieldTick size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Grid container spacing={1.5}>
+                                                    <Grid size={{ xs: 4 }}>
+                                                        <Controller
+                                                            name='countryCode'
+                                                            control={control}
+                                                            rules={{ required: 'Required' }}
+                                                            render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
+                                                                <Autocomplete
+                                                                    fullWidth
+                                                                    value={countryCodeList.find((c: any) => c.value === value) || null}
+                                                                    onChange={(_, newValue) => onChange(newValue ? newValue.value : null)}
+                                                                    onBlur={onBlur}
+                                                                    options={countryCodeList}
+                                                                    getOptionLabel={(option: any) => option.label}
+                                                                    renderInput={(params) => <TextField {...params} label="Exp" error={!!error} />}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid size={{ xs: 8 }}>
+                                                        <Controller
+                                                            name='phoneNumber'
+                                                            control={control}
+                                                            rules={{ required: 'Phone required', pattern: { value: PHONE_REGEX, message: 'Invalid format' } }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField
+                                                                    {...field}
+                                                                    fullWidth
+                                                                    label="Whatsapp Phone"
+                                                                    error={!!error}
+                                                                    helperText={error?.message}
+                                                                    InputProps={{ startAdornment: <InputAdornment position="start"><Call size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 4 }}>
-                                            <Controller
-                                                name="fatherIdPhoto"
-                                                control={control}
-                                                // rules={{ required: 'Father ID Photo required' }}
-                                                render={({ field: { value, onChange } }) => (
-                                                    <FileUpload
-                                                        value={value}
-                                                        onChange={onChange}
-                                                        accept="image/*"
-                                                        maxSize={2097152} // 2MB
-                                                        label="Father's ID Photo (Optional)"
-                                                    // error={!!error}
-                                                    // helperText={error?.message}
-                                                    />
-                                                )}
-                                            />
-                                            <Controller
-                                                name="motherIdPhoto"
-                                                control={control}
-                                                // rules={{ required: 'Mother ID Photo required' }}
-                                                render={({ field: { value, onChange } }) => (
-                                                    <FileUpload
-                                                        value={value}
-                                                        onChange={onChange}
-                                                        accept="image/*"
-                                                        maxSize={2097152} // 2MB
-                                                        label="Mother's ID Photo (Optional)"
-                                                    // error={!!error}
-                                                    // helperText={error?.message}
-                                                    />
-                                                )}
-                                            />
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="gender"
+                                                    control={control}
+                                                    rules={{ required: "Gender is required" }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <Box>
+                                                            <FormLabel sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5, display: 'block', color: theme.palette.text.secondary }}>Gender</FormLabel>
+                                                            <RadioGroup row {...field}>
+                                                                <FormControlLabel value={"Male"} control={<Radio size="small" />} label={<Typography variant="body2">Male</Typography>} />
+                                                                <FormControlLabel value={"Female"} control={<Radio size="small" />} label={<Typography variant="body2">Female</Typography>} />
+                                                            </RadioGroup>
+                                                            <FormHelperText error>{error?.message}</FormHelperText>
+                                                        </Box>
+                                                    )}
+                                                />
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                </Grid>
 
-                                <Grid size={{ xs: 12 }}><Divider /></Grid>
+                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
 
-                                {/* ── Section 4: Professional Stature ─────────────────── */}
-                                <Grid size={{ xs: 12 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-                                        <Briefcase size={20} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h5" fontWeight={600}>Professional Background</Typography>
-                                    </Stack>
-                                    <Grid container spacing={2.5}>
-                                        <Grid size={{ xs: 12, sm: 4 }}>
-                                            <Controller
-                                                name="salary"
-                                                control={control}
-                                                rules={{ required: 'Salary is required', pattern: { value: /^\d*(\.\d{0,2})?$/i, message: 'Invalid salary' } }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        fullWidth
-                                                        label="Agreed Monthly Salary"
-                                                        error={!!error}
-                                                        helperText={error?.message}
-                                                        InputProps={{ startAdornment: <InputAdornment position="start"><Wallet size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 4 }}>
-                                            <Controller
-                                                name="experience"
-                                                control={control}
-                                                rules={{ required: 'Experience required' }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField {...field} fullWidth label="Work Experience (in Years)" error={!!error} helperText={error?.message} />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 4 }}>
-                                            <Controller
-                                                name="pastWorking"
-                                                control={control}
-                                                rules={{ required: 'Past Working facts required' }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField {...field} fullWidth label="Last Organization" error={!!error} helperText={error?.message} />
-                                                )}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid size={{ xs: 12 }}><Divider /></Grid>
-
-                                {/* ── Section 5: Endorsements/References ──────────────── */}
-                                <Grid size={{ xs: 12 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-                                        <People size={20} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h5" fontWeight={600}>Endorsements & References</Typography>
-                                    </Stack>
-                                    <Grid container spacing={2.5}>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="refName"
-                                                control={control}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField {...field} fullWidth label="Reference Name" error={!!error} helperText={error?.message} />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="refPhone"
-                                                control={control}
-                                                rules={{ pattern: { value: /^\d{10}$/, message: "Reference Phone must be 10 digits" } }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField {...field} fullWidth label="Reference Contact Number" error={!!error} helperText={error?.message} />
-                                                )}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid size={{ xs: 12 }}><Divider /></Grid>
-
-                                {/* ── Section 6: Address Details ──────────────────────── */}
-                                <Grid size={{ xs: 12 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
-                                        <Location size={20} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h5" fontWeight={600}>Residential Address</Typography>
-                                    </Stack>
-                                    <Grid container spacing={2.5}>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="localAddress"
-                                                control={control}
-                                                rules={{ required: 'Local Address is required' }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        fullWidth
-                                                        multiline
-                                                        rows={4}
-                                                        label="Current Local Address"
-                                                        error={!!error}
-                                                        helperText={error?.message}
-                                                    />
-                                                )}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
-                                            <Controller
-                                                name="permanentAddress"
-                                                control={control}
-                                                rules={{ required: 'Permanent Address is required' }}
-                                                render={({ field, fieldState: { error } }) => (
-                                                    <TextField
-                                                        {...field}
-                                                        fullWidth
-                                                        multiline
-                                                        rows={4}
-                                                        label="Home / Permanent Address"
-                                                        error={!!error}
-                                                        helperText={error?.message}
-                                                    />
-                                                )}
-                                            />
+                                    {/* ── Section 3: Contact & Roots ──────────────────────── */}
+                                    <Grid size={{ xs: 12 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+                                            <Call size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                            <Typography variant="h5" fontWeight={600}>Family Roots</Typography>
+                                        </Stack>
+                                        <Grid container spacing={2.5}>
+                                            <Grid size={{ xs: 12, sm: 8 }}>
+                                                <Grid container spacing={1.5}>
+                                                    <Grid size={{ xs: 12, sm: 6 }}>
+                                                        <Controller
+                                                            name="fatherName"
+                                                            control={control}
+                                                            rules={{ required: 'Father Name is required' }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField {...field} fullWidth label="Father's Full Name" error={!!error} helperText={error?.message} />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid size={{ xs: 12, sm: 6 }}>
+                                                        <Controller
+                                                            name="fatherPhone"
+                                                            control={control}
+                                                            rules={{ required: 'Father Phone required', pattern: { value: PHONE_REGEX, message: 'Invalid format' } }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField {...field} fullWidth label="Father's Contact" error={!!error} helperText={error?.message} />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid size={{ xs: 12 }}>
+                                                        <Controller
+                                                            name="fatherIdNumber"
+                                                            control={control}
+                                                            rules={{ required: 'Father ID Number required' }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField {...field} fullWidth label="Father's ID Number" error={!!error} helperText={error?.message} />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid size={{ xs: 12 }}>
+                                                        <Controller
+                                                            name="fatherAddress"
+                                                            control={control}
+                                                            rules={{ required: 'Father Address required' }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField {...field} multiline rows={7} fullWidth label="Father's Address" error={!!error} helperText={error?.message} />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
+                                                    <Grid size={{ xs: 12 }}>
+                                                        <Controller
+                                                            name="motherIdNumber"
+                                                            control={control}
+                                                            rules={{ required: 'Mother ID Number required' }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField {...field} fullWidth label="Mother's ID Number" error={!!error} helperText={error?.message} />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                    <Grid size={{ xs: 12 }}>
+                                                        <Controller
+                                                            name="motherAddress"
+                                                            control={control}
+                                                            rules={{ required: 'Mother Address required' }}
+                                                            render={({ field, fieldState: { error } }) => (
+                                                                <TextField {...field} multiline rows={7} fullWidth label="Mother's Address" error={!!error} helperText={error?.message} />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 4 }}>
+                                                <Controller
+                                                    name="fatherIdPhoto"
+                                                    control={control}
+                                                    // rules={{ required: 'Father ID Photo required' }}
+                                                    render={({ field: { value, onChange } }) => (
+                                                        <FileUpload
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            accept="image/*"
+                                                            maxSize={2097152} // 2MB
+                                                            label="Father's ID Photo (Optional)"
+                                                        // error={!!error}
+                                                        // helperText={error?.message}
+                                                        />
+                                                    )}
+                                                />
+                                                <Controller
+                                                    name="motherIdPhoto"
+                                                    control={control}
+                                                    // rules={{ required: 'Mother ID Photo required' }}
+                                                    render={({ field: { value, onChange } }) => (
+                                                        <FileUpload
+                                                            value={value}
+                                                            onChange={onChange}
+                                                            accept="image/*"
+                                                            maxSize={2097152} // 2MB
+                                                            label="Mother's ID Photo (Optional)"
+                                                        // error={!!error}
+                                                        // helperText={error?.message}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                </Grid>
 
-                                <Grid size={{ xs: 12 }}><Divider /></Grid>
+                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
+
+                                    {/* ── Section 4: Professional Stature ─────────────────── */}
+                                    <Grid size={{ xs: 12 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+                                            <Briefcase size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                            <Typography variant="h5" fontWeight={600}>Professional Background</Typography>
+                                        </Stack>
+                                        <Grid container spacing={2.5}>
+                                            <Grid size={{ xs: 12, sm: 4 }}>
+                                                <Controller
+                                                    name="salary"
+                                                    control={control}
+                                                    rules={{ required: 'Salary is required', pattern: { value: /^\d*(\.\d{0,2})?$/i, message: 'Invalid salary' } }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            fullWidth
+                                                            label="Agreed Monthly Salary"
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                            InputProps={{ startAdornment: <InputAdornment position="start"><Wallet size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 4 }}>
+                                                <Controller
+                                                    name="experience"
+                                                    control={control}
+                                                    rules={{ required: 'Experience required' }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField {...field} fullWidth label="Work Experience (in Years)" error={!!error} helperText={error?.message} />
+                                                    )}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 4 }}>
+                                                <Controller
+                                                    name="pastWorking"
+                                                    control={control}
+                                                    rules={{ required: 'Past Working facts required' }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField {...field} fullWidth label="Last Organization" error={!!error} helperText={error?.message} />
+                                                    )}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
+
+                                    {/* ── Section 5: Endorsements/References ──────────────── */}
+                                    <Grid size={{ xs: 12 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+                                            <People size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                            <Typography variant="h5" fontWeight={600}>Endorsements & References</Typography>
+                                        </Stack>
+                                        <Grid container spacing={2.5}>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="refName"
+                                                    control={control}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField {...field} fullWidth label="Reference Name" error={!!error} helperText={error?.message} />
+                                                    )}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="refPhone"
+                                                    control={control}
+                                                    rules={{ pattern: { value: /^\d{10}$/, message: "Reference Phone must be 10 digits" } }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField {...field} fullWidth label="Reference Contact Number" error={!!error} helperText={error?.message} />
+                                                    )}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
+
+                                    {/* ── Section 6: Address Details ──────────────────────── */}
+                                    <Grid size={{ xs: 12 }}>
+                                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
+                                            <Location size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                            <Typography variant="h5" fontWeight={600}>Residential Address</Typography>
+                                        </Stack>
+                                        <Grid container spacing={2.5}>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="localAddress"
+                                                    control={control}
+                                                    rules={{ required: 'Local Address is required' }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            fullWidth
+                                                            multiline
+                                                            rows={4}
+                                                            label="Current Local Address"
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <Controller
+                                                    name="permanentAddress"
+                                                    control={control}
+                                                    rules={{ required: 'Permanent Address is required' }}
+                                                    render={({ field, fieldState: { error } }) => (
+                                                        <TextField
+                                                            {...field}
+                                                            fullWidth
+                                                            multiline
+                                                            rows={4}
+                                                            label="Home / Permanent Address"
+                                                            error={!!error}
+                                                            helperText={error?.message}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid size={{ xs: 12 }}><Divider /></Grid>
+                                </>)}
 
                                 {/* ── Section 7: Financial Settings ───────────────────── */}
                                 <Grid size={{ xs: 12 }}>
@@ -835,19 +844,26 @@ const AddEditStaff = () => {
                                                 <Box sx={{ p: 1, bgcolor: theme.palette.primary.main, borderRadius: 1.5, display: 'flex', color: '#fff' }}><Bank size={20} variant="Bold" /></Box>
                                                 <Box>
                                                     <Typography variant="subtitle1" fontWeight={700}>Financial Settlement Records</Typography>
-                                                    <Typography variant="caption" color="text.secondary">Toggle to capture or update bank account details for salary transfers.</Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {!isAdmin && isFormActive
+                                                            ? 'Bank account details for salary transfers.'
+                                                            : 'Toggle to capture or update bank account details for salary transfers.'}
+                                                    </Typography>
                                                 </Box>
                                             </Stack>
-                                            <Switch
-                                                checked={isShowBankDetail}
-                                                onChange={(e) => setIsShowBankDetail(e.target.checked)}
-                                            />
+                                            {/* Hide toggle for non-admin when form is active — bank details are always visible */}
+                                            {!(!isAdmin && isFormActive) && (
+                                                <Switch
+                                                    checked={isShowBankDetail}
+                                                    onChange={(e) => setIsShowBankDetail(e.target.checked)}
+                                                />
+                                            )}
                                         </Stack>
                                     </Box>
                                 </Grid>
 
                                 {/* ── Section 8: Bank Information (Conditional) ───────── */}
-                                {isShowBankDetail && (
+                                {showBankDetail && (
                                     <Grid size={{ xs: 12 }}>
                                         <Grid container spacing={2.5}>
                                             <Grid size={{ xs: 12, sm: 4 }}>
@@ -894,9 +910,84 @@ const AddEditStaff = () => {
                                                 <Controller
                                                     name="ifscCode"
                                                     control={control}
-                                                    rules={{ required: 'IFSC Code required', pattern: { value: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: 'Invalid IFSC format' } }}
-                                                    render={({ field, fieldState: { error } }) => (
-                                                        <TextField {...field} fullWidth label="Bank IFSC Code" error={!!error} helperText={error?.message} />
+                                                    rules={{
+                                                        required: 'IFSC Code is required',
+                                                        pattern: {
+                                                            value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+                                                            message: 'Invalid IFSC format (e.g. SBIN0001234)'
+                                                        },
+                                                        validate: handleIfscVerify
+                                                    }}
+                                                    render={({ field: { value, onChange, onBlur, ref }, fieldState: { error, isValidating } }) => (
+                                                        <TextField
+                                                            value={value}
+                                                            onChange={(e) => {
+                                                                // Auto-uppercase for convenience
+                                                                onChange(e.target.value.toUpperCase());
+                                                            }}
+                                                            onBlur={onBlur}
+                                                            inputRef={ref}
+                                                            fullWidth
+                                                            label="Bank IFSC Code"
+                                                            placeholder="e.g. SBIN0001234"
+                                                            error={!!error}
+                                                            helperText={
+                                                                error?.message ||
+                                                                (ifscVerified === true ? '✓ IFSC verified successfully' : '')
+                                                            }
+                                                            FormHelperTextProps={{
+                                                                sx: {
+                                                                    color: !error && ifscVerified === true
+                                                                        ? 'success.main'
+                                                                        : undefined
+                                                                }
+                                                            }}
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <Bank size={18} color={theme.palette.text.disabled} />
+                                                                    </InputAdornment>
+                                                                ),
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        {isValidating ? (
+                                                                            <Tooltip title="Verifying IFSC...">
+                                                                                <CircularProgress size={18} />
+                                                                            </Tooltip>
+                                                                        ) : ifscVerified === true ? (
+                                                                            <Tooltip title="IFSC Verified">
+                                                                                <ShieldTick
+                                                                                    size={20}
+                                                                                    variant="Bold"
+                                                                                    color={theme.palette.success.main}
+                                                                                />
+                                                                            </Tooltip>
+                                                                        ) : ifscVerified === false ? (
+                                                                            <Tooltip title="IFSC Not Found">
+                                                                                <Box
+                                                                                    sx={{
+                                                                                        width: 20,
+                                                                                        height: 20,
+                                                                                        borderRadius: '50%',
+                                                                                        bgcolor: 'error.main',
+                                                                                        display: 'flex',
+                                                                                        alignItems: 'center',
+                                                                                        justifyContent: 'center',
+                                                                                    }}
+                                                                                >
+                                                                                    <Typography
+                                                                                        variant="caption"
+                                                                                        sx={{ color: '#fff', lineHeight: 1, fontWeight: 700 }}
+                                                                                    >
+                                                                                        ✕
+                                                                                    </Typography>
+                                                                                </Box>
+                                                                            </Tooltip>
+                                                                        ) : null}
+                                                                    </InputAdornment>
+                                                                )
+                                                            }}
+                                                        />
                                                     )}
                                                 />
                                             </Grid>
@@ -931,7 +1022,7 @@ const AddEditStaff = () => {
                                     boxShadow: `0 8px 16px ${alpha(theme.palette.primary.main, 0.24)}`
                                 }}
                             >
-                                {isSubmitting ? 'Saving...' : mode === 'add' ? 'Register Staff' : 'Update Profile'}
+                                {isSubmitting ? 'Saving...' : mode === 'add' ? isStaffFound === true && !isAdmin ? 'Save Bank Details' : 'Register Staff' : 'Update Profile'}
                             </Button>
                         </Box>
                     </MainCard>

@@ -39,6 +39,10 @@ export const getManager = async (body: any) => {
     return await post(`${CREATE_STAFF_API}/get-manager`, body);
 }
 
+export const verifyIfscCode = async (body: any) => {
+    return await post(`${CREATE_STAFF_API}/verify-ifsc`, body);
+}
+
 export const getStaffList = async (body: any) => {
     return await post(STAFF_LIST_API, body);
 };
