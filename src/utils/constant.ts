@@ -182,3 +182,13 @@ export const WHATSAPP = "api/whatsapp";
 export const CONTACTUS = "api/contactus";
 
 export const RENT = "api/rent";
+
+export const EMPWELLNESSPLAN = "api/employee-wellness-plan";
+
+export const EMPWELLNESSENQUIRY = "api/employee-wellness-enquiry";
+
+export const GIFTCARD = "api/gift-card";
+
+export const GIFTCATEGORY = "api/gift-category";
+
+export const PURCHASEGIFTCARD = "api/purchase-gift-card";

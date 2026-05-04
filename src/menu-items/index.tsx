@@ -99,6 +99,13 @@ const menuItems: { items: NavItemType[] } = {
           icon: KyberNetwork,
           children: [
             {
+              id: 'employee-wellness-plan',
+              title: 'Employee Wellness Plan',
+              type: 'item',
+              url: '/employee-wellness-plan',
+              breadcrumbs: false
+            },
+            {
               id: 'membership-plan',
               title: 'Membership Plan',
               type: 'item',
