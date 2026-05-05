@@ -245,6 +245,7 @@ const Rent = Loadable(lazy(() => import('pages/rent-management/rent')));
 const AddEditRent = Loadable(lazy(() => import('pages/rent-management/rent/compnent/addEditRent')));
 const EmployeeWellnessPlan = Loadable(lazy(() => import('pages/master-management/employee-wellness-plan')));
 const AddEditEmployeeWellnessPlan = Loadable(lazy(() => import('pages/master-management/employee-wellness-plan/addEdit')));
+const EmployeeWellnessEnquiry = Loadable(lazy(() => import('pages/master-management/employee-wellness-enquiry')));
 
 // ==============================|| MAIN ROUTES ||============================== //
 
@@ -501,6 +502,10 @@ const MainRoutes: RouteObject = {
         {
           path: 'right',
           element: <Rights />
+        },
+        {
+          path: 'employee-wellness-enquiry',
+          element: <EmployeeWellnessEnquiry />
         },
         {
           path: 'employee-wellness-plan',

@@ -14,7 +14,7 @@ export type EmployeeWellnessPlanFormValue = {
     description: String;
     minPrice: number | null;
     maxPrice: number | null;
-    image: FileUploadValue | null;
+    images: FileUploadValue[] | null;
     featureList: {
         index: number,
         value: string
@@ -27,7 +27,7 @@ const defaultValues: EmployeeWellnessPlanFormValue = {
     minPrice: null,
     maxPrice: null,
     featureList: [],
-    image: null,
+    images: null,
 }
 
 const UseAddEditEmployeeWellnessPlan = () => {
@@ -78,7 +78,7 @@ const UseAddEditEmployeeWellnessPlan = () => {
                 setValue('description', data.description);
                 setValue('minPrice', data.minPrice);
                 setValue('maxPrice', data.maxPrice);
-                setValue('image', data.image);
+                setValue('images', data.images);
                 if (data.featureList && Array.isArray(data.featureList)) {
                     append(data.featureList.map((feature: string, index: number) => ({ index, value: feature })));
                 }
@@ -125,9 +125,14 @@ const UseAddEditEmployeeWellnessPlan = () => {
                     createdBy: user?.id
                 }
             }
-            if (data && data.image && typeof data.image === 'object') {
-                payload = convertToFormData(payload);
-                payload.append('image', data.image);
+            if (data && data.images && Array.isArray(data.images) && data.images.length > 0) {
+                const objImgs = data.images.filter((image: any) => typeof image === 'object');
+                if (objImgs.length > 0) {
+                    payload = convertToFormData(payload);
+                    objImgs.forEach((image: FileUploadValue) => {
+                        payload.append(mode === 'edit' ? 'newImages' : 'images', image);
+                    });
+                }
             }
             const { success, message }: any = mode && mode === 'edit' && id ? await updateEmpWellnessPlan(payload, Number(id)) : await createEmpWellnessPlan(payload);
             if (success) {

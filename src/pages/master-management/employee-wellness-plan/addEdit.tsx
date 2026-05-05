@@ -210,7 +210,7 @@ const AddEditEmployeeWellnessPlan = () => {
                                 <Typography variant="h5" fontWeight={600}>Visual Assets</Typography>
                             </Stack>
                             <Controller
-                                name='image'
+                                name='images'
                                 control={control}
                                 // rules={{ required: 'Images are required' }}
                                 render={({ field: { value, onChange }, fieldState: { error } }) => (
@@ -219,7 +219,8 @@ const AddEditEmployeeWellnessPlan = () => {
                                         onChange={onChange}
                                         accept="image/*"
                                         maxSize={2097152} // 2MB
-                                        label="Image"
+                                        label="Images"
+                                        multiple
                                         error={!!error}
                                         helperText={error?.message}
                                     />

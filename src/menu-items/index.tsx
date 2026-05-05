@@ -99,13 +99,6 @@ const menuItems: { items: NavItemType[] } = {
           icon: KyberNetwork,
           children: [
             {
-              id: 'employee-wellness-plan',
-              title: 'Employee Wellness Plan',
-              type: 'item',
-              url: '/employee-wellness-plan',
-              breadcrumbs: false
-            },
-            {
               id: 'membership-plan',
               title: 'Membership Plan',
               type: 'item',
@@ -183,6 +176,20 @@ const menuItems: { items: NavItemType[] } = {
           type: 'collapse',
           icon: KyberNetwork,
           children: [
+            {
+              id: 'employee-wellness-plan',
+              title: 'Employee Wellness Plan',
+              type: 'item',
+              url: '/employee-wellness-plan',
+              breadcrumbs: false
+            },
+            {
+              id: 'employee-wellness-enquiry',
+              title: 'Employee Wellness Enquiry',
+              type: 'item',
+              url: '/employee-wellness-enquiry',
+              breadcrumbs: false
+            },
             {
               id: 'web-setting',
               title: 'Web Setting',

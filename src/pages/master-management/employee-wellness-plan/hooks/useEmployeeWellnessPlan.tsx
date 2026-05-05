@@ -190,6 +190,36 @@ const UseEmployeeWellnessPlan = () => {
                 isSortable: true
             },
             {
+                id: 'minPrice',
+                label: 'Min Price',
+                align: 'left',
+                numeric: true,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row: any) => {
+                    return (
+                        <Box>
+                            {row.minPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+                        </Box>
+                    )
+                }
+            },
+            {
+                id: 'maxPrice',
+                label: 'Max Price',
+                align: 'left',
+                numeric: true,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row: any) => {
+                    return (
+                        <Box>
+                            {row.maxPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+                        </Box>
+                    )
+                }
+            },
+            {
                 id: 'isActive',
                 label: 'Status',
                 align: 'left',
