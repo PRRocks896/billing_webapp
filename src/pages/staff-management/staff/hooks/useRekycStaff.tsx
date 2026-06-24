@@ -1,10 +1,8 @@
 import { openSnackbar } from "api/snackbar";
-import countries from "data/countries";
 import useAuth from "hooks/useAuth";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { getEmployeeTypePayload } from "service/employee-type";
 import { getStaffById, updateStaff } from "service/staff";
 import { convertToFormData } from "utils/helper";
 
@@ -100,13 +98,16 @@ const UseRekycStaff = () => {
             startLoading();
 
             let payload: any = {
-                ...data,
-                otherDocumentName: data.otherDocument?.name,
-                uanDoc: data.uanDoc,
-                aadhaarCardPdf: data.aadhaarCardPdf,
-                panPdf: data.panPdf,
-                voterIdPdf: data.voterIdPdf,
+                id: Number(id),
+                isKyc: true,
+                uanNumber: data.uanNumber,
+                aadhaarCard: data.aadhaarCard,
+                panNo: data.panNo,
+                voterIdNumber: data.voterIdNumber,
+                updatedBy: user?.id
             }
+
+            console.log(payload);
 
             payload = convertToFormData(payload);
 
@@ -114,20 +115,34 @@ const UseRekycStaff = () => {
                 payload.append('uanDoc', data.uanDoc);
             }
 
-            if (data.aadhaarCardPdf) {
-                payload.append('aadhaarCardPdf', data.aadhaarCardPdf);
+            if (data.aadhaarCardPdf && typeof data.aadhaarCardPdf !== 'string') {
+                if (Array.isArray(data.aadhaarCardPdf) && data.aadhaarCardPdf.length > 0) {
+                    data.aadhaarCardPdf.forEach((item: any) => {
+                        payload.append('aadhaarCardPdf', item);
+                    });
+                }
             }
 
             if (data.panPdf) {
                 payload.append('panPdf', data.panPdf);
             }
 
-            if (data.voterIdPdf) {
-                payload.append('voterIdPdf', data.voterIdPdf);
+            if (data.voterIdPdf && typeof data.voterIdPdf !== 'string') {
+                if (Array.isArray(data.voterIdPdf) && data.voterIdPdf.length > 0) {
+                    data.voterIdPdf.forEach((item: any) => {
+                        payload.append('voterIdPdf', item);
+                    });
+                }
             }
 
             if (data.otherDocument) {
-                payload.append('otherDocument', data.otherDocument);
+                if (Array.isArray(data.otherDocument) && data.otherDocument.length > 0) {
+                    data.otherDocument.forEach((item: any) => {
+                        payload.append('otherDocument', item);
+                    });
+                } else {
+                    payload.append('otherDocument', data.otherDocument);
+                }
             }
 
             const { success, message }: any = await updateStaff(payload, Number(id));

@@ -6,11 +6,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEmployeeTypePayload } from "service/employee-type";
 import { createStaff, getStaffById, getStaff, updateStaff, staffTransferRequest, staffTransferVerify, verifyIfscCode } from "service/staff";
+import { getStatesList } from "service/state";
 import { getUserList } from "service/user";
 import { convertToFormData } from "utils/helper";
 
 export type StaffFormValue = {
     userID: number | null;
+    stateID: number | null;
     employeeTypeID: number | null;
     name: string;
     nickName: string;
@@ -34,14 +36,21 @@ export type StaffFormValue = {
     accountNumber: string;
     reEnterAccountNumber: string;
     ifscCode: string;
+    bankBranch: string;
     accountType: string;
     refName: string;
     refPhone: string;
+    isMarriage: boolean;
+    qualification: string;
+    husbandName: string;
+    dob: string;
+    email: string;
 };
 
 const defaultValues: StaffFormValue = {
     userID: null,
     employeeTypeID: null,
+    stateID: null,
     name: "",
     nickName: "",
     countryCode: "",
@@ -62,11 +71,17 @@ const defaultValues: StaffFormValue = {
     permanentAddress: "",
     accountHolderName: "",
     accountNumber: "",
+    bankBranch: "",
     reEnterAccountNumber: "",
     ifscCode: "",
     accountType: "saving",
     refName: "",
-    refPhone: ""
+    refPhone: "",
+    isMarriage: false,
+    qualification: "",
+    husbandName: "",
+    dob: "",
+    email: ""
 };
 
 const UseAddEditStaff = () => {
@@ -85,6 +100,8 @@ const UseAddEditStaff = () => {
     const [staffPhoneNumber, setStaffPhoneNumber] = useState<string>('');
     const [staffData, setStaffData] = useState<any>(null);
 
+    const [statesList, setStatesList] = useState<any[]>([]);
+
     const countryCodeList = useMemo(() => {
         return countries?.map((country) => {
             return {
@@ -99,6 +116,7 @@ const UseAddEditStaff = () => {
     const {
         control,
         formState: { isSubmitting },
+        watch,
         setValue,
         getValues,
         setError,
@@ -108,6 +126,8 @@ const UseAddEditStaff = () => {
         defaultValues,
         mode: 'onChange'
     });
+
+    const isMarriage = useMemo(() => watch('isMarriage'), [watch('isMarriage')]);
 
     const toggleIsStaffFound = useCallback(() => setIsStaffFound((prev: boolean | null) => prev === null ? false : !prev), []);
 
@@ -172,6 +192,13 @@ const UseAddEditStaff = () => {
                 setValue("motherAddress", data.motherAddress);
                 setValue("motherIdPhoto", data.motherIdPhoto);
                 setValue("gender", data.gender);
+                setValue("isMarriage", data.isMarriage);
+                setValue("qualification", data.qualification);
+                setValue("husbandName", data.husbandName);
+                setValue("dob", data.dob);
+                setValue("email", data.email);
+                setValue("bankBranch", data.bankBranch);
+                setValue("stateID", data.stateID);
                 // setIsStaffFound(true);
                 // setStaffPhoneNumber(data.phoneNumber);
                 setStaffData(data);
@@ -422,14 +449,40 @@ const UseAddEditStaff = () => {
         (async () => {
             try {
                 startLoading();
-                const { success, message, data }: any = await getEmployeeTypePayload({ isActive: true, isDeleted: false });
-                if (success) {
-                    setEmployeeTypeList(data);
+                const [employeeTypeResponse, stateResponse]: any = await Promise.all([
+                    getEmployeeTypePayload({ isActive: true, isDeleted: false }),
+                    getStatesList({
+                        where: {
+                            isDeleted: false,
+                        },
+                        pagination: {
+                            page: 1,
+                            rows: 1000,
+                            sortBy: "createdAt",
+                            descending: true,
+                        },
+                    })
+                ]);
+                if (stateResponse?.success && stateResponse?.data && stateResponse?.data?.rows) {
+                    setStatesList(stateResponse?.data?.rows || []);
+                } else {
+                    setStatesList([]);
+                    openSnackbar({
+                        open: true,
+                        message: stateResponse?.message || 'Something went Wrong',
+                        variant: 'alert',
+                        alert: {
+                            color: 'error'
+                        }
+                    });
+                }
+                if (employeeTypeResponse?.success) {
+                    setEmployeeTypeList(employeeTypeResponse?.data || []);
                 } else {
                     setEmployeeTypeList([]);
                     openSnackbar({
                         open: true,
-                        message: message || 'Something went Wrong',
+                        message: employeeTypeResponse?.message || 'Something went Wrong',
                         variant: 'alert',
                         alert: {
                             color: 'error'
@@ -529,6 +582,8 @@ const UseAddEditStaff = () => {
         control,
         staffData,
         branchList,
+        isMarriage,
+        statesList,
         verifiedOtp,
         isStaffFound,
         isSubmitting,

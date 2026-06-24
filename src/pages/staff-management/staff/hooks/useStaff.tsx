@@ -390,6 +390,87 @@ const UseStaff = () => {
                 disablePadding: false,
                 isSortable: true,
             });
+            col.splice(6, 0,
+                {
+                    id: 'isDisabled',
+                    label: 'Disabled',
+                    align: 'left',
+                    numeric: false,
+                    disablePadding: false,
+                    renderCell: (row: any) => {
+                        if (!isAdmin) {
+                            return <Chip
+                                variant="filled"
+                                size="medium"
+                                label={row.isDisabled ? 'Disabled' : 'Not Disabled'}
+                                color={row.isDisabled ? 'error' : 'success'}
+                            />
+                        }
+                        return (
+                            <Box>
+                                <Switch
+                                    checked={row.isDisabled}
+                                    onChange={() => onStatusChange(row.id, { isDisabled: !row.isDisabled })}
+                                />
+                            </Box>
+                        );
+                    },
+                }
+            )
+            col.splice(7, 0,
+                {
+                    id: 'isLoginPermission',
+                    label: 'Login Permission',
+                    align: 'left',
+                    numeric: false,
+                    disablePadding: false,
+                    renderCell: (row: any) => {
+                        if (!isAdmin) {
+                            return <Chip
+                                variant="filled"
+                                size="medium"
+                                label={row.isLoginPermission ? 'Allowed' : 'Not Allowed'}
+                                color={row.isLoginPermission ? 'success' : 'error'}
+                            />
+                        }
+                        return (
+                            <Box>
+                                <Switch
+                                    checked={row.isLoginPermission}
+                                    onChange={() => onStatusChange(row.id, { isLoginPermission: !row.isLoginPermission })}
+                                />
+                            </Box>
+                        );
+                    },
+                },
+            )
+            col.splice(8, 0,
+                {
+                    id: 'isblackList',
+                    label: 'Blocked',
+                    align: 'left',
+                    numeric: false,
+                    disablePadding: false,
+                    renderCell: (row: any) => {
+                        if (!isAdmin) {
+                            return <Chip
+                                variant="filled"
+                                size="medium"
+                                label={row.isblackList ? 'Blocked' : 'Not Blocked'}
+                                color={row.isblackList ? 'error' : 'success'}
+                            />
+                        }
+                        return (
+                            <Box>
+                                <Switch
+                                    checked={row.isblackList}
+                                    onChange={() => onStatusChange(row.id, { isblackList: !row.isblackList })}
+                                />
+                            </Box>
+                        );
+                    },
+                }
+            )
         }
         return col;
     }, [rights, isAdmin])
