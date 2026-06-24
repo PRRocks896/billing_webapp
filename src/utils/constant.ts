@@ -42,6 +42,12 @@ export const GET_SINGLE_STAFF_API = "api/staff/";
 export const UPDATE_STAFF_API = "api/staff/";
 export const DELETE_STAFF_API = "api/staff/";
 
+// face recognition apis
+export const FACE_REGISTER_API = "api/face/register";
+export const FACE_VERIFY_API = "api/face/verify";
+export const FACE_CACHE_STATS_API = "api/face/cache-stats";
+export const FACE_REFRESH_CACHE_API = "api/face/refresh-cache";
+
 // states apis
 export const STATES_LIST_API = "api/state/list";
 export const CREATE_STATES_API = "api/state";

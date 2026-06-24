@@ -340,9 +340,24 @@ const menuItems: { items: NavItemType[] } = {
               type: 'item',
               url: '/salary-report',
               breadcrumbs: false,
+            },
+            {
+              id: 'face-register',
+              title: 'Face Registration',
+              type: 'item',
+              url: '/face-register',
+              breadcrumbs: false
+            },
+            {
+              id: 'face-attendance',
+              title: 'Face Attendance',
+              type: 'item',
+              url: '/face-attendance',
+              breadcrumbs: false
             }
           ]
         },
+
         {
           id: 'rent-management',
           title: 'Rent Management',

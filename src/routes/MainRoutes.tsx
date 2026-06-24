@@ -203,6 +203,8 @@ const MembershipPlan = Loadable(lazy(() => import('pages/master-management/membe
 const AddEditMembershipPlan = Loadable(lazy(() => import('pages/master-management/membership-plan/component/addEditMembershipPlan')));
 const Staff = Loadable(lazy(() => import('pages/staff-management/staff')));
 const AddEditStaff = Loadable(lazy(() => import('pages/staff-management/staff/component/addEditStaff')));
+const FaceRegister = Loadable(lazy(() => import('pages/staff-management/face-recognition/FaceRegister')));
+const FaceAttendance = Loadable(lazy(() => import('pages/staff-management/face-recognition/FaceAttendance')));
 const Bill = Loadable(lazy(() => import('pages/bill')));
 const AddEditBill = Loadable(lazy(() => import('pages/bill/component/addEditBill')));
 const Membership = Loadable(lazy(() => import('pages/membership')));
@@ -908,6 +910,14 @@ const MainRoutes: RouteObject = {
               element: <AddEditStaff />
             }
           ]
+        },
+        {
+          path: 'face-register',
+          element: <FaceRegister />
+        },
+        {
+          path: 'face-attendance',
+          element: <FaceAttendance />
         },
         {
           path: 'redeem-booking',
