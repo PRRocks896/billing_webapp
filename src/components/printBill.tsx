@@ -3,6 +3,110 @@ import reviewImg from "/review_image.png";
 import { Bill, Branch } from "types/common";
 import { convertAmountToWords, showTwoDecimal } from "utils/helper";
 
+const PrintBooking = (
+  bookingData: any
+) => {
+  const date = moment(bookingData.date || new Date()).format('DD/MM/YYYY');
+  const time = moment(bookingData.date || new Date()).format('hh:mm:ss A');
+  return `<html>
+    <head>
+      <title>bill</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+      <style>
+        *{
+          font-family: 'Poppins', sans-serif;
+         font-weight: bold;
+        }
+        @media print {
+          @page {
+            size: 150mm
+          }
+        }
+        body {
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          -o-user-select: none;
+        }
+      </style>
+    </head>
+    <body>
+      <div style="padding: 0mm; margin: 0 auto; width: 80mm;">
+        <div style="page-break-before: always; height: max-content; border: 0px solid black;">
+          <table style="font-size: 18px;">
+            <tbody>
+              <tr>
+                <td style="padding: 10px 0;">Date</td>
+                <td style="padding: 0px 18px;">:</td>
+                <td>${date}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0;">Time</td>
+                <td style="padding: 0px 18px;">:</td>
+                <td>${time}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0;">Customer</td>
+                <td style="padding: 0px 18px;">:</td>
+                <td>${bookingData.customer}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0;">Room No</td>
+                <td style="padding: 0px 18px;">:</td>
+                <td>${bookingData.roomNo}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0;">Service Name</td>
+                <td style="padding: 0px 18px;">:</td>
+                <td>${bookingData?.item}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0;">Therapists Name</td>
+                <td style="padding: 0px 18px;">:</td>
+                <td>${bookingData.staff}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ${bookingData.reviewUrl ?
+      `<div style="margin-top: 12px;page-break-after: always; border: 0px solid black; min-height: max-content;">
+          <div style="text-align: center; margin: 0;">
+            <img width="175px" src="https://bill.myjilo.com/static/media/logo.356ee5c5b1f892c1675d.png" alt="logo"/>
+          </div>
+          <div style="margin-top: 32px;">
+            <p style="text-align: center; margin: 0;font-size: 20px;">
+              Impressed with our Service?
+            </p>
+          </div>
+          <div id="qrcode" style="margin-top: 32px;display: flex;justify-content: center;;">
+        </div>
+        <p style="text-align: center; margin: 35px 35px 0 35px;font-size: 14px;">
+          Scan this qrcode and make our day by leaving us a 5 star Review
+        </p>
+        <div style="text-align: center; margin: 0;">
+          <img width="200px" src=${reviewImg} alt="logo"/>
+        </div>
+      </div>`: ''}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+      <script>
+        var qrcodeContainer = document.getElementById("qrcode");
+            
+        // Clear previous QR code if any
+        qrcodeContainer.innerHTML = "";
+
+        var qrcode = new QRCode(qrcodeContainer, {
+          text: '${bookingData.reviewUrl}', 
+          width: 128,
+          height: 128
+        });  
+      </script>
+    </body>
+  </html>`
+};
+
 // ─── Main function ────────────────────────────────────────────────────────────
 const PrintBill = (
   billData: Bill,
@@ -221,4 +325,4 @@ const PrintBill = (
   </html>`;
 };
 
-export default PrintBill;
+export { PrintBooking, PrintBill };

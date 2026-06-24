@@ -1,48 +1,35 @@
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Switch from "@mui/material/Switch";
+import { openSnackbar } from "api/snackbar";
+import useAuth from "hooks/useAuth";
+import { Edit, Trash } from "iconsax-reactjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import useAuth from "hooks/useAuth";
-import { ROWS } from "utils/constant";
-import { deleteStaff, getStaffList, updateStaff, findStaff } from "service/staff";
-import { getBranch } from "service/user";
-import { openSnackbar } from "api/snackbar";
+import { deleteGiftCategory, getGiftCategoryList, updateGiftCategory } from "service/giftCategory";
 import { HeadCell, ArrangementOrder } from "types/table";
-import Box from "@mui/material/Box";
-import Switch from "@mui/material/Switch";
-import { Chip } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import { Edit, Trash, Eye } from "iconsax-reactjs";
+import { ROWS } from "utils/constant";
+import { imagePath } from "utils/helper";
 
-const UseStaff = () => {
-
+const UseGiftCategory = () => {
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { isAdmin, user, accessRights, startLoading, stopLoading } = useAuth();
+    const { user, accessRights } = useAuth();
     const rights = accessRights(pathname);
 
     const [list, setList] = useState<any[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [rows, setRows] = useState<number>(ROWS);
-    const [staffCount, setStaffCount] = useState<any>({
-        activeStaff: 0,
-        inActiveStaff: 0,
-        blockedStaff: 0,
-        totalStaff: 0
-    })
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(-1);
     const [searchText, setSearchText] = useState<string>("");
     const [order, setOrder] = useState<ArrangementOrder>('desc');
     const [orderBy, setOrderBy] = useState<string>('createdAt');
 
-    const handleAdd = () => navigate("/staff/add");
+    const handleAdd = () => navigate("/gift-category/add");
 
-    const handleEdit = (id: number) => navigate(`/staff/edit/${id}`);
-
-    const handleView = (id: number) => navigate(`/staff/view/${id}`);
-
-    const handleRekyc = (id: number) => navigate(`/staff/rekyc/${id}`)
+    const handleEdit = (id: number) => navigate(`/gift-category/edit/${id}`);
 
     const handleDelete = (id: number) => {
         setSelectedId(id);
@@ -54,7 +41,7 @@ const UseStaff = () => {
     };
 
     const fetch = useCallback(async () => {
-        let payload: any = {
+        const payload = {
             where: {
                 searchText,
                 isDeleted: false,
@@ -66,14 +53,8 @@ const UseStaff = () => {
                 descending: order === 'desc',
             },
         };
-
-        if (!isAdmin) {
-            payload.where.userID = user?.id;
-        }
-
         try {
-            startLoading();
-            const { success, message, data }: any = await getStaffList(payload);
+            const { success, message, data }: any = await getGiftCategoryList(payload);
             if (success) {
                 setList(data.rows);
                 setTotalCount(data.count);
@@ -95,14 +76,13 @@ const UseStaff = () => {
                 open: true,
                 message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
                 variant: 'alert',
+                severity: 'error',
                 alert: {
                     color: 'error'
                 }
             })
-        } finally {
-            stopLoading();
         }
-    }, [page, rows, searchText, order, orderBy, isAdmin]);
+    }, [page, rows, searchText, order, orderBy]);
 
     const handleRequestSort = (event: any, property: string) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -112,12 +92,11 @@ const UseStaff = () => {
 
     const onStatusChange = async (id: number, data: any) => {
         try {
-            startLoading();
             const body: any = {
                 ...data,
                 updatedBy: user?.id,
             };
-            const { success, message }: any = await updateStaff(body, id);
+            const { success, message }: any = await updateGiftCategory(body, id);
             if (success) {
                 fetch();
                 openSnackbar({
@@ -148,15 +127,12 @@ const UseStaff = () => {
                     color: 'error'
                 }
             })
-        } finally {
-            stopLoading();
         }
     }
 
     const onDeleteHandler = async () => {
         try {
-            startLoading();
-            const { success, message }: any = await deleteStaff(selectedId);
+            const { success, message }: any = await deleteGiftCategory(selectedId);
             if (success) {
                 fetch();
                 openSnackbar({
@@ -188,7 +164,6 @@ const UseStaff = () => {
                 }
             })
         } finally {
-            stopLoading();
             setIsVisible(false);
         }
     }
@@ -199,46 +174,6 @@ const UseStaff = () => {
     };
 
     useEffect(() => {
-        if (!isAdmin) return;
-        (async () => {
-            try {
-                startLoading();
-                const [
-                    activeStaffRes,
-                    inActiveStaffRes,
-                    blockedStaffRes,
-                    totalStaffRes
-                ] = await Promise.all([
-                    findStaff({ isActive: true, isDeleted: false }),
-                    findStaff({ isActive: false, isDeleted: false }),
-                    findStaff({ isblackList: true }),
-                    findStaff({})
-                ])
-
-                setStaffCount({
-                    activeStaff: activeStaffRes?.data?.length || 0,
-                    inActiveStaff: inActiveStaffRes?.data?.length || 0,
-                    blockedStaff: blockedStaffRes?.data?.length || 0,
-                    totalStaff: totalStaffRes?.data?.length || 0
-                })
-            } catch (error: any) {
-                console.error(error)
-                openSnackbar({
-                    open: true,
-                    message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
-                    variant: 'alert',
-                    severity: 'error',
-                    alert: {
-                        color: 'error'
-                    }
-                })
-            } finally {
-                stopLoading();
-            }
-        })()
-    }, [isAdmin]);
-
-    useEffect(() => {
         const timeout = setTimeout(() => {
             fetch();
         }, 500);
@@ -246,59 +181,41 @@ const UseStaff = () => {
     }, [page, rows, searchText, order, orderBy]);
 
     const Column: HeadCell[] = useMemo(() => {
-        let col: any[] = [
+        return [
+            {
+                id: 'image',
+                label: 'Image',
+                align: 'left',
+                numeric: false,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row: any) => {
+                    return (
+                        <Box>
+                            {row.image ?
+                                <img src={imagePath(row.image)} alt={row.name} style={{ width: 70, height: 70, borderRadius: 5 }} />
+                                :
+                                null
+                            }
+                        </Box>
+                    )
+                }
+            },
             {
                 id: 'name',
-                label: 'Name',
+                label: 'Category',
                 align: 'left',
                 numeric: false,
                 disablePadding: false,
-                isSortable: true,
+                isSortable: true
             },
             {
-                id: 'nickName',
-                label: 'Nick Name',
+                id: 'description',
+                label: 'Description',
                 align: 'left',
                 numeric: false,
                 disablePadding: false,
-                isSortable: true,
-            },
-            // {
-            //     id: 'phoneNumber',
-            //     label: 'Phone Number',
-            //     align: 'left',
-            //     numeric: false,
-            //     disablePadding: false,
-            //     isSortable: true,
-            // },
-            {
-                id: 'employeeTypeID',
-                label: 'Employee Type',
-                align: 'left',
-                numeric: false,
-                disablePadding: false,
-                isSortable: true,
-                renderCell: (row: any) => {
-                    return (
-                        <Box>
-                            {row?.px_employee_type?.name}
-                        </Box>
-                    )
-                }
-            },
-            {
-                id: 'userID',
-                label: 'Branch Name',
-                align: 'left',
-                numeric: false,
-                disablePadding: false,
-                renderCell: (row: any) => {
-                    return (
-                        <Box>
-                            {row?.px_user?.lastName}
-                        </Box>
-                    )
-                }
+                isSortable: true
             },
             {
                 id: 'isActive',
@@ -306,15 +223,7 @@ const UseStaff = () => {
                 align: 'left',
                 numeric: false,
                 disablePadding: false,
-                renderCell: (row: any) => {
-                    if (!isAdmin) {
-                        return <Chip
-                            variant="filled"
-                            size="medium"
-                            label={row.isActive ? 'Active' : 'Inactive'}
-                            color={row.isActive ? 'success' : 'error'}
-                        />
-                    }
+                renderCell: (row) => {
                     return (
                         <Box>
                             <Switch
@@ -326,46 +235,14 @@ const UseStaff = () => {
                 },
             },
             {
-                id: 'isKyc',
-                label: 'KYC Status',
-                align: 'left',
-                numeric: false,
-                disablePadding: false,
-                renderCell: (row: any) => {
-                    const title = row.isKyc ? 'KYC Done' : 'KYC Pending';
-                    if (isAdmin || rights.delete) {
-                        return <Chip
-                            variant="filled"
-                            size="medium"
-                            clickable={row.isKyc ? false : true}
-                            label={title}
-                            color={row.isKyc ? 'success' : 'error'}
-                            onClick={() => !row.isKyc ? handleRekyc(row.id) : null}
-                        />
-                    } else {
-                        return <Chip
-                            variant="filled"
-                            size="medium"
-                            label={title}
-                            color={row.isKyc ? 'success' : 'error'}
-                        />;
-                    }
-                },
-            },
-            {
                 id: 'actions',
                 label: 'Actions',
                 align: 'right',
                 numeric: false,
                 disablePadding: false,
-                renderCell: (row: any) => {
+                renderCell: (row) => {
                     return (
                         <Box>
-                            {rights.view &&
-                                <IconButton onClick={() => handleView(row.id)}>
-                                    <Eye />
-                                </IconButton>
-                            }
                             {rights.edit &&
                                 <IconButton onClick={() => handleEdit(row.id)}>
                                     <Edit />
@@ -381,41 +258,28 @@ const UseStaff = () => {
                 }
             },
         ];
-        if (isAdmin) {
-            col.splice(1, 0, {
-                id: 'phoneNumber',
-                label: 'Phone Number',
-                align: 'left',
-                numeric: false,
-                disablePadding: false,
-                isSortable: true,
-            });
-        }
-        return col;
-    }, [rights, isAdmin])
+    }, [rights]);
 
     return {
-        isAdmin,
         list,
         page,
         rows,
+        order,
         rights,
         Column,
-        staffCount,
+        orderBy,
         isVisible,
         totalCount,
         setPage,
         setRows,
-        order,
         setOrder,
-        orderBy,
         setOrderBy,
-        handleRequestSort,
         handleAdd,
         searchHandler,
         onDeleteHandler,
+        handleRequestSort,
         closeConfirmModal
     }
 }
 
-export default UseStaff;
+export default UseGiftCategory;

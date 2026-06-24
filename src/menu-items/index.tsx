@@ -16,7 +16,8 @@ import {
   Bill,
   Medal,
   UserOctagon,
-  Receipt
+  Receipt,
+  Ticket
 } from 'iconsax-reactjs';
 
 // types
@@ -99,6 +100,20 @@ const menuItems: { items: NavItemType[] } = {
           icon: KyberNetwork,
           children: [
             {
+              id: 'purchase-gift-card',
+              title: 'Purchase Gift Card',
+              type: 'item',
+              url: '/purchase-gift-card',
+              breadcrumbs: false
+            },
+            {
+              id: 'gift-category',
+              title: 'Gift Category',
+              type: 'item',
+              url: '/gift-category',
+              breadcrumbs: false
+            },
+            {
               id: 'membership-plan',
               title: 'Membership Plan',
               type: 'item',
@@ -177,17 +192,24 @@ const menuItems: { items: NavItemType[] } = {
           icon: KyberNetwork,
           children: [
             {
+              id: 'promo-code',
+              title: 'Promo Code',
+              type: 'item',
+              url: '/website-management/promo-code',
+              breadcrumbs: false
+            },
+            {
+              id: 'purchased-gift-card',
+              title: 'Purchased Gift Card',
+              type: 'item',
+              url: '/purchased-gift-card',
+              breadcrumbs: false
+            },
+            {
               id: 'employee-wellness-plan',
               title: 'Employee Wellness Plan',
               type: 'item',
               url: '/employee-wellness-plan',
-              breadcrumbs: false
-            },
-            {
-              id: 'employee-wellness-enquiry',
-              title: 'Employee Wellness Enquiry',
-              type: 'item',
-              url: '/employee-wellness-enquiry',
               breadcrumbs: false
             },
             {
@@ -223,20 +245,6 @@ const menuItems: { items: NavItemType[] } = {
               title: 'FAQ',
               type: 'item',
               url: '/website-management/faq',
-              breadcrumbs: false
-            },
-            {
-              id: 'enquiry',
-              title: 'Enquiry',
-              type: 'item',
-              url: '/website-management/enquiry',
-              breadcrumbs: false
-            },
-            {
-              id: 'franchise',
-              title: 'Franchise Enquiry',
-              type: 'item',
-              url: '/website-management/franchise-enquiry',
               breadcrumbs: false
             },
             {
@@ -391,6 +399,22 @@ const menuItems: { items: NavItemType[] } = {
           icon: UserOctagon
         },
         {
+          id: 'booking-service',
+          title: 'Booking Service',
+          type: 'item',
+          url: '/booking-service',
+          breadcrumbs: false,
+          icon: Ticket
+        },
+        {
+          id: 'redeem-booking',
+          title: 'Redeem Booking',
+          type: 'item',
+          url: '/redeem-booking',
+          breadcrumbs: false,
+          icon: Ticket
+        },
+        {
           id: 'bill',
           title: 'Bill',
           type: 'item',
@@ -398,6 +422,36 @@ const menuItems: { items: NavItemType[] } = {
           breadcrumbs: false,
           icon: Bill
         },
+        {
+          id: 'inquiry-management',
+          title: 'Inquiry Management',
+          type: 'collapse',
+          breadcrumbs: false,
+          icon: Ticket,
+          children: [
+            {
+              id: 'Inquiry',
+              title: 'Website Inquiry',
+              type: 'item',
+              url: '/inquiry-management/inquiry',
+              breadcrumbs: false
+            },
+            {
+              id: 'franchise-inquiry',
+              title: 'Franchise Inquiry',
+              type: 'item',
+              url: '/inquiry-management/franchise-inquiry',
+              breadcrumbs: false
+            },
+            {
+              id: 'employee-wellness-inquiry',
+              title: 'Employee Wellness Inquiry',
+              type: 'item',
+              url: '/inquiry-management/employee-wellness-inquiry',
+              breadcrumbs: false
+            },
+          ]
+        }
       ]
     }
   ]

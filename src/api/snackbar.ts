@@ -30,7 +30,8 @@ const initialState: SnackbarProps = {
   actionButton: false,
   maxStack: 3,
   dense: false,
-  iconVariant: 'usedefault'
+  iconVariant: 'usedefault',
+  autoHideDuration: 5000
 };
 
 export function useGetSnackbar() {
@@ -48,7 +49,7 @@ export function useGetSnackbar() {
 export function openSnackbar(snackbar: SnackbarProps) {
   // to update local state based on key
 
-  const { action, open, message, anchorOrigin, variant, alert, transition, close, actionButton, severity } = snackbar;
+  const { action, open, message, anchorOrigin, variant, alert, transition, close, actionButton, severity, autoHideDuration } = snackbar;
 
   mutate(
     endpoints.key,
@@ -64,7 +65,8 @@ export function openSnackbar(snackbar: SnackbarProps) {
         alert: { variant: alert?.variant || initialState.alert.variant },
         transition: transition || initialState.transition,
         close: close || initialState.close,
-        actionButton: actionButton || initialState.actionButton
+        actionButton: actionButton || initialState.actionButton,
+        autoHideDuration: autoHideDuration || initialState.autoHideDuration
       };
     },
     false

@@ -18,4 +18,5 @@ export interface SnackbarProps {
   maxStack?: number;
   iconVariant?: string;
   severity?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  autoHideDuration?: number;
 }

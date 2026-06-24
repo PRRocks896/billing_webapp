@@ -1,52 +1,60 @@
 import { openSnackbar } from "api/snackbar";
+import { FileUploadValue } from "components/FileUpload";
 import useAuth from "hooks/useAuth";
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { createRoom, getRoomById, updateRoom } from "service/room";
+import { createGiftCategory, getGiftCategoryById, updateGiftCategory } from "service/giftCategory";
+import { convertToFormData } from "utils/helper";
 
-export type RoomType = {
-    roomName: string;
+export type GiftCategoryFormValue = {
+    name: string;
+    description: string;
+    image: FileUploadValue | null;
 }
 
-const defaultValues: RoomType = {
-    roomName: "",
+const defaultValues: GiftCategoryFormValue = {
+    name: '',
+    description: '',
+    image: null,
 }
 
-const UseAddEditRoom = () => {
+const UseAddEditGiftCategory = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
-    const { user } = useAuth();
+    const { user, startLoading, stopLoading } = useAuth();
 
     const {
         control,
+        formState: { isSubmitting },
         setValue,
         handleSubmit,
-        formState: { isSubmitting }
-    } = useForm<RoomType>({
+    } = useForm<GiftCategoryFormValue>({
+        mode: 'onChange',
         defaultValues,
-        mode: "onChange",
     });
 
     const handleBack = () => {
-        navigate("/room");
+        navigate('/gift-category');
     }
 
     const fetch = async () => {
         try {
-            const { success, message, data }: any = await getRoomById(Number(id));
+            const { success, message, data }: any = await getGiftCategoryById(Number(id));
             if (success) {
-                setValue("roomName", data.roomName);
+                setValue('name', data.name);
+                setValue('description', data.description);
+                setValue('image', data.image);
             } else {
                 openSnackbar({
                     open: true,
-                    message: message,
+                    message: message || 'Something went wrong',
                     variant: 'alert',
                     severity: 'error',
                     alert: {
                         color: 'error'
                     }
-                });
+                })
             }
         } catch (error: any) {
             openSnackbar({
@@ -60,11 +68,11 @@ const UseAddEditRoom = () => {
         }
     }
 
-    const onSubmit = async (data: RoomType) => {
+    const onSubmit = async (data: GiftCategoryFormValue) => {
         try {
             let payload: any = {
-                ...data,
-                userID: user?.id
+                name: data.name,
+                description: data.description,
             }
             if (mode && mode === 'edit' && id) {
                 payload = {
@@ -77,7 +85,11 @@ const UseAddEditRoom = () => {
                     createdBy: user?.id
                 }
             }
-            const { success, message }: any = mode && mode === 'edit' && id ? await updateRoom(payload, Number(id)) : await createRoom(payload);
+            if (data && data.image && typeof data.image === 'object') {
+                payload = convertToFormData(payload);
+                payload.append(mode === 'edit' ? 'newImage' : 'image', data.image);
+            }
+            const { success, message }: any = mode && mode === 'edit' && id ? await updateGiftCategory(payload, Number(id)) : await createGiftCategory(payload);
             if (success) {
                 openSnackbar({
                     open: true,
@@ -114,9 +126,9 @@ const UseAddEditRoom = () => {
 
     const title: string = useMemo(() => {
         if (mode && mode === 'edit' && id) {
-            return 'Edit Room';
+            return 'Edit Gift Category';
         }
-        return 'Add Room';
+        return 'Add Gift Category';
     }, [mode, id]);
 
     useEffect(() => {
@@ -131,9 +143,10 @@ const UseAddEditRoom = () => {
         control,
         isSubmitting,
         onSubmit,
+        setValue,
         handleBack,
         handleSubmit,
     }
 }
 
-export default UseAddEditRoom;
+export default UseAddEditGiftCategory;

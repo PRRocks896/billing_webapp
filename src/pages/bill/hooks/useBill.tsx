@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { openSnackbar } from "api/snackbar";
-import PrintBill from "components/printBill";
+import { PrintBill } from "components/printBill";
 import useAuth from "hooks/useAuth";
 import { Edit, Trash, Printer } from "iconsax-reactjs";
 import moment from "moment";
@@ -19,8 +19,7 @@ const UseBill = () => {
 
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { user, /*isAdmin,*/ accessRights, startLoading, stopLoading } = useAuth();
-    const isAdmin = true;
+    const { user, isAdmin, accessRights, startLoading, stopLoading } = useAuth();
     const rights = accessRights(pathname);
 
     const [list, setList] = useState<any[]>([]);
@@ -81,7 +80,6 @@ const UseBill = () => {
     const onSubmit = async (data: any) => {
         try {
             startLoading();
-            console.log(data);
             const { success, message }: any = await currectionOfBillNo({
                 ...data,
                 startDate: moment(data.startDate).format('yyyy-MM-DD'),

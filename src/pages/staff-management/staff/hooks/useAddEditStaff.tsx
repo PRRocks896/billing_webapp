@@ -218,6 +218,12 @@ const UseAddEditStaff = () => {
                     ...payload,
                     createdBy: user?.id
                 };
+                if (!isAdmin) {
+                    payload = {
+                        ...payload,
+                        isActive: false,
+                    }
+                }
             }
 
             if ((data.fatherIdPhoto || data.motherIdPhoto) && (typeof data.fatherIdPhoto !== 'string' || typeof data.motherIdPhoto !== 'string')) {

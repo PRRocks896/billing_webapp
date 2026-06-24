@@ -201,7 +201,6 @@ const UseAddEditReceiver = () => {
                 })
                 return;
             }
-            console.log(data);
             setLaundryManagementOption(data);
             setValue("detail", data.map((item: any, index: number) => ({
                 index: index,

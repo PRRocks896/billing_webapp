@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import useAuth from "hooks/useAuth";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -32,6 +32,9 @@ const UseRights = () => {
     const { user, startLoading, stopLoading } = useAuth();
 
     const [roles, setRoles] = useState<any[]>([]);
+
+    // Tracks the original server-fetched values so we can diff on submit
+    const originalModulesRef = useRef<ModuleType[]>([]);
 
     const {
         control,
@@ -73,11 +76,12 @@ const UseRights = () => {
             };
 
             const { success, message, data }: any = await getRightList(body);
-            if (success) {
+                if (success) {
                 const { rows } = data;
+                const mapped: ModuleType[] = [];
                 if (rows && rows.length > 0) {
                     rows.forEach((res: any) => {
-                        append({
+                        const module: ModuleType = {
                             rightID: res?.id,
                             moduleID: res?.moduleID,
                             moduleName: res?.px_module?.name,
@@ -86,9 +90,13 @@ const UseRights = () => {
                             add: res?.add,
                             edit: res?.edit,
                             delete: res?.delete,
-                        });
+                        };
+                        mapped.push(module);
+                        append(module);
                     });
                 }
+                // Snapshot the original values for dirty-checking on submit
+                originalModulesRef.current = mapped;
             } else {
                 openSnackbar({
                     open: true,
@@ -117,7 +125,32 @@ const UseRights = () => {
     const onSubmit = async (info: RightsFormValue) => {
         try {
             startLoading();
-            const body = info?.modules?.map((res) => {
+            const originals = originalModulesRef.current;
+
+            // Only include rows where at least one permission flag has changed
+            const modifiedModules = info?.modules?.filter((res, idx) => {
+                const orig = originals[idx];
+                if (!orig) return true; // new row (no original snapshot)
+                return (
+                    res.view !== orig.view ||
+                    res.add !== orig.add ||
+                    res.edit !== orig.edit ||
+                    res.delete !== orig.delete
+                );
+            });
+
+            if (modifiedModules.length === 0) {
+                openSnackbar({
+                    open: true,
+                    message: 'No changes detected.',
+                    variant: 'alert',
+                    severity: 'info',
+                    alert: { color: 'info' }
+                });
+                return;
+            }
+
+            const body = modifiedModules.map((res) => {
                 let data: any = {
                     id: res.rightID,
                     roleID: info.roleID,

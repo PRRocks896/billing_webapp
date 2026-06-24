@@ -246,12 +246,21 @@ const AddEditRent = Loadable(lazy(() => import('pages/rent-management/rent/compn
 const EmployeeWellnessPlan = Loadable(lazy(() => import('pages/master-management/employee-wellness-plan')));
 const AddEditEmployeeWellnessPlan = Loadable(lazy(() => import('pages/master-management/employee-wellness-plan/addEdit')));
 const EmployeeWellnessEnquiry = Loadable(lazy(() => import('pages/master-management/employee-wellness-enquiry')));
+const GiftCategory = Loadable(lazy(() => import('pages/master-management/gift-category')));
+const AddEditGiftCategory = Loadable(lazy(() => import('pages/master-management/gift-category/addEditGiftCategory')));
+const PurchaseGiftCard = Loadable(lazy(() => import('pages/master-management/purchased-gift-card')));
+const PromoCode = Loadable(lazy(() => import('pages/website-management/promo-code')));
+const AddEditPromoCode = Loadable(lazy(() => import('pages/website-management/promo-code/addEditPromoCode')));
+const RedeemBook = Loadable(lazy(() => import('pages/redeem-booking')));
+const BookingService = Loadable(lazy(() => import('pages/booking-service')));
 
 // ==============================|| MAIN ROUTES ||============================== //
 
 import { RoleProvider } from 'pages/user-management/role/context/roleContext';
 import { ModuleProvider } from 'pages/user-management/module/context/moduleContext';
 import { RouteObject } from 'react-router-dom';
+import ViewStaff from 'pages/staff-management/staff/component/viewStaff';
+import RekycStaff from 'pages/staff-management/staff/component/rekycStaff';
 
 const MainRoutes: RouteObject = {
   path: '/',
@@ -297,6 +306,46 @@ const MainRoutes: RouteObject = {
         {
           path: 'sales-report',
           element: <SalesReport />
+        },
+        {
+          path: 'inquiry-management',
+          children: [
+            {
+              path: 'inquiry',
+              children: [
+                {
+                  path: '',
+                  element: <Enquiry />
+                },
+                {
+                  path: ':mode',
+                  element: <AddEditEnquiry />
+                },
+                {
+                  path: ':mode/:id',
+                  element: <AddEditEnquiry />
+                }
+              ]
+            },
+            {
+              path: 'employee-wellness-inquiry',
+              children: [
+                {
+                  path: '',
+                  element: <EmployeeWellnessEnquiry />
+                }
+              ]
+            },
+            {
+              path: 'franchise-inquiry',
+              children: [
+                {
+                  path: '',
+                  element: <Franchise />
+                }
+              ]
+            }
+          ]
         },
         {
           path: 'website-management',
@@ -370,6 +419,23 @@ const MainRoutes: RouteObject = {
               ]
             },
             {
+              path: 'promo-code',
+              children: [
+                {
+                  path: '',
+                  element: <PromoCode />
+                },
+                {
+                  path: ':mode',
+                  element: <AddEditPromoCode />
+                },
+                {
+                  path: ':mode/:id',
+                  element: <AddEditPromoCode />
+                }
+              ]
+            },
+            {
               path: 'seo',
               children: [
                 {
@@ -403,32 +469,6 @@ const MainRoutes: RouteObject = {
                 }
               ]
             },
-            {
-              path: 'enquiry',
-              children: [
-                {
-                  path: '',
-                  element: <Enquiry />
-                },
-                {
-                  path: ':mode',
-                  element: <AddEditEnquiry />
-                },
-                {
-                  path: ':mode/:id',
-                  element: <AddEditEnquiry />
-                }
-              ]
-            },
-            {
-              path: 'franchise-enquiry',
-              children: [
-                {
-                  path: '',
-                  element: <Franchise />
-                }
-              ]
-            }
           ]
         },
         {
@@ -504,8 +544,30 @@ const MainRoutes: RouteObject = {
           element: <Rights />
         },
         {
-          path: 'employee-wellness-enquiry',
-          element: <EmployeeWellnessEnquiry />
+          path: 'purchase-gift-card',
+          children: [
+            {
+              path: '',
+              element: <PurchaseGiftCard />
+            },
+          ]
+        },
+        {
+          path: 'gift-category',
+          children: [
+            {
+              path: '',
+              element: <GiftCategory />
+            },
+            {
+              path: ':mode',
+              element: <AddEditGiftCategory />
+            },
+            {
+              path: ':mode/:id',
+              element: <AddEditGiftCategory />
+            }
+          ]
         },
         {
           path: 'employee-wellness-plan',
@@ -830,12 +892,38 @@ const MainRoutes: RouteObject = {
               element: <Staff />
             },
             {
+              path: 'rekyc/:id',
+              element: <RekycStaff />
+            },
+            {
+              path: 'view/:id',
+              element: <ViewStaff />
+            },
+            {
               path: ':mode',
               element: <AddEditStaff />
             },
             {
               path: ':mode/:id',
               element: <AddEditStaff />
+            }
+          ]
+        },
+        {
+          path: 'redeem-booking',
+          children: [
+            {
+              path: '',
+              element: <RedeemBook />
+            }
+          ]
+        },
+        {
+          path: 'booking-service',
+          children: [
+            {
+              path: '',
+              element: <BookingService />
             }
           ]
         },

@@ -160,7 +160,7 @@ const Salary = () => {
             </MainCard>
 
             {/* ── Salary Processing Table ─────────────────────────────────────────── */}
-            <form onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}>
+            <form onSubmit={handleSubmit(onSubmit, (errors) => console.error(errors))}>
                 <Stack spacing={3}>
                     <MainCard content={false} sx={{ border: `1px solid ${theme.palette.divider}` }}>
                         <TableContainer sx={{ height: 'calc(100vh - 420px)', minHeight: 400 }}>

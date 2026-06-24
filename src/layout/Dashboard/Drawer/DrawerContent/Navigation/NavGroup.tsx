@@ -174,7 +174,7 @@ export default function NavGroup({
           const rights = accessRights(child.url!);
           return rights.view;
         });
-        if (filteredChildren?.includes(false)) {
+        if (!filteredChildren?.includes(true)) {
           return null;
         }
         return (

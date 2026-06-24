@@ -83,7 +83,8 @@ const AddEditStaff = () => {
     // isFormActive covers: edit mode, new staff (not found), OR found staff for a non-admin bank update
     const isFormActive = isEdit || isStaffFound === false || (isStaffFound === true && !isAdmin);
     const showBankDetail = isShowBankDetail || (!isAdmin && isFormActive);
-
+    // When editing as non-admin, only bank details are editable
+    const isBankOnlyMode = isEdit && !isAdmin;
     return (
         <>
             {!isEdit &&
@@ -419,10 +420,10 @@ const AddEditStaff = () => {
                                 </Box>
                                 <Box>
                                     <Typography variant="h4" fontWeight={700}>
-                                        {isStaffFound === true && !isAdmin ? 'Update Bank Details' : title}
+                                        {(isStaffFound === true && !isAdmin) || isBankOnlyMode ? 'Update Bank Details' : title}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">
-                                        {isStaffFound === true && !isAdmin
+                                        {(isStaffFound === true && !isAdmin) || isBankOnlyMode
                                             ? 'Update bank account details for salary transfers.'
                                             : 'Manage staff profiling, employment terms, and financial records.'}
                                     </Typography>
@@ -441,7 +442,7 @@ const AddEditStaff = () => {
 
                         <Box sx={{ p: 3 }}>
                             <Grid container spacing={4}>
-                                {!(isStaffFound === true && !isAdmin) && (<>
+                                {!(isStaffFound === true && !isAdmin) && !isBankOnlyMode && (<>
                                     {/* ── Section 1: Employment Classification ─────────────── */}
                                     <Grid size={{ xs: 12 }}>
                                         <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2.5 }}>
@@ -1022,7 +1023,7 @@ const AddEditStaff = () => {
                                     boxShadow: `0 8px 16px ${alpha(theme.palette.primary.main, 0.24)}`
                                 }}
                             >
-                                {isSubmitting ? 'Saving...' : mode === 'add' ? isStaffFound === true && !isAdmin ? 'Save Bank Details' : 'Register Staff' : 'Update Profile'}
+                                {isSubmitting ? 'Saving...' : isBankOnlyMode ? 'Save Bank Details' : mode === 'add' ? isStaffFound === true && !isAdmin ? 'Save Bank Details' : 'Register Staff' : 'Update Profile'}
                             </Button>
                         </Box>
                     </MainCard>

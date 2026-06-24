@@ -3,10 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { ROWS } from "utils/constant";
 import {
-    updateEnquiry,
-    deleteEnquiry,
-    getEnquiryList
-} from "service/enquiry";
+    updatePromoCode,
+    deletePromoCode,
+    getPromoCodeList
+} from "service/promoCode";
 import { openSnackbar } from "api/snackbar";
 import { HeadCell, ArrangementOrder } from "types/table";
 import Box from "@mui/material/Box";
@@ -14,13 +14,11 @@ import Switch from "@mui/material/Switch";
 import IconButton from "@mui/material/IconButton";
 import { Edit, Trash } from "iconsax-reactjs";
 import useAuth from "hooks/useAuth";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 
-const UseEnquiry = () => {
+const UsePromoCode = () => {
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { isAdmin, user, accessRights, startLoading, stopLoading } = useAuth();
+    const { user, accessRights, startLoading, stopLoading } = useAuth();
     const rights = accessRights(pathname);
     const [searchText, setSearchText] = useState<string>("");
     const [list, setList] = useState<any[]>([]);
@@ -32,9 +30,9 @@ const UseEnquiry = () => {
     const [order, setOrder] = useState<ArrangementOrder>('desc');
     const [orderBy, setOrderBy] = useState<string>('createdAt');
 
-    const handleAdd = () => navigate("/website-management/enquiry/add");
+    const handleAdd = () => navigate("/website-management/promo-code/add");
 
-    const handleEdit = (id: number) => navigate(`/website-management/enquiry/edit/${id}`);
+    const handleEdit = (id: number) => navigate(`/website-management/promo-code/edit/${id}`);
 
     const handleDelete = (id: number) => {
         setSelectedId(id);
@@ -46,7 +44,7 @@ const UseEnquiry = () => {
     };
 
     const fetch = useCallback(async () => {
-        let payload: any = {
+        const payload = {
             where: {
                 searchText,
                 isDeleted: false,
@@ -58,12 +56,9 @@ const UseEnquiry = () => {
                 descending: order === 'desc',
             },
         };
-        if (!isAdmin) {
-            payload.where.userID = user?.id;
-        }
         try {
             startLoading();
-            const { success, message, data }: any = await getEnquiryList(payload);
+            const { success, message, data }: any = await getPromoCodeList(payload);
             if (success) {
                 setList(data.rows);
                 setTotalCount(data.count);
@@ -93,7 +88,7 @@ const UseEnquiry = () => {
         } finally {
             stopLoading();
         }
-    }, [page, rows, searchText, isAdmin, order, orderBy]);
+    }, [page, rows, searchText, order, orderBy]);
 
     const handleRequestSort = (event: any, property: string) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -101,21 +96,20 @@ const UseEnquiry = () => {
         setOrderBy(property);
     };
 
-    const onStatusChange = async (id: number, newStatus: string) => {
+    const onStatusChange = async (id: number, newStatus: boolean) => {
         try {
             startLoading();
             const body: any = {
-                status: newStatus,
+                isActive: newStatus,
                 updatedBy: user?.id,
             };
-            const { success, message }: any = await updateEnquiry(body, id);
+            const { success, message }: any = await updatePromoCode(body, id);
             if (success) {
                 fetch();
                 openSnackbar({
                     open: true,
                     message: message || 'Record Changed Successfully',
                     variant: 'alert',
-                    severity: 'success',
                     alert: {
                         color: 'success'
                     }
@@ -136,7 +130,6 @@ const UseEnquiry = () => {
                 open: true,
                 message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
                 variant: 'alert',
-                severity: 'error',
                 alert: {
                     color: 'error'
                 }
@@ -149,14 +142,13 @@ const UseEnquiry = () => {
     const onDeleteHandler = async () => {
         try {
             startLoading();
-            const { success, message }: any = await deleteEnquiry(selectedId);
+            const { success, message }: any = await deletePromoCode(selectedId);
             if (success) {
                 fetch();
                 openSnackbar({
                     open: true,
                     message: message || 'Record Deleted Successfully',
                     variant: 'alert',
-                    severity: 'success',
                     alert: {
                         color: 'success'
                     }
@@ -177,7 +169,6 @@ const UseEnquiry = () => {
                 open: true,
                 message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
                 variant: 'alert',
-                severity: 'error',
                 alert: {
                     color: 'error'
                 }
@@ -199,6 +190,7 @@ const UseEnquiry = () => {
         }, 500);
         return () => clearTimeout(timeout);
     }, [page, rows, searchText, order, orderBy]);
+
     const Column: HeadCell[] = useMemo(() => {
         return [
             {
@@ -210,131 +202,74 @@ const UseEnquiry = () => {
                 isSortable: true,
             },
             {
-                id: 'email',
-                label: "Email",
+                id: 'code',
+                label: "Code",
                 align: "left",
                 numeric: false,
                 disablePadding: false,
                 isSortable: true,
             },
             {
-                id: 'phoneNumber',
-                label: 'Phone Number',
-                align: 'left',
+                id: 'type',
+                label: "Type",
+                align: "left",
                 numeric: false,
                 disablePadding: false,
                 isSortable: true,
             },
             {
-                id: 'description',
-                label: 'Description',
-                align: 'left',
+                id: 'value',
+                label: "Value",
+                align: "left",
                 numeric: false,
                 disablePadding: false,
                 isSortable: true,
             },
             {
-                id: 'user',
-                label: 'User',
+                id: 'isActive',
+                label: 'Status',
                 align: 'left',
                 numeric: false,
                 disablePadding: false,
-                isSortable: true,
                 renderCell: (row) => {
                     return (
                         <Box>
-                            {row?.px_user?.lastName || 'N/A'}
+                            <Switch
+                                checked={row?.isActive}
+                                onChange={(e) => onStatusChange(row?.id, e.target.checked)}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
                         </Box>
                     )
                 }
             },
             {
-                id: 'status',
-                label: "Status",
+                id: 'action',
+                label: 'Action',
                 align: 'left',
                 numeric: false,
                 disablePadding: false,
-                isSortable: true,
                 renderCell: (row) => {
-                    if (!rights.edit) {
-                        return row?.status;
-                    }
                     return (
                         <Box>
-                            <Select
-                                value={row?.status}
-                                onChange={(e) => onStatusChange(row?.id, e.target.value)}
-                                size="small"
-                                variant="filled"
-                                sx={{
-                                    height: 32,
-                                    minWidth: 120,
-                                    backgroundColor: row?.status === 'Raised' ? 'error.lighter' : row?.status === 'Attended' ? 'warning.lighter' : row?.status === 'Success' ? 'success.lighter' : 'error.lighter',
-                                    color: row?.status === 'Raised' ? 'error.main' : row?.status === 'Attended' ? 'warning.main' : row?.status === 'Success' ? 'success.main' : 'error.main',
-                                    '& .MuiSelect-select': {
-                                        padding: '4px 12px',
-                                        fontSize: '0.875rem',
-                                    },
-                                    '& .MuiSvgIcon-root': {
-                                        width: 16,
-                                        height: 16,
-                                    },
-                                }}
+                            <IconButton
+                                aria-label="edit"
+                                onClick={() => handleEdit(row?.id)}
+                                disabled={!rights.edit}
                             >
-                                <MenuItem value="Raised">Raised</MenuItem>
-                                <MenuItem value="Attended">Attended</MenuItem>
-                                <MenuItem value="Success">Converted</MenuItem>
-                                <MenuItem value="Pending">Not Interested</MenuItem>
-                            </Select>
+                                <Edit size={18} />
+                            </IconButton>
+                            <IconButton
+                                aria-label="delete"
+                                onClick={() => handleDelete(row?.id)}
+                                disabled={!rights.delete}
+                            >
+                                <Trash size={18} />
+                            </IconButton>
                         </Box>
                     )
                 }
             }
-            // {
-            //     id: 'isActive',
-            //     label: 'Status',
-            //     align: 'left',
-            //     numeric: false,
-            //     disablePadding: false,
-            //     renderCell: (row) => {
-            //         return (
-            //             <Box>
-            //                 <Switch
-            //                     checked={row?.isActive}
-            //                     onChange={(e) => onStatusChange(row?.id, e.target.checked)}
-            //                     inputProps={{ 'aria-label': 'controlled' }}
-            //                 />
-            //             </Box>
-            //         )
-            //     }
-            // },
-            // {
-            //     id: 'action',
-            //     label: 'Action',
-            //     align: 'left',
-            //     numeric: false,
-            //     disablePadding: false,
-            //     renderCell: (row) => {
-            //         return (
-            //             <Box>
-            //                 <IconButton
-            //                     aria-label="edit"
-            //                     onClick={() => handleEdit(row?.id)}
-            //                     disabled={!rights.edit}
-            //                 >
-            //                     <Edit size={18} />
-            //                 </IconButton>
-            //                 <IconButton
-            //                     aria-label="delete"
-            //                     onClick={() => handleDelete(row?.id)}
-            //                     disabled={!rights.delete}
-            //                 >
-            //                     <Trash size={18} />
-            //                 </IconButton>
-            //             </Box>
-            //         )
-            //     }
-            // }
         ]
     }, [rights]);
 
@@ -358,6 +293,6 @@ const UseEnquiry = () => {
         onDeleteHandler,
         closeConfirmModal
     }
-};
+}
 
-export default UseEnquiry;
+export default UsePromoCode;

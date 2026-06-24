@@ -13,7 +13,7 @@ import { getServiceList } from "service/service";
 import { getTherapistDropdown } from "service/staff";
 import { createMembershipRedeem, getMembershipRedeemById } from "service/membershipRedeem";
 import { createRenewPlan, getRenewPlanById } from "service/renewPlan";
-import PrintBill from "components/printBill";
+import { PrintBill } from "components/printBill";
 import { Bill, TableData } from "types/common";
 
 export type BasicFormValue = {

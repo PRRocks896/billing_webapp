@@ -27,7 +27,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
 
 // ─── Section Header ────────────────────────────────────────────────────────────
-const SectionHeader = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
+export const SectionHeader = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
     <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
         <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center' }}>{icon}</Box>
         <Typography variant="subtitle1" fontWeight={600}>{label}</Typography>

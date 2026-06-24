@@ -13,7 +13,7 @@ import { createBulkBill, getBillById, updateBill } from "service/bill";
 import { calculateGSTDetails, listPayload, showTwoDecimal } from "utils/helper";
 import { PaymentDetailItem } from "./usePaymentModal";
 import { Bill, Branch, TableData } from "types/common";
-import PrintBill from "components/printBill";
+import { PrintBill } from "components/printBill";
 
 // ============================================================================
 // Types

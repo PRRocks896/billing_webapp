@@ -158,12 +158,61 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     if (isAdmin) {
       return { add: true, edit: true, delete: true, view: true };
     }
+
     const accessModules = state.accessModules || [];
-    const module = accessModules.find((module: any) => module?.px_module?.path === pathName || (pathName.includes(module?.px_module?.path)));
-    if (!module) {
+
+    // Strip leading/trailing slashes and split into segments.
+    const toSegments = (path: string) =>
+      path.replace(/^\/|\/$/g, '').split('/').filter(Boolean);
+
+    const requestedSegments = toSegments(pathName);
+
+    /**
+     * Match strategy:
+     * Module path segments must appear as a complete, contiguous sub-sequence
+     * anywhere within the requested path segments.
+     *
+     * Examples (module path → pathName):
+     *   "inquiry"                      → "/inquiry-management/inquiry"        ✅ (found at index 1)
+     *   "inquiry"                      → "/inquiry-management/franchise-inquiry" ❌ (no segment == "inquiry")
+     *   "/inquiry-management/inquiry"  → "/inquiry-management/inquiry"        ✅ (exact)
+     *   "/inquiry-management/inquiry"  → "/inquiry-management/franchise-inquiry" ❌ (contiguous check fails)
+     */
+    const isMatch = (modulePath: string): boolean => {
+      if (!modulePath) return false;
+
+      const moduleSegments = toSegments(modulePath);
+      const mLen = moduleSegments.length;
+      const rLen = requestedSegments.length;
+
+      if (mLen > rLen) return false;
+
+      // Slide a window of size mLen over requestedSegments
+      for (let i = 0; i <= rLen - mLen; i++) {
+        if (moduleSegments.every((seg, j) => seg === requestedSegments[i + j])) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // When multiple modules match, prefer the most-specific (longest path) one.
+    const matchedModule = accessModules
+      .filter((m: any) => isMatch(m?.px_module?.path))
+      .sort((a: any, b: any) =>
+        (b?.px_module?.path?.length ?? 0) - (a?.px_module?.path?.length ?? 0)
+      )[0];
+
+    if (!matchedModule) {
       return { add: false, edit: false, delete: false, view: false };
     }
-    return { add: module.add, edit: module.edit, delete: module.delete, view: module.view };
+
+    return {
+      add: matchedModule.add,
+      edit: matchedModule.edit,
+      delete: matchedModule.delete,
+      view: matchedModule.view
+    };
   }, [state, isAdmin]);
 
   if (state.isInitialized !== undefined && !state.isInitialized) {

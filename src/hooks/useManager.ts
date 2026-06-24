@@ -21,12 +21,12 @@ const UseManager = ({ user, isAdmin }: IProps) => {
     const fetchManager = async () => {
         const whereCondition = {
             isActive: true,
-            isDeleted: false
+            isDeleted: false,
         };
         const response: any = await getManager(
-            isAdmin ?
-                { ...whereCondition } :
-                { ...whereCondition, createdBy: user?.id }
+            // isAdmin ?
+            { ...whereCondition }
+            // { ...whereCondition, createdBy: user?.id }
         );
         if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
             localStorage.setItem("managerId", isAdmin ? response.data[0].id : response.data.map((item: any) => item.id).join(","));

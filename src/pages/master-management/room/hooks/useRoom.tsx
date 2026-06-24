@@ -16,7 +16,7 @@ import { HeadCell, ArrangementOrder } from "types/table";
 const UseRoom = () => {
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { user, accessRights } = useAuth();
+    const { user, isAdmin, accessRights } = useAuth();
 
     const rights = accessRights(pathname);
 
@@ -46,7 +46,7 @@ const UseRoom = () => {
     };
 
     const fetch = useCallback(async () => {
-        const payload = {
+        let payload: any = {
             where: {
                 searchText,
                 isDeleted: false,
@@ -58,6 +58,18 @@ const UseRoom = () => {
                 descending: order === 'desc',
             },
         };
+
+
+        if (!isAdmin) {
+            payload = {
+                ...payload,
+                where: {
+                    ...payload.where,
+                    createdBy: user?.id
+                }
+            }
+        }
+
         try {
             const { success, message, data }: any = await getRoomList(payload);
             if (success) {

@@ -181,7 +181,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
           const rights = accessRights(child.url!);
           return rights.view;
         });
-        if (!filteredChildren?.length) {
+        if (!filteredChildren?.includes(true)) {
           return null;
         }
         return (

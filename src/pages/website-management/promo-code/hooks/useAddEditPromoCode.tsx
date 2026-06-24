@@ -3,32 +3,28 @@ import useAuth from "hooks/useAuth";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { createSeo, updateSeo, getSeoById } from "service/seo";
+import { createPromoCode, updatePromoCode, getPromoCodeById } from "service/promoCode";
 import { convertToFormData } from "utils/helper";
 
-export type SeoType = {
-    title: string;
+export type PromoCodeType = {
+    name: string;
+    code: string;
     description: string;
-    slug: string;
-    structuredData: any;
-    image: any[];
-    keywords: string[];
-    tags: string[];
-    pagePath: string;
+    image: any;
+    type: string;
+    value: string;
 }
 
-const defaultValues: SeoType = {
-    title: "",
+const defaultValues: PromoCodeType = {
+    name: "",
+    code: "",
     description: "",
-    slug: "",
-    image: [],
-    keywords: [],
-    tags: [],
-    pagePath: "",
-    structuredData: null
-};
+    image: null,
+    type: "",
+    value: ""
+}
 
-const UseAddEditSeo = () => {
+const UseAddEditPromoCode = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
     const { user, startLoading, stopLoading } = useAuth();
@@ -40,28 +36,26 @@ const UseAddEditSeo = () => {
         setValue,
         getValues,
         handleSubmit
-    } = useForm<SeoType>({
+    } = useForm<PromoCodeType>({
         defaultValues,
         mode: 'onBlur'
     });
 
     const handleBack = () => {
-        navigate("/website-management/seo");
+        navigate('/website-management/promo-code')
     }
 
     const fetch = async () => {
         try {
             startLoading();
-            const { success, message, data }: any = await getSeoById(Number(id));
+            const { success, message, data }: any = await getPromoCodeById(Number(id));
             if (success) {
-                setValue("title", data.title);
+                setValue("name", data.name);
+                setValue("code", data.code);
                 setValue("description", data.description);
-                setValue("slug", data.slug);
                 setValue("image", data.image && Array.isArray(data.image) ? data.image : data.image ? data.image : null);
-                setValue("keywords", data.keywords && data.keywords.split(','));
-                setValue("tags", data.tags && data.tags.split(','));
-                setValue("pagePath", data.pagePath);
-                setValue("structuredData", data.structuredData ? JSON.stringify(data.structuredData, null, 2) : "{}");
+                setValue("type", data.type);
+                setValue("value", data.value);
             } else {
                 openSnackbar({
                     open: true,
@@ -87,7 +81,7 @@ const UseAddEditSeo = () => {
         }
     }
 
-    const onSubmit = async (data: SeoType) => {
+    const onSubmit = async (data: PromoCodeType) => {
         try {
             startLoading();
             let payload: any = {
@@ -105,13 +99,6 @@ const UseAddEditSeo = () => {
                 }
             }
 
-            if (data && data.keywords && Array.isArray(data.keywords)) {
-                payload.keywords = data.keywords.join(',');
-            }
-
-            if (data && data.tags && Array.isArray(data.tags)) {
-                payload.tags = data.tags.join(',');
-            }
             if (data && data.image) {
                 if (typeof data.image === 'object') {
                     payload = convertToFormData(payload);
@@ -121,7 +108,7 @@ const UseAddEditSeo = () => {
                 }
             }
 
-            const { success, message }: any = mode && mode === 'edit' && id ? await updateSeo(payload, Number(id)) : await createSeo(payload);
+            const { success, message }: any = mode && mode === 'edit' && id ? await updatePromoCode(payload, Number(id)) : await createPromoCode(payload);
             openSnackbar({
                 open: true,
                 message: message,
@@ -150,9 +137,9 @@ const UseAddEditSeo = () => {
 
     const title: string = useMemo(() => {
         if (mode && mode === 'edit' && id) {
-            return 'Edit SEO';
+            return 'Edit Promo Code';
         }
-        return 'Add SEO';
+        return 'Add Promo Code';
     }, [mode, id]);
 
     useEffect(() => {
@@ -175,4 +162,4 @@ const UseAddEditSeo = () => {
     }
 }
 
-export default UseAddEditSeo;
+export default UseAddEditPromoCode;

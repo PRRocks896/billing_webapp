@@ -61,7 +61,7 @@ const AddEditService = () => {
     } = UseAddEditService();
 
     return (
-        <form onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}>
+        <form onSubmit={handleSubmit(onSubmit, (errors) => console.error(errors))}>
             <Grid container spacing={3}>
 
                 {/* ── Main Form Column ───────────────────────────────────────── */}

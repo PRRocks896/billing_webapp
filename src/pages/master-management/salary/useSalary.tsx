@@ -69,8 +69,7 @@ const defaultValues: SalaryFormType = {
 
 const UseSalary = () => {
     const { pathname } = useLocation();
-    const { user, startLoading, stopLoading, accessRights } = useAuth();
-    const isAdmin = true;
+    const { user, isAdmin, startLoading, stopLoading, accessRights } = useAuth();
     const rights = accessRights(pathname);
 
     const [month, setMonth] = useState((moment().month() + 1));
