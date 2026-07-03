@@ -130,4 +130,68 @@ export async function detectEAR(
   return { ear: avgEAR };
 }
 
+/**
+ * Detects if the user is likely wearing sunglasses or heavy-framed eyewear
+ * by sampling EAR over multiple frames.
+ *
+ * When eyes are open naturally, EAR is typically in the range 0.25–0.45.
+ * Sunglasses/dark frames occlude the eye landmarks, causing EAR to stay
+ * consistently below 0.20 even when the person is clearly not blinking.
+ *
+ * Samples EAR `sampleCount` times at `intervalMs` apart. If none of the
+ * samples exceed `openEyeThreshold`, we classify it as eyewear obstruction.
+ *
+ * @returns { hasEyewear: boolean, avgEAR: number | null }
+ */
+export async function detectEyewear(
+  mediaEl: HTMLVideoElement | HTMLCanvasElement,
+  options?: { minConfidence?: number; sampleCount?: number; intervalMs?: number; openEyeThreshold?: number }
+): Promise<{ hasEyewear: boolean; avgEAR: number | null; error?: string }> {
+  const sampleCount = options?.sampleCount ?? 8;
+  const intervalMs = options?.intervalMs ?? 80;
+  const openEyeThreshold = options?.openEyeThreshold ?? 0.20;
+  const minConfidence = options?.minConfidence ?? 0.5;
+
+  const detectionOptions = new faceapi.SsdMobilenetv1Options({ minConfidence });
+
+  const samples: number[] = [];
+
+  for (let i = 0; i < sampleCount; i++) {
+    try {
+      const detection = await faceapi
+        .detectSingleFace(mediaEl, detectionOptions)
+        .withFaceLandmarks();
+
+      if (!detection) {
+        // No face in this frame — skip
+        await new Promise((r) => setTimeout(r, intervalMs));
+        continue;
+      }
+
+      const leftEye = detection.landmarks.getLeftEye();
+      const rightEye = detection.landmarks.getRightEye();
+      const avgEAR = (getEAR(leftEye) + getEAR(rightEye)) / 2.0;
+      samples.push(avgEAR);
+    } catch {
+      // Skip transient errors
+    }
+
+    if (i < sampleCount - 1) {
+      await new Promise((r) => setTimeout(r, intervalMs));
+    }
+  }
+
+  if (samples.length === 0) {
+    return { hasEyewear: false, avgEAR: null, error: 'No face detected during eyewear check.' };
+  }
+
+  const avgEAR = samples.reduce((sum, v) => sum + v, 0) / samples.length;
+  const maxEAR = Math.max(...samples);
+
+  // If even the maximum sample never reaches "open eye" level, eyes are obstructed
+  const hasEyewear = maxEAR < openEyeThreshold;
+
+  return { hasEyewear, avgEAR };
+}
+
 export { faceapi };

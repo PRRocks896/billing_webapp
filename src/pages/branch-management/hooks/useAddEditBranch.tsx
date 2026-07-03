@@ -213,37 +213,26 @@ const UseAddEditBranch = () => {
                     createdBy: user?.id
                 }
             }
-
             if (data &&
                 (
                     (data.images && Array.isArray(data.images) && data.images.length > 0 && typeof data.images[0] === 'object') ||
-                    (data.thumbnilImage && Array.isArray(data.thumbnilImage) && data.thumbnilImage.length > 0 && typeof data.thumbnilImage[0] === 'object')
+                    (data.thumbnilImage && typeof data.thumbnilImage === 'object')
                 )
             ) {
                 payload = convertToFormData(payload);
-            }
-
-            if (data && data.images && data.images.length > 0) {
-                for (let i = 0; i < data.images.length; i++) {
-                    if (typeof data.images[i] === 'object') {
-                        payload.append('images', data.images[i]);
+                if (data && data.images && data.images.length > 0) {
+                    for (let i = 0; i < data.images.length; i++) {
+                        if (typeof data.images[i] === 'object') {
+                            payload.append('images', data.images[i]);
+                        }
                     }
                 }
-            } else {
-                delete payload['images'];
-            }
 
-            if (data && data.thumbnilImage && data.thumbnilImage.length > 0) {
-                if (typeof data.thumbnilImage[0] === 'object') {
-                    payload.append('thumbnilImage', data.thumbnilImage[0]);
-                } else {
-                    payload = {
-                        ...payload,
-                        thumbnilImage: data.thumbnilImage
+                if (data && data.thumbnilImage) {
+                    if (typeof data.thumbnilImage === 'object') {
+                        payload.append('thumbnilImage', data.thumbnilImage);
                     }
                 }
-            } else {
-                delete payload['thumbnilImage'];
             }
 
             const { success, message }: any = mode && mode === 'edit' && id ? await updateUser(payload, Number(id)) : await createUser(payload);

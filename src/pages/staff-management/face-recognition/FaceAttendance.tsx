@@ -202,6 +202,8 @@ const FaceAttendance: React.FC = () => {
 
       // Face found! Start liveness check.
       setFaceDetected(true);
+
+      // Face is clear — start liveness check.
       setKioskState('liveness-check');
       isLivenessActiveRef.current = true;
 
@@ -423,9 +425,11 @@ const FaceAttendance: React.FC = () => {
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
-          alignItems: 'center',
-          px: 4,
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: { xs: 2, sm: 0 },
+          px: { xs: 2, sm: 4 },
           py: 2,
           borderBottom: '1px solid rgba(255,255,255,0.08)',
           backdropFilter: 'blur(10px)'
@@ -455,7 +459,15 @@ const FaceAttendance: React.FC = () => {
           </Box>
         </Stack>
 
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          sx={{
+            width: { xs: '100%', sm: 'auto' },
+            justifyContent: { xs: 'space-between', sm: 'flex-end' }
+          }}
+        >
           {/* Live indicator */}
           {kioskState === 'scanning' && (
             <Stack direction="row" alignItems="center" spacing={0.8}>
@@ -473,39 +485,70 @@ const FaceAttendance: React.FC = () => {
               </Typography>
             </Stack>
           )}
-          {/* Clock */}
-          <Stack direction="row" alignItems="center" spacing={0.5}>
-            <Timer size={16} color="rgba(255,255,255,0.6)" />
-            <Typography variant="h6" color="white" fontWeight={700} fontFamily="monospace">
-              {currentTime}
+          {/* Clock & Date & Restart */}
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Timer size={16} color="rgba(255,255,255,0.6)" />
+              <Typography variant="h6" color="white" fontWeight={700} fontFamily="monospace">
+                {currentTime}
+              </Typography>
+            </Stack>
+            <Typography variant="body2" color="rgba(255,255,255,0.5)">
+              {moment().format('DD MMM YYYY')}
             </Typography>
+            {/* Restart button */}
+            <IconButton onClick={handleRestart} size="small" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+              <Refresh size={20} />
+            </IconButton>
           </Stack>
-          <Typography variant="body2" color="rgba(255,255,255,0.5)">
-            {moment().format('DD MMM YYYY')}
-          </Typography>
-          {/* Restart button */}
-          <IconButton onClick={handleRestart} size="small" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-            <Refresh size={20} />
-          </IconButton>
         </Stack>
       </Box>
 
+      {/* ─── Eyewear Instruction Notice ───────────────────────────────── */}
+      <Box
+        sx={{
+          mx: { xs: 2, sm: 3 },
+          mt: 1.5,
+          p: 1.5,
+          borderRadius: 2,
+          bgcolor: 'rgba(255, 152, 0, 0.12)',
+          border: '1px solid rgba(255, 152, 0, 0.35)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5
+        }}
+      >
+        <Typography sx={{ fontSize: '1.2rem', lineHeight: 1 }}>🕶️</Typography>
+        <Typography variant="caption" color="rgba(255,255,255,0.85)" fontWeight={500}>
+          Please <strong>remove all sunglasses and eyewear</strong> before scanning your face.
+          Eyewear reduces recognition accuracy.
+        </Typography>
+      </Box>
+
       {/* ─── Main Content ─────────────────────────────────────────────────── */}
-      <Box sx={{ flex: 1, display: 'flex', gap: 3, p: 3 }}>
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: { xs: 2, md: 3 },
+          p: { xs: 2, md: 3 }
+        }}
+      >
         {/* ── Camera Feed (Left) ──────────────────────────────────────────── */}
-        <Box sx={{ flex: 2, position: 'relative', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 2, position: 'relative', display: 'flex', flexDirection: 'column', width: '100%' }}>
           {/* Camera viewport */}
           <Box
             sx={{
-              flex: 1,
+              position: 'relative',
+              width: '100%',
+              aspectRatio: { xs: '3/4', sm: '4/3' },
               borderRadius: 4,
               overflow: 'hidden',
-              position: 'relative',
               border: `2px solid ${stateColors[kioskState]}`,
               boxShadow: `0 0 30px ${stateColors[kioskState]}33`,
               transition: 'border-color 0.5s, box-shadow 0.5s',
-              bgcolor: '#0a0a0a',
-              minHeight: 400
+              bgcolor: '#0a0a0a'
             }}
           >
             {/* Loading overlay */}
@@ -565,8 +608,8 @@ const FaceAttendance: React.FC = () => {
               >
                 <Box
                   sx={{
-                    width: 320,
-                    height: 400,
+                    width: { xs: 240, sm: 320 },
+                    height: { xs: 300, sm: 400 },
                     border: '2px dashed rgba(255,255,255,0.4)',
                     borderRadius: '50%',
                     boxShadow: '0 0 0 4000px rgba(0,0,0,0.4)',
@@ -588,20 +631,21 @@ const FaceAttendance: React.FC = () => {
                   justifyContent: 'center',
                   bgcolor: 'rgba(0,0,0,0.5)',
                   color: 'white',
-                  zIndex: 5
+                  zIndex: 5,
+                  p: 2,
+                  textAlign: 'center'
                 }}
               >
                 <CircularProgress color="primary" size={60} thickness={3} sx={{ mb: 2 }} />
-                <Typography variant="h5" fontWeight={700} gutterBottom>
+                <Typography fontWeight={700} gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
                   Face Detected
                 </Typography>
-                <Typography variant="h6" fontWeight={500} sx={{ animation: `${pulse} 1.5s infinite`, px: 3, py: 1, borderRadius: 2, bgcolor: 'rgba(33, 150, 243, 0.2)' }}>
+                <Typography fontWeight={500} sx={{ animation: `${pulse} 1.5s infinite`, px: { xs: 2, sm: 3 }, py: 1, borderRadius: 2, bgcolor: 'rgba(33, 150, 243, 0.2)', fontSize: { xs: '0.9rem', sm: '1.25rem' } }}>
                   Please blink your eyes to verify
                 </Typography>
               </Box>
             )}
 
-            {/* Video */}
             <video
               ref={videoRef}
               autoPlay
@@ -659,8 +703,8 @@ const FaceAttendance: React.FC = () => {
               >
                 <Box
                   sx={{
-                    width: 220,
-                    height: 280,
+                    width: { xs: 180, sm: 220 },
+                    height: { xs: 230, sm: 280 },
                     border: `3px solid ${faceDetected ? '#4caf50' : 'rgba(255,255,255,0.3)'}`,
                     borderRadius: '50%',
                     transition: 'border-color 0.3s',
@@ -706,19 +750,20 @@ const FaceAttendance: React.FC = () => {
                   bgcolor: 'rgba(0,0,0,0.75)',
                   gap: 2.5,
                   animation: `${fadeInUp} 0.4s ease`,
-                  zIndex: 5
+                  zIndex: 5,
+                  p: 2
                 }}
               >
-                <TickCircle size={96} color="#4caf50" variant="Bold" />
+                <TickCircle size={64} color="#4caf50" variant="Bold" />
                 <Box textAlign="center">
-                  <Typography color="#4caf50" variant="h4" fontWeight={900}>
+                  <Typography color="#4caf50" fontWeight={900} sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                     {matchResult.action === 'clock-in' ? 'Clock In' : 'Clock Out'}
                   </Typography>
-                  <Typography color="white" variant="h5" fontWeight={700} mt={0.5}>
+                  <Typography color="white" fontWeight={700} mt={0.5} sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
                     {matchResult.staff?.name}
                   </Typography>
                   {matchResult.staff?.nickName && (
-                    <Typography color="rgba(255,255,255,0.6)" variant="body1">
+                    <Typography color="rgba(255,255,255,0.6)" sx={{ fontSize: { xs: '0.85rem', sm: '1rem' } }}>
                       {matchResult.staff.nickName}
                     </Typography>
                   )}
@@ -749,14 +794,15 @@ const FaceAttendance: React.FC = () => {
                   bgcolor: 'rgba(0,0,0,0.75)',
                   gap: 2,
                   animation: `${fadeInUp} 0.4s ease`,
-                  zIndex: 5
+                  zIndex: 5,
+                  p: 2
                 }}
               >
-                <CloseCircle size={88} color="#f44336" variant="Bold" />
-                <Typography color="#f44336" variant="h5" fontWeight={700}>
+                <CloseCircle size={64} color="#f44336" variant="Bold" />
+                <Typography color="#f44336" fontWeight={700} sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
                   Not Recognised
                 </Typography>
-                <Typography color="rgba(255,255,255,0.7)" textAlign="center" px={4} variant="body2">
+                <Typography color="rgba(255,255,255,0.7)" textAlign="center" px={2} variant="body2">
                   {matchResult?.reason || 'Face not found in system. Please register first.'}
                 </Typography>
               </Box>
@@ -837,7 +883,7 @@ const FaceAttendance: React.FC = () => {
         </Box>
 
         {/* ── Right Panel ────────────────────────────────────────────────────── */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2.5, minWidth: 280 }}>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2.5, width: '100%' }}>
           {/* Today's Stats */}
           <Card
             sx={{
