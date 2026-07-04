@@ -26,6 +26,7 @@ const DailyReport = () => {
         totalCount,
         dateRange,
         branchList,
+        sectionRights,
         selectedBranch,
         setSelectedBranch,
         setDateRange,
@@ -65,7 +66,7 @@ const DailyReport = () => {
             </Stack>
 
             {/* ── Admin Export Controls ─────────────────────────────────────────────── */}
-            {isAdmin && (
+            {sectionRights.view && (
                 <MainCard sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
                     <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems={{ xs: 'stretch', md: 'center' }} justifyContent="space-between">
 
@@ -114,15 +115,17 @@ const DailyReport = () => {
                                 />
                             </Grid>
                             <Grid size={{ xs: 12, sm: 4, md: 'auto' }}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={downloadReport}
-                                    sx={{ minWidth: 120, height: 50, px: 3, boxShadow: 'none' }}
-                                >
-                                    Export PDF
-                                </Button>
+                                {sectionRights.download &&
+                                    <Button
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={downloadReport}
+                                        sx={{ minWidth: 120, height: 50, px: 3, boxShadow: 'none' }}
+                                    >
+                                        Export PDF
+                                    </Button>
+                                }
                             </Grid>
                         </Grid>
                     </Stack>

@@ -29,6 +29,31 @@ type AccessModules = {
   }
 }
 
+type AccessSectionModules = {
+  id: number;
+  roleID: number;
+  moduleSectionID: number;
+  view: boolean;
+  download: boolean;
+  upload: boolean;
+  px_module_section: {
+    id: number;
+    moduleID: number;
+    name: string;
+    key: string;
+    px_module: {
+      id: number;
+      name: string;
+      icon: string;
+      path: string;
+    }
+  };
+  px_role: {
+    id: number;
+    name: string;
+  };
+}
+
 type UserProfile = {
   "id": number,
   "cityID": number,
@@ -86,6 +111,7 @@ export interface AuthProps {
   user?: UserProfile | null;
   token?: string | null;
   accessModules?: AccessModules[] | [];
+  accessSectionModules?: AccessSectionModules[] | [];
   loading?: boolean;
 }
 
@@ -143,6 +169,7 @@ export type JWTContextType = {
   sendOtp: (phone: string) => Promise<any>;
   verifyOtp: (phone: string, otp: string) => Promise<void>;
   accessRights: (pathName: string) => { add: boolean; edit: boolean; delete: boolean; view: boolean };
+  accessSectionRights: (sectionSlug: string) => { view: boolean; download: boolean; upload: boolean };
   startLoading: () => void;
   stopLoading: () => void;
 };

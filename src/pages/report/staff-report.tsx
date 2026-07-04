@@ -113,6 +113,7 @@ const StaffReport = () => {
         companyOptions,
         serviceList,
         salesType,
+        staffSectionRights,
         setSalesType,
         // selectedService,
         setYear,
@@ -194,318 +195,323 @@ const StaffReport = () => {
 
             <Grid container spacing={4}>
                 {/* ── Section 1: Manager Incentive Report ───────────────────── */}
-                <Grid size={{ xs: 12 }}>
-                    <ReportModule>
-                        <SectionHeader
-                            theme={theme}
-                            icon={Wallet}
-                            title="Staff Incentive Calculator"
-                            subtitle="Calculate and export dynamic incentive reports based on performance metrics"
-                        />
-                        <Grid container spacing={3}>
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={managerList || []}
-                                    getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
-                                    onChange={(_, newValue) => {
-                                        if (newValue && newValue?.id) setSelectedInsentiveManager(newValue?.id);
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Target Manager/Staff"
-                                            placeholder="Search by name..."
-                                            InputProps={{
-                                                ...params.InputProps,
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Profile2User size={22} color={theme.palette.primary.main} variant="Bulk" />
-                                                    </InputAdornment>
-                                                )
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 3, md: 2 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
-                                    getOptionLabel={(option) => option.toString()}
-                                    value={insentiveManagerYear}
-                                    onChange={(_, newValue) => newValue && setInsentiveManagerYear(newValue)}
-                                    renderInput={(params) => <TextField {...params} label="Select Year" />}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 3, md: 2 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={[...Array(12)].map((_, i) => i + 1)}
-                                    getOptionLabel={(option) => {
-                                        const date = new Date();
-                                        date.setMonth(option - 1);
-                                        return date.toLocaleString('default', { month: 'long' });
-                                    }}
-                                    value={insentiveManagerMonth}
-                                    onChange={(_, newValue) => newValue && setInsentiveManagerMonth(newValue)}
-                                    renderInput={(params) => <TextField {...params} label="Select Month" />}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 12, sm: 12, md: 4 }}>
-                                <Box sx={{ p: 2, bgcolor: alpha(theme.palette.primary.main, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}` }}>
-                                    <Typography variant="caption" fontWeight={700} color="primary" sx={{ textTransform: 'uppercase', mb: 1, display: 'block' }}>Calculation Logic</Typography>
-                                    <RadioGroup row value={salesType} onChange={(e) => {
-                                        const type = parseInt(e.target.value);
-                                        setSalesType(type);
-                                        setWeekDays("");
-                                        setWeekDaysPercentage("");
-                                        setweekEnd("");
-                                        setWeekEndPercentage("");
-                                    }}>
-                                        <FormControlLabel value={0} control={<Radio />} label={<Typography variant="body2" fontWeight={600}>All Days Plan</Typography>} />
-                                        <FormControlLabel value={1} control={<Radio />} label={<Typography variant="body2" fontWeight={600}>Weekend-Wise Plan</Typography>} />
-                                    </RadioGroup>
-                                </Box>
-                            </Grid>
-
-                            <Grid size={{ xs: 12 }}>
-                                <Box sx={{ p: 4, borderRadius: 4, bgcolor: alpha(theme.palette.secondary.main, 0.02), border: `1px dashed ${theme.palette.divider}` }}>
-                                    <Grid container spacing={4}>
-                                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                {staffSectionRights['staff_incentive_calculator'] && staffSectionRights['staff_incentive_calculator']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={Wallet}
+                                title="Staff Incentive Calculator"
+                                subtitle="Calculate and export dynamic incentive reports based on performance metrics"
+                            />
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={managerList || []}
+                                        getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
+                                        onChange={(_, newValue) => {
+                                            if (newValue && newValue?.id) setSelectedInsentiveManager(newValue?.id);
+                                        }}
+                                        renderInput={(params) => (
                                             <TextField
-                                                fullWidth
-                                                label={salesType === 1 ? "Mon - Fri Amount (₹)" : "Tier 1 Amount (₹)"}
-                                                value={weekDays || ''}
-                                                onChange={(e) => setWeekDays(e.target.value)}
-                                                placeholder="e.g. 5000"
+                                                {...params}
+                                                label="Target Manager/Staff"
+                                                placeholder="Search by name..."
                                                 InputProps={{
-                                                    startAdornment: <InputAdornment position="start"><MoneyChange size={22} color={theme.palette.success.main} variant="Bulk" /></InputAdornment>
+                                                    ...params.InputProps,
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Profile2User size={22} color={theme.palette.primary.main} variant="Bulk" />
+                                                        </InputAdornment>
+                                                    )
                                                 }}
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                            <TextField
-                                                fullWidth
-                                                label={salesType === 1 ? "Mon - Fri Rate (%)" : "Tier 1 Rate (%)"}
-                                                value={weekDaysPercentage || ''}
-                                                onChange={(e) => setWeekDaysPercentage(e.target.value)}
-                                                placeholder="e.g. 10"
-                                                InputProps={{
-                                                    startAdornment: <InputAdornment position="start"><PercentageCircle size={22} color={theme.palette.info.main} variant="Bulk" /></InputAdornment>
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                            <TextField
-                                                fullWidth
-                                                label={salesType === 1 ? "Sat - Sun Amount (₹)" : "Tier 2 Amount (₹)"}
-                                                value={weekEnd || ''}
-                                                onChange={(e) => setweekEnd(e.target.value)}
-                                                placeholder="e.g. 8000"
-                                                InputProps={{
-                                                    startAdornment: <InputAdornment position="start"><MoneyChange size={22} color={theme.palette.warning.main} variant="Bulk" /></InputAdornment>
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                            <TextField
-                                                fullWidth
-                                                label={salesType === 1 ? "Sat - Sun Rate (%)" : "Tier 2 Rate (%)"}
-                                                value={weekEndPercentage || ''}
-                                                onChange={(e) => setWeekEndPercentage(e.target.value)}
-                                                placeholder="e.g. 15"
-                                                InputProps={{
-                                                    startAdornment: <InputAdornment position="start"><PercentageCircle size={22} color={theme.palette.error.main} variant="Bulk" /></InputAdornment>
-                                                }}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Box>
-                            </Grid>
-
-                            <Grid size={{ xs: 12 }} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <Button
-                                    variant="contained"
-                                    size="large"
-                                    onClick={() => fetchInsentiveManagerReportData()}
-                                    startIcon={<Export size={24} variant="Bold" />}
-                                    sx={{ px: 6, py: 1.8, borderRadius: 3, boxShadow: theme.customShadows?.primary }}
-                                >
-                                    Generate Incentive Report
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </ReportModule>
-                </Grid>
-
-                {/* ── Section 2: Attendance Detail ──────────────────────────── */}
-                <Grid size={{ xs: 12 }}>
-                    <ReportModule>
-                        <SectionHeader
-                            theme={theme}
-                            icon={ChartSquare}
-                            title="Staff Attendance Analytics"
-                            subtitle="Detailed breakdown of individual staff attendance and working hours"
-                        />
-                        <Grid container spacing={3}>
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={attUserList || []}
-                                    getOptionLabel={(option) => option.label}
-                                    onChange={(_, newValue) => {
-                                        if (newValue && newValue?.value) {
-                                            setSelectedAttUser(newValue?.value);
-                                            fetchStaffList(newValue?.value);
-                                        } else {
-                                            setSelectedAttUser(null);
-                                            setSelectedStaff(null);
-                                        }
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Branch / User"
-                                            InputProps={{
-                                                ...params.InputProps,
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Building size={22} color={theme.palette.primary.main} variant="Bulk" />
-                                                    </InputAdornment>
-                                                )
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={staffList || []}
-                                    getOptionLabel={(option) => `${option?.nickName} (${option?.label})`}
-                                    onChange={(_, newValue) => setSelectedStaff(newValue ? newValue.value : null)}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Target Staff Member"
-                                            InputProps={{
-                                                ...params.InputProps,
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Profile2User size={22} color={theme.palette.primary.main} variant="Bulk" />
-                                                    </InputAdornment>
-                                                )
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
-                                    getOptionLabel={(option) => option.toString()}
-                                    value={attYear}
-                                    onChange={(_, newValue) => newValue && setAttYear(newValue)}
-                                    renderInput={(params) => <TextField {...params} label="Year" />}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-                                <Autocomplete
-                                    fullWidth
-                                    options={[...Array(12)].map((_, i) => i + 1)}
-                                    getOptionLabel={(option) => {
-                                        const date = new Date();
-                                        date.setMonth(option - 1);
-                                        return date.toLocaleString('default', { month: 'long' });
-                                    }}
-                                    value={attMonth}
-                                    onChange={(_, newValue) => newValue && setAttMonth(newValue)}
-                                    renderInput={(params) => <TextField {...params} label="Month" />}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 12, sm: 4, md: 2 }}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    onClick={() => fetchStaffAttendanceReportData()}
-                                    startIcon={<SearchNormal1 size={22} variant="Bold" />}
-                                    sx={{ height: 50, borderRadius: 3 }}
-                                >
-                                    Analyze
-                                </Button>
-                            </Grid>
-
-                            {pdfData && (
-                                <Grid size={{ xs: 12 }}>
-                                    <Box sx={{ mt: 4, borderRadius: 4, overflow: 'hidden', border: `1px solid ${theme.palette.divider}`, boxShadow: theme.customShadows?.z1 }}>
-                                        <iframe
-                                            title="Attendance PDF Report"
-                                            src={pdfData}
-                                            width="100%"
-                                            style={{ height: "calc(100vh - 200px)", border: 'none' }}
-                                        />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
+                                        getOptionLabel={(option) => option.toString()}
+                                        value={insentiveManagerYear}
+                                        onChange={(_, newValue) => newValue && setInsentiveManagerYear(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Select Year" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(12)].map((_, i) => i + 1)}
+                                        getOptionLabel={(option) => {
+                                            const date = new Date();
+                                            date.setMonth(option - 1);
+                                            return date.toLocaleString('default', { month: 'long' });
+                                        }}
+                                        value={insentiveManagerMonth}
+                                        onChange={(_, newValue) => newValue && setInsentiveManagerMonth(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Select Month" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 12, md: 4 }}>
+                                    <Box sx={{ p: 2, bgcolor: alpha(theme.palette.primary.main, 0.05), borderRadius: 3, border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}` }}>
+                                        <Typography variant="caption" fontWeight={700} color="primary" sx={{ textTransform: 'uppercase', mb: 1, display: 'block' }}>Calculation Logic</Typography>
+                                        <RadioGroup row value={salesType} onChange={(e) => {
+                                            const type = parseInt(e.target.value);
+                                            setSalesType(type);
+                                            setWeekDays("");
+                                            setWeekDaysPercentage("");
+                                            setweekEnd("");
+                                            setWeekEndPercentage("");
+                                        }}>
+                                            <FormControlLabel value={0} control={<Radio />} label={<Typography variant="body2" fontWeight={600}>All Days Plan</Typography>} />
+                                            <FormControlLabel value={1} control={<Radio />} label={<Typography variant="body2" fontWeight={600}>Weekend-Wise Plan</Typography>} />
+                                        </RadioGroup>
                                     </Box>
                                 </Grid>
-                            )}
-                        </Grid>
-                    </ReportModule>
-                </Grid>
 
-                {/* ── Admin Exclusive Sections ─────────────────────────────── */}
-                {isAdmin && (
-                    <>
-                        {/* Manager Performance Tracker */}
-                        <Grid size={{ xs: 12 }}>
-                            <ReportModule>
-                                <SectionHeader
-                                    theme={theme}
-                                    icon={StatusUp}
-                                    title="Manager Performance Summary"
-                                    subtitle="Comprehensive performance grading based on service delivery and efficiency"
-                                />
-                                <Grid container spacing={3}>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={managerList || []}
-                                            getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
-                                            onChange={(_, newValue) => newValue?.id && handleManagerChange(newValue.id)}
-                                            renderInput={(params) => <TextField {...params} label="Select Manager" />}
-                                        />
+                                <Grid size={{ xs: 12 }}>
+                                    <Box sx={{ p: 4, borderRadius: 4, bgcolor: alpha(theme.palette.secondary.main, 0.02), border: `1px dashed ${theme.palette.divider}` }}>
+                                        <Grid container spacing={4}>
+                                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                                <TextField
+                                                    fullWidth
+                                                    label={salesType === 1 ? "Mon - Fri Amount (₹)" : "Tier 1 Amount (₹)"}
+                                                    value={weekDays || ''}
+                                                    onChange={(e) => setWeekDays(e.target.value)}
+                                                    placeholder="e.g. 5000"
+                                                    InputProps={{
+                                                        startAdornment: <InputAdornment position="start"><MoneyChange size={22} color={theme.palette.success.main} variant="Bulk" /></InputAdornment>
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                                <TextField
+                                                    fullWidth
+                                                    label={salesType === 1 ? "Mon - Fri Rate (%)" : "Tier 1 Rate (%)"}
+                                                    value={weekDaysPercentage || ''}
+                                                    onChange={(e) => setWeekDaysPercentage(e.target.value)}
+                                                    placeholder="e.g. 10"
+                                                    InputProps={{
+                                                        startAdornment: <InputAdornment position="start"><PercentageCircle size={22} color={theme.palette.info.main} variant="Bulk" /></InputAdornment>
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                                <TextField
+                                                    fullWidth
+                                                    label={salesType === 1 ? "Sat - Sun Amount (₹)" : "Tier 2 Amount (₹)"}
+                                                    value={weekEnd || ''}
+                                                    onChange={(e) => setweekEnd(e.target.value)}
+                                                    placeholder="e.g. 8000"
+                                                    InputProps={{
+                                                        startAdornment: <InputAdornment position="start"><MoneyChange size={22} color={theme.palette.warning.main} variant="Bulk" /></InputAdornment>
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                                <TextField
+                                                    fullWidth
+                                                    label={salesType === 1 ? "Sat - Sun Rate (%)" : "Tier 2 Rate (%)"}
+                                                    value={weekEndPercentage || ''}
+                                                    onChange={(e) => setWeekEndPercentage(e.target.value)}
+                                                    placeholder="e.g. 15"
+                                                    InputProps={{
+                                                        startAdornment: <InputAdornment position="start"><PercentageCircle size={22} color={theme.palette.error.main} variant="Bulk" /></InputAdornment>
+                                                    }}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                </Grid>
+                                {staffSectionRights['staff_incentive_calculator'] && staffSectionRights['staff_incentive_calculator']['download'] &&
+                                    <Grid size={{ xs: 12 }} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Button
+                                            variant="contained"
+                                            size="large"
+                                            onClick={() => fetchInsentiveManagerReportData()}
+                                            startIcon={<Export size={24} variant="Bold" />}
+                                            sx={{ px: 6, py: 1.8, borderRadius: 3, boxShadow: theme.customShadows?.primary }}
+                                        >
+                                            Generate Incentive Report
+                                        </Button>
                                     </Grid>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={serviceList || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => newValue?.value && setSelectedService(newValue.value)}
-                                            renderInput={(params) => <TextField {...params} label="Service Scope" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                }
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
+
+                {/* ── Section 2: Attendance Detail ──────────────────────────── */}
+                {staffSectionRights['staff_attendance_analytics'] && staffSectionRights['staff_attendance_analytics']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={ChartSquare}
+                                title="Staff Attendance Analytics"
+                                subtitle="Detailed breakdown of individual staff attendance and working hours"
+                            />
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={attUserList || []}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={(_, newValue) => {
+                                            if (newValue && newValue?.value) {
+                                                setSelectedAttUser(newValue?.value);
+                                                fetchStaffList(newValue?.value);
+                                            } else {
+                                                setSelectedAttUser(null);
+                                                setSelectedStaff(null);
+                                            }
+                                        }}
+                                        renderInput={(params) => (
                                             <TextField
-                                                type="date"
-                                                fullWidth
-                                                label="From Date"
-                                                InputLabelProps={{ shrink: true }}
-                                                value={managerDateRange[0] ? new Date(managerDateRange[0]).toISOString().split('T')[0] : ''}
-                                                onChange={(e) => handleManagerDateChange([new Date(e.target.value), managerDateRange[1]])}
+                                                {...params}
+                                                label="Branch / User"
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Building size={22} color={theme.palette.primary.main} variant="Bulk" />
+                                                        </InputAdornment>
+                                                    )
+                                                }}
                                             />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={staffList || []}
+                                        getOptionLabel={(option) => `${option?.nickName} (${option?.label})`}
+                                        onChange={(_, newValue) => setSelectedStaff(newValue ? newValue.value : null)}
+                                        renderInput={(params) => (
                                             <TextField
-                                                type="date"
-                                                fullWidth
-                                                label="To Date"
-                                                InputLabelProps={{ shrink: true }}
-                                                value={managerDateRange[1] ? new Date(managerDateRange[1]).toISOString().split('T')[0] : ''}
-                                                onChange={(e) => handleManagerDateChange([managerDateRange[0], new Date(e.target.value)])}
+                                                {...params}
+                                                label="Target Staff Member"
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <Profile2User size={22} color={theme.palette.primary.main} variant="Bulk" />
+                                                        </InputAdornment>
+                                                    )
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
+                                        getOptionLabel={(option) => option.toString()}
+                                        value={attYear}
+                                        onChange={(_, newValue) => newValue && setAttYear(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Year" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(12)].map((_, i) => i + 1)}
+                                        getOptionLabel={(option) => {
+                                            const date = new Date();
+                                            date.setMonth(option - 1);
+                                            return date.toLocaleString('default', { month: 'long' });
+                                        }}
+                                        value={attMonth}
+                                        onChange={(_, newValue) => newValue && setAttMonth(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Month" />}
+                                    />
+                                </Grid>
+                                {staffSectionRights['staff_attendance_analytics']['download'] &&
+                                    <Grid size={{ xs: 12, sm: 4, md: 2 }}>
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            onClick={() => fetchStaffAttendanceReportData()}
+                                            startIcon={<SearchNormal1 size={22} variant="Bold" />}
+                                            sx={{ height: 50, borderRadius: 3 }}
+                                        >
+                                            Analyze
+                                        </Button>
+                                    </Grid>
+                                }
+
+                                {pdfData && (
+                                    <Grid size={{ xs: 12 }}>
+                                        <Box sx={{ mt: 4, borderRadius: 4, overflow: 'hidden', border: `1px solid ${theme.palette.divider}`, boxShadow: theme.customShadows?.z1 }}>
+                                            <iframe
+                                                title="Attendance PDF Report"
+                                                src={pdfData}
+                                                width="100%"
+                                                style={{ height: "calc(100vh - 200px)", border: 'none' }}
                                             />
                                         </Box>
                                     </Grid>
+                                )}
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
+                {/* Manager Performance Tracker */}
+                {staffSectionRights['manager_performance_summary'] && staffSectionRights['manager_performance_summary']['view'] && (
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={StatusUp}
+                                title="Manager Performance Summary"
+                                subtitle="Comprehensive performance grading based on service delivery and efficiency"
+                            />
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={managerList || []}
+                                        getOptionLabel={(option) => `${option?.nickName} (${option?.name})`}
+                                        onChange={(_, newValue) => newValue?.id && handleManagerChange(newValue.id)}
+                                        renderInput={(params) => <TextField {...params} label="Select Manager" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={serviceList || []}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={(_, newValue) => newValue?.value && setSelectedService(newValue.value)}
+                                        renderInput={(params) => <TextField {...params} label="Service Scope" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <Box sx={{ display: 'flex', gap: 2 }}>
+                                        <TextField
+                                            type="date"
+                                            fullWidth
+                                            label="From Date"
+                                            InputLabelProps={{ shrink: true }}
+                                            value={managerDateRange[0] ? new Date(managerDateRange[0]).toISOString().split('T')[0] : ''}
+                                            onChange={(e) => handleManagerDateChange([new Date(e.target.value), managerDateRange[1]])}
+                                        />
+                                        <TextField
+                                            type="date"
+                                            fullWidth
+                                            label="To Date"
+                                            InputLabelProps={{ shrink: true }}
+                                            value={managerDateRange[1] ? new Date(managerDateRange[1]).toISOString().split('T')[0] : ''}
+                                            onChange={(e) => handleManagerDateChange([managerDateRange[0], new Date(e.target.value)])}
+                                        />
+                                    </Box>
+                                </Grid>
+                                {staffSectionRights['manager_performance_summary']['download'] &&
                                     <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                                         <Button
                                             fullWidth
@@ -518,65 +524,69 @@ const StaffReport = () => {
                                             Export Stats
                                         </Button>
                                     </Grid>
-                                </Grid>
-                            </ReportModule>
-                        </Grid>
+                                }
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                )}
 
-                        {/* Branch Salary & Attendance Summary */}
-                        <Grid size={{ xs: 12 }}>
-                            <ReportModule>
-                                <SectionHeader
-                                    theme={theme}
-                                    icon={Briefcase}
-                                    title="Branch Salary Summary"
-                                    subtitle="Consolidated salary and attendance overview for branches and companies"
-                                />
-                                <Grid container spacing={3}>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={companyOptions || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => {
-                                                handleBranchChange(newValue);
-                                                newValue?.value && fetchUserList(newValue.value);
-                                            }}
-                                            renderInput={(params) => <TextField {...params} label="Select Company" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={userList || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => setSelectedUser(newValue ? newValue.value : null)}
-                                            renderInput={(params) => <TextField {...params} label="Select User" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 6, sm: 6, md: 2 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
-                                            getOptionLabel={(option) => option.toString()}
-                                            value={year}
-                                            onChange={(_, newValue) => newValue && setYear(newValue)}
-                                            renderInput={(params) => <TextField {...params} label="Year" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 6, sm: 6, md: 2 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={[...Array(12)].map((_, i) => i + 1)}
-                                            getOptionLabel={(option) => {
-                                                const date = new Date();
-                                                date.setMonth(option - 1);
-                                                return date.toLocaleString('default', { month: 'long' });
-                                            }}
-                                            value={month}
-                                            onChange={(_, newValue) => newValue && setMonth(newValue)}
-                                            renderInput={(params) => <TextField {...params} label="Month" />}
-                                        />
-                                    </Grid>
+                {/* Branch Salary & Attendance Summary */}
+                {staffSectionRights['branch_salary_summary'] && staffSectionRights['branch_salary_summary']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={Briefcase}
+                                title="Branch Salary Summary"
+                                subtitle="Consolidated salary and attendance overview for branches and companies"
+                            />
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={companyOptions || []}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={(_, newValue) => {
+                                            handleBranchChange(newValue);
+                                            newValue?.value && fetchUserList(newValue.value);
+                                        }}
+                                        renderInput={(params) => <TextField {...params} label="Select Company" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={userList || []}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={(_, newValue) => setSelectedUser(newValue ? newValue.value : null)}
+                                        renderInput={(params) => <TextField {...params} label="Select User" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 6, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
+                                        getOptionLabel={(option) => option.toString()}
+                                        value={year}
+                                        onChange={(_, newValue) => newValue && setYear(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Year" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 6, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(12)].map((_, i) => i + 1)}
+                                        getOptionLabel={(option) => {
+                                            const date = new Date();
+                                            date.setMonth(option - 1);
+                                            return date.toLocaleString('default', { month: 'long' });
+                                        }}
+                                        value={month}
+                                        onChange={(_, newValue) => newValue && setMonth(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Month" />}
+                                    />
+                                </Grid>
+                                {staffSectionRights['branch_salary_summary']['download'] &&
                                     <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                                         <Button
                                             fullWidth
@@ -589,65 +599,69 @@ const StaffReport = () => {
                                             Export Summary
                                         </Button>
                                     </Grid>
-                                </Grid>
-                            </ReportModule>
-                        </Grid>
+                                }
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
 
-                        {/* Auditor Staff Detail Report */}
-                        <Grid size={{ xs: 12 }}>
-                            <ReportModule>
-                                <SectionHeader
-                                    theme={theme}
-                                    icon={InfoCircle}
-                                    title="Auditor Staff Intelligence"
-                                    subtitle="Deep-dive auditing for staff members across companies and branches"
-                                />
-                                <Grid container spacing={3}>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={companyOptions || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => {
-                                                handleBranchChange(newValue);
-                                                newValue?.value && fetchUserList(newValue.value);
-                                                setAuditorStaffSelectedCompany(newValue?.value || null);
-                                            }}
-                                            renderInput={(params) => <TextField {...params} label="Target Company" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            multiple
-                                            options={userList || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => setAuditorStaffSelectedBranch(newValue || [])}
-                                            renderInput={(params) => <TextField {...params} label="Select Branches" placeholder="Multi-select" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
-                                            getOptionLabel={(option) => option.toString()}
-                                            onChange={(_, newValue) => newValue && setAuditorStaffSelectedYear(newValue)}
-                                            renderInput={(params) => <TextField {...params} label="Report Year" />}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={[...Array(12)].map((_, i) => i + 1)}
-                                            getOptionLabel={(option) => {
-                                                const date = new Date();
-                                                date.setMonth(option - 1);
-                                                return date.toLocaleString('default', { month: 'long' });
-                                            }}
-                                            onChange={(_, newValue) => newValue && setAuditorStaffSelectedMonth(newValue)}
-                                            renderInput={(params) => <TextField {...params} label="Report Month" />}
-                                        />
-                                    </Grid>
+                {/* Auditor Staff Detail Report */}
+                {staffSectionRights['auditor_staff_intelligence'] && staffSectionRights['auditor_staff_intelligence']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={InfoCircle}
+                                title="Auditor Staff Intelligence"
+                                subtitle="Deep-dive auditing for staff members across companies and branches"
+                            />
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={companyOptions || []}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={(_, newValue) => {
+                                            handleBranchChange(newValue);
+                                            newValue?.value && fetchUserList(newValue.value);
+                                            setAuditorStaffSelectedCompany(newValue?.value || null);
+                                        }}
+                                        renderInput={(params) => <TextField {...params} label="Target Company" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        multiple
+                                        options={userList || []}
+                                        getOptionLabel={(option) => option.label}
+                                        onChange={(_, newValue) => setAuditorStaffSelectedBranch(newValue || [])}
+                                        renderInput={(params) => <TextField {...params} label="Select Branches" placeholder="Multi-select" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(10)].map((_, i) => new Date().getFullYear() - i)}
+                                        getOptionLabel={(option) => option.toString()}
+                                        onChange={(_, newValue) => newValue && setAuditorStaffSelectedYear(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Report Year" />}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+                                    <Autocomplete
+                                        fullWidth
+                                        options={[...Array(12)].map((_, i) => i + 1)}
+                                        getOptionLabel={(option) => {
+                                            const date = new Date();
+                                            date.setMonth(option - 1);
+                                            return date.toLocaleString('default', { month: 'long' });
+                                        }}
+                                        onChange={(_, newValue) => newValue && setAuditorStaffSelectedMonth(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Report Month" />}
+                                    />
+                                </Grid>
+                                {staffSectionRights['auditor_staff_intelligence']['download'] &&
                                     <Grid size={{ xs: 12, sm: 4, md: 2 }}>
                                         <Button
                                             fullWidth
@@ -660,11 +674,11 @@ const StaffReport = () => {
                                             Export Audit
                                         </Button>
                                     </Grid>
-                                </Grid>
-                            </ReportModule>
-                        </Grid>
-                    </>
-                )}
+                                }
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
             </Grid>
         </Box>
     );

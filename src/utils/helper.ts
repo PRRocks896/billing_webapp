@@ -55,8 +55,8 @@ export const listPayload = (
     };
 };
 
-export const generateSlug = (value: string) => {
-    return value.trim().toLowerCase().replace(/\s+/g, '-') || "";
+export const generateSlug = (value: string, replace: string = '-') => {
+    return value.trim().toLowerCase().replace(/\s+/g, replace) || "";
 }
 
 export const convertToFormData = (data: Record<string, any>, isJsonStringfy: boolean = false): FormData => {

@@ -28,6 +28,20 @@ const SERVICE_LIST = [
     { value: 'renew-plan', label: 'Renew Plan' },
 ];
 
+const SECTIONLISTFORSALES = [
+    'primary_sales_data',
+    'tax_&_gst_hub',
+    'professional_audit_logs'
+]
+
+const SECTIONLISTFORSTAFF = [
+    'manager_performance_summary',
+    'branch_salary_summary',
+    'auditor_staff_intelligence',
+    'staff_attendance_analytics',
+    'staff_incentive_calculator'
+]
+
 const DEFAULT_DATE_RANGE: [Date, Date] = [new Date(), new Date()];
 
 // --- Types ---
@@ -38,7 +52,7 @@ interface Option {
 }
 
 const useStaffReport = () => {
-    const { user, startLoading, stopLoading } = useAuth();
+    const { user, accessSectionRights, startLoading, stopLoading } = useAuth();
 
     // --- State ---
     const [pdfData, setPdfData] = useState<any>(null);
@@ -95,6 +109,22 @@ const useStaffReport = () => {
     const companyOptions = useMemo(() => {
         return company.map((item) => ({ value: item.id, label: item.companyName }));
     }, [company]);
+
+    const salesSectionRights = useMemo(() => {
+        const result: any = {};
+        SECTIONLISTFORSALES.forEach((section: string) => {
+            result[section] = accessSectionRights(section);
+        });
+        return result;
+    }, [accessSectionRights, SECTIONLISTFORSALES]);
+
+    const staffSectionRights = useMemo(() => {
+        const result: any = {};
+        SECTIONLISTFORSTAFF.forEach((section: string) => {
+            result[section] = accessSectionRights(section);
+        });
+        return result;
+    }, [accessSectionRights, SECTIONLISTFORSTAFF]);
 
     // --- Request Wrapper ---
     const wrapRequest = useCallback(async (requestFn: () => Promise<any>, errorMsg = "Something went wrong") => {
@@ -218,7 +248,7 @@ const useStaffReport = () => {
             const startDate = moment(managerDateRange[0]).format('yyyy-MM-DD');
             const endDate = moment(managerDateRange[1]).format('yyyy-MM-DD');
             const fileName = `Bill Software Manager's ${selectedService} report ${moment(startDate).format('DD-MM-yyyy')}-${moment(endDate).format('DD-MM-yyyy')}.xlsx`.toUpperCase();
-            
+
             const body = { managerName: selectedManager, startDate, endDate };
             await getManagerList(body, selectedService!, fileName);
         });
@@ -311,7 +341,7 @@ const useStaffReport = () => {
             const branches = auditorStaffSelectedBranch.filter((item) => item.value).map((item) => item.value);
             const companyLabel = companyOptions.find((item) => item.value === auditorStaffSelectedCompany)?.label || "company";
             const fileName = generateSlug(`${companyLabel}_auditor_staff_detail_report.xlsx`.toLowerCase());
-            
+
             const payload: any = {
                 companyID: auditorStaffSelectedCompany,
                 year: auditorStaffSelectedYear,
@@ -367,6 +397,8 @@ const useStaffReport = () => {
         selectedStaff,
         setSelectedStaff,
         staffList,
+        salesSectionRights,
+        staffSectionRights,
         year,
         month,
         userList,

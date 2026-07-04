@@ -202,3 +202,7 @@ export const PROMOCODE = "api/promo-code";
 export const REDEEMBOOKING = "api/redeem-booking";
 
 export const BOOKINGSERVICE = "api/booking-service";
+
+export const MODULESECTION = "api/module-section";
+
+export const SECTIONRIGHT = "api/section-right";

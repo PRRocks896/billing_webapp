@@ -183,6 +183,7 @@ const SalesReport = () => {
         gstDateRange,
         companyOptions,
         paymentList,
+        salesSectionRights,
         fetchReportDate,
         handleDateChange,
         handleBranchChange,
@@ -245,217 +246,133 @@ const SalesReport = () => {
 
             <Grid container spacing={4}>
                 {/* ── Section 1: Standard Sales Report ───────────────────── */}
-                <Grid size={{ xs: 12 }}>
-                    <ReportModule>
-                        <SectionHeader
-                            theme={theme}
-                            icon={Wallet}
-                            title="Primary Sales Data"
-                            subtitle="Export detailed sales records with branch and payment type filtering"
-                        />
-                        <Grid container spacing={3} alignItems="flex-end">
-                            <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-                                <DateSelectionBlock
-                                    label="Select Reporting Range"
-                                    value={dateRange}
-                                    onChange={handleDateChange}
-                                />
-                            </Grid>
-
-                            {isAdmin && (
-                                <>
-                                    <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
-                                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>COMPANY FILTER</Typography>
-                                        <Autocomplete
-                                            fullWidth
-                                            options={companyOptions || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => handleBranchChange(newValue)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Select Company"
-                                                    placeholder="All Companies"
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <Building size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                            </InputAdornment>
-                                                        )
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 12, sm: 12, md: 3.5 }}>
-                                        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>PAYMENT TYPES</Typography>
-                                        <Autocomplete
-                                            fullWidth
-                                            multiple
-                                            options={paymentList || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => handlePaymentChange(newValue)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Payment Types"
-                                                    placeholder="Search..."
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <MoneyChange size={20} variant="Bulk" color={theme.palette.success.main} />
-                                                            </InputAdornment>
-                                                        )
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </>
-                            )}
-
-                            <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    size="large"
-                                    onClick={fetchReportDate}
-                                    startIcon={<Export size={24} variant="Bold" />}
-                                    sx={{ py: 2, borderRadius: 3, fontWeight: 700, boxShadow: theme.customShadows.primary }}
-                                >
-                                    Generate & Export Primary Sales Data
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </ReportModule>
-                </Grid>
-
-                {/* ── Section 2: GST Compliance Report ───────────────────── */}
-                <Grid size={{ xs: 12 }}>
-                    <ReportModule sx={{ bgcolor: alpha(theme.palette.primary.lighter, 0.2) }}>
-                        <SectionHeader
-                            theme={theme}
-                            icon={Receipt2}
-                            title="Tax & GST Hub"
-                            subtitle="Generate government-mandated tax reports for financial compliance"
-                        />
-                        <Grid container spacing={3} alignItems="flex-end">
-                            <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-                                <DateSelectionBlock
-                                    label="Tax Compliance Period"
-                                    value={gstDateRange}
-                                    onChange={handleGstDateChange}
-                                    color="primary"
-                                />
-                            </Grid>
-
-                            {isAdmin && (
-                                <Grid size={{ xs: 12, sm: 6, md: 7 }}>
-                                    <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>PAYMENT FILTER</Typography>
-                                    <Autocomplete
-                                        fullWidth
-                                        multiple
-                                        options={paymentList || []}
-                                        getOptionLabel={(option) => option.label}
-                                        onChange={(_, newValue) => handleGstPaymentChange(newValue)}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Filter Payment Type"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <Profile2User size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                        </InputAdornment>
-                                                    )
-                                                }}
-                                            />
-                                        )}
+                {salesSectionRights?.['primary_sales_data'] && salesSectionRights['primary_sales_data']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={Wallet}
+                                title="Primary Sales Data"
+                                subtitle="Export detailed sales records with branch and payment type filtering"
+                            />
+                            <Grid container spacing={3} alignItems="flex-end">
+                                <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                                    <DateSelectionBlock
+                                        label="Select Reporting Range"
+                                        value={dateRange}
+                                        onChange={handleDateChange}
                                     />
                                 </Grid>
-                            )}
-
-                            <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    onClick={fetchGstReportData}
-                                    startIcon={<Export size={24} variant="Bold" />}
-                                    sx={{ py: 2, borderRadius: 3, fontWeight: 700 }}
-                                >
-                                    Generate Compliance GST Report
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </ReportModule>
-                </Grid>
-
-                {/* ── Section 3: Financial Auditor Report ────────────────── */}
-                <Grid size={{ xs: 12 }}>
-                    <ReportModule>
-                        <SectionHeader
-                            theme={theme}
-                            icon={InfoCircle}
-                            title="Professional Audit Logs"
-                            subtitle="Deep-dive auditing tools for internal financial verification and reporting"
-                        />
-                        <Grid container spacing={3} alignItems="flex-end">
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                                <DateSelectionBlock
-                                    label="Internal Audit Window"
-                                    value={auditoDateRange}
-                                    onChange={handleAuditorDateChange}
-                                    color="primary"
-                                />
-                            </Grid>
-
-                            {isAdmin && (
-                                <>
-                                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                                        <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>AUDIT COMPANY</Typography>
-                                        <Autocomplete
+                                {isAdmin &&
+                                    <>
+                                        <Grid size={{ xs: 12, sm: 6, md: 3.5 }}>
+                                            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>COMPANY FILTER</Typography>
+                                            <Autocomplete
+                                                fullWidth
+                                                options={companyOptions || []}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(_, newValue) => handleBranchChange(newValue)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Select Company"
+                                                        placeholder="All Companies"
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <Building size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                </InputAdornment>
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={{ xs: 12, sm: 12, md: 3.5 }}>
+                                            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>PAYMENT TYPES</Typography>
+                                            <Autocomplete
+                                                fullWidth
+                                                multiple
+                                                options={paymentList || []}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(_, newValue) => handlePaymentChange(newValue)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Payment Types"
+                                                        placeholder="Search..."
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <MoneyChange size={20} variant="Bulk" color={theme.palette.success.main} />
+                                                                </InputAdornment>
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </>
+                                }
+                                {salesSectionRights['primary_sales_data'] && salesSectionRights['primary_sales_data']['download'] &&
+                                    <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                                        <Button
                                             fullWidth
-                                            options={companyOptions || []}
-                                            getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => setAuditorSelectedCompany(newValue)}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Review Company"
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <SearchNormal1 size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                            </InputAdornment>
-                                                        )
-                                                    }}
-                                                />
-                                            )}
-                                        />
+                                            variant="contained"
+                                            size="large"
+                                            onClick={fetchReportDate}
+                                            startIcon={<Export size={24} variant="Bold" />}
+                                            sx={{ py: 2, borderRadius: 3, fontWeight: 700, boxShadow: theme.customShadows.primary }}
+                                        >
+                                            Generate & Export Primary Sales Data
+                                        </Button>
                                     </Grid>
-                                    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                                        <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>AUDIT PAYMENTS</Typography>
+                                }
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
+
+                {/* ── Section 2: GST Compliance Report ───────────────────── */}
+                {salesSectionRights?.['tax_&_gst_hub'] && salesSectionRights['tax_&_gst_hub']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule sx={{ bgcolor: alpha(theme.palette.primary.lighter, 0.2) }}>
+                            <SectionHeader
+                                theme={theme}
+                                icon={Receipt2}
+                                title="Tax & GST Hub"
+                                subtitle="Generate government-mandated tax reports for financial compliance"
+                            />
+                            <Grid container spacing={3} alignItems="flex-end">
+                                <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+                                    <DateSelectionBlock
+                                        label="Tax Compliance Period"
+                                        value={gstDateRange}
+                                        onChange={handleGstDateChange}
+                                        color="primary"
+                                    />
+                                </Grid>
+
+                                {isAdmin && (
+                                    <Grid size={{ xs: 12, sm: 6, md: 7 }}>
+                                        <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>PAYMENT FILTER</Typography>
                                         <Autocomplete
                                             fullWidth
                                             multiple
                                             options={paymentList || []}
                                             getOptionLabel={(option) => option.label}
-                                            onChange={(_, newValue) => setSelectedAuditorPayment(newValue)}
+                                            onChange={(_, newValue) => handleGstPaymentChange(newValue)}
                                             renderInput={(params) => (
                                                 <TextField
                                                     {...params}
-                                                    label="Audit Payment Types"
+                                                    label="Filter Payment Type"
                                                     InputProps={{
                                                         ...params.InputProps,
                                                         startAdornment: (
                                                             <InputAdornment position="start">
-                                                                <Wallet size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                <Profile2User size={20} variant="Bulk" color={theme.palette.primary.main} />
                                                             </InputAdornment>
                                                         )
                                                     }}
@@ -463,25 +380,116 @@ const SalesReport = () => {
                                             )}
                                         />
                                     </Grid>
-                                </>
-                            )}
-
-                            <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    onClick={fetchAuditorReportData}
-                                    startIcon={<DocumentText size={24} variant="Bold" />}
-                                    sx={{ py: 2, borderRadius: 3, fontWeight: 700 }}
-                                >
-                                    Export Detailed Audit Logs
-                                </Button>
+                                )}
+                                {salesSectionRights?.['tax_&_gst_hub'] && salesSectionRights['tax_&_gst_hub']['download'] &&
+                                    <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            onClick={fetchGstReportData}
+                                            startIcon={<Export size={24} variant="Bold" />}
+                                            sx={{ py: 2, borderRadius: 3, fontWeight: 700 }}
+                                        >
+                                            Generate Compliance GST Report
+                                        </Button>
+                                    </Grid>
+                                }
                             </Grid>
-                        </Grid>
-                    </ReportModule>
-                </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
+                {/* ── Section 3: Financial Auditor Report ────────────────── */}
+                {salesSectionRights?.['professional_audit_logs'] && salesSectionRights['professional_audit_logs']['view'] &&
+                    <Grid size={{ xs: 12 }}>
+                        <ReportModule>
+                            <SectionHeader
+                                theme={theme}
+                                icon={InfoCircle}
+                                title="Professional Audit Logs"
+                                subtitle="Deep-dive auditing tools for internal financial verification and reporting"
+                            />
+                            <Grid container spacing={3} alignItems="flex-end">
+                                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                    <DateSelectionBlock
+                                        label="Internal Audit Window"
+                                        value={auditoDateRange}
+                                        onChange={handleAuditorDateChange}
+                                        color="primary"
+                                    />
+                                </Grid>
+
+                                {isAdmin && (
+                                    <>
+                                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                            <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>AUDIT COMPANY</Typography>
+                                            <Autocomplete
+                                                fullWidth
+                                                options={companyOptions || []}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(_, newValue) => setAuditorSelectedCompany(newValue)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Review Company"
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <SearchNormal1 size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                </InputAdornment>
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                                            <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>AUDIT PAYMENTS</Typography>
+                                            <Autocomplete
+                                                fullWidth
+                                                multiple
+                                                options={paymentList || []}
+                                                getOptionLabel={(option) => option.label}
+                                                onChange={(_, newValue) => setSelectedAuditorPayment(newValue)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Audit Payment Types"
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <Wallet size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                </InputAdornment>
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </>
+                                )}
+                                {salesSectionRights['professional_audit_logs'] && salesSectionRights['professional_audit_logs']['download'] &&
+                                    <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            onClick={fetchAuditorReportData}
+                                            startIcon={<DocumentText size={24} variant="Bold" />}
+                                            sx={{ py: 2, borderRadius: 3, fontWeight: 700 }}
+                                        >
+                                            Export Detailed Audit Logs
+                                        </Button>
+                                    </Grid>
+                                }
+                            </Grid>
+                        </ReportModule>
+                    </Grid>
+                }
             </Grid>
         </Box>
     );

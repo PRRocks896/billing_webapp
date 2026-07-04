@@ -10,6 +10,7 @@ const initialState: AuthProps = {
   isInitialized: false,
   user: null,
   accessModules: [],
+  accessSectionModules: [],
   loading: false
 };
 
@@ -18,13 +19,14 @@ const initialState: AuthProps = {
 const auth = (state = initialState, action: AuthActionProps) => {
   switch (action.type) {
     case LOGIN: {
-      const { user, accessModules } = action.payload!;
+      const { user, accessModules, accessSectionModules } = action.payload!;
       return {
         ...state,
         isLoggedIn: true,
         isInitialized: true,
         user,
-        accessModules
+        accessModules,
+        accessSectionModules
       };
     }
     case LOGOUT: {
@@ -33,7 +35,8 @@ const auth = (state = initialState, action: AuthActionProps) => {
         isInitialized: true,
         isLoggedIn: false,
         user: null,
-        accessModules: []
+        accessModules: [],
+        accessSectionModules: []
       };
     }
     case LOADING: {

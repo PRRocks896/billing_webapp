@@ -75,13 +75,14 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
         if (serviceToken && verifyToken(serviceToken)) {
           const response: any = await fetchLoggedInUserData();
           if (response && response.success) {
-            const { accessModules, ...rest } = response.data;
+            const { accessModules, accessSectionModules, ...rest } = response.data;
             dispatch({
               type: LOGIN,
               payload: {
                 isLoggedIn: true,
                 user: rest,
-                accessModules
+                accessModules,
+                accessSectionModules
               }
             });
           } else {
@@ -215,6 +216,33 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     };
   }, [state, isAdmin]);
 
+  const accessSectionRights = useCallback((sectionSlug: string): { view: boolean; download: boolean; upload: boolean } => {
+    if (isAdmin) {
+      return {
+        view: true,
+        download: true,
+        upload: true
+      }
+    }
+    if (!state.isLoggedIn) {
+      return { view: false, download: false, upload: false };
+    }
+    const accessSectionModules = state.accessSectionModules || [];
+    const matchedModule = accessSectionModules
+      .filter((m: any) => m?.px_module_section?.key === sectionSlug)
+      .sort((a: any, b: any) =>
+        (b?.px_module_section?.key?.length ?? 0) - (a?.px_module_section?.key?.length ?? 0)
+      )[0];
+    if (!matchedModule) {
+      return { view: false, download: false, upload: false };
+    }
+    return {
+      view: matchedModule.view,
+      download: matchedModule.download,
+      upload: matchedModule.upload
+    };
+  }, [state, isAdmin]);
+
   if (state.isInitialized !== undefined && !state.isInitialized) {
     return <Loader />;
   }
@@ -228,7 +256,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   // }
 
   return (
-    <JWTContext value={{ ...state, loading: state.loading!, isAdmin, startLoading, stopLoading, logout, sendOtp, verifyOtp, accessRights }}>
+    <JWTContext value={{ ...state, loading: state.loading!, isAdmin, startLoading, stopLoading, logout, sendOtp, verifyOtp, accessRights, accessSectionRights }}>
       {children}
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.snackbar + 1000 }}

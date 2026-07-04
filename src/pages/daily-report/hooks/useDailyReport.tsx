@@ -15,8 +15,9 @@ import moment from "moment";
 const UseDailyReport = () => {
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { user, isAdmin, accessRights, startLoading, stopLoading } = useAuth();
+    const { user, isAdmin, accessRights, accessSectionRights, startLoading, stopLoading } = useAuth();
     const rights = accessRights(pathname);
+    const sectionRights = accessSectionRights('export_daily_reports');
     const [searchText, setSearchText] = useState<string>("");
     const [list, setList] = useState<any[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
@@ -361,6 +362,7 @@ const UseDailyReport = () => {
         page,
         rows,
         rights,
+        sectionRights,
         Column,
         isAdmin,
         isVisible,
