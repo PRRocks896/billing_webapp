@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { ThemeMode } from "config";
 import ReactApexChart from "react-apexcharts";
 
-const LowSale = () => {
+const LowSale = ({ companyID = null }: { companyID?: number | null }) => {
     const theme = useTheme();
     const { colorScheme } = useColorScheme();
     const {
@@ -26,7 +26,7 @@ const LowSale = () => {
         salesData,
         setDate,
         fetchLowSaleReport
-    } = UseLowSale();
+    } = UseLowSale(companyID);
 
     const {
         state: { fontFamily }

@@ -24,11 +24,12 @@ import Paper from "@mui/material/Paper";
 import MainCard from "components/MainCard";
 import UseDailySale from "../hooks/useDailySale";
 
-const DailySale = () => {
+const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
     const theme = useTheme();
     const {
         slot,
         toDate,
+        isAdmin,
         fromDate,
         isShowCustom,
         dailySaleList,
@@ -39,7 +40,7 @@ const DailySale = () => {
         setFromDate,
         fetchDailyReport,
         setSelectedBranch
-    } = UseDailySale();
+    } = UseDailySale(companyID);
 
     const primaryMain = theme.palette.primary.main;
 
@@ -60,23 +61,25 @@ const DailySale = () => {
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ width: { xs: '100%', lg: 'auto' }, alignItems: 'center' }}>
                     <Box sx={{ minWidth: { xs: '100%', sm: '200px' } }}>
-                        <Autocomplete
-                            multiple
-                            options={branchOptions}
-                            getOptionLabel={(option) => option.lastName}
-                            isOptionEqualToValue={(option: any, value: any) => option.id === value}
-                            value={branchOptions.filter((option: any) => selectedBranch.includes(option.id)) || []}
-                            onChange={(event, newValue) => {
-                                setSelectedBranch(newValue?.map((option: any) => option.id) || [])
-                            }}
-                            renderInput={(params) => <TextField {...params} label="Select Branch" variant="outlined" size="small" />}
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '10px',
-                                    bgcolor: alpha(theme.palette.background.paper, 0.5)
-                                }
-                            }}
-                        />
+                        {(isAdmin || companyID) &&
+                            <Autocomplete
+                                multiple
+                                options={branchOptions}
+                                getOptionLabel={(option) => option.lastName}
+                                isOptionEqualToValue={(option: any, value: any) => option.id === value}
+                                value={branchOptions.filter((option: any) => selectedBranch.includes(option.id)) || []}
+                                onChange={(event, newValue) => {
+                                    setSelectedBranch(newValue?.map((option: any) => option.id) || [])
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Select Branch" variant="outlined" size="small" />}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '10px',
+                                        bgcolor: alpha(theme.palette.background.paper, 0.5)
+                                    }
+                                }}
+                            />
+                        }
                     </Box>
 
                     <ToggleButtonGroup

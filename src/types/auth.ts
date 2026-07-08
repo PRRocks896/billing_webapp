@@ -165,6 +165,7 @@ export type JWTContextType = {
   isInitialized?: boolean;
   user?: UserProfile | null | undefined;
   isAdmin: boolean;
+  isBranch: boolean;
   logout: () => void;
   sendOtp: (phone: string) => Promise<any>;
   verifyOtp: (phone: string, otp: string) => Promise<void>;

@@ -29,11 +29,11 @@ const createData = (badgeText: string, badgeType: string, subject: string, dept:
 
 import UseAttendanceList from "../hooks/useAttendanceList";
 
-const AttendanceList = () => {
+const AttendanceList = ({ companyID = null }: { companyID?: number | null }) => {
     const {
         staffList,
         fetchAttendanceList
-    } = UseAttendanceList();
+    } = UseAttendanceList(companyID);
 
     return (
         <MainCard

@@ -14,6 +14,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 
 // project components
 import MainCard from 'components/MainCard';
@@ -38,7 +39,9 @@ import {
     User,
     Link1,
     DirectboxReceive,
-    Personalcard
+    Personalcard,
+    Add,
+    Trash
 } from 'iconsax-reactjs';
 import ReactQuill from 'components/third-party/ReactQuill';
 import FileUpload from 'components/FileUpload';
@@ -48,6 +51,7 @@ const AddEditBranch = () => {
     const {
         mode,
         title,
+        fields,
         control,
         roleOptions,
         cityOptions,
@@ -55,10 +59,14 @@ const AddEditBranch = () => {
         isWebDisplay,
         companyOptions,
         countryCodeList,
+        companyMappingFormControl,
         setValue,
         onSubmit,
         handleBack,
         handleSubmit,
+        handleAddCompany,
+        handleRemoveCompany,
+        getFilteredCompanyOptions,
     } = useAddEditBranch();
 
     return (
@@ -322,6 +330,89 @@ const AddEditBranch = () => {
                                     />
                                 </Grid>
                             </Grid>
+                        </Grid>
+
+                        <Grid size={{ xs: 12 }}><Divider /></Grid>
+
+                        {/* ── Section: Company Mapping ─────────────────────── */}
+                        <Grid size={{ xs: 12 }}>
+                            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ mb: 2.5 }}>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <Building size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                    <Typography variant="h5" fontWeight={600}>Company Mapping</Typography>
+                                </Stack>
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    startIcon={<Add size={16} />}
+                                    onClick={handleAddCompany}
+                                    sx={{ borderRadius: 2 }}
+                                >
+                                    Add Company
+                                </Button>
+                            </Stack>
+                            {fields.length === 0 && (
+                                <Box
+                                    sx={{
+                                        p: 3,
+                                        textAlign: 'center',
+                                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                                        borderRadius: 2,
+                                        border: `1px dashed ${alpha(theme.palette.primary.main, 0.2)}`
+                                    }}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        No companies mapped yet. Click "Add Company" to map a company.
+                                    </Typography>
+                                </Box>
+                            )}
+                            {fields.map((field, index) => (
+                                <Grid container spacing={2.5} key={field.id} sx={{ mb: 2 }} alignItems="center">
+                                    <Grid size={{ xs: 11, sm: 11 }}>
+                                        <Controller
+                                            name={`companyID.${index}.companyID`}
+                                            control={companyMappingFormControl.control}
+                                            rules={{ required: 'Company is required' }}
+                                            render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => {
+                                                const filteredOptions = getFilteredCompanyOptions(index);
+                                                return (
+                                                    <Autocomplete
+                                                        fullWidth
+                                                        value={companyOptions.find((c: any) => c.value === value) || null}
+                                                        onChange={(_, newValue) => onChange(newValue ? newValue.value : null)}
+                                                        onBlur={onBlur}
+                                                        options={filteredOptions}
+                                                        getOptionLabel={(option: any) => option.label}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                label={`Company ${index + 1}`}
+                                                                error={!!error}
+                                                                helperText={error?.message}
+                                                            />
+                                                        )}
+                                                    />
+                                                );
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 1 }}>
+                                        <IconButton
+                                            color="error"
+                                            onClick={() => handleRemoveCompany(index)}
+                                            sx={{
+                                                border: `1px solid ${alpha(theme.palette.error.main, 0.3)}`,
+                                                borderRadius: 2,
+                                                '&:hover': {
+                                                    bgcolor: alpha(theme.palette.error.main, 0.08)
+                                                }
+                                            }}
+                                        >
+                                            <Trash size={18} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            ))}
                         </Grid>
 
                         <Grid size={{ xs: 12 }}><Divider /></Grid>

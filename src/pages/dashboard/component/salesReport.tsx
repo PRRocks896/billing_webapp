@@ -24,10 +24,9 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-const SalesReport = () => {
+const SalesReport = ({ companyID = null }: { companyID?: number | null }) => {
     const theme = useTheme();
     const { colorScheme } = useColorScheme();
-
     const {
         slot,
         labels,
@@ -40,7 +39,7 @@ const SalesReport = () => {
         setToDate,
         setFromDate,
         fetchSalesExpenseReport
-    } = UseSalesReport();
+    } = UseSalesReport(companyID);
 
     const {
         state: { fontFamily }

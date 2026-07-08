@@ -7,8 +7,8 @@ import { searchViaDashboard } from "service/bill";
 import { getBranch } from "service/user";
 import { openSnackbar } from "api/snackbar";
 
-const UseDailySale = () => {
-    const { startLoading, stopLoading } = useAuth();
+const UseDailySale = (companyID?: number | null) => {
+    const { isAdmin, startLoading, stopLoading } = useAuth();
 
     const [isShowCustom, setIsShowCustom] = useState<boolean>(false);
     const [slot, setSlot] = useState<number>(0);
@@ -33,6 +33,7 @@ const UseDailySale = () => {
                 startDate: moment(fromDate).format("YYYY-MM-DD"),
                 endDate: moment(toDate).format("YYYY-MM-DD")
             }
+
             if (selectedBranch && selectedBranch.length > 0) {
                 payload.userID = selectedBranch?.map((item: any) => ({ value: item }));
             }
@@ -99,10 +100,14 @@ const UseDailySale = () => {
         (async () => {
             try {
                 startLoading();
-                const { success, message, data }: any = await getBranch({
+                let payload: any = {
                     isActive: true,
                     isDeleted: false,
-                });
+                }
+                if (companyID) {
+                    payload.companyID = companyID;
+                }
+                const { success, message, data }: any = await getBranch(payload);
                 if (!success) {
                     openSnackbar({
                         open: true,
@@ -116,7 +121,7 @@ const UseDailySale = () => {
                     return;
                 }
                 setBranchOptions(data.filter((item: any) => {
-                    if (item && item.px_role && item.px_role.name && !['admin', 'super admin'].includes(item.px_role.name.toLowerCase())) {
+                    if (item && item.px_role && item.px_role.name && ['branch'].includes(item.px_role.name.toLowerCase())) {
                         return item;
                     }
                 }));
@@ -134,11 +139,12 @@ const UseDailySale = () => {
                 stopLoading();
             }
         })()
-    }, []);
+    }, [companyID, isAdmin]);
 
     return {
         slot,
         toDate,
+        isAdmin,
         fromDate,
         isShowCustom,
         dailySaleList,

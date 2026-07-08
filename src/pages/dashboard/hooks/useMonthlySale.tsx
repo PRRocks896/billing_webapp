@@ -6,8 +6,8 @@ import { getMonthSale } from "service/dailyReport";
 
 import { getBranch } from "service/user";
 
-const UseMonthlySale = () => {
-    const { user, startLoading, stopLoading } = useAuth();
+const UseMonthlySale = (companyID?: number | null) => {
+    const { user, isAdmin, startLoading, stopLoading } = useAuth();
 
     const [isShowCustom, setIsShowCustom] = useState<boolean>(false);
     const [slot, setSlot] = useState<number>(0);
@@ -32,6 +32,9 @@ const UseMonthlySale = () => {
             }
             if (selectedBranch) {
                 payload.userID = selectedBranch;
+            }
+            if (companyID) {
+                payload.companyID = companyID;
             }
             const { success, data }: any = await getMonthSale(payload);
             if (success && data && data.datasets && data.labels) {
@@ -65,7 +68,7 @@ const UseMonthlySale = () => {
         if (!isShowCustom) {
             fetchMonthlySalesReport();
         }
-    }, [fromDate, toDate, selectedBranch, isShowCustom]);
+    }, [companyID, fromDate, toDate, selectedBranch, isShowCustom]);
 
     useEffect(() => {
         if (slot === 5) {
@@ -95,10 +98,14 @@ const UseMonthlySale = () => {
         (async () => {
             try {
                 startLoading();
-                const { success, message, data }: any = await getBranch({
+                let payload: any = {
                     isActive: true,
                     isDeleted: false,
-                });
+                }
+                if (companyID) {
+                    payload.companyID = companyID;
+                }
+                const { success, message, data }: any = await getBranch(payload);
                 if (!success) {
                     openSnackbar({
                         open: true,
@@ -112,7 +119,7 @@ const UseMonthlySale = () => {
                     return;
                 }
                 setBranchOptions(data.filter((item: any) => {
-                    if (item && item.px_role && item.px_role.name && !['admin', 'super admin'].includes(item.px_role.name.toLowerCase())) {
+                    if (item && item.px_role && item.px_role.name && ['branch'].includes(item.px_role.name.toLowerCase())) {
                         return item;
                     }
                 }));
@@ -130,12 +137,13 @@ const UseMonthlySale = () => {
                 stopLoading();
             }
         })()
-    }, []);
+    }, [companyID]);
 
     return {
         slot,
         toDate,
         labels,
+        isAdmin,
         fromDate,
         salesData,
         isShowCustom,

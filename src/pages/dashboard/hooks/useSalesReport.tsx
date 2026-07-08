@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { getSalesExpenseReport } from "service/dailyReport";
 
-const UseSalesReport = () => {
+const UseSalesReport = (companyID?: number | null) => {
     const { user, isAdmin, startLoading, stopLoading } = useAuth();
 
     const [fromDate, setFromDate] = useState<Date>(new Date());
@@ -22,10 +22,14 @@ const UseSalesReport = () => {
     const fetchSalesExpenseReport = async () => {
         try {
             startLoading();
-            const { success, data }: any = await getSalesExpenseReport({
+            let payload: any = {
                 fromDate: moment(fromDate).format('YYYY-MM-DD'),
                 toDate: moment(toDate).format('YYYY-MM-DD')
-            });
+            };
+            if (companyID) {
+                payload.customerID = companyID;
+            }
+            const { success, data }: any = await getSalesExpenseReport(payload);
             if (success) {
                 const labels = Object.keys(data);
                 const salesData = labels.map(label => data[label].sales || 0);
@@ -57,7 +61,7 @@ const UseSalesReport = () => {
         if (!isShowCustom) {
             fetchSalesExpenseReport();
         }
-    }, [fromDate, toDate, isShowCustom]);
+    }, [companyID, fromDate, toDate, isShowCustom]);
 
     useEffect(() => {
         if (slot === 3) {

@@ -6,7 +6,7 @@ import { openSnackbar } from "api/snackbar";
 
 import { getManagerSalesReport } from "service/dailyReport";
 
-const UseManagerSale = () => {
+const UseManagerSale = (companyID?: number | null) => {
     const { startLoading, stopLoading } = useAuth();
 
     const [fromDate, setFromDate] = useState<Date>(new Date());
@@ -23,10 +23,16 @@ const UseManagerSale = () => {
     const fetchManagerSalesReport = async () => {
         try {
             startLoading();
-            const { success, data }: any = await getManagerSalesReport({
+            let payload: any = {
                 fromDate: moment(fromDate).format('YYYY-MM-DD'),
                 toDate: moment(toDate).format('YYYY-MM-DD')
-            });
+            };
+
+            if (companyID) {
+                payload.companyID = companyID;
+            }
+
+            const { success, data }: any = await getManagerSalesReport(payload);
             if (success) {
                 // Process the data as needed
                 const labels = data.map((item: any) => item.nickName);
@@ -56,7 +62,7 @@ const UseManagerSale = () => {
         if (!isShowCustom) {
             fetchManagerSalesReport();
         }
-    }, [fromDate, toDate, isShowCustom]);
+    }, [companyID, fromDate, toDate, isShowCustom]);
 
     useEffect(() => {
         if (slot === 3) {

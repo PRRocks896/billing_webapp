@@ -23,13 +23,14 @@ import { useEffect, useState } from "react";
 import { ThemeMode } from "config";
 import ReactApexChart from "react-apexcharts";
 
-const MonthlySale = () => {
+const MonthlySale = ({ companyID = null }: { companyID?: number | null }) => {
     const theme = useTheme();
     const { colorScheme } = useColorScheme();
     const {
         slot,
         toDate,
         labels,
+        isAdmin,
         fromDate,
         salesData,
         isShowCustom,
@@ -40,7 +41,7 @@ const MonthlySale = () => {
         setFromDate,
         setSelectedBranch,
         fetchMonthlySalesReport
-    } = useMonthlySale();
+    } = useMonthlySale(companyID);
 
     const {
         state: { fontFamily }
@@ -137,14 +138,16 @@ const MonthlySale = () => {
                     <Typography variant="caption" color="text.secondary">Detailed view of Monthly sales over time</Typography>
                 </Box>
                 <Box sx={{ width: '200px' }}>
-                    <Autocomplete
-                        options={branchOptions}
-                        getOptionLabel={(option) => option.lastName}
-                        isOptionEqualToValue={(option: any, value: any) => option.id === value}
-                        value={branchOptions.find((option: any) => option.id === selectedBranch) || null}
-                        onChange={(event, newValue) => setSelectedBranch(newValue?.id || null)}
-                        renderInput={(params) => <TextField {...params} label="Branch" variant="outlined" />}
-                    />
+                    {(isAdmin || companyID) &&
+                        <Autocomplete
+                            options={branchOptions}
+                            getOptionLabel={(option) => option.lastName}
+                            isOptionEqualToValue={(option: any, value: any) => option.id === value}
+                            value={branchOptions.find((option: any) => option.id === selectedBranch) || null}
+                            onChange={(event, newValue) => setSelectedBranch(newValue?.id || null)}
+                            renderInput={(params) => <TextField {...params} label="Branch" variant="outlined" />}
+                        />
+                    }
                 </Box>
                 <ToggleButtonGroup
                     exclusive

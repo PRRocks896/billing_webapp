@@ -2,11 +2,11 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import useAuth from "hooks/useAuth";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import countries, { CountryType } from "data/countries";
 import { openSnackbar } from "api/snackbar";
 import { getRoleList } from "service/role";
-import { getCompanyList } from "service/company";
+import { getCompanyList, getCompanyMapping, deleteCompanyMapping } from "service/company";
 import { getCityByFind } from "service/city";
 import { createUser, getUserById, updateUser } from "service/user";
 import { convertToFormData } from "utils/helper";
@@ -39,7 +39,7 @@ export type BranchFormValue = {
     mapUrl: string;
     iFrameMap: string;
     images: any[];
-    thumbnilImage: any[];
+    thumbnilImage: any;
     h1Tag: string;
 }
 
@@ -71,9 +71,22 @@ const defaultValues: BranchFormValue = {
     mapUrl: '',
     iFrameMap: '',
     images: [],
-    thumbnilImage: [],
+    thumbnilImage: null,
     h1Tag: '',
 }
+
+export type CompanyMappingForm = {
+    userID: number | null;
+    companyID: any[];
+    _mappingId: number | null;
+}
+
+const defaultCompanyMappingFormValue: CompanyMappingForm = {
+    userID: null,
+    companyID: [],
+    _mappingId: null
+}
+
 
 const UseAddEditBranch = () => {
 
@@ -96,6 +109,60 @@ const UseAddEditBranch = () => {
         defaultValues,
         mode: 'onChange'
     });
+
+    const companyMappingFormControl = useForm<CompanyMappingForm>({
+        defaultValues: defaultCompanyMappingFormValue,
+        mode: 'onChange'
+    });
+
+    const {
+        append,
+        remove,
+        fields,
+    } = useFieldArray({
+        control: companyMappingFormControl.control,
+        name: "companyID"
+    });
+
+    const handleAddCompany = () => {
+        append({
+            companyID: null,
+            _mappingId: null
+        })
+    }
+
+    const handleRemoveCompany = async (index: number) => {
+        const currentMappings = companyMappingFormControl.getValues("companyID") || [];
+        const field = currentMappings[index] || fields[index] as any;
+        if (field?._mappingId) {
+            try {
+                startLoading();
+                const { success, message }: any = await deleteCompanyMapping(field._mappingId);
+                if (!success) {
+                    openSnackbar({
+                        open: true,
+                        message: message || 'Failed to remove company mapping',
+                        variant: 'alert',
+                        severity: 'error',
+                        alert: { color: 'error' }
+                    });
+                    return;
+                }
+            } catch (error: any) {
+                openSnackbar({
+                    open: true,
+                    message: error?.message || 'Failed to remove company mapping',
+                    variant: 'alert',
+                    severity: 'error',
+                    alert: { color: 'error' }
+                });
+                return;
+            } finally {
+                stopLoading();
+            }
+        }
+        remove(index);
+    }
 
     const countryCodeList = useMemo(() => {
         return countries?.map((country: CountryType) => {
@@ -136,7 +203,12 @@ const UseAddEditBranch = () => {
     const fetch = async () => {
         try {
             startLoading();
-            const { success, message, data }: any = await getUserById(Number(id));
+            const [userResponse, mappingResponse]: [any, any] = await Promise.all([
+                getUserById(Number(id)),
+                getCompanyMapping({ userID: Number(id), isDeleted: false })
+            ]);
+
+            const { success, message, data } = userResponse;
             if (success) {
                 setValue("roleID", data?.roleID);
                 setValue("companyID", data?.companyID);
@@ -180,6 +252,16 @@ const UseAddEditBranch = () => {
                     }
                 })
             }
+
+            // Pre-populate company mapping field array
+            if (mappingResponse?.success && Array.isArray(mappingResponse.data)) {
+                mappingResponse.data.forEach((mapping: any) => {
+                    append({
+                        companyID: mapping.companyID,
+                        _mappingId: mapping.id
+                    });
+                });
+            }
         } catch (error: any) {
             openSnackbar({
                 open: true,
@@ -197,10 +279,19 @@ const UseAddEditBranch = () => {
     const onSubmit = async (data: BranchFormValue) => {
         try {
             startLoading();
+            // Only include new mappings (without _mappingId) — existing ones are already in DB
+            const currentMappings = companyMappingFormControl.getValues("companyID") || [];
+            const newCompanyMappings = currentMappings
+                .filter((field: any) => !field._mappingId && field.companyID)
+                .map((field: any) => ({
+                    companyID: field.companyID,
+                    userID: mode === 'edit' && id ? Number(id) : undefined
+                }));
             let payload: any = {
                 ...data,
                 images: JSON.stringify(data.images),
-                thumbnilImage: JSON.stringify(data.thumbnilImage)
+                thumbnilImage: JSON.stringify(data.thumbnilImage),
+                companyMapping: JSON.stringify(newCompanyMappings)
             }
             if (mode && mode === 'edit' && id) {
                 payload = {
@@ -219,7 +310,11 @@ const UseAddEditBranch = () => {
                     (data.thumbnilImage && typeof data.thumbnilImage === 'object')
                 )
             ) {
+                // Preserve companyMapping as JSON string before FormData conversion
+                const companyMappingJson = JSON.stringify(payload.companyMapping || []);
+                delete payload.companyMapping;
                 payload = convertToFormData(payload);
+                payload.append('companyMapping', companyMappingJson);
                 if (data && data.images && data.images.length > 0) {
                     for (let i = 0; i < data.images.length; i++) {
                         if (typeof data.images[i] === 'object') {
@@ -234,6 +329,8 @@ const UseAddEditBranch = () => {
                     }
                 }
             }
+
+            console.log("After append: ", payload)
 
             const { success, message }: any = mode && mode === 'edit' && id ? await updateUser(payload, Number(id)) : await createUser(payload);
             if (success) {
@@ -358,9 +455,19 @@ const UseAddEditBranch = () => {
         }
     }, [mode, id]);
 
+    // Returns company options filtered to exclude already-selected companies (except current row)
+    const getFilteredCompanyOptions = (currentIndex: number) => {
+        const currentMappings = companyMappingFormControl.watch("companyID") || [];
+        const selectedCompanyIds = currentMappings
+            .map((field: any, idx: number) => idx !== currentIndex ? field.companyID : null)
+            .filter((id: any) => id !== null && id !== undefined);
+        return companyOptions.filter((option: any) => !selectedCompanyIds.includes(option.value));
+    };
+
     return {
         mode,
         title,
+        fields,
         isAdmin,
         control,
         roleOptions,
@@ -369,10 +476,14 @@ const UseAddEditBranch = () => {
         isWebDisplay,
         companyOptions,
         countryCodeList,
+        companyMappingFormControl,
         setValue,
         onSubmit,
         handleBack,
         handleSubmit,
+        handleAddCompany,
+        handleRemoveCompany,
+        getFilteredCompanyOptions,
     };
 };
 

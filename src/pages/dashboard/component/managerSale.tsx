@@ -22,7 +22,7 @@ import { ThemeMode } from "config";
 import useConfig from "hooks/useConfig";
 import UseManagerSale from "../hooks/useManagerSale";
 
-const ManagerSale = () => {
+const ManagerSale = ({ companyID = null }: { companyID?: number | null }) => {
     const theme = useTheme();
     const { colorScheme } = useColorScheme();
     const {
@@ -36,7 +36,7 @@ const ManagerSale = () => {
         setToDate,
         setFromDate,
         fetchManagerSalesReport
-    } = UseManagerSale();
+    } = UseManagerSale(companyID);
 
     const {
         state: { fontFamily }

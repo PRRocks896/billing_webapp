@@ -1,10 +1,11 @@
 import { openSnackbar } from "api/snackbar";
 import useAuth from "hooks/useAuth";
 import moment from "moment";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { fetchDashboardDetails, repeatCustomer, fetchBranchWiseIncome, fetchReferenceChart } from "service/dashboard";
 import { newCustomerCount } from "service/customer";
+import { getCompany, getCompanyMapping } from "service/company"
 
 const DEFAULT_INCOME_DATA = { otherExpanse: 0, totalExpanse: 0, totalIncome: 0, totalRent: 0 };
 const DEFAULT_REFERENCE_DATA = [
@@ -15,6 +16,21 @@ const DEFAULT_REFERENCE_DATA = [
     { label: "justdial", value: 0 },
     { label: "other", value: 0 }
 ];
+
+const DASHBOARD = [
+    'bills_generated',
+    'total_customer',
+    'attendance_list',
+    'new_customer',
+    'sales_vs_expense_analysis',
+    'monthly_sales_analysis',
+    'manager_sale_analysis',
+    'daily_sales_analysis',
+    'income_&_expense',
+    'low_sales_analysis',
+    'reference_by',
+    'repeat_customer'
+]
 
 const getDateRange = (value: number) => {
     const today = new Date();
@@ -47,9 +63,10 @@ const getDateRange = (value: number) => {
 };
 
 const UseDashboard = () => {
-    const { user, isAdmin, startLoading, stopLoading } = useAuth();
-
+    const { user, isAdmin, isBranch, accessSectionRights, startLoading, stopLoading } = useAuth();
     const [details, setDetails] = useState<any>(null);
+    const [allCompany, setAllCompany] = useState<any[]>([]);
+    const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
 
     const [fromDate, setFromDate] = useState<Date>(() => moment().startOf('month').toDate());
     const [toDate, setToDate] = useState<Date>(() => new Date());
@@ -77,6 +94,14 @@ const UseDashboard = () => {
         value: any
     }[]>(DEFAULT_REFERENCE_DATA);
 
+    const dashboardSectionRights = useMemo(() => {
+        const result: any = {};
+        DASHBOARD.forEach((section: string) => {
+            result[section] = accessSectionRights(section);
+        });
+        return result;
+    }, [accessSectionRights, DASHBOARD]);
+
     const handleReferenceChartDateChange = useCallback((value: number) => {
         const { from, to } = getDateRange(value);
         setReferenceChartFromDate(from);
@@ -86,10 +111,14 @@ const UseDashboard = () => {
     const fetchReferenceChartData = useCallback(async () => {
         try {
             startLoading();
-            const { success, data }: any = await fetchReferenceChart({
+            let payload: any = {
                 startDate: moment(referenceChartFromDate).format('yyyy/MM/DD'),
                 endDate: moment(referenceChartToDate).format('yyyy/MM/DD')
-            });
+            };
+            if (selectedCompanyId) {
+                payload.companyID = selectedCompanyId;
+            }
+            const { success, data }: any = await fetchReferenceChart(payload);
             if (!success) {
                 setReferenceChartData(DEFAULT_REFERENCE_DATA);
                 return;
@@ -108,7 +137,7 @@ const UseDashboard = () => {
         } finally {
             stopLoading();
         }
-    }, [referenceChartFromDate, referenceChartToDate, startLoading, stopLoading]);
+    }, [selectedCompanyId, referenceChartFromDate, referenceChartToDate, startLoading, stopLoading]);
 
     const handleBranchWiseIncomeDateChange = useCallback((value: number) => {
         const { from, to } = getDateRange(value);
@@ -119,10 +148,14 @@ const UseDashboard = () => {
     const fetchBranchWiseIncomeData = useCallback(async () => {
         try {
             startLoading();
-            const { success, data }: any = await fetchBranchWiseIncome({
+            let payload: any = {
                 startDate: moment(branchWiseIncomeFromDate).format('yyyy/MM/DD'),
                 endDate: moment(branchWiseIncomeToDate).format('yyyy/MM/DD')
-            });
+            };
+            if (selectedCompanyId) {
+                payload.companyID = selectedCompanyId;
+            }
+            const { success, data }: any = await fetchBranchWiseIncome(payload);
             if (!success) {
                 setBranchWiseIncomeData(DEFAULT_INCOME_DATA);
                 return;
@@ -141,7 +174,7 @@ const UseDashboard = () => {
         } finally {
             stopLoading();
         }
-    }, [branchWiseIncomeFromDate, branchWiseIncomeToDate, startLoading, stopLoading]);
+    }, [selectedCompanyId, branchWiseIncomeFromDate, branchWiseIncomeToDate, startLoading, stopLoading]);
 
     const handleNewCustomerDateChange = useCallback((value: number) => {
         const { from, to } = getDateRange(value);
@@ -152,10 +185,14 @@ const UseDashboard = () => {
     const fetchNewCustomerData = useCallback(async () => {
         try {
             startLoading();
-            const { success, data }: any = await newCustomerCount({
+            let payload: any = {
                 startDate: moment(newCustomerFromDate).format('yyyy/MM/DD'),
                 endDate: moment(newCustomerToDate).format('yyyy/MM/DD')
-            });
+            };
+            if (selectedCompanyId) {
+                payload.companyID = selectedCompanyId;
+            }
+            const { success, data }: any = await newCustomerCount(payload);
             if (!success) {
                 setNewCustomerData([]);
                 setNewCustomerLabel([]);
@@ -178,7 +215,7 @@ const UseDashboard = () => {
         } finally {
             stopLoading();
         }
-    }, [newCustomerFromDate, newCustomerToDate, startLoading, stopLoading]);
+    }, [selectedCompanyId, newCustomerFromDate, newCustomerToDate, startLoading, stopLoading]);
 
     const handleDateChange = useCallback((value: number) => {
         const { from, to } = getDateRange(value);
@@ -189,10 +226,14 @@ const UseDashboard = () => {
     const fetchRepeatCustomerData = useCallback(async () => {
         try {
             startLoading();
-            const { success, data }: any = await repeatCustomer({
+            let payload: any = {
                 startDate: moment(fromDate).format('yyyy/MM/DD'),
                 endDate: moment(toDate).format('yyyy/MM/DD')
-            });
+            };
+            if (selectedCompanyId) {
+                payload.companyID = selectedCompanyId;
+            }
+            const { success, data }: any = await repeatCustomer(payload);
             if (!success) {
                 setRepeatCustomerData([]);
                 setRepeatCustomerLabel([]);
@@ -215,30 +256,34 @@ const UseDashboard = () => {
         } finally {
             stopLoading();
         }
-    }, [fromDate, toDate, startLoading, stopLoading]);
+    }, [selectedCompanyId, fromDate, toDate, startLoading, stopLoading]);
 
     // Automatically refetch when fromDate or toDate changes
     useEffect(() => {
         fetchRepeatCustomerData();
-    }, [fetchRepeatCustomerData]);
+    }, [fetchRepeatCustomerData, selectedCompanyId]);
 
     useEffect(() => {
         fetchNewCustomerData();
-    }, [fetchNewCustomerData]);
+    }, [fetchNewCustomerData, selectedCompanyId]);
 
     useEffect(() => {
         fetchBranchWiseIncomeData();
-    }, [fetchBranchWiseIncomeData]);
+    }, [fetchBranchWiseIncomeData, selectedCompanyId]);
 
     useEffect(() => {
         fetchReferenceChartData();
-    }, [fetchReferenceChartData]);
+    }, [fetchReferenceChartData, selectedCompanyId]);
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
                 startLoading();
-                const { success, data }: any = await fetchDashboardDetails({ currentDate: moment().format('yyyy/MM/DD') });
+                let payload: any = { currentDate: moment().format('yyyy/MM/DD') };
+                if (selectedCompanyId) {
+                    payload.companyID = selectedCompanyId;
+                }
+                const { success, data }: any = await fetchDashboardDetails(payload);
                 if (!success) {
                     setDetails(null);
                     return;
@@ -259,14 +304,44 @@ const UseDashboard = () => {
             }
         };
         fetchDetails();
-    }, [startLoading, stopLoading]);
+    }, [startLoading, stopLoading, selectedCompanyId]);
+
+    useEffect(() => {
+        if (!isBranch) {
+            (async () => {
+                try {
+                    startLoading();
+                    const { success, data }: any = await getCompanyMapping({
+                        userID: user?.id,
+                        isActive: true,
+                        isDeleted: false
+                    });
+                    if (success && data?.length) {
+                        setAllCompany(data.map((company: any) => company.px_company));
+                    }
+                } catch (error: any) {
+                    openSnackbar({
+                        open: true,
+                        message: (error as Error).message || error?.response?.data?.message || 'Something went wrong',
+                        variant: 'alert',
+                        severity: 'error',
+                        alert: { color: 'error' }
+                    });
+                } finally {
+                    stopLoading();
+                }
+            })();
+        }
+    }, [isBranch, user]);
 
     return {
         user,
         isAdmin,
+        isBranch,
         details,
         toDate,
         fromDate,
+        allCompany,
         newCustomerData,
         newCustomerLabel,
         newCustomerToDate,
@@ -277,9 +352,12 @@ const UseDashboard = () => {
         branchWiseIncomeToDate,
         branchWiseIncomeFromDate,
         referenceChartData,
+        selectedCompanyId,
         referenceChartToDate,
         referenceChartFromDate,
+        dashboardSectionRights,
         handleDateChange,
+        setSelectedCompanyId,
         handleNewCustomerDateChange,
         handleReferenceChartDateChange,
         handleBranchWiseIncomeDateChange

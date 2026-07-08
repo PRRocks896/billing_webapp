@@ -68,6 +68,16 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     return false;
   }, [state]);
 
+  const isBranch: boolean = useMemo(() => {
+    if (!state.isLoggedIn) {
+      return false;
+    }
+    if (state.user && state.user.px_role && state.user.px_role.name && ['branch'].includes(state.user.px_role.name.toLowerCase())) {
+      return true;
+    }
+    return false;
+  }, [state]);
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -256,7 +266,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   // }
 
   return (
-    <JWTContext value={{ ...state, loading: state.loading!, isAdmin, startLoading, stopLoading, logout, sendOtp, verifyOtp, accessRights, accessSectionRights }}>
+    <JWTContext value={{ ...state, isBranch, loading: state.loading!, isAdmin, startLoading, stopLoading, logout, sendOtp, verifyOtp, accessRights, accessSectionRights }}>
       {children}
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.snackbar + 1000 }}

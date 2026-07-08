@@ -4,7 +4,7 @@ import { getAttendanceList } from "service/staff";
 import { openSnackbar } from "api/snackbar";
 import useAuth from "hooks/useAuth";
 
-const UseAttendanceList = () => {
+const UseAttendanceList = (companyID?: number | null) => {
     const { isAdmin, user, startLoading, stopLoading } = useAuth();
     const [staffList, setStaffList] = useState<any[]>([]);
 
@@ -15,6 +15,14 @@ const UseAttendanceList = () => {
                 isActive: true,
                 isDeleted: false,
             };
+
+            if (companyID) {
+                body = {
+                    ...body,
+                    companyID: companyID,
+                };
+            }
+
             if (!isAdmin) {
                 body = {
                     ...body,
@@ -54,7 +62,7 @@ const UseAttendanceList = () => {
 
     useEffect(() => {
         fetchAttendanceList();
-    }, []);
+    }, [companyID]);
 
     return {
         staffList,

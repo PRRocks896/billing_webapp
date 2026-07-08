@@ -4,7 +4,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { getLowSalesBranchReport } from "service/dailyReport";
 
-const UseLowSale = () => {
+const UseLowSale = (companyID?: number | null) => {
     const { startLoading, stopLoading } = useAuth();
 
     const [date, setDate] = useState<Date>(new Date());
@@ -14,9 +14,15 @@ const UseLowSale = () => {
     const fetchLowSaleReport = async () => {
         try {
             startLoading();
-            const { success, message, data }: any = await getLowSalesBranchReport({
+            let payload: any = {
                 date: moment(date).format('yyyy-MM-DD'),
-            });
+            }
+
+            if (companyID) {
+                payload.companyID = companyID;
+            }
+
+            const { success, message, data }: any = await getLowSalesBranchReport(payload);
             if (!success) {
                 setSalesData([]);
                 setLabels([]);
@@ -52,6 +58,12 @@ const UseLowSale = () => {
             stopLoading();
         }
     }
+
+    useEffect(() => {
+        if (companyID) {
+            fetchLowSaleReport();
+        }
+    }, [companyID]);
 
     return {
         date,
