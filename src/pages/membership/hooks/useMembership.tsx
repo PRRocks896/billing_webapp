@@ -11,7 +11,7 @@ import { calculateGSTDetails, listPayload } from "utils/helper";
 import { getRoomList } from "service/room";
 import { getServiceList } from "service/service";
 import { getTherapistDropdown } from "service/staff";
-import { createMembershipRedeem, getMembershipRedeemById } from "service/membershipRedeem";
+import { createMembershipRedeem, getMembershipRedeemById, getMembershipRedeemViaPayload } from "service/membershipRedeem";
 import { createRenewPlan, getRenewPlanById } from "service/renewPlan";
 import { PrintBill } from "components/printBill";
 import { Bill, TableData } from "types/common";
@@ -82,6 +82,7 @@ const UseMembership = () => {
 
     const [isMembershipRedeemShow, setIsMembershipRedeemShow] = useState<boolean>(false);
     const [isMembershipRedeemOtpSend, setIsMembershipRedeemOtpSend] = useState<boolean>(false);
+    const [membershipRedeemHistory, setMembershipRedeemHistory] = useState<any[]>([]);
     const [membershipList, setMembershipList] = useState<any[]>([]);
     const [selectedMembershipID, setSelectedMembershipID] = useState<number | null>(null);
     const [roomList, setRoomList] = useState<any[]>([]);
@@ -189,6 +190,9 @@ const UseMembership = () => {
                 showError(error);
             } finally {
                 setIsCustomerSearching(false);
+                setSelectedMembershipID(null);
+                setIsMembershipRedeemShow(false);
+                setIsAddMembershipShow(false);
             }
         }, 300);
     }, []);
@@ -293,6 +297,30 @@ const UseMembership = () => {
             stopLoading();
         }
     };
+
+    const handleDetchRedeemHistory = async (membership: any) => {
+        try {
+            startLoading();
+            console.log(membership);
+            const { success, message, data }: any = await getMembershipRedeemViaPayload({
+                isActive: true,
+                isDeleted: false,
+                customerID: membership?.customerID,
+                membershipID: membership?.id
+            });
+            if (!success) {
+                showError({ message });
+                return;
+            }
+            if (data && Array.isArray(data) && data.length > 0) {
+                setMembershipRedeemHistory(data);
+            }
+        } catch (error: any) {
+            showError(error);
+        } finally {
+            stopLoading();
+        }
+    }
 
     // =========================================================================
     // REDEEM MEMBERSHIP FLOW
@@ -510,7 +538,7 @@ const UseMembership = () => {
                     sgst: sgst.toString(),
                     cardNo: item.cardNo,
                     referenceBy: body.referenceBy || "other",
-                    managerName: localStorage.getItem("managerName"),
+                    managerName: localStorage.getItem("membershipId"),
                     createdBy: user?.id,
                     grandTotal: totalAmount.toString(),
                     detail: [{
@@ -523,13 +551,15 @@ const UseMembership = () => {
                     }],
                 };
             });
-            const payload = {
+            const payload: any = {
                 ...body,
                 customerID: BasicForm.getValues('customerID'),
+                managerName: localStorage.getItem("membershipId"),
                 minutes: totalMinutes,
                 billDetail: billPayload,
                 createdBy: user?.id,
             };
+            delete payload['referenceBy'];
             const { success, message, data }: any = await createMembership(payload);
             if (success) {
                 handleMembershipPrint(data?.id);
@@ -912,6 +942,7 @@ const UseMembership = () => {
         MembershipRedeemForm,
         isRenewMembershipShow,
         isMembershipRedeemShow,
+        membershipRedeemHistory,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         isMembershipRedeemOtpSend,
@@ -935,6 +966,7 @@ const UseMembership = () => {
         searchCustomerViaPhone,
         toggleAddMembershipShow,
         setSelectedMembershipID,
+        handleDetchRedeemHistory,
         toggleRenewMembershipShow,
         toggleMembershipRedeemShow,
         handleSendOtpForMembership,

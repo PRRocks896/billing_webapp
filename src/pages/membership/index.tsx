@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import UseMembership from "./hooks/useMembership";
 import Stack from "@mui/material/Stack";
@@ -11,8 +12,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
+import Collapse from "@mui/material/Collapse";
 import { alpha, useTheme } from "@mui/material/styles";
-import { AddCircle, Clock, Minus, Star1, UserTag } from "iconsax-reactjs";
+import { AddCircle, ArrowDown2, ArrowUp2, Clock, Minus, Star1, UserTag } from "iconsax-reactjs";
 import PaymentModal from "pages/bill/modal/paymentModal";
 import OtpModal from "components/OtpModal";
 import TableContainer from "@mui/material/TableContainer";
@@ -28,9 +30,11 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from "@mui/material/FormHelperText";
+import moment from "moment";
 
 const Membership = () => {
     const theme = useTheme();
+    const [isRedeemHistoryOpen, setIsRedeemHistoryOpen] = useState<boolean>(false);
     const {
         isAdmin,
         isOtpSend,
@@ -39,7 +43,6 @@ const Membership = () => {
         roomList,
         isMembershipEdit,
         selectedMembershipIDForEdit,
-
         serviceList,
         customerList,
         therapistList,
@@ -56,6 +59,7 @@ const Membership = () => {
         isAddMembershipShow,
         isRenewMembershipShow,
         isMembershipRedeemShow,
+        membershipRedeemHistory,
         verifyCustomerMembership,
         openVerifyMembershipModal,
         isMembershipRedeemOtpSend,
@@ -78,6 +82,7 @@ const Membership = () => {
         toggleAddMembershipShow,
         setSelectedMembershipID,
         setIsAddMembershipShow,
+        handleDetchRedeemHistory,
         toggleRenewMembershipShow,
         setIsMembershipRedeemShow,
         toggleMembershipRedeemShow,
@@ -952,6 +957,59 @@ const Membership = () => {
                                                         </Box>
                                                     </Box>
                                                 )}
+                                                {membershipRedeemHistory.length > 0 &&
+                                                    <Box>
+                                                        <Stack
+                                                            direction="row"
+                                                            alignItems="center"
+                                                            justifyContent="space-between"
+                                                            onClick={() => setIsRedeemHistoryOpen(!isRedeemHistoryOpen)}
+                                                            sx={{
+                                                                cursor: 'pointer',
+                                                                paddingBottom: 2,
+                                                                borderRadius: 1,
+                                                                '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.04) }
+                                                            }}
+                                                        >
+                                                            <Typography variant="overline" color="text.secondary" fontWeight={700} sx={{ letterSpacing: 1 }}>
+                                                                Redeem History ({membershipRedeemHistory.length})
+                                                            </Typography>
+                                                            <IconButton size="small">
+                                                                {isRedeemHistoryOpen ? <ArrowUp2 size={16} /> : <ArrowDown2 size={16} />}
+                                                            </IconButton>
+                                                        </Stack>
+                                                        <Collapse in={isRedeemHistoryOpen}>
+                                                            <TableContainer sx={{ mt: 1 }}>
+                                                                <Table size="small">
+                                                                    <TableHead>
+                                                                        <TableRow>
+                                                                            <TableCell>Date</TableCell>
+                                                                            <TableCell>Branch Name</TableCell>
+                                                                            <TableCell>Bill No</TableCell>
+                                                                            <TableCell>Service Name</TableCell>
+                                                                            <TableCell>Total Minutes</TableCell>
+                                                                            <TableCell>Therapist Name</TableCell>
+                                                                            <TableCell>Manager Name</TableCell>
+                                                                        </TableRow>
+                                                                    </TableHead>
+                                                                    <TableBody>
+                                                                        {membershipRedeemHistory.map((item: any, index: number) => (
+                                                                            <TableRow key={index}>
+                                                                                <TableCell>{moment(item.createdAt).format('DD/MM/yyyy HH:MM A')}</TableCell>
+                                                                                <TableCell>{item?.px_user?.lastName}</TableCell>
+                                                                                <TableCell>{item?.billNo}</TableCell>
+                                                                                <TableCell>{item?.px_service?.name}</TableCell>
+                                                                                <TableCell>{item?.minutes}</TableCell>
+                                                                                <TableCell>{item?.px_staff?.nickName}</TableCell>
+                                                                                <TableCell>{Array.isArray(item?.managerName) ? item?.managerName?.map((manager: any) => `${manager?.nickName}`).join(', ') : item?.managerName}</TableCell>
+                                                                            </TableRow>
+                                                                        ))}
+                                                                    </TableBody>
+                                                                </Table>
+                                                            </TableContainer>
+                                                        </Collapse>
+                                                    </Box>
+                                                }
 
                                                 <Grid container spacing={3}>
 
@@ -1485,6 +1543,7 @@ const Membership = () => {
                                                                 size="small"
                                                                 onClick={() => {
                                                                     setSelectedMembershipID(membership.id);
+                                                                    handleDetchRedeemHistory(membership);
                                                                 }}
                                                                 sx={(t) => ({
                                                                     borderRadius: 1.5,

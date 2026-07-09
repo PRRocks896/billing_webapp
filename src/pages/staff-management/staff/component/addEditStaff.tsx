@@ -65,6 +65,7 @@ const AddEditStaff = () => {
         isShowBankDetail,
         staffPhoneNumber,
         openVerifyOtpModal,
+        isSameBranchStaff,
         ifscVerified,
         setValue,
         onSubmit,
@@ -84,7 +85,7 @@ const AddEditStaff = () => {
 
     // Non-admin: bank details always visible when the form is active
     // isFormActive covers: edit mode, new staff (not found), OR found staff for a non-admin bank update
-    const isFormActive = isEdit || isStaffFound === false || (isStaffFound === true && !isAdmin);
+    const isFormActive = isEdit || isStaffFound === false //|| (isStaffFound === true && !isAdmin);
     const showBankDetail = isShowBankDetail || (!isAdmin && isFormActive);
     // When editing as non-admin, only bank details are editable
     const isBankOnlyMode = isEdit && !isAdmin;
@@ -182,7 +183,7 @@ const AddEditStaff = () => {
                                     value={staffPhoneNumber}
                                     onChange={(e) => {
                                         const value = e.target.value.trim();
-                                        if (value === '' || value.match(/^[0-9]+$/)) {
+                                        if (value === '' || (value.match(/^[0-9]+$/) && value.length <= 10)) {
                                             setStaffPhoneNumber(value)
                                         }
                                     }}
@@ -356,25 +357,27 @@ const AddEditStaff = () => {
                                     This staff member is already registered in the system. Would you like to initiate a <strong>transfer request</strong> to move them to this branch?
                                 </Typography>
                                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                    <Button
-                                        size="large"
-                                        variant="contained"
-                                        color="success"
-                                        onClick={handleStaffTransferRequest}
-                                        startIcon={<DirectboxSend size={20} variant="Bold" />}
-                                        sx={(t) => ({
-                                            minWidth: 180,
-                                            height: 48,
-                                            borderRadius: '12px',
-                                            fontWeight: 700,
-                                            boxShadow: `0 4px 14px ${alpha(t.palette.success.main, 0.35)}`,
-                                            '&:hover': {
-                                                boxShadow: `0 6px 20px ${alpha(t.palette.success.main, 0.45)}`,
-                                            }
-                                        })}
-                                    >
-                                        Initiate Transfer
-                                    </Button>
+                                    {!isSameBranchStaff &&
+                                        <Button
+                                            size="large"
+                                            variant="contained"
+                                            color="success"
+                                            onClick={handleStaffTransferRequest}
+                                            startIcon={<DirectboxSend size={20} variant="Bold" />}
+                                            sx={(t) => ({
+                                                minWidth: 180,
+                                                height: 48,
+                                                borderRadius: '12px',
+                                                fontWeight: 700,
+                                                boxShadow: `0 4px 14px ${alpha(t.palette.success.main, 0.35)}`,
+                                                '&:hover': {
+                                                    boxShadow: `0 6px 20px ${alpha(t.palette.success.main, 0.45)}`,
+                                                }
+                                            })}
+                                        >
+                                            Initiate Transfer
+                                        </Button>
+                                    }
                                     <Button
                                         size="large"
                                         variant="outlined"
@@ -404,7 +407,7 @@ const AddEditStaff = () => {
                     />
                 )}
             </Box>
-            {(isEdit || (isStaffFound !== null && isStaffFound === false) || (isStaffFound === true && !isAdmin)) &&
+            {(isEdit || (isStaffFound !== null && isStaffFound === false) /*|| (isStaffFound === true && !isAdmin)*/) &&
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <MainCard
                         content={false}
@@ -731,7 +734,7 @@ const AddEditStaff = () => {
                                                 </Box>
                                             </Stack>
                                             <Grid container spacing={2.5}>
-                                                <Grid size={{ xs: 12, sm: 8 }}>
+                                                <Grid size={{ xs: 12, sm: 12 }}>
                                                     <Grid container spacing={1.5}>
                                                         <Grid size={{ xs: 12, sm: 6 }}>
                                                             <Controller
@@ -753,7 +756,7 @@ const AddEditStaff = () => {
                                                                 )}
                                                             />
                                                         </Grid>
-                                                        <Grid size={{ xs: 12 }}>
+                                                        {/* <Grid size={{ xs: 12 }}>
                                                             <Controller
                                                                 name="fatherIdNumber"
                                                                 control={control}
@@ -762,7 +765,7 @@ const AddEditStaff = () => {
                                                                     <TextField {...field} fullWidth label="Father's ID Number" error={!!error} helperText={error?.message} />
                                                                 )}
                                                             />
-                                                        </Grid>
+                                                        </Grid> */}
                                                         <Grid size={{ xs: 12 }}>
                                                             <Controller
                                                                 name="fatherAddress"
@@ -773,7 +776,7 @@ const AddEditStaff = () => {
                                                                 )}
                                                             />
                                                         </Grid>
-                                                        <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>
+                                                        {/* <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>
                                                         <Grid size={{ xs: 12 }}>
                                                             <Controller
                                                                 name="motherIdNumber"
@@ -793,10 +796,10 @@ const AddEditStaff = () => {
                                                                     <TextField {...field} multiline rows={4} fullWidth label="Mother's Address" error={!!error} helperText={error?.message} />
                                                                 )}
                                                             />
-                                                        </Grid>
+                                                        </Grid> */}
                                                     </Grid>
                                                 </Grid>
-                                                <Grid size={{ xs: 12, sm: 4 }}>
+                                                {/* <Grid size={{ xs: 12, sm: 4 }}>
                                                     <Stack spacing={2}>
                                                         <Controller
                                                             name="fatherIdPhoto"
@@ -831,7 +834,7 @@ const AddEditStaff = () => {
                                                             )}
                                                         />
                                                     </Stack>
-                                                </Grid>
+                                                </Grid> */}
                                             </Grid>
                                         </Box>
                                     </Grid>
@@ -1119,6 +1122,7 @@ const AddEditStaff = () => {
                                                             <TextField
                                                                 {...field}
                                                                 fullWidth
+                                                                disabled
                                                                 label='Bank Branch'
                                                                 error={!!error?.message}
                                                                 helperText={error?.message}

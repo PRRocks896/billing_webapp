@@ -12,6 +12,7 @@ import Snackbar from 'components/@extended/Snackbar';
 import Notistack from 'components/third-party/Notistack';
 import Metrics from 'metrics';
 import NoConnection from 'pages/maintenance/error/NoConnection';
+import ReloadPrompt from 'components/ReloadPrompt';
 
 // auth-provider
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
@@ -40,6 +41,7 @@ export default function App() {
                   <Snackbar />
                 </Notistack>
                 {!isOnline && <NoConnection />}
+                <ReloadPrompt />
               </>
             </AuthProvider>
           </ScrollTop>

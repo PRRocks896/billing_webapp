@@ -20,12 +20,12 @@ export type StaffFormValue = {
     phoneNumber: string;
     fatherName: string;
     fatherPhone: string;
-    fatherIdNumber: string;
+    // fatherIdNumber: string;
     fatherAddress: string;
-    fatherIdPhoto: any;
-    motherIdNumber: string;
-    motherAddress: string;
-    motherIdPhoto: any;
+    // fatherIdPhoto: any;
+    // motherIdNumber: string;
+    // motherAddress: string;
+    // motherIdPhoto: any;
     gender: 'Male' | 'Female' | null;
     salary: string;
     pastWorking: string;
@@ -57,12 +57,12 @@ const defaultValues: StaffFormValue = {
     phoneNumber: "",
     fatherName: "",
     fatherPhone: "",
-    fatherIdNumber: "",
+    // fatherIdNumber: "",
     fatherAddress: "",
-    fatherIdPhoto: null,
-    motherIdNumber: "",
-    motherAddress: "",
-    motherIdPhoto: null,
+    // fatherIdPhoto: null,
+    // motherIdNumber: "",
+    // motherAddress: "",
+    // motherIdPhoto: null,
     salary: "",
     gender: null,
     pastWorking: "",
@@ -129,6 +129,13 @@ const UseAddEditStaff = () => {
 
     const isMarriage = useMemo(() => watch('isMarriage'), [watch('isMarriage')]);
 
+    const isSameBranchStaff = useMemo(() => {
+        if (staffData && user) {
+            return staffData.userID === user.id;
+        }
+        return false;
+    }, [staffData, user])
+
     const toggleIsStaffFound = useCallback(() => setIsStaffFound((prev: boolean | null) => prev === null ? false : !prev), []);
 
     const handleBack = () => navigate("/staff");
@@ -146,8 +153,9 @@ const UseAddEditStaff = () => {
             return true; // Let the `pattern` rule display the format error
         }
         try {
-            const { success, message }: any = await verifyIfscCode({ ifscCode: ifsc });
+            const { success, message, data }: any = await verifyIfscCode({ ifscCode: ifsc });
             if (success) {
+                setValue("bankBranch", (data?.data?.detail?.BRANCH || data?.detail?.BRANCH || ''))
                 setIfscVerified(true);
                 clearErrors('ifscCode');
                 return true;
@@ -185,12 +193,12 @@ const UseAddEditStaff = () => {
                 setValue("refName", data.refName);
                 setValue("refPhone", data.refPhone);
                 setValue("countryCode", data.countryCode);
-                setValue("fatherIdNumber", data.fatherIdNumber);
+                // setValue("fatherIdNumber", data.fatherIdNumber);
                 setValue("fatherAddress", data.fatherAddress);
-                setValue("fatherIdPhoto", data.fatherIdPhoto);
-                setValue("motherIdNumber", data.motherIdNumber);
-                setValue("motherAddress", data.motherAddress);
-                setValue("motherIdPhoto", data.motherIdPhoto);
+                // setValue("fatherIdPhoto", data.fatherIdPhoto);
+                // setValue("motherIdNumber", data.motherIdNumber);
+                // setValue("motherAddress", data.motherAddress);
+                // setValue("motherIdPhoto", data.motherIdPhoto);
                 setValue("gender", data.gender);
                 setValue("isMarriage", data.isMarriage);
                 setValue("qualification", data.qualification);
@@ -253,20 +261,20 @@ const UseAddEditStaff = () => {
                 }
             }
 
-            if ((data.fatherIdPhoto || data.motherIdPhoto) && (typeof data.fatherIdPhoto !== 'string' || typeof data.motherIdPhoto !== 'string')) {
-                payload = convertToFormData(payload, false);
-            }
+            // if ((data.fatherIdPhoto || data.motherIdPhoto) && (typeof data.fatherIdPhoto !== 'string' || typeof data.motherIdPhoto !== 'string')) {
+            //     payload = convertToFormData(payload, false);
+            // }
 
-            if (data.fatherIdPhoto && typeof data.fatherIdPhoto !== 'string') {
-                payload.append("fatherIdPhoto", data.fatherIdPhoto);
-            } else {
-                delete payload.fatherIdPhoto;
-            }
-            if (data.motherIdPhoto && typeof data.motherIdPhoto !== 'string') {
-                payload.append("motherIdPhoto", data.motherIdPhoto);
-            } else {
-                delete payload.motherIdPhoto;
-            }
+            // if (data.fatherIdPhoto && typeof data.fatherIdPhoto !== 'string') {
+            //     payload.append("fatherIdPhoto", data.fatherIdPhoto);
+            // } else {
+            //     delete payload.fatherIdPhoto;
+            // }
+            // if (data.motherIdPhoto && typeof data.motherIdPhoto !== 'string') {
+            //     payload.append("motherIdPhoto", data.motherIdPhoto);
+            // } else {
+            //     delete payload.motherIdPhoto;
+            // }
 
             const { success, message }: any = mode && mode === 'edit' && id ? await updateStaff(payload, Number(id)) : await createStaff(payload);
             if (success) {
@@ -592,6 +600,7 @@ const UseAddEditStaff = () => {
         countryCodeList,
         isStaffNoOtpSend,
         employeeTypeList,
+        isSameBranchStaff,
         isShowBankDetail,
         openVerifyOtpModal,
         onSubmit,

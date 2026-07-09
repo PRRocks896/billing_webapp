@@ -361,7 +361,7 @@ const UseStaff = () => {
                 renderCell: (row: any) => {
                     return (
                         <Box>
-                            {rights.view &&
+                            {rights.view && isAdmin &&
                                 <IconButton onClick={() => handleView(row.id)}>
                                     <Eye />
                                 </IconButton>

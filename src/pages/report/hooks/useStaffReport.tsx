@@ -388,6 +388,7 @@ const useStaffReport = () => {
     return {
         attUserList,
         selectedAttUser,
+        selectedGstPayment,
         setSelectedAttUser,
         fetchStaffList,
         attMonth,
@@ -417,6 +418,7 @@ const useStaffReport = () => {
         fetchAuditorReportData,
         managerList,
         paymentList,
+        selectedPayment,
         selectedCompany,
         companyOptions,
         serviceList: SERVICE_LIST,

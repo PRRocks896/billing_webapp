@@ -58,7 +58,7 @@ const AttendanceList = ({ companyID = null }: { companyID?: number | null }) => 
                     <TableBody>
                         {staffList.map((row, index) => {
                             let color: ColorProps = 'secondary';
-                            switch (row.badgeText.toLowerCase()) {
+                            switch (row?.badgeText?.toLowerCase()) {
                                 case 'open':
                                     color = 'success';
                                     break;

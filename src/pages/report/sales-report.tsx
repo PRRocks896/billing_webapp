@@ -183,6 +183,8 @@ const SalesReport = () => {
         gstDateRange,
         companyOptions,
         paymentList,
+        selectedPayment,
+        selectedGstPayment,
         salesSectionRights,
         fetchReportDate,
         handleDateChange,
@@ -193,6 +195,7 @@ const SalesReport = () => {
         handleGstPaymentChange,
         auditoDateRange,
         setAuditorSelectedCompany,
+        selectedAuditorPayment,
         setSelectedAuditorPayment,
         handleAuditorDateChange,
         fetchAuditorReportData,
@@ -280,9 +283,12 @@ const SalesReport = () => {
                                                         InputProps={{
                                                             ...params.InputProps,
                                                             startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <Building size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                                </InputAdornment>
+                                                                <>
+                                                                    <InputAdornment position="start">
+                                                                        <Building size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                    </InputAdornment>
+                                                                    {params.InputProps.startAdornment}
+                                                                </>
                                                             )
                                                         }}
                                                     />
@@ -296,6 +302,8 @@ const SalesReport = () => {
                                                 multiple
                                                 options={paymentList || []}
                                                 getOptionLabel={(option) => option.label}
+                                                isOptionEqualToValue={(option, value) => option.value === value.value}
+                                                value={selectedPayment}
                                                 onChange={(_, newValue) => handlePaymentChange(newValue)}
                                                 renderInput={(params) => (
                                                     <TextField
@@ -305,9 +313,12 @@ const SalesReport = () => {
                                                         InputProps={{
                                                             ...params.InputProps,
                                                             startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <MoneyChange size={20} variant="Bulk" color={theme.palette.success.main} />
-                                                                </InputAdornment>
+                                                                <>
+                                                                    <InputAdornment position="start">
+                                                                        <MoneyChange size={20} variant="Bulk" color={theme.palette.success.main} />
+                                                                    </InputAdornment>
+                                                                    {params.InputProps.startAdornment}
+                                                                </>
                                                             )
                                                         }}
                                                     />
@@ -354,7 +365,6 @@ const SalesReport = () => {
                                         color="primary"
                                     />
                                 </Grid>
-
                                 {isAdmin && (
                                     <Grid size={{ xs: 12, sm: 6, md: 7 }}>
                                         <Typography variant="caption" sx={{ color: 'text.primary', fontWeight: 700, mb: 1, display: 'block', ml: 1, textTransform: 'uppercase' }}>PAYMENT FILTER</Typography>
@@ -363,6 +373,8 @@ const SalesReport = () => {
                                             multiple
                                             options={paymentList || []}
                                             getOptionLabel={(option) => option.label}
+                                            isOptionEqualToValue={(option, value) => option.value === value.value}
+                                            value={selectedGstPayment}
                                             onChange={(_, newValue) => handleGstPaymentChange(newValue)}
                                             renderInput={(params) => (
                                                 <TextField
@@ -371,9 +383,12 @@ const SalesReport = () => {
                                                     InputProps={{
                                                         ...params.InputProps,
                                                         startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <Profile2User size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                            </InputAdornment>
+                                                            <>
+                                                                <InputAdornment position="start">
+                                                                    <Profile2User size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                </InputAdornment>
+                                                                {params.InputProps.startAdornment}
+                                                            </>
                                                         )
                                                     }}
                                                 />
@@ -436,9 +451,12 @@ const SalesReport = () => {
                                                         InputProps={{
                                                             ...params.InputProps,
                                                             startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <SearchNormal1 size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                                </InputAdornment>
+                                                                <>
+                                                                    <InputAdornment position="start">
+                                                                        <SearchNormal1 size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                    </InputAdornment>
+                                                                    {params.InputProps.startAdornment}
+                                                                </>
                                                             )
                                                         }}
                                                     />
@@ -452,6 +470,8 @@ const SalesReport = () => {
                                                 multiple
                                                 options={paymentList || []}
                                                 getOptionLabel={(option) => option.label}
+                                                isOptionEqualToValue={(option, value) => option.value === value.value}
+                                                value={selectedAuditorPayment}
                                                 onChange={(_, newValue) => setSelectedAuditorPayment(newValue)}
                                                 renderInput={(params) => (
                                                     <TextField
@@ -460,9 +480,12 @@ const SalesReport = () => {
                                                         InputProps={{
                                                             ...params.InputProps,
                                                             startAdornment: (
-                                                                <InputAdornment position="start">
-                                                                    <Wallet size={20} variant="Bulk" color={theme.palette.primary.main} />
-                                                                </InputAdornment>
+                                                                <>
+                                                                    <InputAdornment position="start">
+                                                                        <Wallet size={20} variant="Bulk" color={theme.palette.primary.main} />
+                                                                    </InputAdornment>
+                                                                    {params.InputProps.startAdornment}
+                                                                </>
                                                             )
                                                         }}
                                                     />
