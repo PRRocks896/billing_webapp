@@ -168,7 +168,7 @@ export type JWTContextType = {
   isBranch: boolean;
   logout: () => void;
   sendOtp: (phone: string) => Promise<any>;
-  verifyOtp: (phone: string, otp: string) => Promise<void>;
+  verifyOtp: (phone: string, otp: string, isCheckSession?: boolean) => Promise<void>;
   accessRights: (pathName: string) => { add: boolean; edit: boolean; delete: boolean; view: boolean };
   accessSectionRights: (sectionSlug: string) => { view: boolean; download: boolean; upload: boolean };
   startLoading: () => void;

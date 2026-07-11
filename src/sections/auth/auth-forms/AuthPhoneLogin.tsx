@@ -80,7 +80,7 @@ export default function AuthPhoneLogin() {
                     setTimeLeft(30);
                 }
             } else {
-                await verifyOtp(phoneNumber, values.otp);
+                await verifyOtp(phoneNumber, values.otp, true);
                 if (scriptedRef.current) {
                     // setStatus({ success: true }); // Not directly supported, handle locally or via context if needed
                 }

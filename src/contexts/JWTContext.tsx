@@ -128,8 +128,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     // if(response && response.)
   };
 
-  const verifyOtp = async (phoneNumber: string, otp: string) => {
-    const response: any = await verifyOTP({ phoneNumber, otp });
+  const verifyOtp = async (phoneNumber: string, otp: string, isCheckSession = false) => {
+    const response: any = await verifyOTP({ phoneNumber, otp, isCheckSession });
     if (response && response.success) {
       const { token, accessModules, ...rest } = response.data;
       setSession(token);

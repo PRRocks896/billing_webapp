@@ -253,7 +253,7 @@ const UseAddEditBill = () => {
      */
     const fetchDropDown = useCallback(async () => {
         const whereCondition = { isActive: true, isDeleted: false };
-        const payload = listPayload(0, whereCondition, 1000);
+        const payload: any = listPayload(0, whereCondition, 1000);
 
         const isAdminRole = ADMIN_ROLES.includes(user?.px_role?.name?.toLowerCase() ?? "");
 
@@ -265,7 +265,7 @@ const UseAddEditBill = () => {
         // Execute API promises concurrently significantly improving UI block time
         const [staffRes, serviceRes, paymentRes, roomRes]: any[] = await Promise.all([
             getTherapistDropdown({ ...whereCondition, searchText: "THERAPIST" }),
-            getServiceList(payload),
+            getServiceList({ ...payload, where: { ...whereCondition, isWebDisplay: false } }),
             getPaymentTypeList(payload),
             getRoomList(listPayload(0, roomWhereCondition, 100000)),
         ]);

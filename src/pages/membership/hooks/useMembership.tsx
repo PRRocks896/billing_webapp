@@ -391,6 +391,7 @@ const UseMembership = () => {
             showSuccess(message);
             setIsMembershipRedeemOtpSend(true);
             setIsOtpSend(false);
+            handleSaveMembershipRedeem(MembershipRedeemForm.getValues())
         } catch (error: any) {
             showError(error);
         } finally {
