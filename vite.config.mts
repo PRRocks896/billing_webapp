@@ -28,33 +28,41 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'favicon.png', 'apple-touch-icon.png', 'logo192.png', 'logo512.png'],
+        manifestFilename: 'manifest.json',
+        includeAssets: ['favicon.ico', 'favicon.png', 'apple-touch-icon.png', 'logo.png', 'logo192.png', 'logo512.png'],
         manifest: {
           name: 'Bill System - Billing Software',
           short_name: 'Bill System',
           description: 'Billing Software by Pixscale',
-          theme_color: '#4680FF',
-          background_color: '#ffffff',
+          theme_color: '#575757',
+          background_color: '#000000',
           display: 'standalone',
-          orientation: 'portrait',
+          orientation: 'any',
           start_url: '.',
           icons: [
             {
-              src: 'logo192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'any maskable'
+              "src": "logo.jpg",
+              "sizes": "72x72 64x64 32x32 24x24 16x16",
+              "type": "image/jpg"
             },
             {
-              src: 'logo512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'any maskable'
+              "src": "logo.jpg",
+              "type": "image/jpg",
+              "sizes": "192x192",
+              "purpose": "any maskable"
+            },
+            {
+              "src": "logo.jpg",
+              "type": "image/jpg",
+              "sizes": "512x512",
+              "purpose": "any maskable"
             }
           ]
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+          navigateFallback: 'index.html',
+          navigateFallbackDenylist: [/^\/api\//],
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
           runtimeCaching: [
             {
@@ -103,7 +111,10 @@ export default defineConfig(({ mode }) => {
           ]
         },
         devOptions: {
-          enabled: true // Enable PWA in dev for testing
+          enabled: true, // Enable PWA in dev for testing
+          type: 'module',
+          navigateFallback: 'index.html',
+          suppressWarnings: true
         }
       })
     ],
