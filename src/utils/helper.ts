@@ -2,7 +2,7 @@ import { redirect } from "react-router-dom";
 import { getBaseUrl } from "./axios";
 
 export const imagePath = (path: string) => {
-    const apiUrl = import.meta.env.VITE_APP_API_DEV; //getBaseUrl();
+    const apiUrl = getBaseUrl();
     const modifiedapiUrl = apiUrl.replace(/\/api\/?$/, '');
     const formattedApiUrl = modifiedapiUrl
     return `${formattedApiUrl}${path}`;
