@@ -367,13 +367,35 @@ const UseAddEditBill = () => {
      */
     const handlePrint = useCallback(async (data: BillFormValue) => {
         try {
+            const gstRate = gstValue.csgst + gstValue.sgst;
             if (mode !== "add") {
-                let payload: any = { updatedBy: user?.id };
-                Object.entries(dirtyFields).forEach(([key, value]) => {
-                    if (value) {
-                        payload[key] = data[key as keyof BillFormValue];
-                    }
-                });
+                const { baseAmount, cgst, sgst, totalAmount } = calculateGSTDetails(data.rate!, gstRate, true);
+                // let payload: any = { updatedBy: user?.id };
+                // Object.entries(dirtyFields).forEach(([key, value]) => {
+                //     if (value) {
+                //         payload[key] = data[key as keyof BillFormValue];
+                //     }
+                // });
+                const payload = {
+                    staffID: data.staffID,
+                    customerID: data.customerID,
+                    roomID: data.roomID,
+                    paymentID: data.paymentID,
+                    cgst: cgst.toString(),
+                    sgst: sgst.toString(),
+                    cardNo: data.cardNo,
+                    referenceBy: data.referenceBy,
+                    grandTotal: totalAmount.toString(),
+                    detail: [{
+                        serviceID: data.serviceID,
+                        rate: baseAmount,
+                        discount: data.discount,
+                        quantity: data.quantity,
+                        total: baseAmount,
+                        hsnCode: data.hsnCode,
+                    }],
+                    updatedBy: user?.id,
+                }
                 const { success, message }: any = await updateBill(payload, parseInt(id!));
                 if (success) {
                     showSuccess(message);
@@ -383,8 +405,6 @@ const UseAddEditBill = () => {
                 }
                 return;
             }
-            const gstRate = gstValue.csgst + gstValue.sgst;
-
             const payload = data.paymentDetail.map((item: PaymentDetailItem) => {
                 const { baseAmount, cgst, sgst, totalAmount } = calculateGSTDetails(item.amount, gstRate, true);
                 return {

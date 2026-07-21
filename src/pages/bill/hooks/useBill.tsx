@@ -14,6 +14,7 @@ import { getCompanyList } from "service/company";
 import { Bill, Branch } from "types/common";
 import { HeadCell, ArrangementOrder } from "types/table";
 import { ROWS } from "utils/constant";
+import Typography from "@mui/material/Typography";
 
 const UseBill = () => {
 
@@ -462,8 +463,9 @@ const UseBill = () => {
                 isSortable: true,
                 renderCell: (row: any) => {
                     return (
-                        <Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             {row?.px_customer?.name}
+                            {(isAdmin && row?.px_customer?.phoneNumber) && <Typography variant="caption">{row?.px_customer?.phoneNumber}</Typography>}
                         </Box>
                     )
                 }
@@ -518,7 +520,7 @@ const UseBill = () => {
                 renderCell: (row: any) => {
                     return (
                         <Box>
-                            {`${row?.px_user?.firstName} - ${row?.px_user?.lastName}`}
+                            {row?.px_user?.lastName}
                         </Box>
                     )
                 }

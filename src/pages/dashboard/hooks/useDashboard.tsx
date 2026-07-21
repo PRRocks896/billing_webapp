@@ -100,7 +100,7 @@ const UseDashboard = () => {
             result[section] = accessSectionRights(section);
         });
         return result;
-    }, [accessSectionRights, DASHBOARD]);
+    }, [accessSectionRights, user, DASHBOARD]);
 
     const handleReferenceChartDateChange = useCallback((value: number) => {
         const { from, to } = getDateRange(value);
