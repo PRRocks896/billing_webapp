@@ -1,5 +1,6 @@
 import moment from "moment";
 import reviewImg from "/review_image.png";
+import logo from "/logo.png"
 import { Bill, Branch } from "types/common";
 import { convertAmountToWords, showTwoDecimal } from "utils/helper";
 
@@ -72,9 +73,9 @@ const PrintBooking = (
           </table>
         </div>
       ${bookingData.reviewUrl ?
-      `<div style="margin-top: 12px;page-break-after: always; border: 0px solid black; min-height: max-content;">
+      `<div style="page-break-before: always; border: 0px solid black; min-height: max-content;">
           <div style="text-align: center; margin: 0;">
-            <img width="175px" src="https://bill.myjilo.com/static/media/logo.356ee5c5b1f892c1675d.png" alt="logo"/>
+            <img width="175px" src=${logo} alt="logo"/>
           </div>
           <div style="margin-top: 32px;">
             <p style="text-align: center; margin: 0;font-size: 20px;">
@@ -288,9 +289,9 @@ const PrintBill = (
             </div>`
       : ''}
           ${branchData.reviewUrl ?
-      `<div style="margin-top: 12px;page-break-after: always; border: 0px solid black; min-height: max-content;">
+      `<div style="page-break-before: always; border: 0px solid black; min-height: max-content;">
             <div style="text-align: center; margin: 0;">
-                <img width="175px" src="https://bill.myjilo.com/static/media/logo.356ee5c5b1f892c1675d.png" alt="logo"/>
+                <img width="175px" src=${logo} alt="logo"/>
             </div>
             <div style="margin-top: 32px;">
                 <p style="text-align: center; margin: 0;font-size: 20px;">
