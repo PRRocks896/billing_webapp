@@ -45,8 +45,14 @@ export type MembershipFormValue = {
 }
 
 export type RenewMembershipFormValue = MembershipFormValue & {
+    userID: number;
     membershipID: number | null;
+    managerName: string;
+    extraHours: string;
+    validity: string;
+    cardNo: string;
     referenceBy: "google" | "instagram_or_facebook" | "direct_call" | "website" | "justdial" | "other" | null;
+    paymentDetail: PaymentDetailItem[]
 }
 
 
@@ -146,7 +152,10 @@ const UseMembership = () => {
             MembershipForm.setValue("managerName", managerName);
             MembershipRedeemForm.setValue("managerName", managerName);
         }
-    }, [localStorage.getItem("managerName")]);
+        if (isRenewMembershipShow) {
+            RenewMembershipForm.setValue("managerName", managerName);
+        }
+    }, [localStorage.getItem("managerName"), isRenewMembershipShow]);
 
     // ── Modal toggles ──────────────────────────────────────────────────────
     const toggleAddCustomerModal = useCallback(() => setIsAddCustomerOpen(prev => !prev), []);
@@ -301,7 +310,6 @@ const UseMembership = () => {
     const handleDetchRedeemHistory = async (membership: any) => {
         try {
             startLoading();
-            console.log(membership);
             const { success, message, data }: any = await getMembershipRedeemViaPayload({
                 isActive: true,
                 isDeleted: false,
@@ -672,7 +680,6 @@ const UseMembership = () => {
                 return {
                     userID: user?.id,
                     staffID: 1,
-                    membershipID: selectedMembershipID,
                     customerID: BasicForm.getValues('customerID'),
                     roomID: 1,
                     paymentID: item.id,
@@ -680,7 +687,7 @@ const UseMembership = () => {
                     sgst: sgst.toString(),
                     cardNo: item.cardNo,
                     referenceBy: body.referenceBy || "other",
-                    managerName: localStorage.getItem("managerName"),
+                    managerName: localStorage.getItem("membershipId"),
                     createdBy: user?.id,
                     grandTotal: totalAmount.toString(),
                     detail: [{
@@ -693,13 +700,17 @@ const UseMembership = () => {
                     }],
                 };
             });
-            const payload = {
+            let payload: any = {
                 ...body,
+                membershipID: selectedMembershipID,
                 customerID: BasicForm.getValues('customerID'),
                 minutes: totalMinutes,
                 billDetail: billPayload,
                 createdBy: user?.id,
             };
+
+            delete payload['referenceBy'];
+            delete payload['paymentDetail']
             const { success, message, data }: any = await createRenewPlan(payload);
             if (success) {
                 handleRenewMembershipPrint(data.id)
@@ -795,7 +806,7 @@ const UseMembership = () => {
         try {
             startLoading();
             const { success, message }: any = await sendMembershipOtp({
-                customerID: info.customerID,
+                customerID: BasicForm.getValues('customerID'),
                 membershipPlanID: info.membershipPlanID,
                 validity: info.validity,
                 extraHours: info.extraHours || 0
@@ -823,7 +834,7 @@ const UseMembership = () => {
                 setOpenVerifyMembershipModal(false);
                 setVerifyCustomerMembership(true);
                 // Awaited so loader stays active until membership is fully saved
-                await handleSaveMembership(MembershipForm.getValues());
+                isRenewMembershipShow ? await handleRenewMembership(RenewMembershipForm.getValues()) : await handleSaveMembership(MembershipForm.getValues());
             } else {
                 showError({ message });
             }
@@ -839,7 +850,7 @@ const UseMembership = () => {
             startLoading();
             const { success, message }: any = await updateMembership({
                 minutes: info.minutes,
-                customerID: info.customerID,
+                customerID: BasicForm.getValues('customerID'),
             }, selectedMembershipIDForEdit!);
             if (success) {
                 showSuccess(message);
@@ -867,9 +878,9 @@ const UseMembership = () => {
                 // Awaited — handleSendOtpForMembership opens the customer modal internally
                 await handleSendOtpForMembership({
                     customerID: BasicForm.getValues('customerID'),
-                    membershipPlanID: MembershipForm.getValues('membershipPlanID'),
-                    validity: MembershipForm.getValues('validity'),
-                    extraHours: MembershipForm.getValues('extraHours') || 0
+                    membershipPlanID: isRenewMembershipShow ? RenewMembershipForm.getValues('membershipPlanID') : MembershipForm.getValues('membershipPlanID'),
+                    validity: isRenewMembershipShow ? RenewMembershipForm.getValues('validity') : MembershipForm.getValues('validity'),
+                    extraHours: isRenewMembershipShow ? RenewMembershipForm.getValues('extraHours') : MembershipForm.getValues('extraHours') || 0
                 });
             } else {
                 showError(message);
@@ -883,9 +894,6 @@ const UseMembership = () => {
 
     const getOtp = useCallback(async () => {
         try {
-            console.log(isRenewMembershipShow);
-            console.log(RenewMembershipForm.getValues());
-            console.log(MembershipForm.getValues());
             startLoading();
             const { success, message }: any = await addExtraHours({
                 customerID: BasicForm.getValues('customerID'),
@@ -913,7 +921,7 @@ const UseMembership = () => {
     };
 
     const handlePaymentDetail = useCallback((paymentDetail: PaymentDetailItem[]) => {
-        MembershipForm.setValue('paymentDetail', paymentDetail);
+        isRenewMembershipShow ? RenewMembershipForm.setValue('paymentDetail', paymentDetail) : MembershipForm.setValue('paymentDetail', paymentDetail);
         setIsPaymentModalOpen(false);
         setIsPayment(true);
         getOtp();
@@ -924,6 +932,7 @@ const UseMembership = () => {
     }, [serviceList, MembershipRedeemForm.watch('minutes')]);
 
     return {
+        user,
         isAdmin,
         isOtpSend,
         isPayment,

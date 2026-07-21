@@ -36,6 +36,7 @@ const Membership = () => {
     const theme = useTheme();
     const [isRedeemHistoryOpen, setIsRedeemHistoryOpen] = useState<boolean>(false);
     const {
+        user,
         isAdmin,
         isOtpSend,
         isPayment,
@@ -857,23 +858,24 @@ const Membership = () => {
                                                 </Stack>
 
                                                 <Box sx={{ display: 'flex', gap: 1 }}>
-                                                    <Button
-                                                        variant="contained"
-                                                        size="small"
-                                                        color="success"
-                                                        onClick={() => {
-                                                            setIsAddMembershipShow(false);
-                                                            setIsMembershipRedeemShow(false);
-                                                            toggleRenewMembershipShow();
-                                                            fetchMembershipPlanDropDown();
-                                                        }}
-                                                        sx={(t) => ({
-                                                            borderRadius: 10,
-                                                            fontSize: '0.75rem',
-                                                        })}
-                                                    >
-                                                        Renew Plan
-                                                    </Button>
+                                                    {selectedMembership && selectedMembership.userID === user?.id &&
+                                                        <Button
+                                                            variant="contained"
+                                                            size="small"
+                                                            color="success"
+                                                            onClick={() => {
+                                                                setIsAddMembershipShow(false);
+                                                                setIsMembershipRedeemShow(false);
+                                                                toggleRenewMembershipShow();
+                                                                fetchMembershipPlanDropDown();
+                                                            }}
+                                                            sx={(t) => ({
+                                                                borderRadius: 10,
+                                                                fontSize: '0.75rem',
+                                                            })}
+                                                        >
+                                                            Renew Plan
+                                                        </Button>}
                                                     {/* Back button */}
                                                     <Button
                                                         variant="outlined"
