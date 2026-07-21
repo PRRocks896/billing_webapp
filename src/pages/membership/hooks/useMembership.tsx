@@ -883,12 +883,15 @@ const UseMembership = () => {
 
     const getOtp = useCallback(async () => {
         try {
+            console.log(isRenewMembershipShow);
+            console.log(RenewMembershipForm.getValues());
+            console.log(MembershipForm.getValues());
             startLoading();
             const { success, message }: any = await addExtraHours({
                 customerID: BasicForm.getValues('customerID'),
-                membershipPlanID: MembershipForm.getValues('membershipPlanID'),
-                validity: MembershipForm.getValues('validity'),
-                extraHours: MembershipForm.getValues('extraHours') || 0
+                membershipPlanID: isRenewMembershipShow ? RenewMembershipForm.getValues('membershipPlanID') : MembershipForm.getValues('membershipPlanID'),
+                validity: isRenewMembershipShow ? RenewMembershipForm.getValues('validity') : MembershipForm.getValues('validity'),
+                extraHours: isRenewMembershipShow ? RenewMembershipForm.getValues('extraHours') : MembershipForm.getValues('extraHours') || 0
             });
             if (success) {
                 setIsOtpSend(true);
@@ -901,7 +904,7 @@ const UseMembership = () => {
         } finally {
             stopLoading();
         }
-    }, [startLoading, stopLoading]);
+    }, [startLoading, stopLoading, isRenewMembershipShow]);
 
     const handleCancelVerifyPermission = () => {
         setIsOtpSend(false);

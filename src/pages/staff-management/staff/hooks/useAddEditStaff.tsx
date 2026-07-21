@@ -243,6 +243,7 @@ const UseAddEditStaff = () => {
                 ...data,
                 phoneNumber: Number(data.phoneNumber)
             };
+            delete payload['reEnterAccountNumber'];
             if (mode && mode === 'edit' && id) {
                 payload = {
                     ...payload,
