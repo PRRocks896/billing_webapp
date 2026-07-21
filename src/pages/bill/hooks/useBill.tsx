@@ -254,7 +254,6 @@ const UseBill = () => {
                     pagination: payload.pagination
                 }
             }
-
             const { success, message, data }: any = await getBillList(payload);
             if (success) {
                 setList(data.rows);

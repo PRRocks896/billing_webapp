@@ -436,6 +436,8 @@ const UseMembership = () => {
             showSuccess(message);
             handleMembershipRedeemPrint(data.id);
             // setIsMembershipRedeemShow(false);
+            setIsMembershipRedeemOtpSend(false);
+            setIsOtpSend(false);
             setSelectedMembershipID(null);
             MembershipRedeemForm.reset();
             setMembershipList([]);
@@ -547,7 +549,7 @@ const UseMembership = () => {
                     sgst: sgst.toString(),
                     cardNo: item.cardNo,
                     referenceBy: body.referenceBy || "other",
-                    managerName: localStorage.getItem("membershipId"),
+                    managerName: localStorage.getItem("managerId"),
                     createdBy: user?.id,
                     grandTotal: totalAmount.toString(),
                     detail: [{
@@ -563,7 +565,7 @@ const UseMembership = () => {
             const payload: any = {
                 ...body,
                 customerID: BasicForm.getValues('customerID'),
-                managerName: localStorage.getItem("membershipId"),
+                managerName: localStorage.getItem("managerId"),
                 minutes: totalMinutes,
                 billDetail: billPayload,
                 createdBy: user?.id,
@@ -674,6 +676,8 @@ const UseMembership = () => {
                 return;
             }
             const totalMinutes = (selectedMemberShipPlan.hours + parseInt(body.extraHours)) * 60 || 0;
+            const selectedMembership = membershipList.find((m: any) => m.id === selectedMembershipID);
+            const updatedMembershipMinutes = totalMinutes + selectedMembership?.minutes;
             const gstRate = gstValue.csgst + gstValue.sgst;
             const billPayload = body.paymentDetail.map((item: PaymentDetailItem) => {
                 const { baseAmount, cgst, sgst, totalAmount } = calculateGSTDetails(item.amount, gstRate, true);
@@ -687,7 +691,7 @@ const UseMembership = () => {
                     sgst: sgst.toString(),
                     cardNo: item.cardNo,
                     referenceBy: body.referenceBy || "other",
-                    managerName: localStorage.getItem("membershipId"),
+                    managerName: localStorage.getItem("managerId"),
                     createdBy: user?.id,
                     grandTotal: totalAmount.toString(),
                     detail: [{
@@ -704,9 +708,11 @@ const UseMembership = () => {
                 ...body,
                 membershipID: selectedMembershipID,
                 customerID: BasicForm.getValues('customerID'),
+                managerName: localStorage.getItem("managerId"),
                 minutes: totalMinutes,
                 billDetail: billPayload,
                 createdBy: user?.id,
+                updatedMembershipMinutes
             };
 
             delete payload['referenceBy'];

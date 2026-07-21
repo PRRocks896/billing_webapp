@@ -233,6 +233,14 @@ const UseCustomer = () => {
                 isSortable: true
             },
             {
+                id: 'otp',
+                label: 'OTP',
+                align: 'left',
+                numeric: false,
+                disablePadding: false,
+                isSortable: false
+            },
+            {
                 id: 'isActive',
                 label: 'Status',
                 align: 'left',

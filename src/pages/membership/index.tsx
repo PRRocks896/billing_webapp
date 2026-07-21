@@ -796,7 +796,7 @@ const Membership = () => {
               * (redeeming) for a particular service/room/therapist.
               * Flow: Select Membership -> Fill Details -> OTP -> Deduct Valid Hours.
               * ========================================================================= */}
-            {isMembershipRedeemShow && (
+            {isMembershipRedeemShow && !isAddMembershipShow && (
                 <>
                     {selectedMembershipID ?
                         <>
@@ -1363,18 +1363,39 @@ const Membership = () => {
                                         </Typography>
                                     </Box>
                                 </Stack>
-                                <Box
-                                    sx={(t) => ({
-                                        px: 1.5,
-                                        py: 0.5,
-                                        borderRadius: 10,
-                                        background: alpha(t.palette.info.main, 0.12),
-                                        border: `1px solid ${alpha(t.palette.info.main, 0.25)}`,
-                                    })}
-                                >
-                                    <Typography variant="caption" fontWeight={700} color="info.main">
-                                        {membershipList.length} Record{membershipList.length !== 1 ? 's' : ''}
-                                    </Typography>
+                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                    {membershipList.length > 0 && !membershipList.find((m: any) => m.userID === user?.id) &&
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color="success"
+                                            onClick={() => {
+                                                setIsAddMembershipShow(true);
+                                                setIsMembershipRedeemShow(false);
+                                                fetchMembershipPlanDropDown();
+                                            }}
+                                            sx={(t) => ({
+                                                borderRadius: 10,
+                                                fontSize: '1rem',
+                                                fontWeight: 600
+                                            })}
+                                        >
+                                            Add Membership
+                                        </Button>
+                                    }
+                                    <Box
+                                        sx={(t) => ({
+                                            px: 1.5,
+                                            py: 0.5,
+                                            borderRadius: 10,
+                                            background: alpha(t.palette.info.main, 0.12),
+                                            border: `1px solid ${alpha(t.palette.info.main, 0.25)}`,
+                                        })}
+                                    >
+                                        <Typography variant="caption" fontWeight={700} color="info.main">
+                                            {membershipList.length} Record{membershipList.length !== 1 ? 's' : ''}
+                                        </Typography>
+                                    </Box>
                                 </Box>
                             </Box>
 
