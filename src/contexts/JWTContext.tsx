@@ -48,6 +48,9 @@ const setSession = (serviceToken?: string | null) => {
     localStorage.setItem('serviceToken', serviceToken);
   } else {
     localStorage.removeItem('serviceToken');
+    localStorage.removeItem('managerId');
+    localStorage.removeItem('managerName');
+    localStorage.removeItem('serverDate');
   }
 };
 
@@ -78,42 +81,77 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     return false;
   }, [state]);
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const serviceToken = window.localStorage.getItem('serviceToken');
-        if (serviceToken && verifyToken(serviceToken)) {
-          const response: any = await fetchLoggedInUserData();
-          if (response && response.success) {
-            const { accessModules, accessSectionModules, ...rest } = response.data;
-            dispatch({
-              type: LOGIN,
-              payload: {
-                isLoggedIn: true,
-                user: rest,
-                accessModules,
-                accessSectionModules
-              }
-            });
-          } else {
-            dispatch({
-              type: LOGOUT
-            });
-          }
+  const fetchLoginUser = async () => {
+    try {
+      const serviceToken = window.localStorage.getItem('serviceToken');
+      if (serviceToken && verifyToken(serviceToken)) {
+        const response: any = await fetchLoggedInUserData();
+        if (response && response.success) {
+          const { accessModules, accessSectionModules, ...rest } = response.data;
+          dispatch({
+            type: LOGIN,
+            payload: {
+              isLoggedIn: true,
+              user: rest,
+              accessModules,
+              accessSectionModules
+            }
+          });
         } else {
           dispatch({
             type: LOGOUT
           });
         }
-      } catch (err) {
-        console.error(err);
-        // dispatch({
-        //   type: LOGOUT
-        // });
+      } else {
+        dispatch({
+          type: LOGOUT
+        });
       }
-    };
+    } catch (err) {
+      console.error(err);
+      // dispatch({
+      //   type: LOGOUT
+      // });
+    }
+  }
 
-    init();
+  useEffect(() => {
+    fetchLoginUser();
+    // const init = async () => {
+    //   try {
+    //     const serviceToken = window.localStorage.getItem('serviceToken');
+    //     if (serviceToken && verifyToken(serviceToken)) {
+    //       const response: any = await fetchLoggedInUserData();
+    //       if (response && response.success) {
+    //         const { accessModules, accessSectionModules, ...rest } = response.data;
+    //         dispatch({
+    //           type: LOGIN,
+    //           payload: {
+    //             isLoggedIn: true,
+    //             user: rest,
+    //             accessModules,
+    //             accessSectionModules
+    //           }
+    //         });
+    //       } else {
+    //         dispatch({
+    //           type: LOGOUT
+    //         });
+    //       }
+    //     } else {
+    //       dispatch({
+    //         type: LOGOUT
+    //       });
+    //     }
+    //   } catch (err) {
+    //     console.error(err);
+    //     // dispatch({
+    //     //   type: LOGOUT
+    //     // });
+    //   }
+    // };
+
+    // init();
   }, []);
 
   const logout = async () => {
@@ -267,7 +305,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   // }
 
   return (
-    <JWTContext value={{ ...state, isBranch, loading: state.loading!, isAdmin, startLoading, stopLoading, logout, sendOtp, verifyOtp, accessRights, accessSectionRights }}>
+    <JWTContext value={{ ...state, isBranch, loading: state.loading!, isAdmin, fetchLoginUser, startLoading, stopLoading, logout, sendOtp, verifyOtp, accessRights, accessSectionRights }}>
       {children}
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.snackbar + 1000 }}

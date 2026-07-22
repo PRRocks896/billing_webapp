@@ -85,7 +85,7 @@ const UseAddEditDailyReport = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
     const { pathname } = useLocation();
-    const { user, isAdmin, accessRights, startLoading, stopLoading } = useAuth();
+    const { user, isAdmin, fetchLoginUser, accessRights, startLoading, stopLoading } = useAuth();
     const rights = accessRights(pathname);
 
     const [editManagerId, setEditManagerId] = useState<number[] | null>(null);
@@ -180,7 +180,7 @@ const UseAddEditDailyReport = () => {
     const fetchPreviousDateEntry = async () => {
         try {
             startLoading();
-            const { success, data }: any = await getDailyReportByPayload({
+            const { success, message, data }: any = await getDailyReportByPayload({
                 isActive: true,
                 isDeleted: false,
                 userID: isAdmin ? getValues('userID') : user?.id,
@@ -194,6 +194,15 @@ const UseAddEditDailyReport = () => {
                 setPreviousDateReport(null);
                 setIsOpeningBalanceDisable(false);
                 setValue('openBalance', '');
+                openSnackbar({
+                    open: true,
+                    message: message,
+                    variant: 'alert',
+                    severity: 'error',
+                    alert: {
+                        color: 'error'
+                    }
+                })
             }
         } catch (error: any) {
             openSnackbar({
@@ -367,7 +376,6 @@ const UseAddEditDailyReport = () => {
                 });
                 return;
             }
-
             openSnackbar({
                 open: true,
                 message: message || `Daily Report ${id ? 'Updated' : 'Added'} Successfully`,
@@ -375,7 +383,8 @@ const UseAddEditDailyReport = () => {
                 severity: 'success',
                 alert: { color: 'success' }
             });
-            navigate('/daily-report');
+            fetchLoginUser();
+            navigate(isAdmin ? '/daily-report' : '/dashboard');
 
         } catch (error: any) {
             openSnackbar({
