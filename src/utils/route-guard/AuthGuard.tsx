@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // project-imports
@@ -10,9 +10,22 @@ import { GuardProps } from 'types/auth';
 // ==============================|| AUTH GUARD ||============================== //
 
 export default function AuthGuard({ children }: GuardProps) {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const isPendingDailyReport = useMemo(() => {
+    if (user && user.hasOwnProperty("isLastDailyReportAdded")) {
+      return user.isLastDailyReportAdded;
+    }
+    return false;
+  }, [user]);
+
+  useEffect(() => {
+    if (isPendingDailyReport && location.pathname !== "/daily-report/add") {
+      navigate('/daily-report/add', { replace: true });
+    }
+  }, [isPendingDailyReport, location.pathname, navigate]);
 
   useEffect(() => {
     if (!isLoggedIn) {

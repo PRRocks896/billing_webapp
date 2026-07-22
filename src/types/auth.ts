@@ -88,6 +88,7 @@ type UserProfile = {
   "isAppLogin": boolean,
   "roomID": string | null,
   "isPendingDailyReport": boolean,
+  "isLastDailyReportAdded": boolean,
   "px_role": {
     "name": string
   },
