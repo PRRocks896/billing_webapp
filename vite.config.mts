@@ -38,24 +38,31 @@ export default defineConfig(({ mode }) => {
           background_color: '#000000',
           display: 'standalone',
           orientation: 'any',
-          start_url: '.',
+          start_url: '/',
           icons: [
             {
-              "src": "logo.jpg",
-              "sizes": "72x72 64x64 32x32 24x24 16x16",
-              "type": "image/jpg"
+              src: 'pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any'
             },
             {
-              "src": "logo.jpg",
-              "type": "image/jpg",
-              "sizes": "192x192",
-              "purpose": "any maskable"
+              src: 'pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any'
             },
             {
-              "src": "logo.jpg",
-              "type": "image/jpg",
-              "sizes": "512x512",
-              "purpose": "any maskable"
+              src: 'pwa-maskable-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'maskable'
+            },
+            {
+              src: 'pwa-maskable-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable'
             }
           ]
         },
