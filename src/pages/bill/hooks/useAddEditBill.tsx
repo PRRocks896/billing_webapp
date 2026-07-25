@@ -208,6 +208,7 @@ const UseAddEditBill = () => {
     const toggleAddCustomerModal = useCallback(() => setIsAddCustomerOpen(prev => !prev), []);
     const toggleViewDetailOpen = useCallback(() => setIsViewDetailOpen(prev => !prev), []);
     const togglePaymentModal = useCallback(() => setIsPaymentModalOpen(prev => !prev), []);
+    const toggleCustomerBillDataModalOpen = useCallback(() => setIsCustomerBillDataModalOpen(prev => !prev), []);
 
     // ------------------------------------------------------------------------
     // Actions: Customer Search (Debounced)
@@ -614,6 +615,7 @@ const UseAddEditBill = () => {
         toggleViewDetailOpen,
         searchCustomerViaPhone,
         toggleAddCustomerModal,
+        toggleCustomerBillDataModalOpen
     };
 };
 

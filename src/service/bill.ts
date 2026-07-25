@@ -12,6 +12,10 @@ export const searchViaDashboard = async (where: any) => {
     return await post(`${CREATE_BILL_API}/search-via-dashboard`, where);
 }
 
+export const getBillListPayload = async (body: any) => {
+    return await post(`${CREATE_BILL_API}/find`, body);
+}
+
 export const getBillList = async (body: any) => {
     return await post(BILL_LIST_API, body);
 };

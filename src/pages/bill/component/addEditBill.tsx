@@ -25,6 +25,7 @@ import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Radio from "@mui/material/Radio";
+import CustomerBillData from "components/CustomerBillData";
 
 // ─── Section Header ────────────────────────────────────────────────────────────
 export const SectionHeader = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
@@ -60,6 +61,7 @@ const AddEditBill = () => {
         isAddCustomerOpen,
         isPaymentModalOpen,
         isCustomerSearching,
+        isCustomerBillDataModalOpen,
         setValue,
         getValues,
         handleBack,
@@ -71,6 +73,7 @@ const AddEditBill = () => {
         toggleViewDetailOpen,
         searchCustomerViaPhone,
         toggleAddCustomerModal,
+        toggleCustomerBillDataModalOpen
     } = UseAddEditBill();
 
 
@@ -148,30 +151,32 @@ const AddEditBill = () => {
                                         />
                                     </Grid>
                                     <Grid size={{ xs: 12, sm: 4 }}>
-                                        {/* <Stack
+                                        <Stack
                                             direction="row"
                                             spacing={1}
                                             sx={{ alignItems: 'stretch', height: '100%' }}
                                         >
+                                            {getValues('Phone') && (
+                                                <Button
+                                                    fullWidth
+                                                    variant="contained"
+                                                    startIcon={<SearchNormal size={16} />}
+                                                    onClick={() => toggleCustomerBillDataModalOpen()}
+                                                    sx={{ whiteSpace: 'nowrap', py: { xs: 1.5, sm: 1.8 } }}
+                                                >
+                                                    <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>View Bills</Box>
+                                                </Button>
+                                            )}
                                             <Button
                                                 fullWidth
-                                                variant="outlined"
-                                                startIcon={<SearchNormal size={16} />}
-                                                onClick={() => { }}
+                                                variant="contained"
+                                                startIcon={<Add size={16} />}
+                                                onClick={toggleAddCustomerModal}
                                                 sx={{ whiteSpace: 'nowrap', py: { xs: 1.5, sm: 1.8 } }}
                                             >
-                                                <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>View Bills</Box>
-                                            </Button> */}
-                                        <Button
-                                            fullWidth
-                                            variant="contained"
-                                            startIcon={<Add size={16} />}
-                                            onClick={toggleAddCustomerModal}
-                                            sx={{ whiteSpace: 'nowrap', py: { xs: 1.5, sm: 1.8 } }}
-                                        >
-                                            New
-                                        </Button>
-                                        {/* </Stack> */}
+                                                New
+                                            </Button>
+                                        </Stack>
                                     </Grid>
                                     <Grid size={{ xs: 12, sm: 6 }}>
                                         <Controller
@@ -648,6 +653,11 @@ const AddEditBill = () => {
                         setValue("Phone", customer.name ?? '');
                     }
                 }}
+            />
+            <CustomerBillData
+                open={isCustomerBillDataModalOpen}
+                handleClose={toggleCustomerBillDataModalOpen}
+                customerPhone={getValues('customerID')}
             />
         </>
     );
