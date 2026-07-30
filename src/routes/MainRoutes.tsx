@@ -255,7 +255,8 @@ const PromoCode = Loadable(lazy(() => import('pages/website-management/promo-cod
 const AddEditPromoCode = Loadable(lazy(() => import('pages/website-management/promo-code/addEditPromoCode')));
 const RedeemBook = Loadable(lazy(() => import('pages/redeem-booking')));
 const BookingService = Loadable(lazy(() => import('pages/booking-service')));
-
+const LaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock')));
+const AddEditLaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock/addEditStock')));
 // ==============================|| MAIN ROUTES ||============================== //
 
 import { RoleProvider } from 'pages/user-management/role/context/roleContext';
@@ -677,6 +678,23 @@ const MainRoutes: RouteObject = {
                 {
                   path: ':mode/:id',
                   element: <AddEditLaundryReceiver />
+                }
+              ]
+            },
+            {
+              path: 'laundry-stock',
+              children: [
+                {
+                  path: '',
+                  element: <LaundryStock />
+                },
+                {
+                  path: ':mode',
+                  element: <AddEditLaundryStock />
+                },
+                {
+                  path: ':mode/:id',
+                  element: <AddEditLaundryStock />
                 }
               ]
             },
