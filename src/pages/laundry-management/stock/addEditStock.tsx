@@ -25,7 +25,6 @@ const AddEditStock = () => {
         isEdit,
         fields,
         control,
-        isAdmin,
         branchList,
         isSubmitting,
         laundryItemList,
@@ -98,50 +97,48 @@ const AddEditStock = () => {
                 <Box sx={{ p: { xs: 2.5, md: 4 } }}>
                     <Grid container spacing={5}>
                         {/* ── Section 1: Handover Identity ─────────────────── */}
-                        {isAdmin &&
-                            <Grid size={{ xs: 12 }}>
-                                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 3 }}>
-                                    <InfoCircle size={24} color={theme.palette.primary.main} variant="Bulk" />
-                                    <Typography variant="h5" fontWeight={700}>Assignment Details</Typography>
-                                </Stack>
-                                <Grid container spacing={3}>
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <Controller
-                                            name="userID"
-                                            control={control}
-                                            rules={{ required: 'Branch selection is required' }}
-                                            render={({ field: { value, onChange }, fieldState: { error } }) => (
-                                                <Autocomplete
-                                                    fullWidth
-                                                    options={branchList}
-                                                    getOptionLabel={(option: any) => option.lastName}
-                                                    value={branchList.find((item) => item.id === value) || null}
-                                                    onChange={(_, newValue: any) => onChange(newValue ? newValue.id : null)}
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            label="Branch"
-                                                            placeholder="Search or Select Branch"
-                                                            error={!!error}
-                                                            helperText={error?.message}
-                                                            InputProps={{
-                                                                ...params.InputProps,
-                                                                startAdornment: (
-                                                                    <>
-                                                                        <InputAdornment position="start" sx={{ ml: 1 }}><Shop size={20} color={theme.palette.text.disabled} /></InputAdornment>
-                                                                        {params.InputProps.startAdornment}
-                                                                    </>
-                                                                )
-                                                            }}
-                                                        />
-                                                    )}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
+                        <Grid size={{ xs: 12 }}>
+                            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 3 }}>
+                                <InfoCircle size={24} color={theme.palette.primary.main} variant="Bulk" />
+                                <Typography variant="h5" fontWeight={700}>Assignment Details</Typography>
+                            </Stack>
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, sm: 6 }}>
+                                    <Controller
+                                        name="userID"
+                                        control={control}
+                                        rules={{ required: 'Branch selection is required' }}
+                                        render={({ field: { value, onChange }, fieldState: { error } }) => (
+                                            <Autocomplete
+                                                fullWidth
+                                                options={branchList}
+                                                getOptionLabel={(option: any) => option.lastName}
+                                                value={branchList.find((item) => item.id === value) || null}
+                                                onChange={(_, newValue: any) => onChange(newValue ? newValue.id : null)}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Branch"
+                                                        placeholder="Search or Select Branch"
+                                                        error={!!error}
+                                                        helperText={error?.message}
+                                                        InputProps={{
+                                                            ...params.InputProps,
+                                                            startAdornment: (
+                                                                <>
+                                                                    <InputAdornment position="start" sx={{ ml: 1 }}><Shop size={20} color={theme.palette.text.disabled} /></InputAdornment>
+                                                                    {params.InputProps.startAdornment}
+                                                                </>
+                                                            )
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        )}
+                                    />
                                 </Grid>
                             </Grid>
-                        }
+                        </Grid>
 
                         <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>
 

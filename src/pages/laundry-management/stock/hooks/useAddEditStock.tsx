@@ -30,7 +30,7 @@ const defaultValues: LaundryStockType = {
 const UseAddEditStock = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
-    const { startLoading, stopLoading, user, isAdmin } = useAuth();
+    const { startLoading, stopLoading, user } = useAuth();
 
     const [laundryItemList, setLaundryItemList] = useState<any[]>([]);
     const [branchList, setBranchList] = useState<any[]>([]);
@@ -135,7 +135,7 @@ const UseAddEditStock = () => {
             if (mode === "add") {
                 payload = {
                     ...payload,
-                    userID: isAdmin ? data.userID : user?.id!,
+                    userID: data.userID,
                     createdBy: user?.id!,
                     items: payload.detail.map((item: any) => ({
                         laundryItemID: Number(item.laundryItemID),
@@ -145,7 +145,7 @@ const UseAddEditStock = () => {
             } else {
                 payload = {
                     ...payload,
-                    userID: isAdmin ? data.userID : user?.id,
+                    userID: data.userID,
                     updatedBy: user?.id,
                     laundryItemID: payload.detail[0].laundryItemID,
                     qty: parseInt(payload.detail[0].qty)
@@ -232,7 +232,7 @@ const UseAddEditStock = () => {
             }
         }
         fetchDropdownList();
-    }, [isAdmin]);
+    }, []);
 
     const title: string = useMemo(() => {
         if (mode && mode === 'edit' && id) {
@@ -257,7 +257,6 @@ const UseAddEditStock = () => {
         fields,
         isEdit,
         control,
-        isAdmin,
         branchList,
         isSubmitting,
         laundryItemList,

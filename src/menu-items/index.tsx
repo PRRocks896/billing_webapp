@@ -277,6 +277,13 @@ const menuItems: { items: NavItemType[] } = {
               breadcrumbs: false
             },
             {
+              id: 'stock-history',
+              title: 'Laundry Stock History',
+              url: '/laundry-management/laundry-stock-history',
+              type: 'item',
+              breadcrumbs: false
+            },
+            {
               id: 'management',
               title: 'Laundry Management',
               url: '/laundry-management/laundry-management',

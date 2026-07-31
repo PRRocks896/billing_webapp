@@ -257,6 +257,7 @@ const RedeemBook = Loadable(lazy(() => import('pages/redeem-booking')));
 const BookingService = Loadable(lazy(() => import('pages/booking-service')));
 const LaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock')));
 const AddEditLaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock/addEditStock')));
+const LaundryStockHistory = Loadable(lazy(() => import('pages/laundry-management/stock-history')));
 // ==============================|| MAIN ROUTES ||============================== //
 
 import { RoleProvider } from 'pages/user-management/role/context/roleContext';
@@ -695,6 +696,15 @@ const MainRoutes: RouteObject = {
                 {
                   path: ':mode/:id',
                   element: <AddEditLaundryStock />
+                }
+              ]
+            },
+            {
+              path: 'laundry-stock-history',
+              children: [
+                {
+                  path: '',
+                  element: <LaundryStockHistory />
                 }
               ]
             },

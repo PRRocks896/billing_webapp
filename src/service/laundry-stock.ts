@@ -9,6 +9,10 @@ export const bulkCreateLaundaryStock = async (body: any) => {
     return await post(`${LAUNDRYSTOCK}/bulkcreate`, body);
 };
 
+export const createLaundryStock = async (body: any) => {
+    return await post(`${LAUNDRYSTOCK}`, body);
+}
+
 export const deleteLaundaryStock = async (id: number) => {
     return await del(`${LAUNDRYSTOCK}/${id}`);
 };

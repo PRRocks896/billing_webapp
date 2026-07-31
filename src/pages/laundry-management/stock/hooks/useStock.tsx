@@ -4,12 +4,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "hooks/useAuth";
 
 import { ROWS } from "utils/constant";
-import { deleteLaundaryStock, updateLaundaryStock, getLaundryStockList } from "service/laundry-stock";
+import { deleteLaundaryStock, createLaundryStock, getLaundryStockList } from "service/laundry-stock";
 import { openSnackbar } from "api/snackbar";
 import { HeadCell, ArrangementOrder } from "types/table";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { Edit, Trash } from "iconsax-reactjs";
+import Button from "@mui/material/Button";
 
 const UseStock = () => {
     const navigate = useNavigate();
@@ -26,9 +27,18 @@ const UseStock = () => {
     const [order, setOrder] = useState<ArrangementOrder>('desc');
     const [orderBy, setOrderBy] = useState<string>('createdAt');
 
+    const [isRemoveQtyVisible, setIsRemoveQtyVisible] = useState<boolean>(false);
+
     const handleAdd = () => navigate("/laundry-management/laundry-stock/add");
 
     const handleEdit = (id: number) => navigate(`/laundry-management/laundry-stock/edit/${id}`);
+
+    const toggleRemoveQtyModal = (id?: number) => {
+        if (id) {
+            setSelectedId(id);
+        }
+        setIsRemoveQtyVisible(!isRemoveQtyVisible);
+    };
 
     const handleDelete = (id: number) => {
         setSelectedId(id);
@@ -207,28 +217,43 @@ const UseStock = () => {
                 renderCell: (row: any) => row?.qty
             },
             {
-                id: 'actions',
-                label: 'Actions',
+                id: 'remove',
+                label: 'Action',
                 numeric: false,
-                disablePadding: false,
                 isSortable: false,
                 renderCell: (row: any) => {
                     return (
                         <Box>
-                            {rights.edit &&
-                                <IconButton onClick={() => handleEdit(row.id)}>
-                                    <Edit />
-                                </IconButton>
-                            }
-                            {rights.delete &&
-                                <IconButton onClick={() => handleDelete(row.id)}>
-                                    <Trash />
-                                </IconButton>
-                            }
+                            <Button variant="contained" color="error" onClick={() => toggleRemoveQtyModal(row.id)}>
+                                Remove Item Qty
+                            </Button>
                         </Box>
                     )
                 }
             }
+            // {
+            //     id: 'actions',
+            //     label: 'Actions',
+            //     numeric: false,
+            //     disablePadding: false,
+            //     isSortable: false,
+            //     renderCell: (row: any) => {
+            //         return (
+            //             <Box>
+            //                 {/* {rights.edit &&
+            //                     <IconButton onClick={() => handleEdit(row.id)}>
+            //                         <Edit />
+            //                     </IconButton>
+            //                 } */}
+            //                 {(isAdmin) &&
+            //                     <IconButton onClick={() => handleDelete(row.id)}>
+            //                         <Trash />
+            //                     </IconButton>
+            //                 }
+            //             </Box>
+            //         )
+            //     }
+            // }
         ];
 
         if (isAdmin) {
@@ -241,9 +266,94 @@ const UseStock = () => {
                 sortable: true,
                 renderCell: (row: any) => row?.px_user?.lastName
             })
+            columns.splice(3, 0, {
+                id: 'actions',
+                label: 'Actions',
+                numeric: false,
+                disablePadding: false,
+                isSortable: false,
+                renderCell: (row: any) => {
+                    return (
+                        <Box>
+                            {/* {rights.edit &&
+                                <IconButton onClick={() => handleEdit(row.id)}>
+                                    <Edit />
+                                </IconButton>
+                            } */}
+                            {(isAdmin) &&
+                                <IconButton onClick={() => handleDelete(row.id)}>
+                                    <Trash />
+                                </IconButton>
+                            }
+                        </Box>
+                    )
+                }
+            })
         }
         return columns;
     }, [rights, isAdmin]);
+
+    const selectedRow = useMemo(() => {
+        return list.find((item: any) => item.id === selectedId) || null;
+    }, [list, selectedId]);
+
+    const handleRemoveQty = async (qty: any) => {
+        try {
+            startLoading();
+            if (qty <= 0) {
+                openSnackbar({
+                    open: true,
+                    message: 'Invalid quantity',
+                    variant: 'alert',
+                    alert: {
+                        color: 'error'
+                    }
+                })
+                return;
+            }
+            if (qty > selectedRow?.qty) {
+                openSnackbar({
+                    open: true,
+                    message: 'Invalid quantity',
+                    variant: 'alert',
+                    alert: {
+                        color: 'error'
+                    }
+                })
+                return;
+            }
+            const { success, message, data }: any = await createLaundryStock({
+                laundryItemID: selectedRow?.laundryItemID,
+                userID: selectedRow?.userID,
+                qty: qty,
+                type: 'REMOVE'
+            });
+            openSnackbar({
+                open: true,
+                message: success ? (message || 'Quantity removed successfully') : (message || 'Something went wrong'),
+                variant: 'alert',
+                severity: success ? 'success' : 'error',
+                alert: {
+                    color: success ? 'success' : 'error'
+                }
+            });
+            if (success) {
+                fetch();
+            }
+        } catch (error) {
+            openSnackbar({
+                open: true,
+                message: 'Invalid quantity',
+                variant: 'alert',
+                severity: 'error',
+                alert: {
+                    color: 'error'
+                }
+            })
+        } finally {
+            stopLoading();
+        }
+    }
 
     return {
         list,
@@ -251,6 +361,8 @@ const UseStock = () => {
         rows,
         rights,
         Column,
+        selectedRow,
+        isRemoveQtyVisible,
         isVisible,
         totalCount,
         setPage,
@@ -259,11 +371,14 @@ const UseStock = () => {
         setOrder,
         orderBy,
         setOrderBy,
-        handleRequestSort,
         handleAdd,
         searchHandler,
+        handleRemoveQty,
         onDeleteHandler,
-        closeConfirmModal
+        handleRequestSort,
+        closeConfirmModal,
+        toggleRemoveQtyModal,
+        setIsRemoveQtyVisible
     }
 };
 

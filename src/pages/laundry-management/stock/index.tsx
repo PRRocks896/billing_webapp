@@ -10,6 +10,7 @@ import { Box1 } from "iconsax-reactjs";
 import MainCard from "components/MainCard";
 
 import UseStock from "./hooks/useStock";
+import QtyChangeDailogBox from "components/QtyChangeDailogBox";
 
 const Stock = () => {
     const {
@@ -18,8 +19,10 @@ const Stock = () => {
         rows,
         rights,
         Column,
+        selectedRow,
         isVisible,
         totalCount,
+        isRemoveQtyVisible,
         setPage,
         setRows,
         order,
@@ -30,7 +33,10 @@ const Stock = () => {
         handleAdd,
         searchHandler,
         onDeleteHandler,
-        closeConfirmModal
+        handleRemoveQty,
+        closeConfirmModal,
+        toggleRemoveQtyModal,
+        setIsRemoveQtyVisible,
     } = UseStock();
 
     const title = "Laundry Stock";
@@ -91,6 +97,15 @@ const Stock = () => {
                     isError={true}
                     handleClose={closeConfirmModal}
                     handleSubmit={onDeleteHandler}
+                />
+            )}
+            {isRemoveQtyVisible && (
+                <QtyChangeDailogBox
+                    open={isRemoveQtyVisible}
+                    currentQty={selectedRow?.qty || 0}
+                    onClose={() => setIsRemoveQtyVisible(false)}
+                    handleSubmit={(removeQty) => handleRemoveQty(removeQty)}
+                    title="Remove Stock Quantity"
                 />
             )}
         </Stack>

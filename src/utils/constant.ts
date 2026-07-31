@@ -177,6 +177,8 @@ export const LAUNDARYMANAGEMENT = "api/laundry-management";
 
 export const LAUNDRYSTOCK = "api/laundry-stock";
 
+export const LAUNDRYSTOCKHISTORY = "api/laundry-stock-history";
+
 export const STOCK = "api/stock";
 
 export const LAUNDRYRECEIVER = "api/laundry-receiver";
