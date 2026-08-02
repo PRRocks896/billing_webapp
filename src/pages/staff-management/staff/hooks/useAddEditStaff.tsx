@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEmployeeTypePayload } from "service/employee-type";
-import { createStaff, getStaffById, getStaff, updateStaff, staffTransferRequest, staffTransferVerify, verifyIfscCode } from "service/staff";
+import { sendOtp, sendStaffOtp, verifyOtp, createStaff, getStaffById, getStaff, updateStaff, staffTransferRequest, staffTransferVerify, verifyIfscCode } from "service/staff";
 import { getStatesList } from "service/state";
 import { getUserList } from "service/user";
 import { convertToFormData } from "utils/helper";
@@ -92,8 +92,10 @@ const UseAddEditStaff = () => {
     const [employeeTypeList, setEmployeeTypeList] = useState<any[]>([]);
     const [branchList, setBranchList] = useState<any[]>([]);
     const [isShowBankDetail, setIsShowBankDetail] = useState<boolean>(true);
-    const [verifiedOtp, setVerifiedOtp] = useState<boolean>(false);
-    const [openVerifyOtpModal, setOpenVerifyOtpModal] = useState<boolean>(false);
+    const [adminOtpVerified, setAdminOtpVerified] = useState<boolean>(false);
+    const [staffOtpVerified, setStaffOtpVerified] = useState<boolean>(false);
+    const [openTransferOtpModal, setOpenTransferOtpModal] = useState<boolean>(false);
+    const [openAddStaffOtpModal, setOpenAddStaffOtpModal] = useState<boolean>(false);
     const [isStaffNoOtpSend, setIsStaffNoOtpSend] = useState<boolean>(false);
 
     const [isStaffFound, setIsStaffFound] = useState<boolean | null>(null);
@@ -385,7 +387,7 @@ const UseAddEditStaff = () => {
                         color: 'success'
                     }
                 });
-                setOpenVerifyOtpModal(false);
+                setOpenTransferOtpModal(false);
                 setStaffData(null);
                 setStaffPhoneNumber('');
                 setIsStaffFound(null);
@@ -421,7 +423,7 @@ const UseAddEditStaff = () => {
                 userID: user?.id
             });
             if (success) {
-                setOpenVerifyOtpModal(true);
+                setOpenTransferOtpModal(true);
                 openSnackbar({
                     open: true,
                     message: message || 'Staff transfer request sent successfully',
@@ -444,6 +446,118 @@ const UseAddEditStaff = () => {
             openSnackbar({
                 open: true,
                 message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
+                variant: 'alert',
+                alert: {
+                    color: 'error'
+                }
+            })
+        } finally {
+            stopLoading();
+        }
+    }
+
+    const handleSendOtp = async (info: any) => {
+        try {
+            startLoading();
+            const { success, message }: any = await sendOtp({
+                name: info.name,
+                salary: info.salary,
+                staffName: `${info.nickName} (${employeeTypeList.find((item) => item.id === parseInt(info.employeeTypeID))?.name}), Salary: ${info.salary}/-`,
+                branchName: `${user?.lastName}`
+            });
+            if (success) {
+                setOpenAddStaffOtpModal(true);
+            } else {
+                openSnackbar({
+                    open: true,
+                    message: message || 'Something went Wrong',
+                    variant: 'alert',
+                    alert: {
+                        color: 'error'
+                    }
+                });
+            }
+        } catch (err: any) {
+            openSnackbar({
+                open: true,
+                message: err?.message || err?.messageCode || (err as Error).message || 'Something went wrong',
+                variant: 'alert',
+                alert: {
+                    color: 'error'
+                }
+            })
+        } finally {
+            stopLoading();
+        }
+    }
+
+    const handleStaffMobileSendOtp = async () => {
+        try {
+            startLoading();
+            const { success, message }: any = await sendStaffOtp({
+                mobile: getValues("phoneNumber"),
+                petName: getValues("nickName"),
+                originalName: getValues("name"),
+                branchName: user?.lastName
+            });
+            if (success) {
+                setOpenAddStaffOtpModal(true);
+                setIsStaffNoOtpSend(true);
+            } else {
+                openSnackbar({
+                    open: true,
+                    message: message || 'Something went Wrong',
+                    variant: 'alert',
+                    alert: {
+                        color: 'error'
+                    }
+                });
+            }
+        } catch (err: any) {
+            openSnackbar({
+                open: true,
+                message: err?.message || err?.messageCode || (err as Error).message || 'Something went wrong',
+                variant: 'alert',
+                alert: {
+                    color: 'error'
+                }
+            })
+        } finally {
+            stopLoading();
+        }
+    }
+
+    const handleVerifyOtp = async (otp: string) => {
+        try {
+            startLoading();
+            const { success, message }: any = await verifyOtp({
+                otp
+            });
+            if (success) {
+                setOpenAddStaffOtpModal(false);
+                if (!isStaffNoOtpSend) {
+                    // Step 1 done: Admin OTP verified → now send Staff mobile OTP
+                    setAdminOtpVerified(true);
+                    await handleStaffMobileSendOtp();
+                    return;
+                }
+                // Step 2 done: Staff mobile OTP verified → auto-submit
+                setStaffOtpVerified(true);
+                onSubmit(getValues());
+            } else {
+                openSnackbar({
+                    open: true,
+                    message: message || 'Something went Wrong',
+                    variant: 'alert',
+                    alert: {
+                        color: 'error'
+                    }
+                });
+            }
+        } catch (err: any) {
+            openSnackbar({
+                open: true,
+                message: err?.message || err?.messageCode || (err as Error).message || 'Something went wrong',
                 variant: 'alert',
                 alert: {
                     color: 'error'
@@ -593,7 +707,8 @@ const UseAddEditStaff = () => {
         branchList,
         isMarriage,
         statesList,
-        verifiedOtp,
+        adminOtpVerified,
+        staffOtpVerified,
         isStaffFound,
         isSubmitting,
         ifscVerified,
@@ -603,7 +718,8 @@ const UseAddEditStaff = () => {
         employeeTypeList,
         isSameBranchStaff,
         isShowBankDetail,
-        openVerifyOtpModal,
+        openTransferOtpModal,
+        openAddStaffOtpModal,
         onSubmit,
         setValue,
         getValues,
@@ -611,11 +727,15 @@ const UseAddEditStaff = () => {
         handleBack,
         handleSubmit,
         setIsStaffFound,
+        handleSendOtp,
+        handleVerifyOtp,
+        handleIfscVerify,
         toggleIsStaffFound,
         setStaffPhoneNumber,
         setIsShowBankDetail,
-        setOpenVerifyOtpModal,
-        handleIfscVerify,
+        setOpenTransferOtpModal,
+        setOpenAddStaffOtpModal,
+        handleStaffMobileSendOtp,
         handleStaffTransferVerify,
         handleStaffTransferRequest
     }

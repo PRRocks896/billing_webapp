@@ -58,13 +58,17 @@ const AddEditStaff = () => {
         statesList,
         isMarriage,
         branchList,
+        adminOtpVerified,
+        staffOtpVerified,
+        isStaffNoOtpSend,
         isSubmitting,
         isStaffFound,
         countryCodeList,
         employeeTypeList,
         isShowBankDetail,
         staffPhoneNumber,
-        openVerifyOtpModal,
+        openTransferOtpModal,
+        openAddStaffOtpModal,
         isSameBranchStaff,
         ifscVerified,
         setValue,
@@ -73,12 +77,16 @@ const AddEditStaff = () => {
         getValues,
         handleBack,
         handleSubmit,
-        handleIfscVerify,
+        handleSendOtp,
         setIsStaffFound,
+        handleVerifyOtp,
+        handleIfscVerify,
         toggleIsStaffFound,
         setStaffPhoneNumber,
         setIsShowBankDetail,
-        setOpenVerifyOtpModal,
+        setOpenTransferOtpModal,
+        setOpenAddStaffOtpModal,
+        handleStaffMobileSendOtp,
         handleStaffTransferVerify,
         handleStaffTransferRequest
     } = useAddEditStaff();
@@ -396,19 +404,19 @@ const AddEditStaff = () => {
                     </MainCard>
                 )}
 
-                {openVerifyOtpModal && (
+                {openTransferOtpModal && (
                     <OtpModal
                         title={"Verify Staff Phone Number"}
-                        isOpen={openVerifyOtpModal}
-                        setOpen={(value: boolean) => setOpenVerifyOtpModal(value)}
-                        handleCancelVerifyPermission={() => setOpenVerifyOtpModal(false)}
+                        isOpen={openTransferOtpModal}
+                        setOpen={(value: boolean) => setOpenTransferOtpModal(value)}
+                        handleCancelVerifyPermission={() => setOpenTransferOtpModal(false)}
                         handleEnterOtp={handleStaffTransferVerify}
                         resendOtp={handleStaffTransferRequest}
                     />
                 )}
             </Box>
             {(isEdit || (isStaffFound !== null && isStaffFound === false) /*|| (isStaffFound === true && !isAdmin)*/) &&
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(isEdit || staffOtpVerified || isAdmin ? onSubmit : handleSendOtp)}>
                     <MainCard
                         content={false}
                         sx={{
@@ -1257,6 +1265,16 @@ const AddEditStaff = () => {
                             </Button>
                         </Box>
                     </MainCard>
+                    {openAddStaffOtpModal &&
+                        <OtpModal
+                            title={isStaffNoOtpSend ? "Verify Staff Mobile No Via OTP" : "Verify Staff Add Permission OTP"}
+                            isOpen={openAddStaffOtpModal}
+                            setOpen={(value: boolean) => setOpenAddStaffOtpModal(value)}
+                            handleCancelVerifyPermission={() => setOpenAddStaffOtpModal(false)}
+                            handleEnterOtp={handleVerifyOtp}
+                            resendOtp={handleSubmit(isStaffNoOtpSend ? handleStaffMobileSendOtp : handleSendOtp)}
+                        />
+                    }
                 </form>
             }
         </>
