@@ -4,7 +4,7 @@ import MainCard from "components/MainCard";
 import { Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Add, ArrowLeft, Printer, SearchNormal, ProfileCircle, Calendar, Box1, Receipt1 } from "iconsax-reactjs";
+import { Add, ArrowLeft, Printer, SearchNormal, ProfileCircle, Calendar, Box1, Receipt1, TicketDiscount, CloseCircle } from "iconsax-reactjs";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
 import AddCustomerModal from "pages/customer/component/AddCustomerModal";
 import PaymentModal from "../modal/paymentModal";
@@ -62,6 +63,14 @@ const AddEditBill = () => {
         isPaymentModalOpen,
         isCustomerSearching,
         isCustomerBillDataModalOpen,
+        // Gift Card
+        giftCard,
+        giftCardCode,
+        isGiftCardValidating,
+        giftCardDeduction,
+        setGiftCardCode,
+        validateGiftCardHandler,
+        clearGiftCard,
         setValue,
         getValues,
         handleBack,
@@ -80,7 +89,13 @@ const AddEditBill = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(isEdit ? handlePrint : togglePaymentModal)}>
+            <form onSubmit={handleSubmit(
+                isEdit
+                    ? handlePrint
+                    : (giftCard && giftCardDeduction.customerPayable <= 0)
+                        ? handlePrint  // Scenario 2: no payment needed, submit directly
+                        : togglePaymentModal
+            )}>
                 <Grid container spacing={3}>
 
                     {/* ── Main Form Column ───────────────────────────────────────── */}
@@ -390,6 +405,100 @@ const AddEditBill = () => {
                                 </Grid>
                             </MainCard>
 
+                            {/* ── Section 2.5: Gift Card (Add mode only) ───────── */}
+                            {!isEdit && (
+                                <MainCard>
+                                    <SectionHeader icon={<TicketDiscount size={18} />} label="Gift Card" />
+                                    <Grid container spacing={2} alignItems="center">
+                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                            <TextField
+                                                value={giftCardCode}
+                                                onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())}
+                                                label="Gift Card Code"
+                                                placeholder="Enter gift card code (e.g., GABCDE12)"
+                                                fullWidth
+                                                disabled={!!giftCard || isGiftCardValidating}
+                                                helperText={giftCard ? `✅ Valid — ₹${giftCard.amount} Gift Card` : 'Enter the gift card code to apply'}
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <TicketDiscount size={16} />
+                                                        </InputAdornment>
+                                                    ),
+                                                    ...(giftCard && {
+                                                        endAdornment: (
+                                                            <InputAdornment position="end">
+                                                                <IconButton size="small" onClick={clearGiftCard} color="error">
+                                                                    <CloseCircle size={16} />
+                                                                </IconButton>
+                                                            </InputAdornment>
+                                                        )
+                                                    })
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid size={{ xs: 12, sm: 3 }}>
+                                            {!giftCard ? (
+                                                <Button
+                                                    variant="contained"
+                                                    fullWidth
+                                                    onClick={() => validateGiftCardHandler(giftCardCode)}
+                                                    disabled={isGiftCardValidating || !giftCardCode}
+                                                    sx={{ py: 1.8 }}
+                                                >
+                                                    {isGiftCardValidating ? <CircularProgress size={20} /> : 'Validate'}
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    variant="outlined"
+                                                    color="error"
+                                                    fullWidth
+                                                    onClick={clearGiftCard}
+                                                    sx={{ py: 1.8 }}
+                                                >
+                                                    Remove
+                                                </Button>
+                                            )}
+                                        </Grid>
+                                        {giftCard && (
+                                            <Grid size={{ xs: 12 }}>
+                                                <Divider sx={{ my: 1 }} />
+                                                <Stack spacing={0.5}>
+                                                    <Stack direction="row" justifyContent="space-between">
+                                                        <Typography variant="body2" color="text.secondary">Gift Card Amount</Typography>
+                                                        <Typography variant="body2" fontWeight={600} color="success.main">₹ {giftCardDeduction.giftCardAmount}/-</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" justifyContent="space-between">
+                                                        <Typography variant="body2" color="text.secondary">Service Total</Typography>
+                                                        <Typography variant="body2" fontWeight={600}>₹ {getValues('grandTotal') || '0'}/-</Typography>
+                                                    </Stack>
+                                                    <Divider />
+                                                    {giftCardDeduction.customerPayable > 0 ? (
+                                                        <Stack direction="row" justifyContent="space-between">
+                                                            <Typography variant="body2" fontWeight={700}>Customer Payable</Typography>
+                                                            <Typography variant="body2" fontWeight={700} color="warning.main">₹ {giftCardDeduction.customerPayable.toFixed(2)}/-</Typography>
+                                                        </Stack>
+                                                    ) : (
+                                                        <>
+                                                            <Stack direction="row" justifyContent="space-between">
+                                                                <Typography variant="body2" fontWeight={700}>Customer Payable</Typography>
+                                                                <Typography variant="body2" fontWeight={700} color="success.main">₹ 0 (Fully Covered)</Typography>
+                                                            </Stack>
+                                                            {giftCardDeduction.remainingExpires > 0 && (
+                                                                <Stack direction="row" justifyContent="space-between">
+                                                                    <Typography variant="caption" color="text.secondary">Remaining Expires</Typography>
+                                                                    <Typography variant="caption" color="error.main">₹ {giftCardDeduction.remainingExpires.toFixed(2)}</Typography>
+                                                                </Stack>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </Stack>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                </MainCard>
+                            )}
+
                             {/* ── Section 3: Assignment ────────────────────────── */}
                             <MainCard>
                                 <SectionHeader icon={<Receipt1 size={18} />} label="Assignment & Reference" />
@@ -587,6 +696,22 @@ const AddEditBill = () => {
                                     )}
                                 />
 
+                                {/* Gift Card Deduction in Summary */}
+                                {giftCard && giftCardDeduction.applied && (
+                                    <>
+                                        <SummaryRow label="Gift Card" value={`- ₹ ${giftCardDeduction.giftCardAmount}/-`} />
+                                        <Divider sx={{ my: 0.5 }} />
+                                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ py: 0.5 }}>
+                                            <Typography variant="subtitle2" fontWeight={700} color={giftCardDeduction.customerPayable > 0 ? 'warning.main' : 'success.main'}>
+                                                {giftCardDeduction.customerPayable > 0 ? 'Payable' : 'Fully Covered'}
+                                            </Typography>
+                                            <Typography variant="subtitle1" fontWeight={700} color={giftCardDeduction.customerPayable > 0 ? 'warning.main' : 'success.main'}>
+                                                ₹ {giftCardDeduction.customerPayable.toFixed(2)}/-
+                                            </Typography>
+                                        </Stack>
+                                    </>
+                                )}
+
                                 <Divider sx={{ my: 2 }} />
 
                                 {/* Action Buttons */}
@@ -638,7 +763,7 @@ const AddEditBill = () => {
             <PaymentModal
                 open={isPaymentModalOpen}
                 onClose={togglePaymentModal}
-                grandTotal={getValues("grandTotal")}
+                grandTotal={giftCard && giftCardDeduction.customerPayable > 0 ? giftCardDeduction.customerPayable : getValues("grandTotal")}
                 onConfirm={handlePaymentDetail}
             />
 

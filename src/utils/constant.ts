@@ -114,6 +114,8 @@ export const CREATE_BULK_BILL_API = "api/bill/bulk-create";
 export const DELETE_BILL_API = "api/bill/";
 export const GET_SINGLE_BILL_API = "api/bill/";
 export const UPDATE_BILL_API = "api/bill/";
+export const VALIDATE_GIFT_CARD_API = "api/bill/validate-gift-card";
+export const REDEEM_GIFT_CARD_API = "api/bill/redeem-gift-card";
 
 // rights apis
 export const RIGHT_LIST_API = "api/right/list";

@@ -5,6 +5,8 @@ import {
     DELETE_BILL_API,
     GET_SINGLE_BILL_API,
     CREATE_BULK_BILL_API,
+    VALIDATE_GIFT_CARD_API,
+    REDEEM_GIFT_CARD_API,
 } from "../utils/constant";
 import { get, post, put, del } from "../utils/axios";
 
@@ -42,4 +44,12 @@ export const getBillById = async (id: number) => {
 
 export const currectionOfBillNo = async (payload: any) => {
     return await post(`${CREATE_BILL_API}/billno`, payload);
+}
+
+export const validateGiftCard = async (codeNumber: string) => {
+    return await post(VALIDATE_GIFT_CARD_API, { codeNumber });
+}
+
+export const redeemGiftCard = async (payload: any) => {
+    return await post(REDEEM_GIFT_CARD_API, payload);
 }

@@ -9,7 +9,7 @@ import { getPaymentTypeList } from "service/payment-type";
 import { getRoomList } from "service/room";
 import { getServiceList } from "service/service";
 import { getTherapistDropdown } from "service/staff";
-import { createBulkBill, getBillById, updateBill } from "service/bill";
+import { createBulkBill, getBillById, updateBill, validateGiftCard, redeemGiftCard } from "service/bill";
 import { calculateGSTDetails, listPayload, showTwoDecimal } from "utils/helper";
 import { PaymentDetailItem } from "./usePaymentModal";
 import { Bill, Branch, TableData } from "types/common";
@@ -139,6 +139,14 @@ const UseAddEditBill = () => {
     const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // ------------------------------------------------------------------------
+    // State: Gift Card
+    // ------------------------------------------------------------------------
+
+    const [giftCard, setGiftCard] = useState<any>(null);
+    const [giftCardCode, setGiftCardCode] = useState<string>("");
+    const [isGiftCardValidating, setIsGiftCardValidating] = useState<boolean>(false);
+
+    // ------------------------------------------------------------------------
     // State: Modal Visibility Controls
     // ------------------------------------------------------------------------
 
@@ -209,6 +217,58 @@ const UseAddEditBill = () => {
     const toggleViewDetailOpen = useCallback(() => setIsViewDetailOpen(prev => !prev), []);
     const togglePaymentModal = useCallback(() => setIsPaymentModalOpen(prev => !prev), []);
     const toggleCustomerBillDataModalOpen = useCallback(() => setIsCustomerBillDataModalOpen(prev => !prev), []);
+
+    // ------------------------------------------------------------------------
+    // Actions: Gift Card Validation
+    // ------------------------------------------------------------------------
+
+    /**
+     * Validate a gift card code by calling the backend API.
+     */
+    const validateGiftCardHandler = useCallback(async (code: string) => {
+        if (!code || code.trim().length === 0) {
+            showError({ message: 'Please enter a gift card code' });
+            return;
+        }
+        try {
+            setIsGiftCardValidating(true);
+            const response: any = await validateGiftCard(code.trim());
+            if (response.success && response.data) {
+                setGiftCard(response.data);
+                showSuccess(`Gift card validated: ₹${response.data.amount}`);
+            } else {
+                setGiftCard(null);
+                showError({ message: response.message || 'Invalid gift card' });
+            }
+        } catch (error: unknown) {
+            setGiftCard(null);
+            showError(error);
+        } finally {
+            setIsGiftCardValidating(false);
+        }
+    }, []);
+
+    /**
+     * Clear the applied gift card.
+     */
+    const clearGiftCard = useCallback(() => {
+        setGiftCard(null);
+        setGiftCardCode("");
+    }, []);
+
+    /**
+     * Calculate remaining payable amount after gift card deduction.
+     */
+    const giftCardDeduction = useMemo(() => {
+        if (!giftCard) return { applied: false, giftCardAmount: 0, customerPayable: 0, remainingExpires: 0 };
+        const grandTotal = parseFloat(getValues('grandTotal') || '0');
+        const giftCardAmount = giftCard.amount;
+        if (grandTotal > giftCardAmount) {
+            return { applied: true, giftCardAmount, customerPayable: grandTotal - giftCardAmount, remainingExpires: 0 };
+        } else {
+            return { applied: true, giftCardAmount, customerPayable: 0, remainingExpires: giftCardAmount - grandTotal };
+        }
+    }, [giftCard, getValues]);
 
     // ------------------------------------------------------------------------
     // Actions: Customer Search (Debounced)
@@ -371,12 +431,6 @@ const UseAddEditBill = () => {
             const gstRate = gstValue.csgst + gstValue.sgst;
             if (mode !== "add") {
                 const { baseAmount, cgst, sgst, totalAmount } = calculateGSTDetails(data.rate!, gstRate, true);
-                // let payload: any = { updatedBy: user?.id };
-                // Object.entries(dirtyFields).forEach(([key, value]) => {
-                //     if (value) {
-                //         payload[key] = data[key as keyof BillFormValue];
-                //     }
-                // });
                 const payload = {
                     staffID: data.staffID,
                     customerID: data.customerID,
@@ -406,6 +460,112 @@ const UseAddEditBill = () => {
                 }
                 return;
             }
+
+            // ── Gift Card Redemption Flow ────────────────────────────────
+            if (giftCard) {
+                const redeemPayload: any = {
+                    giftCardId: giftCard.id,
+                    giftCardCode: giftCard.codeNumber,
+                    userID: user?.id,
+                    customerID: data.customerID,
+                    staffID: data.staffID,
+                    roomID: data.roomID,
+                    serviceID: data.serviceID,
+                    rate: data.rate,
+                    discount: data.discount,
+                    quantity: data.quantity,
+                    hsnCode: data.hsnCode,
+                    referenceBy: data.referenceBy,
+                    managerName: localStorage.getItem("managerId"),
+                };
+
+                // Only include paymentDetail if customer needs to pay remaining
+                if (giftCardDeduction.customerPayable > 0 && data.paymentDetail && data.paymentDetail.length > 0) {
+                    redeemPayload.paymentDetail = data.paymentDetail.map((item: PaymentDetailItem) => ({
+                        id: item.id,
+                        name: item.name,
+                        amount: item.amount,
+                        cardNo: item.cardNo,
+                    }));
+                }
+
+                const response: any = await redeemGiftCard(redeemPayload);
+
+                if (response.success && response.data) {
+                    showSuccess(response.message || "Gift card redeemed successfully");
+
+                    // ── Construct Table Data for Printing (Applies to both partial and full gift card redemption) ──
+                    const tableData: TableData[] = [];
+                    const giftCardRedeemedAmount = response.data.redeemAmount || giftCardDeduction.giftCardAmount;
+
+                    // 1. Gift Card Invoice Entry
+                    tableData.push({
+                        hsnCode: data.hsnCode,
+                        item: serviceList.find((s: any) => s.id === data.serviceID)?.name || 'Service',
+                        quantity: data.quantity,
+                        total: giftCardRedeemedAmount,
+                        subTotal: giftCardRedeemedAmount,
+                        cgst: 0,
+                        sgst: 0,
+                        payment: 'Gift Card',
+                        paymentId: giftCard.codeNumber,
+                        cardNo: giftCard.codeNumber,
+                        billNo: giftCard.codeNumber,
+                        grandTotal: giftCardRedeemedAmount,
+                    });
+
+                    // 2. Customer Payable Invoice Entry (if partial cover / remaining balance paid)
+                    if (response.data.scenario === 'partial' && response.data.customerBill) {
+                        const bills = Array.isArray(response.data.customerBill)
+                            ? response.data.customerBill
+                            : [response.data.customerBill];
+
+                        bills.forEach((bill: any) => {
+                            const paymentItem = data.paymentDetail?.find((p: PaymentDetailItem) => p.id === bill.paymentID);
+                            tableData.push({
+                                hsnCode: data.hsnCode,
+                                item: serviceList.find((s: any) => s.id === data.serviceID)?.name || 'Service',
+                                quantity: data.quantity,
+                                total: parseFloat(bill.grandTotal),
+                                subTotal: parseFloat(bill.grandTotal),
+                                cgst: 0,
+                                sgst: 0,
+                                payment: paymentItem?.name?.split(" ")[0] || 'Cash',
+                                paymentId: bill.paymentID,
+                                cardNo: bill.cardNo || '',
+                                billNo: bill.billNo,
+                                grandTotal: parseFloat(bill.grandTotal),
+                            });
+                        });
+                    }
+
+                    const serviceRateTotal = parseFloat(getValues('grandTotal') || '0');
+                    const billData: Bill = {
+                        date: new Date(),
+                        customer: customerList.find((c: any) => c.id === data.customerID)?.name || getValues('Phone'),
+                        staff: staffList.find((s: any) => s.value === data.staffID)?.label,
+                        roomNo: roomList.find((r: any) => r.id === data.roomID)?.roomName,
+                        cgstPercentage: gstValue.csgst,
+                        sgstPercentage: gstValue.sgst,
+                        tableData,
+                        grandTotal: serviceRateTotal.toString(),
+                        gstNo: user?.gstNo || "",
+                        isShowGst: user?.isShowGst || false,
+                    };
+
+                    print(billData);
+
+                    reset();
+                    clearGiftCard();
+                    setIsPaymentModalOpen(false);
+                    setIsViewDetailOpen(false);
+                } else {
+                    showError({ message: response.message || "Failed to redeem gift card" });
+                }
+                return;
+            }
+
+            // ── Normal Bill Flow (no gift card) ─────────────────────────
             const payload = data.paymentDetail.map((item: PaymentDetailItem) => {
                 const { baseAmount, cgst, sgst, totalAmount } = calculateGSTDetails(item.amount, gstRate, true);
                 return {
@@ -485,7 +645,7 @@ const UseAddEditBill = () => {
         } catch (error: unknown) {
             showError(error);
         }
-    }, [mode, user, gstValue, serviceList, customerList, staffList, roomList, print, reset]);
+    }, [mode, user, gstValue, giftCard, giftCardDeduction, serviceList, customerList, staffList, roomList, print, reset, clearGiftCard]);
 
     // ------------------------------------------------------------------------
     // Initialization Details: Edit Mode Recovery
@@ -584,6 +744,15 @@ const UseAddEditBill = () => {
         isSubmitting,
         isCardSelected,
         isCustomerSearching,
+
+        // Gift Card
+        giftCard,
+        giftCardCode,
+        isGiftCardValidating,
+        giftCardDeduction,
+        setGiftCardCode,
+        validateGiftCardHandler,
+        clearGiftCard,
 
         // List Collections
         paymentType,
