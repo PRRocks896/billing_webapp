@@ -230,10 +230,26 @@ const UseAddEditBill = () => {
             showError({ message: 'Please enter a gift card code' });
             return;
         }
+
+        const selectedCustomerId = getValues('customerID');
+        if (!selectedCustomerId) {
+            showError({ message: 'Please select a customer first' });
+            return;
+        }
+
         try {
             setIsGiftCardValidating(true);
             const response: any = await validateGiftCard(code.trim());
             if (response.success && response.data) {
+                const selectedCustomer = customerList.find((c: any) => c.id === selectedCustomerId);
+                const customerPhone = selectedCustomer?.phoneNumber;
+
+                if (response.data.recipientPhoneNumber && customerPhone !== response.data.recipientPhoneNumber) {
+                    setGiftCard(null);
+                    showError({ message: 'Customer phone number does not match the gift card recipient phone number' });
+                    return;
+                }
+
                 setGiftCard(response.data);
                 showSuccess(`Gift card validated: ₹${response.data.amount}`);
             } else {
@@ -246,7 +262,7 @@ const UseAddEditBill = () => {
         } finally {
             setIsGiftCardValidating(false);
         }
-    }, []);
+    }, [getValues, customerList]);
 
     /**
      * Clear the applied gift card.
