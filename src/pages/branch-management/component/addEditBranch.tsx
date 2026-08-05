@@ -708,6 +708,7 @@ const AddEditBranch = () => {
                                             render={({ field, fieldState: { error } }) => (
                                                 <FileUpload
                                                     value={field.value}
+                                                    uploadCount={6}
                                                     onChange={field.onChange}
                                                     label="Upload Images"
                                                     error={!!error}

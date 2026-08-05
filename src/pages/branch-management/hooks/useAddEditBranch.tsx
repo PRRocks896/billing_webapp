@@ -290,7 +290,7 @@ const UseAddEditBranch = () => {
             let payload: any = {
                 ...data,
                 images: JSON.stringify(data.images),
-                thumbnilImage: JSON.stringify(data.thumbnilImage),
+                thumbnilImage: data.thumbnilImage,
                 companyMapping: JSON.stringify(newCompanyMappings)
             }
             if (mode && mode === 'edit' && id) {
@@ -329,8 +329,6 @@ const UseAddEditBranch = () => {
                     }
                 }
             }
-
-            console.log("After append: ", payload)
 
             const { success, message }: any = mode && mode === 'edit' && id ? await updateUser(payload, Number(id)) : await createUser(payload);
             if (success) {

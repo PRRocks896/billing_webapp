@@ -13,6 +13,8 @@ import { useTheme } from '@mui/material/styles';
 import { DocumentUpload, Trash, Eye } from 'iconsax-reactjs';
 import { imagePath } from 'utils/helper';
 
+import { openSnackbar } from 'api/snackbar';
+
 // types
 export type FileUploadValue = File | string;
 
@@ -26,6 +28,7 @@ interface FileUploadProps {
     error?: boolean;
     helperText?: string;
     disabled?: boolean;
+    uploadCount?: number;
 }
 
 interface FilePreview {
@@ -93,6 +96,7 @@ const FileUpload = ({
     error = false,
     helperText,
     disabled = false,
+    uploadCount,
 }: FileUploadProps) => {
     const theme = useTheme();
     const [previews, setPreviews] = useState<FilePreview[]>([]);
@@ -125,13 +129,25 @@ const FileUpload = ({
 
             if (multiple) {
                 const currentFiles = value ? (Array.isArray(value) ? value : [value]) : [];
+                
+                if (uploadCount && (currentFiles.length + acceptedFiles.length) > uploadCount) {
+                    openSnackbar({
+                        open: true,
+                        message: `You can only upload up to ${uploadCount} file${uploadCount > 1 ? 's' : ''}.`,
+                        variant: 'alert',
+                        alert: { color: 'error' },
+                        close: true
+                    });
+                    return;
+                }
+
                 const newFiles = [...currentFiles, ...acceptedFiles];
                 onChange(newFiles);
             } else {
                 onChange(acceptedFiles[0] || null);
             }
         },
-        [multiple, value, onChange, disabled]
+        [multiple, value, onChange, disabled, uploadCount]
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
