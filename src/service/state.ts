@@ -15,6 +15,10 @@ export const createStates = async (body: any) => {
     return await post(CREATE_STATES_API, body);
 };
 
+export const getStateListPayload = async (body: any) => {
+    return await post(`${CREATE_STATES_API}/find`, body);
+}
+
 export const getStatesById = async (id: number) => {
     return await get(GET_SINGLE_STATES_API + id);
 };

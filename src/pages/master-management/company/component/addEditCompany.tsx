@@ -16,6 +16,7 @@ const AddEditCompany = () => {
         mode,
         title,
         control,
+        StateOptions,
         isSubmitting,
         setValue,
         onSubmit,
@@ -104,6 +105,27 @@ const AddEditCompany = () => {
                                             placeholder="Enter Cash Bill Code"
                                             error={!!error}
                                             helperText={error?.message}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 4 }}>
+                                <Controller
+                                    name='stateID'
+                                    control={control}
+                                    rules={{ required: 'State is required' }}
+                                    render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
+                                        <Autocomplete
+                                            disablePortal
+                                            options={StateOptions}
+                                            value={StateOptions.find((option) => option.value === value) || null}
+                                            onChange={(event, newValue) => {
+                                                onChange(newValue?.value || null);
+                                            }}
+                                            getOptionLabel={(option) => option.label}
+                                            fullWidth
+                                            size='small'
+                                            renderInput={(params) => <TextField {...params} label="State*" error={!!error} helperText={error?.message} />}
                                         />
                                     )}
                                 />

@@ -4,13 +4,15 @@ import useAuth from "hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { openSnackbar } from "api/snackbar";
 import { createCompany, getCompanyById, updateCompany } from "service/company";
-import { useEffect, useMemo } from "react";
+import { getStateListPayload } from "service/state";
+import { useEffect, useMemo, useState } from "react";
 
 export type CompanyFormValue = {
     companyName: string;
     displayName: string;
     billCode: string;
     cashBillCode: string;
+    stateID: number | null;
 }
 
 const defaultValues: CompanyFormValue = {
@@ -18,12 +20,15 @@ const defaultValues: CompanyFormValue = {
     displayName: "",
     billCode: "",
     cashBillCode: "",
+    stateID: null
 }
 
 const UseAddEditCompany = () => {
     const navigate = useNavigate();
     const { mode, id } = useParams();
     const { user, startLoading, stopLoading } = useAuth();
+
+    const [stateList, setStateList] = useState<any[]>([]);
 
     const {
         control,
@@ -35,6 +40,13 @@ const UseAddEditCompany = () => {
         mode: 'onChange',
         defaultValues,
     });
+
+    const StateOptions = useMemo(() => {
+        return stateList.map((state) => ({
+            label: state.name,
+            value: state.id
+        }));
+    }, [stateList]);
 
     const handleBack = () => {
         navigate('/company');
@@ -49,6 +61,7 @@ const UseAddEditCompany = () => {
                 setValue('displayName', data.displayName);
                 setValue('billCode', data.billCode);
                 setValue('cashBillCode', data.cashBillCode);
+                setValue('stateID', data.stateID);
             } else {
                 openSnackbar({
                     open: true,
@@ -136,6 +149,43 @@ const UseAddEditCompany = () => {
     }, [mode, id]);
 
     useEffect(() => {
+        (async () => {
+            try {
+                startLoading();
+                const { success, message, data }: any = await getStateListPayload({
+                    isActive: true,
+                    isDeleted: false
+                });
+                if (!success) {
+                    openSnackbar({
+                        open: true,
+                        message: message,
+                        variant: 'alert',
+                        severity: 'error',
+                        alert: {
+                            color: 'error'
+                        }
+                    });
+                    return;
+                }
+                setStateList(data || []);
+            } catch (error: any) {
+                openSnackbar({
+                    open: true,
+                    message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
+                    variant: 'alert',
+                    severity: 'error',
+                    alert: {
+                        color: 'error'
+                    }
+                })
+            } finally {
+                stopLoading();
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
         if (mode && mode === 'edit' && id) {
             fetch();
         }
@@ -145,6 +195,7 @@ const UseAddEditCompany = () => {
         mode,
         title,
         control,
+        StateOptions,
         isSubmitting,
         setValue,
         onSubmit,

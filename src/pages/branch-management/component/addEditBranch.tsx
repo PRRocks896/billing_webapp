@@ -53,19 +53,24 @@ const AddEditBranch = () => {
         title,
         fields,
         control,
+        cityFields,
         roleOptions,
         cityOptions,
         isSubmitting,
         isWebDisplay,
         companyOptions,
         countryCodeList,
+        cityMappingFormControl,
         companyMappingFormControl,
         setValue,
         onSubmit,
         handleBack,
         handleSubmit,
+        handleAddCity,
+        handleRemoveCity,
         handleAddCompany,
         handleRemoveCompany,
+        getFilterCityOptions,
         getFilteredCompanyOptions,
     } = useAddEditBranch();
 
@@ -400,6 +405,88 @@ const AddEditBranch = () => {
                                         <IconButton
                                             color="error"
                                             onClick={() => handleRemoveCompany(index)}
+                                            sx={{
+                                                border: `1px solid ${alpha(theme.palette.error.main, 0.3)}`,
+                                                borderRadius: 2,
+                                                '&:hover': {
+                                                    bgcolor: alpha(theme.palette.error.main, 0.08)
+                                                }
+                                            }}
+                                        >
+                                            <Trash size={18} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            ))}
+                        </Grid>
+
+                        <Grid size={{ xs: 12 }}><Divider /></Grid>
+
+                        <Grid size={{ xs: 12 }}>
+                            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" sx={{ mb: 2.5 }}>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <Building size={20} color={theme.palette.primary.main} variant="Bulk" />
+                                    <Typography variant="h5" fontWeight={600}>City Mapping</Typography>
+                                </Stack>
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    startIcon={<Add size={16} />}
+                                    onClick={handleAddCity}
+                                    sx={{ borderRadius: 2 }}
+                                >
+                                    Add City
+                                </Button>
+                            </Stack>
+                            {cityFields.length === 0 && (
+                                <Box
+                                    sx={{
+                                        p: 3,
+                                        textAlign: 'center',
+                                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                                        borderRadius: 2,
+                                        border: `1px dashed ${alpha(theme.palette.primary.main, 0.2)}`
+                                    }}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        No cities mapped yet. Click "Add City" to map a city.
+                                    </Typography>
+                                </Box>
+                            )}
+                            {cityFields.map((field, index) => (
+                                <Grid container spacing={2.5} key={field.id} sx={{ mb: 2 }} alignItems="center">
+                                    <Grid size={{ xs: 11, sm: 11 }}>
+                                        <Controller
+                                            name={`cityID.${index}.cityID`}
+                                            control={cityMappingFormControl.control}
+                                            rules={{ required: 'Required' }}
+                                            render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => {
+                                                const filteredOptions = getFilterCityOptions(index);
+                                                return (
+                                                    <Autocomplete
+                                                        fullWidth
+                                                        options={filteredOptions}
+                                                        getOptionLabel={(option: any) => option.label}
+                                                        value={cityOptions.find((c: any) => c.value === value) || null}
+                                                        onChange={(_, newValue) => onChange(newValue ? newValue.value : null)}
+                                                        onBlur={onBlur}
+                                                        renderInput={(params) => (
+                                                            <TextField
+                                                                {...params}
+                                                                label={`City ${index + 1}`}
+                                                                error={!!error}
+                                                                helperText={error?.message}
+                                                            />
+                                                        )}
+                                                    />
+                                                )
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 1 }}>
+                                        <IconButton
+                                            color="error"
+                                            onClick={() => handleRemoveCity(index)}
                                             sx={{
                                                 border: `1px solid ${alpha(theme.palette.error.main, 0.3)}`,
                                                 borderRadius: 2,

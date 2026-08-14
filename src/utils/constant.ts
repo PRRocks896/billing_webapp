@@ -149,6 +149,8 @@ export const COMPANY = "api/company";
 
 export const COMPANYMAPPING = "api/comapany-mapping";
 
+export const CITYMAPPING = "api/city-mapping";
+
 export const ROOM = "api/room";
 
 export const COUPON = "api/coupon";

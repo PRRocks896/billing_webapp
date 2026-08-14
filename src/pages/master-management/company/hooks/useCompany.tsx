@@ -218,6 +218,21 @@ const UseCompany = () => {
                 isSortable: true,
             },
             {
+                id: 'stateID',
+                label: 'State',
+                align: 'left',
+                numeric: false,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row: any) => {
+                    return (
+                        <Box>
+                            {row.px_state?.name || '-'}
+                        </Box>
+                    );
+                }
+            },
+            {
                 id: 'isActive',
                 label: 'Status',
                 align: 'left',

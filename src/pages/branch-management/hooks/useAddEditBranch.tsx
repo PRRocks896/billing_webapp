@@ -7,7 +7,7 @@ import countries, { CountryType } from "data/countries";
 import { openSnackbar } from "api/snackbar";
 import { getRoleList } from "service/role";
 import { getCompanyList, getCompanyMapping, deleteCompanyMapping } from "service/company";
-import { getCityByFind } from "service/city";
+import { deleteCityMapping, getCityByFind, getCityMapping } from "service/city";
 import { createUser, getUserById, updateUser } from "service/user";
 import { convertToFormData } from "utils/helper";
 
@@ -81,12 +81,23 @@ export type CompanyMappingForm = {
     _mappingId: number | null;
 }
 
+export type CityMappingForm = {
+    userID: number | null;
+    cityID: any[];
+    _mappingId: number | null;
+}
+
 const defaultCompanyMappingFormValue: CompanyMappingForm = {
     userID: null,
     companyID: [],
     _mappingId: null
 }
 
+const defaultCityMappingFormValue: CityMappingForm = {
+    userID: null,
+    cityID: [],
+    _mappingId: null
+}
 
 const UseAddEditBranch = () => {
 
@@ -115,6 +126,60 @@ const UseAddEditBranch = () => {
         mode: 'onChange'
     });
 
+    const cityMappingFormControl = useForm<CityMappingForm>({
+        defaultValues: defaultCityMappingFormValue,
+        mode: 'onChange'
+    });
+
+    const {
+        append: appendCity,
+        remove: removeCity,
+        fields: cityFields,
+    } = useFieldArray({
+        control: cityMappingFormControl.control,
+        name: "cityID"
+    });
+
+    const handleAddCity = () => {
+        appendCity({
+            cityID: null,
+            _mappingId: null
+        })
+    }
+
+    const handleRemoveCity = async (index: number) => {
+        const currentMappings = cityMappingFormControl.getValues("cityID") || [];
+        const field = currentMappings[index] || cityFields[index] as any;
+        if (field?._mappingId) {
+            try {
+                startLoading();
+                const { success, message }: any = await deleteCityMapping(field._mappingId);
+                if (!success) {
+                    openSnackbar({
+                        open: true,
+                        message: message || 'Failed to remove city mapping',
+                        variant: 'alert',
+                        severity: 'error',
+                        alert: { color: 'error' }
+                    });
+                    return;
+                }
+            } catch (error: any) {
+                openSnackbar({
+                    open: true,
+                    message: error?.message || 'Failed to remove city mapping',
+                    variant: 'alert',
+                    severity: 'error',
+                    alert: { color: 'error' }
+                });
+                return;
+            } finally {
+                stopLoading();
+            }
+        }
+        removeCity(index);
+    }
+
     const {
         append,
         remove,
@@ -137,7 +202,7 @@ const UseAddEditBranch = () => {
         if (field?._mappingId) {
             try {
                 startLoading();
-                const { success, message }: any = await deleteCompanyMapping(field._mappingId);
+                const { success, message }: any = await deleteCityMapping(field._mappingId);
                 if (!success) {
                     openSnackbar({
                         open: true,
@@ -203,9 +268,14 @@ const UseAddEditBranch = () => {
     const fetch = async () => {
         try {
             startLoading();
-            const [userResponse, mappingResponse]: [any, any] = await Promise.all([
+            const [
+                userResponse,
+                mappingResponse,
+                mappingCityResponse
+            ]: [any, any, any] = await Promise.all([
                 getUserById(Number(id)),
-                getCompanyMapping({ userID: Number(id), isDeleted: false })
+                getCompanyMapping({ userID: Number(id), isDeleted: false }),
+                getCityMapping({ userID: Number(id), isDeleted: false })
             ]);
 
             const { success, message, data } = userResponse;
@@ -262,6 +332,14 @@ const UseAddEditBranch = () => {
                     });
                 });
             }
+            if (mappingCityResponse.success && Array.isArray(mappingCityResponse.data)) {
+                mappingCityResponse.data.forEach((mapping: any) => {
+                    appendCity({
+                        cityID: mapping.cityID,
+                        _mappingId: mapping.id
+                    });
+                });
+            }
         } catch (error: any) {
             openSnackbar({
                 open: true,
@@ -287,11 +365,19 @@ const UseAddEditBranch = () => {
                     companyID: field.companyID,
                     userID: mode === 'edit' && id ? Number(id) : undefined
                 }));
+            const currentCityMappings = cityMappingFormControl.getValues('cityID') || [];
+            const newCityMappings = currentCityMappings
+                .filter((field: any) => !field._mappingId && field.cityID)
+                .map((field: any) => ({
+                    cityID: field.cityID,
+                    userID: mode === 'edit' && id ? Number(id) : undefined
+                }));
             let payload: any = {
                 ...data,
                 images: JSON.stringify(data.images),
                 thumbnilImage: data.thumbnilImage,
-                companyMapping: JSON.stringify(newCompanyMappings)
+                companyMapping: JSON.stringify(newCompanyMappings),
+                cityMapping: JSON.stringify(newCityMappings)
             }
             if (mode && mode === 'edit' && id) {
                 payload = {
@@ -313,8 +399,11 @@ const UseAddEditBranch = () => {
                 // Preserve companyMapping as JSON string before FormData conversion
                 const companyMappingJson = JSON.stringify(payload.companyMapping || []);
                 delete payload.companyMapping;
+                const cityMappingJson = JSON.stringify(payload.cityMapping || []);
+                delete payload.cityMapping;
                 payload = convertToFormData(payload);
                 payload.append('companyMapping', companyMappingJson);
+                payload.append('cityMapping', cityMappingJson);
                 if (data && data.images && data.images.length > 0) {
                     for (let i = 0; i < data.images.length; i++) {
                         if (typeof data.images[i] === 'object') {
@@ -453,6 +542,14 @@ const UseAddEditBranch = () => {
         }
     }, [mode, id]);
 
+    const getFilterCityOptions = (currentIndex: number) => {
+        const currentMappings = cityMappingFormControl.watch('cityID') || [];
+        const selectedCityIds = currentMappings
+            .map((field: any, idx: number) => idx !== currentIndex ? field.cityID : null)
+            .filter((id: any) => id !== null && id !== undefined);
+        return cityOptions.filter((option: any) => !selectedCityIds.includes(option.value));
+    }
+
     // Returns company options filtered to exclude already-selected companies (except current row)
     const getFilteredCompanyOptions = (currentIndex: number) => {
         const currentMappings = companyMappingFormControl.watch("companyID") || [];
@@ -468,19 +565,24 @@ const UseAddEditBranch = () => {
         fields,
         isAdmin,
         control,
+        cityFields,
         roleOptions,
         cityOptions,
         isSubmitting,
         isWebDisplay,
         companyOptions,
         countryCodeList,
+        cityMappingFormControl,
         companyMappingFormControl,
         setValue,
         onSubmit,
         handleBack,
         handleSubmit,
+        handleAddCity,
+        handleRemoveCity,
         handleAddCompany,
         handleRemoveCompany,
+        getFilterCityOptions,
         getFilteredCompanyOptions,
     };
 };
