@@ -109,8 +109,8 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                     >
                         <ToggleButton value={0}>Today</ToggleButton>
                         <ToggleButton value={1}>This Month</ToggleButton>
-                        <ToggleButton value={2}>3 Months</ToggleButton>
-                        <ToggleButton value={3}>6 Months</ToggleButton>
+                        <ToggleButton value={2}>Last Months</ToggleButton>
+                        <ToggleButton value={3}>Last 3 Months</ToggleButton>
                         <ToggleButton value={4}>Custom</ToggleButton>
                     </ToggleButtonGroup>
                 </Stack>

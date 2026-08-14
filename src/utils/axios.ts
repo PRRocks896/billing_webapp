@@ -98,6 +98,8 @@ export const getpdf = async (url: string, data: any = {}, fileName: string = 'do
   if (response.status === 200) {
     if (download) {
       downloadBlob(response.data, fileName);
+    } else {
+      return response;
     }
   } else {
     openSnackbar({

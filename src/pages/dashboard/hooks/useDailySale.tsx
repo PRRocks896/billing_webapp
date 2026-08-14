@@ -34,6 +34,10 @@ const UseDailySale = (companyID?: number | null) => {
                 endDate: moment(toDate).format("YYYY-MM-DD")
             }
 
+            if (companyID) {
+                payload.companyID = companyID;
+            }
+
             if (selectedBranch && selectedBranch.length > 0) {
                 payload.userID = selectedBranch?.map((item: any) => ({ value: item }));
             }
@@ -70,10 +74,10 @@ const UseDailySale = (companyID?: number | null) => {
         if (!isShowCustom) {
             fetchDailyReport();
         }
-    }, [fromDate, toDate, selectedBranch, isShowCustom]);
+    }, [fromDate, toDate, companyID, selectedBranch, isShowCustom]);
 
     useEffect(() => {
-        if (slot === 5) {
+        if (slot === 4) {
             setIsShowCustom(true);
             return;
         }
@@ -84,16 +88,17 @@ const UseDailySale = (companyID?: number | null) => {
         } else if (slot === 1) {
             setFromDate(moment().startOf('month').toDate());
             setToDate(moment().endOf('month').toDate());
-        } else if (slot === 2) {
-            setFromDate(moment().subtract(3, 'months').startOf('month').toDate());
-            setToDate(moment().endOf('month').toDate());
         } else if (slot === 3) {
-            setFromDate(moment().subtract(6, 'months').startOf('month').toDate());
-            setToDate(moment().endOf('month').toDate());
-        } else if (slot === 4) {
-            setFromDate(moment().subtract(12, 'months').startOf('month').toDate());
-            setToDate(moment().endOf('month').toDate());
+            setFromDate(moment().subtract(4, 'months').startOf('month').toDate());
+            setToDate(moment().subtract(1, 'months').endOf('month').toDate());
+        } else if (slot === 2) {
+            setFromDate(moment().subtract(1, 'months').startOf('month').toDate());
+            setToDate(moment().subtract(1, 'months').endOf('month').toDate());
         }
+        // else if (slot === 4) {
+        //     setFromDate(moment().subtract(12, 'months').startOf('month').toDate());
+        //     setToDate(moment().endOf('month').toDate());
+        // }
     }, [slot]);
 
     useEffect(() => {

@@ -18,7 +18,7 @@ export const getStaffSalaryReport = async (body: any, fileName: string) => {
 }
 
 export const getAttendanceStaffReport = async (body: any, fileName: string) => {
-    return await getpdf(`api/attendance/attendance-report`, body, fileName, true);
+    return await getpdf(`api/attendance/attendance-report`, body, fileName, false);
 }
 
 export const getManagerInsentiveReport = async (body: any, fileName: string) => {

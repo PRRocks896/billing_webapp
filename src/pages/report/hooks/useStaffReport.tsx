@@ -263,13 +263,13 @@ const useStaffReport = () => {
 
             const body = { paymentID: selectedGstPayment, startDate, endDate };
             const response = await getGstReportList(body, fileName);
-            setPdfData(response);
+            // if (response.status === 200 && response.data) setPdfData(URL.createObjectURL(response.data));
         });
     }, [wrapRequest, gstDateRange, selectedGstPayment]);
 
     const fetchAttendanceReportData = useCallback(async () => {
         await wrapRequest(async () => {
-            setPdfData(null);
+            // setPdfData(null);
             const body = {
                 branchID: selectedUser || null,
                 companyID: selectedCompany?.value,
@@ -278,7 +278,7 @@ const useStaffReport = () => {
             };
             const fileName = generateSlug(`${selectedCompany?.label}_salary_report_${year}_${month}.xlsx`.toLowerCase());
             const response = await getStaffSalaryReport(body, fileName);
-            setPdfData(response);
+            // setPdfData(response);
         });
     }, [wrapRequest, selectedUser, selectedCompany, year, month]);
 
@@ -331,8 +331,11 @@ const useStaffReport = () => {
                 month: attMonth,
             };
             const fileName = generateSlug(`attendance_report_${branch?.label}_${staff?.label}_${attYear}_${attMonth}.pdf`.toLowerCase());
-            const { success, data }: any = await getAttendanceStaffReport(payload, fileName);
-            if (success) setPdfData(data);
+            const response: any = await getAttendanceStaffReport(payload, fileName);
+            if (response.status === 200 && response.data) {
+                setPdfData(URL.createObjectURL(response.data));
+                return;
+            }
         });
     }, [wrapRequest, attUserList, selectedAttUser, staffList, selectedStaff, attYear, attMonth]);
 
@@ -363,7 +366,7 @@ const useStaffReport = () => {
             };
             const fileName = generateSlug(`${auditorSelectedCompany?.label}_report_${moment(auditorDateRange[0]).format('yyyy-MM-DD')}_to_${moment(auditorDateRange[1]).format('yyyy-MM-DD')}.xlsx`.toLowerCase());
             const response: any = await getAuditorReport(payload, fileName);
-            if (response?.success) setPdfData(response.data);
+            // if (response?.status === 200 && response.data) setPdfData(URL.createObjectURL(response.data));
         });
     }, [wrapRequest, selectedAuditorPayment, auditorSelectedCompany, auditorDateRange]);
 
