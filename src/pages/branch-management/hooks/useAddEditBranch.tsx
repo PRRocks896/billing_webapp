@@ -25,7 +25,7 @@ export type BranchFormValue = {
     billTitle: string,
     countryCode: string,
     phoneNumber: string,
-    phoneNumberSecond: string,
+    phoneNumber2: string,
     address: string,
     email: string,
     gstNo: string,
@@ -57,7 +57,7 @@ const defaultValues: BranchFormValue = {
     billTitle: '',
     countryCode: '',
     phoneNumber: '',
-    phoneNumberSecond: '',
+    phoneNumber2: '',
     address: '',
     email: '',
     gstNo: '',
@@ -293,7 +293,7 @@ const UseAddEditBranch = () => {
                 setValue("billTitle", data?.billTitle);
                 setValue("countryCode", data?.countryCode);
                 setValue("phoneNumber", data?.phoneNumber);
-                setValue("phoneNumberSecond", data?.phoneNumberSecond);
+                setValue("phoneNumber2", data?.phoneNumber2);
                 setValue("address", data?.address);
                 setValue("email", data?.email);
                 setValue("gstNo", data?.gstNo);

@@ -116,7 +116,6 @@ const AddEditCompany = () => {
                                     rules={{ required: 'State is required' }}
                                     render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
                                         <Autocomplete
-                                            disablePortal
                                             options={StateOptions}
                                             value={StateOptions.find((option) => option.value === value) || null}
                                             onChange={(event, newValue) => {

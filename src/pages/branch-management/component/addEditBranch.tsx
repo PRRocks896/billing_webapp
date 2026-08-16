@@ -550,7 +550,7 @@ const AddEditBranch = () => {
                                 </Grid>
                                 <Grid size={{ xs: 12, sm: 6 }}>
                                     <Controller
-                                        name='phoneNumberSecond'
+                                        name='phoneNumber2'
                                         control={control}
                                         rules={{ pattern: { value: PHONE_REGEX, message: 'Invalid phone' } }}
                                         render={({ field, fieldState: { error } }) => (

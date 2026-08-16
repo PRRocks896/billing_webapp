@@ -31,17 +31,20 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
         toDate,
         isAdmin,
         fromDate,
+        cityOptions,
+        selectedCity,
         isShowCustom,
         dailySaleList,
         branchOptions,
         selectedBranch,
+        dailySaleSectionRights,
         setSlot,
         setToDate,
         setFromDate,
+        setSelectedCity,
         fetchDailyReport,
-        setSelectedBranch
+        setSelectedBranch,
     } = UseDailySale(companyID);
-
     const primaryMain = theme.palette.primary.main;
 
     return (
@@ -56,11 +59,30 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
             <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3} sx={{ mb: 4, alignItems: { xs: 'flex-start', lg: 'center' }, justifyContent: 'space-between' }}>
                 <Box>
                     <Typography variant="h5" sx={{ fontWeight: 700, letterSpacing: '-0.02em' }}>Daily Sales Analysis</Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>Comprehensive breakdown of branch performance metrics</Typography>
+                    {/* <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>Comprehensive breakdown of branch performance metrics</Typography> */}
                 </Box>
 
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ width: { xs: '100%', lg: 'auto' }, alignItems: 'center' }}>
-                    <Box sx={{ minWidth: { xs: '100%', sm: '200px' } }}>
+                <Stack direction={{ xs: 'column', xl: 'row' }} spacing={2} sx={{ width: { xs: '100%', lg: 'auto' }, alignItems: { xs: 'stretch', xl: 'center' } }}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ width: { xs: '100%', xl: 'auto' } }}>
+                        {(companyID) &&
+                            <Autocomplete
+                                options={cityOptions}
+                                getOptionLabel={(option: any) => option?.name || ''}
+                                isOptionEqualToValue={(option: any, value: any) => option.id === value?.id}
+                                value={cityOptions?.find((option: any) => option.id === selectedCity) || null}
+                                onChange={(_, newValue) => {
+                                    setSelectedCity(newValue?.id || null)
+                                }}
+                                renderInput={(params) => <TextField {...params} label="Select City" variant="outlined" size="small" />}
+                                sx={{
+                                    minWidth: { xs: '100%', sm: '180px', md: '200px' },
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '10px',
+                                        bgcolor: alpha(theme.palette.background.paper, 0.5)
+                                    }
+                                }}
+                            />
+                        }
                         {(isAdmin || companyID) &&
                             <Autocomplete
                                 multiple
@@ -73,6 +95,7 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                                 }}
                                 renderInput={(params) => <TextField {...params} label="Select Branch" variant="outlined" size="small" />}
                                 sx={{
+                                    minWidth: { xs: '100%', sm: '200px', md: '250px' },
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '10px',
                                         bgcolor: alpha(theme.palette.background.paper, 0.5)
@@ -80,39 +103,41 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                                 }}
                             />
                         }
-                    </Box>
+                    </Stack>
 
-                    <ToggleButtonGroup
-                        exclusive
-                        onChange={(_, newValue) => newValue !== null && setSlot(newValue)}
-                        value={slot}
-                        size="small"
-                        sx={{
-                            bgcolor: alpha(theme.palette.secondary.lighter, 0.5),
-                            p: 0.5,
-                            borderRadius: '12px',
-                            '& .MuiToggleButton-root': {
-                                border: 'none',
-                                borderRadius: '8px',
-                                px: 2,
-                                py: 0.75,
-                                fontWeight: 600,
-                                whiteSpace: 'nowrap',
-                                '&.Mui-selected': {
-                                    bgcolor: 'background.paper',
-                                    color: 'primary.main',
-                                    boxShadow: theme.customShadows.z1,
-                                    '&:hover': { bgcolor: 'background.paper' }
+                    <Box sx={{ width: { xs: '100%', xl: 'auto' }, overflowX: 'auto' }}>
+                        <ToggleButtonGroup
+                            exclusive
+                            onChange={(_, newValue) => newValue !== null && setSlot(newValue)}
+                            value={slot}
+                            size="small"
+                            sx={{
+                                bgcolor: alpha(theme.palette.secondary.lighter, 0.5),
+                                p: 0.5,
+                                borderRadius: '12px',
+                                '& .MuiToggleButton-root': {
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    px: 2,
+                                    py: 0.75,
+                                    fontWeight: 600,
+                                    whiteSpace: 'nowrap',
+                                    '&.Mui-selected': {
+                                        bgcolor: 'background.paper',
+                                        color: 'primary.main',
+                                        boxShadow: theme.customShadows.z1,
+                                        '&:hover': { bgcolor: 'background.paper' }
+                                    }
                                 }
-                            }
-                        }}
-                    >
-                        <ToggleButton value={0}>Today</ToggleButton>
-                        <ToggleButton value={1}>This Month</ToggleButton>
-                        <ToggleButton value={2}>Last Months</ToggleButton>
-                        <ToggleButton value={3}>Last 3 Months</ToggleButton>
-                        <ToggleButton value={4}>Custom</ToggleButton>
-                    </ToggleButtonGroup>
+                            }}
+                        >
+                            <ToggleButton value={0}>Today</ToggleButton>
+                            <ToggleButton value={1}>This Month</ToggleButton>
+                            <ToggleButton value={2}>Last Months</ToggleButton>
+                            <ToggleButton value={3}>Last 3 Months</ToggleButton>
+                            <ToggleButton value={4}>Custom</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
                 </Stack>
             </Stack>
 
@@ -178,15 +203,21 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                                 <TableCell sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Branch Name</TableCell>
                                 <TableCell align="center" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Customers</TableCell>
                                 <TableCell align="center" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Members</TableCell>
-                                <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Cash</TableCell>
-                                <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>UPI</TableCell>
-                                <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Card</TableCell>
+                                {dailySaleSectionRights['daily_sales_analysis_cash'] && dailySaleSectionRights['daily_sales_analysis_cash']['view'] && (
+                                    <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Cash</TableCell>
+                                )}
+                                {dailySaleSectionRights['daily_sales_analysis_upi'] && dailySaleSectionRights['daily_sales_analysis_upi']['view'] && (
+                                    <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>UPI</TableCell>
+                                )}
+                                {dailySaleSectionRights['daily_sales_analysis_card'] && dailySaleSectionRights['daily_sales_analysis_card']['view'] && (
+                                    <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.secondary.lighter, 0.8), fontWeight: 700 }}>Card</TableCell>
+                                )}
                                 <TableCell align="right" sx={{ bgcolor: alpha(theme.palette.primary.lighter, 0.8), fontWeight: 800, color: 'primary.main' }}>Net Sales</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {dailySaleList.map((row: any, index: number) => {
-                                const netSales = (row?.totalCash || 0) + (row?.totalUPI || 0) + (row?.totalCard || 0);
+                                const netSales = (dailySaleSectionRights['daily_sales_analysis_cash']['view'] ? (row?.totalCash || 0) : 0) + (dailySaleSectionRights['daily_sales_analysis_upi']['view'] ? (row?.totalUPI || 0) : 0) + (dailySaleSectionRights['daily_sales_analysis_card']['view'] ? (row?.totalCard || 0) : 0);
                                 return (
                                     <TableRow
                                         key={"bill_report" + index}
@@ -204,24 +235,30 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                                                 {row?.membershipCustomerCount || 0}
                                             </Typography>
                                         </TableCell>
-                                        <TableCell align="right">
-                                            <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="baseline">
-                                                <Typography variant="caption" color="text.secondary">({row?.cashCustomerCount})</Typography>
-                                                <Typography sx={{ fontFamily: 'monospace', fontWeight: 500 }}>₹{row?.totalCash?.toLocaleString('en-IN')}/-</Typography>
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="baseline">
-                                                <Typography variant="caption" color="text.secondary">({row?.upiCustomerCount})</Typography>
-                                                <Typography sx={{ fontFamily: 'monospace', fontWeight: 500 }}>₹{row?.totalUPI?.toLocaleString('en-IN')}/-</Typography>
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="baseline">
-                                                <Typography variant="caption" color="text.secondary">({row?.cardCustomerCount})</Typography>
-                                                <Typography sx={{ fontFamily: 'monospace', fontWeight: 500 }}>₹{row?.totalCard?.toLocaleString('en-IN')}/-</Typography>
-                                            </Stack>
-                                        </TableCell>
+                                        {dailySaleSectionRights['daily_sales_analysis_cash']['view'] && (
+                                            <TableCell align="right">
+                                                <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="baseline">
+                                                    <Typography variant="caption" color="text.secondary">({row?.cashCustomerCount})</Typography>
+                                                    <Typography sx={{ fontFamily: 'monospace', fontWeight: 500 }}>₹{row?.totalCash?.toLocaleString('en-IN')}/-</Typography>
+                                                </Stack>
+                                            </TableCell>
+                                        )}
+                                        {dailySaleSectionRights['daily_sales_analysis_upi']['view'] && (
+                                            <TableCell align="right">
+                                                <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="baseline">
+                                                    <Typography variant="caption" color="text.secondary">({row?.upiCustomerCount})</Typography>
+                                                    <Typography sx={{ fontFamily: 'monospace', fontWeight: 500 }}>₹{row?.totalUPI?.toLocaleString('en-IN')}/-</Typography>
+                                                </Stack>
+                                            </TableCell>
+                                        )}
+                                        {dailySaleSectionRights['daily_sales_analysis_card']['view'] && (
+                                            <TableCell align="right">
+                                                <Stack direction="row" spacing={0.5} justifyContent="flex-end" alignItems="baseline">
+                                                    <Typography variant="caption" color="text.secondary">({row?.cardCustomerCount})</Typography>
+                                                    <Typography sx={{ fontFamily: 'monospace', fontWeight: 500 }}>₹{row?.totalCard?.toLocaleString('en-IN')}/-</Typography>
+                                                </Stack>
+                                            </TableCell>
+                                        )}
                                         <TableCell align="right">
                                             <Typography sx={{
                                                 fontFamily: 'monospace',
@@ -248,9 +285,15 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                                         <Typography sx={{ fontFamily: 'monospace', fontWeight: 600, color: 'info.main' }}>{dailySaleList.reduce((acc, row) => acc + (row?.membershipCustomerCount || 0), 0)}</Typography>
                                     </Stack>
                                 </TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCash || 0), 0).toLocaleString('en-IN')}/-</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalUPI || 0), 0).toLocaleString('en-IN')}/-</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCard || 0), 0).toLocaleString('en-IN')}/-</TableCell>
+                                {dailySaleSectionRights['daily_sales_analysis_cash'] && dailySaleSectionRights['daily_sales_analysis_cash']['view'] && (
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCash || 0), 0).toLocaleString('en-IN')}/-</TableCell>
+                                )}
+                                {dailySaleSectionRights['daily_sales_analysis_upi'] && dailySaleSectionRights['daily_sales_analysis_upi']['view'] && (
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalUPI || 0), 0).toLocaleString('en-IN')}/-</TableCell>
+                                )}
+                                {dailySaleSectionRights['daily_sales_analysis_card'] && dailySaleSectionRights['daily_sales_analysis_card']['view'] && (
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCard || 0), 0).toLocaleString('en-IN')}/-</TableCell>
+                                )}
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCash || 0) + (row?.totalUPI || 0) + (row?.totalCard || 0), 0).toLocaleString('en-IN')}/-</TableCell>
                             </TableRow>
                         </TableBody>
