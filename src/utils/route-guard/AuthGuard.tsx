@@ -10,7 +10,7 @@ import { GuardProps } from 'types/auth';
 // ==============================|| AUTH GUARD ||============================== //
 
 export default function AuthGuard({ children }: GuardProps) {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, user, accessRights } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,6 +37,21 @@ export default function AuthGuard({ children }: GuardProps) {
       });
     }
   }, [isLoggedIn, navigate, location]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    // Routes that should never be blocked by access rights
+    const whitelistedPaths = ['/dashboard', '/daily-report/add', '/'];
+    const currentPath = location.pathname;
+
+    if (whitelistedPaths.some((p) => currentPath === p)) return;
+
+    const rights = accessRights(currentPath);
+    if (!rights?.view) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isLoggedIn, location.pathname, accessRights, navigate]);
 
   return children;
 }
