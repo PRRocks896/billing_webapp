@@ -78,6 +78,8 @@ const UseMembership = () => {
     const [customerList, setCustomerList] = useState<any[]>([]);
     const [isCustomerSearching, setIsCustomerSearching] = useState<boolean>(false);
     const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Guard to prevent concurrent/duplicate membership save calls (Bug #1)
+    const isSavingMembershipRef = useRef<boolean>(false);
     const [isOtpSend, setIsOtpSend] = useState<boolean>(false);
     const [isAddMembershipShow, setIsAddMembershipShow] = useState<boolean>(false);
     const [isPayment, setIsPayment] = useState<boolean>(false);
@@ -528,8 +530,10 @@ const UseMembership = () => {
     // =========================================================================
 
     const handleSaveMembership = async (body: MembershipFormValue) => {
+        // Bug #1: Block duplicate/concurrent calls (e.g. double-click or form re-submit during OTP cascade)
+        if (isSavingMembershipRef.current) return;
+        isSavingMembershipRef.current = true;
         try {
-            startLoading();
             const selectedMemberShipPlan = membershipPlanList.find(item => item.id === body.membershipPlanID);
             if (!selectedMemberShipPlan) {
                 showError({ message: "Selected membership plan not found" });
@@ -590,7 +594,9 @@ const UseMembership = () => {
         } catch (error: any) {
             showError(error);
         } finally {
-            stopLoading();
+            // Bug #7: Don't call stopLoading here — the parent (handleVerifyMembership) manages the loader.
+            // Reset the guard so future saves are allowed after this one completes.
+            isSavingMembershipRef.current = false;
         }
     };
 
