@@ -240,7 +240,7 @@ const DailyReport = ({ companyID = null }: { companyID?: number | null }) => {
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailyReportList.reduce((acc, row) => acc + (row?.totalCash || 0), 0).toLocaleString('en-IN')}/-</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailyReportList.reduce((acc, row) => acc + (row?.totalExpense || 0), 0).toLocaleString('en-IN')}/-</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailyReportList.reduce((acc, row) => acc + (row?.nextDayCash || 0), 0).toLocaleString('en-IN')}/-</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailyReportList.reduce((acc, row) => acc + (row?.cashInCover || 0), 0).toLocaleString('en-IN')}/-</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailyReportList.reduce((acc, row) => acc + (row?.totalCash - row?.totalExpense - row?.nextDayCash), 0).toLocaleString('en-IN')}/-</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailyReportList.reduce((acc, row) => acc + (row?.cashInCover || 0), 0).toLocaleString('en-IN')}/-</TableCell>
                             </TableRow>
                         </TableBody>
