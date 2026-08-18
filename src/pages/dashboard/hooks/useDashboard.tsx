@@ -29,7 +29,8 @@ const DASHBOARD = [
     'income_&_expense',
     'low_sales_analysis',
     'reference_by',
-    'repeat_customer'
+    'repeat_customer',
+    'daily_report_analysis'
 ]
 
 const getDateRange = (value: number) => {
