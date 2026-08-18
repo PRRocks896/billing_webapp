@@ -294,7 +294,7 @@ const DailySale = ({ companyID = null }: { companyID?: number | null }) => {
                                 {dailySaleSectionRights['daily_sales_analysis_card'] && dailySaleSectionRights['daily_sales_analysis_card']['view'] && (
                                     <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCard || 0), 0).toLocaleString('en-IN')}/-</TableCell>
                                 )}
-                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (row?.totalCash || 0) + (row?.totalUPI || 0) + (row?.totalCard || 0), 0).toLocaleString('en-IN')}/-</TableCell>
+                                <TableCell align="right" sx={{ fontWeight: 700 }}>₹{dailySaleList.reduce((acc, row) => acc + (dailySaleSectionRights['daily_sales_analysis_cash']['view'] && row?.totalCash || 0) + (dailySaleSectionRights['daily_sales_analysis_upi']['view'] && row?.totalUPI || 0) + (dailySaleSectionRights['daily_sales_analysis_card']['view'] && row?.totalCard || 0), 0).toLocaleString('en-IN')}/-</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
