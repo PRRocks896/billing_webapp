@@ -270,6 +270,13 @@ const menuItems: { items: NavItemType[] } = {
               breadcrumbs: false
             },
             {
+              id: 'item',
+              title: 'Laundry Item',
+              url: '/laundry-management/laundry-item',
+              type: 'item',
+              breadcrumbs: false
+            },
+            {
               id: 'stock',
               title: 'Laundry Stock',
               url: '/laundry-management/laundry-stock',
@@ -284,31 +291,24 @@ const menuItems: { items: NavItemType[] } = {
               breadcrumbs: false
             },
             {
-              id: 'management',
-              title: 'Laundry Management',
-              url: '/laundry-management/laundry-management',
+              id: 'vendor',
+              title: 'Laundry Vendors',
+              url: '/laundry-management/laundry-vendor',
               type: 'item',
               breadcrumbs: false
             },
             {
-              id: 'item',
-              title: 'Laundry Item',
+              id: 'challan',
+              title: 'Laundry Challans',
+              url: '/laundry-management/laundry-challan',
               type: 'item',
-              url: '/laundry-management/laundry-item',
               breadcrumbs: false
             },
             {
-              id: 'receiver',
-              title: 'Laundry Receiver',
+              id: 'return',
+              title: 'Laundry Returns',
               type: 'item',
-              url: '/laundry-management/laundry-receiver',
-              breadcrumbs: false
-            },
-            {
-              id: 'washer',
-              title: 'Laundry Washer',
-              type: 'item',
-              url: '/laundry-management/laundry-washer',
+              url: '/laundry-management/laundry-return',
               breadcrumbs: false
             }
           ]

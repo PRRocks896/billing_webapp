@@ -212,12 +212,12 @@ const DailyReport = Loadable(lazy(() => import('pages/daily-report')));
 const AddEditDailyReport = Loadable(lazy(() => import('pages/daily-report/component/addEditDailyReport')));
 const LaundryItem = Loadable(lazy(() => import('pages/laundry-management/item')));
 const AddEditLaundryItem = Loadable(lazy(() => import('pages/laundry-management/item/component/addEditItem')));
-const LaundryWasher = Loadable(lazy(() => import('pages/laundry-management/washer')));
-const AddEditLaundryWasher = Loadable(lazy(() => import('pages/laundry-management/washer/addEditWasher')));
-const LaundryManagement = Loadable(lazy(() => import('pages/laundry-management/management')));
-const AddEditLaundryManagement = Loadable(lazy(() => import('pages/laundry-management/management/addEditManagement')));
-const LaundryReceiver = Loadable(lazy(() => import('pages/laundry-management/receiver')));
-const AddEditLaundryReceiver = Loadable(lazy(() => import('pages/laundry-management/receiver/addEditReceiver')));
+const LaundryVendor = Loadable(lazy(() => import('pages/laundry-management/vendor')));
+const AddEditLaundryVendor = Loadable(lazy(() => import('pages/laundry-management/vendor/addEditVendor')));
+const LaundryChallan = Loadable(lazy(() => import('pages/laundry-management/challan')));
+const AddEditLaundryChallan = Loadable(lazy(() => import('pages/laundry-management/challan/addEditChallan')));
+const LaundryReturn = Loadable(lazy(() => import('pages/laundry-management/return')));
+const AddEditLaundryReturn = Loadable(lazy(() => import('pages/laundry-management/return/addEditReturn')));
 const LaundryReport = Loadable(lazy(() => import('pages/report/laundry-report')));
 const CompanyStaffSalaryReport = Loadable(lazy(() => import('pages/report/company-staff-salary-report')));
 const StaffReport = Loadable(lazy(() => import('pages/report/staff-report')));
@@ -666,19 +666,19 @@ const MainRoutes: RouteObject = {
               element: <LaundryReport />
             },
             {
-              path: 'laundry-receiver',
+              path: 'laundry-return',
               children: [
                 {
                   path: '',
-                  element: <AddEditLaundryReceiver />
+                  element: <LaundryReturn />
                 },
                 {
                   path: ':mode',
-                  element: <AddEditLaundryReceiver />
+                  element: <AddEditLaundryReturn />
                 },
                 {
                   path: ':mode/:id',
-                  element: <AddEditLaundryReceiver />
+                  element: <AddEditLaundryReturn />
                 }
               ]
             },
@@ -709,19 +709,19 @@ const MainRoutes: RouteObject = {
               ]
             },
             {
-              path: 'laundry-management',
+              path: 'laundry-challan',
               children: [
                 {
                   path: '',
-                  element: <LaundryManagement />
+                  element: <LaundryChallan />
                 },
                 {
                   path: ':mode',
-                  element: <AddEditLaundryManagement />
+                  element: <AddEditLaundryChallan />
                 },
                 {
                   path: ':mode/:id',
-                  element: <AddEditLaundryManagement />
+                  element: <AddEditLaundryChallan />
                 }
               ]
             },
@@ -743,19 +743,19 @@ const MainRoutes: RouteObject = {
               ]
             },
             {
-              path: 'laundry-washer',
+              path: 'laundry-vendor',
               children: [
                 {
                   path: '',
-                  element: <LaundryWasher />
+                  element: <LaundryVendor />
                 },
                 {
                   path: ':mode',
-                  element: <AddEditLaundryWasher />
+                  element: <AddEditLaundryVendor />
                 },
                 {
                   path: ':mode/:id',
-                  element: <AddEditLaundryWasher />
+                  element: <AddEditLaundryVendor />
                 }
               ]
             }
