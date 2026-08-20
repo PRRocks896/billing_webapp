@@ -197,8 +197,9 @@ export default function NavCollapse({ menu, level, parentId, setSelectedItems, s
           />
         );
       case 'item':
-        const rights = accessRights(item.url!);
-        if (rights.view) {
+        const currentPath = item.url ? item?.url?.split('/').filter((p) => p !== '').length > 1 ? "/" + item.url?.split('/').filter((p) => p !== '')[1] : item.url : "";
+        const rights = accessRights(currentPath);
+        if (['dashboard'].includes(item.title!.toLowerCase()) || rights.view) {
           return <NavItem key={item.id} item={item} level={level + 1} />;
         }
         return null;

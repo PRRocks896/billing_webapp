@@ -6,6 +6,7 @@ import { openSnackbar } from "api/snackbar";
 import useAuth from "hooks/useAuth";
 import { lookupChallanCode } from "service/laundry-challan";
 import { createLaundryReturn } from "service/laundry-return";
+import moment from "moment";
 
 export type ReturnFormType = {
     challanId: number | null,
@@ -29,7 +30,7 @@ const defaultValues: ReturnFormType = {
 const UseAddEditReturn = () => {
     const navigate = useNavigate();
     const { startLoading, stopLoading, user } = useAuth();
-    
+
     const [challanCode, setChallanCode] = useState<string>("");
     const [challanDetails, setChallanDetails] = useState<any>(null);
 
@@ -78,13 +79,13 @@ const UseAddEditReturn = () => {
 
             setChallanDetails(data);
             setValue("challanId", data.id);
-            
+
             // Populate form array with pending items
             const formItems = data.items.map((i: any) => ({
                 challanItemId: i.id,
-                laundryItemId: i.laundryItemId,
-                itemName: i.laundryItem?.label || '-',
-                unitName: i.laundryItem?.unitName || '-',
+                laundryItemId: i.laundryItemID,
+                itemName: i.px_laundry_item?.itemName || '-',
+                unitName: i.px_laundry_item?.unitName || '-',
                 givenQty: i.givenQty,
                 pendingQty: i.pendingQty,
                 receivedQty: "",
@@ -108,15 +109,19 @@ const UseAddEditReturn = () => {
 
         try {
             startLoading();
-            
+
             const payload = {
+                challanCode,
                 challanId: data.challanId,
+                returnDate: moment().format('YYYY-MM-DD'),
+                receiverManagerID: localStorage.getItem('managerId'),
+                note: "",
                 createdBy: user?.id,
                 items: data.items.map(i => {
                     const rec = parseInt(i.receivedQty || "0");
                     const dam = parseInt(i.damagedQty || "0");
                     return {
-                        challanItemId: i.challanItemId,
+                        challanItemID: i.challanItemId,
                         receivedQty: rec,
                         damagedQty: dam
                     }

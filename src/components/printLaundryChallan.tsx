@@ -19,7 +19,11 @@ const PrintLaundryChallan = (challanData: any) => {
         }
         @media print {
           @page {
-            size: 150mm;
+            size: 80mm auto;
+            margin: 0;
+          }
+          body {
+            margin: 0;
           }
         }
         body {
@@ -28,6 +32,8 @@ const PrintLaundryChallan = (challanData: any) => {
           -moz-user-select: none;
           -ms-user-select: none;
           -o-user-select: none;
+          margin: 0;
+          padding: 0;
         }
         .header {
           text-align: center;
@@ -70,7 +76,7 @@ const PrintLaundryChallan = (challanData: any) => {
     </head>
     <body>
       <div style="padding: 0mm; margin: 0 auto; width: 80mm;">
-        <div style="page-break-before: always; height: max-content; border: 0px solid black;">
+        <div style="page-break-inside: avoid; height: max-content; border: 0px solid black;">
           
           <div class="header">
             <img src="${logo}" style="width: 150px; height: auto; margin-bottom: 10px;" />

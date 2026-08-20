@@ -143,7 +143,7 @@ const UseChallan = () => {
         }, 500);
         return () => clearTimeout(timeout);
     }, [page, rows, searchText, order, orderBy]);
-    
+
     const Column: HeadCell[] = useMemo(() => {
         return [
             {
@@ -155,13 +155,22 @@ const UseChallan = () => {
                 isSortable: true,
             },
             {
+                id: "manager",
+                label: "Manager Name",
+                align: "left",
+                numeric: false,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row) => row?.managerData?.map((i: any) => i.nickName).join(', ') || '-'
+            },
+            {
                 id: "vendorId",
                 label: "Vendor Name",
                 align: "left",
                 numeric: false,
                 disablePadding: false,
                 isSortable: true,
-                renderCell: (row) => row?.vendor?.name || '-'
+                renderCell: (row) => row?.px_vendor?.name || '-'
             },
             {
                 id: 'totalItems',
@@ -177,7 +186,8 @@ const UseChallan = () => {
                 align: "left",
                 numeric: false,
                 disablePadding: false,
-                isSortable: true
+                isSortable: true,
+                renderCell: (row) => `₹${row?.items?.reduce((acc: number, item: any) => acc + (item?.price || 0), 0).toLocaleString('en-IN')}/-` || '-'
             },
             {
                 id: 'status',
@@ -190,7 +200,7 @@ const UseChallan = () => {
                     if (row?.status === 'RECEIVED') color = "success";
                     if (row?.status === 'CANCELLED') color = "error";
                     if (row?.status === 'PARTIALLY_RECEIVED') color = "warning";
-                    
+
                     return (
                         <Chip label={row?.status?.replace('_', ' ')} color={color} size="small" variant="light" />
                     )

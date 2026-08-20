@@ -38,7 +38,8 @@ const AddEditVendor = () => {
         onSubmit,
         getValues,
         handleBack,
-        handleSubmit
+        handleSubmit,
+        handleIfscVerify
     } = UseAddEditVendor();
 
     return (
@@ -270,7 +271,8 @@ const AddEditVendor = () => {
                                             control={control}
                                             rules={{
                                                 required: "IFSC Code is required",
-                                                pattern: { value: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: 'Invalid IFSC (e.g. SBIN0123456)' }
+                                                pattern: { value: /^[A-Z]{4}0[A-Z0-9]{6}$/, message: 'Invalid IFSC (e.g. SBIN0123456)' },
+                                                validate: (value) => handleIfscVerify(value, 'ifscCode')
                                             }}
                                             render={({ field, fieldState: { error } }) => (
                                                 <TextField

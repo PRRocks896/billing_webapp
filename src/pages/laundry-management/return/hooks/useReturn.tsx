@@ -91,7 +91,7 @@ const UseReturn = () => {
         }, 500);
         return () => clearTimeout(timeout);
     }, [page, rows, searchText, order, orderBy]);
-    
+
     const Column: HeadCell[] = useMemo(() => {
         return [
             {
@@ -110,7 +110,7 @@ const UseReturn = () => {
                 numeric: false,
                 disablePadding: false,
                 isSortable: true,
-                renderCell: (row) => row?.challan?.challanCode || '-'
+                renderCell: (row) => row?.px_challan?.challanCode || '-'
             },
             {
                 id: "vendorId",
@@ -119,7 +119,7 @@ const UseReturn = () => {
                 numeric: false,
                 disablePadding: false,
                 isSortable: true,
-                renderCell: (row) => row?.challan?.vendor?.name || '-'
+                renderCell: (row) => row?.px_challan?.px_vendor?.laundryName || '-'
             },
             {
                 id: 'totalReceivedQty',
@@ -127,7 +127,8 @@ const UseReturn = () => {
                 align: "left",
                 numeric: false,
                 disablePadding: false,
-                isSortable: true
+                isSortable: true,
+                renderCell: (row) => row?.items?.reduce((acc: number, item: any) => acc + (item?.receivedQty || 0), 0)
             },
             {
                 id: 'totalDamagedQty',
@@ -135,7 +136,8 @@ const UseReturn = () => {
                 align: "left",
                 numeric: false,
                 disablePadding: false,
-                isSortable: true
+                isSortable: true,
+                renderCell: (row) => row?.items?.reduce((acc: number, item: any) => acc + (item?.damagedQty || 0), 0)
             },
             {
                 id: 'action',

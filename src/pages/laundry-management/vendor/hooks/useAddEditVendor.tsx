@@ -1,10 +1,11 @@
 import { openSnackbar } from "api/snackbar";
 import countries, { CountryType } from "data/countries";
 import useAuth from "hooks/useAuth";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { createLaundryVendor, getLaundryVendorById, updateLaundryVendor } from "service/laundry-vendor";
+import { verifyIfscCode } from "service/staff";
 
 export type VendorType = {
     userID: number | null,
@@ -49,6 +50,8 @@ const UseAddEditVendor = () => {
     const {
         control,
         formState: { isSubmitting },
+        clearErrors,
+        setError,
         setValue,
         getValues,
         handleSubmit
@@ -71,7 +74,7 @@ const UseAddEditVendor = () => {
                 setValue("ifscCode", data.ifscCode);
                 setValue("accountHolder", data.accountHolder);
                 setValue("accountNumber", data.accountNumber);
-                setValue("reEnterAccountNumber", data.accountNumber);
+                // setValue("reEnterAccountNumber", data.accountNumber);
             } else {
                 openSnackbar({
                     open: true,
@@ -102,6 +105,35 @@ const UseAddEditVendor = () => {
         navigate("/laundry-management/laundry-vendor");
     }
 
+    /**
+         * Verifies an IFSC code against the backend API.
+         * Called via react-hook-form's async `validate` rule on the ifscCode field.
+         * Returns `true` on success, or an error message string on failure.
+         */
+    const handleIfscVerify = useCallback(async (ifsc: string, fieldName: any): Promise<true | string> => {
+        const IFSC_REGEX = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+        // Skip API call if the format is already invalid (the `pattern` rule handles that message)
+        if (!ifsc || !IFSC_REGEX.test(ifsc)) {
+            setError('ifscCode', { type: 'pattern', message: 'IFSC Code is not valid' })
+            return true; // Let the `pattern` rule display the format error
+        }
+        try {
+            const { success, message }: any = await verifyIfscCode({ ifscCode: ifsc });
+            if (success) {
+                // setIfscVerified(true);
+                setError('ifscCode', { message: 'IFSC Code is verified successfully.' })
+                clearErrors(fieldName);
+                return true;
+            } else {
+                setError('ifscCode', { message: message || 'IFSC Code not found. Please check and try again.' })
+                return message || 'IFSC Code not found. Please check and try again.';
+            }
+        } catch (error: any) {
+            setError('ifscCode', { message: error?.message || error?.messageCode || (error as Error).message || 'Failed to verify IFSC Code. Please try again.' })
+            return error?.message || 'Failed to verify IFSC Code. Please try again.';
+        }
+    }, [clearErrors, setError]);
+
     const onSubmit = async (data: VendorType) => {
         try {
             startLoading();
@@ -120,7 +152,7 @@ const UseAddEditVendor = () => {
                     createdBy: user?.id
                 }
             }
-
+            delete payload.reEnterAccountNumber;
             const { success, message }: any = mode && mode === 'edit' && id ? await updateLaundryVendor(payload, Number(id)) : await createLaundryVendor(payload);
             if (success) {
                 openSnackbar({
@@ -181,6 +213,7 @@ const UseAddEditVendor = () => {
         getValues,
         handleBack,
         handleSubmit,
+        handleIfscVerify,
     }
 }
 
