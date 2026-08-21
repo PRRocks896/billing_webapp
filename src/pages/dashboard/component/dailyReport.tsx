@@ -240,7 +240,7 @@ const DailyReport = ({ companyID = null }: { companyID?: number | null }) => {
                                                 <IconButton
                                                     aria-label="show expenses"
                                                     onClick={() => {
-                                                        setSelectedExpenses(row.expenses);
+                                                        setSelectedExpenses([...row.expenses, { description: 'Cash Tips Paid', amount: row.totalTips ?? 0 }]);
                                                         toggleExpenseDetail();
                                                     }}
                                                 >
@@ -274,6 +274,8 @@ const DailyReport = ({ companyID = null }: { companyID?: number | null }) => {
             </MainCard>
             {showExpenseDetail &&
                 <ViewDetailModal
+                    showSubmitButton={false}
+                    type="table"
                     title={`Expense Detail | Total: ${selectedExpenses?.reduce((acc, row) => acc + (row?.amount || 0), 0).toLocaleString('en-IN')}/-`}
                     open={showExpenseDetail}
                     handleClose={toggleExpenseDetail}

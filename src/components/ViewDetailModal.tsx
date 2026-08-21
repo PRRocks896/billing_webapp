@@ -9,6 +9,13 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { alpha, useTheme } from "@mui/material";
 import { CloseCircle } from "iconsax-reactjs";
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
@@ -16,7 +23,9 @@ type ViewDetailModalProps = {
     title: string;
     open: boolean;
     detail: Record<string, any> | Record<string, any>[] | null | undefined;
+    type?: 'grid' | 'table';
     submitButtonTitle?: string;
+    showSubmitButton?: boolean;
     handleClose: () => void;
     handleSubmit?: () => void;
 };
@@ -132,12 +141,62 @@ const ArrayRows = ({ data }: { data: Record<string, any>[] }) => (
     </Stack>
 );
 
+// ─── Table View (for array data) ────────────────────────────────────────────────
+const TableView = ({ data }: { data: Record<string, any>[] }) => {
+    const theme = useTheme();
+    if (!data || data.length === 0) return null;
+
+    // Derive columns from keys of the first item
+    const columns = Object.keys(data[0]);
+
+    return (
+        <TableContainer sx={{ borderRadius: 2, border: `1px solid ${alpha(theme.palette.divider, 0.15)}` }}>
+            <Table size="small">
+                <TableHead>
+                    <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.04) }}>
+                        <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
+                        {columns.map((col) => (
+                            <TableCell key={col} sx={{ fontWeight: 700 }}>
+                                {formatKey(col)}
+                            </TableCell>
+                        ))}
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data.map((row, idx) => (
+                        <TableRow
+                            key={idx}
+                            sx={{
+                                '&:nth-of-type(even)': { bgcolor: alpha(theme.palette.secondary.lighter, 0.2) },
+                                '&:last-child td': { borderBottom: 0 },
+                            }}
+                        >
+                            <TableCell>{idx + 1}</TableCell>
+                            {columns.map((col) => (
+                                <TableCell key={col}>
+                                    {row[col] === null || row[col] === undefined
+                                        ? '—'
+                                        : typeof row[col] === 'boolean'
+                                            ? (row[col] ? 'Yes' : 'No')
+                                            : String(row[col])}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+};
+
 // ─── Main Modal ─────────────────────────────────────────────────────────────────
 const ViewDetailModal = ({
     title,
     open,
     detail,
+    type = 'grid',
     submitButtonTitle = 'Confirm',
+    showSubmitButton = true,
     handleClose,
     handleSubmit,
 }: ViewDetailModalProps) => {
@@ -147,7 +206,7 @@ const ViewDetailModal = ({
         <Dialog
             open={open}
             onClose={handleClose}
-            maxWidth="sm"
+            maxWidth={type === 'table' ? 'md' : 'sm'}
             fullWidth
             PaperProps={{ sx: { borderRadius: 2 } }}
         >
@@ -178,6 +237,8 @@ const ViewDetailModal = ({
                     >
                         No details to display.
                     </Typography>
+                ) : type === 'table' && isArray ? (
+                    <TableView data={detail as Record<string, any>[]} />
                 ) : isArray ? (
                     <ArrayRows data={detail as Record<string, any>[]} />
                 ) : (
@@ -191,7 +252,7 @@ const ViewDetailModal = ({
                 <Button variant="outlined" color="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                {handleSubmit && (
+                {showSubmitButton && handleSubmit && (
                     <Button variant="contained" onClick={handleSubmit}>
                         {submitButtonTitle}
                     </Button>
