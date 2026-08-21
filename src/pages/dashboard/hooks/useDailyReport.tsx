@@ -22,10 +22,11 @@ const UseDailyReport = (companyID?: number | null) => {
     const [selectedCity, setSelectedCity] = useState<any>(null);
     const [cityOptions, setCityOptions] = useState<any[]>([]);
     const [dailyReportList, setDailyReportList] = useState<any[]>([]);
+    const [selectedExpenses, setSelectedExpenses] = useState<{ description: string; amount: number; }[]>([]);
+    const [showExpenseDetail, setShowExpenseDetail] = useState<boolean>(false);
 
-    const toggleIsShowCustom = () => {
-        setIsShowCustom(!isShowCustom);
-    }
+    const toggleIsShowCustom = () => setIsShowCustom(!isShowCustom);
+    const toggleExpenseDetail = () => setShowExpenseDetail(!showExpenseDetail);
 
     // ── Helpers ──────────────────────────────────────────────────────────────────
     const showError = (msg: string) =>
@@ -161,9 +162,11 @@ const UseDailyReport = (companyID?: number | null) => {
         cityOptions,
         selectedCity,
         isShowCustom,
-        dailyReportList,
         branchOptions,
         selectedBranch,
+        dailyReportList,
+        selectedExpenses,
+        showExpenseDetail,
         setSlot,
         setToDate,
         setFromDate,
@@ -172,6 +175,8 @@ const UseDailyReport = (companyID?: number | null) => {
         fetchDailyReport,
         setSelectedBranch,
         toggleIsShowCustom,
+        setSelectedExpenses,
+        toggleExpenseDetail,
     }
 }
 
