@@ -43,7 +43,7 @@ export default function AuthGuard({ children }: GuardProps) {
 
     // Routes that should never be blocked by access rights
     const whitelistedPaths = ['/dashboard', '/daily-report/add', '/'];
-    const currentPath = location.pathname.split('/').filter((p) => p !== '').length > 1 ? "/" + location.pathname.split('/').filter((p) => p !== '')[1] : location.pathname;
+    const currentPath = location.pathname.split('/').filter((p) => p !== '').length > 1 && !['add', 'edit', 'view'].includes(location.pathname.split('/')[location.pathname.split('/').length - 1]) ? "/" + location.pathname.split('/').filter((p) => p !== '')[1] : location.pathname;
 
     if (whitelistedPaths.includes(currentPath)) return;
     const rights = accessRights(currentPath);
