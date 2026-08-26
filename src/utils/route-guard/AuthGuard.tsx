@@ -22,8 +22,8 @@ export default function AuthGuard({ children }: GuardProps) {
   }, [user]);
 
   useEffect(() => {
-    if (isPendingDailyReport && location.pathname !== "/daily-report/add") {
-      navigate('/daily-report/add', { replace: true });
+    if (isPendingDailyReport && location.pathname !== "/daily-report") {
+      navigate('/daily-report', { replace: true });
     }
   }, [isPendingDailyReport, location.pathname, navigate]);
 
@@ -42,7 +42,7 @@ export default function AuthGuard({ children }: GuardProps) {
     if (!isLoggedIn) return;
 
     // Routes that should never be blocked by access rights
-    const whitelistedPaths = ['/dashboard', '/daily-report/add', '/'];
+    const whitelistedPaths = ['/dashboard', '/daily-report', '/'];
     const currentPath = location.pathname.split('/').filter((p) => p !== '').length > 1 && !['add', 'edit', 'view'].includes(location.pathname.split('/')[location.pathname.split('/').length - 1]) ? "/" + location.pathname.split('/').filter((p) => p !== '')[1] : location.pathname;
 
     if (whitelistedPaths.includes(currentPath)) return;

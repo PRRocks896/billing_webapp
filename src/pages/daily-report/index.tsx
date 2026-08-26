@@ -66,7 +66,7 @@ const DailyReport = () => {
             </Stack>
 
             {/* ── Admin Export Controls ─────────────────────────────────────────────── */}
-            {sectionRights.view && (
+            {/* {sectionRights.view && (
                 <MainCard sx={{ border: '1px solid', borderColor: 'divider', boxShadow: 'none' }}>
                     <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems={{ xs: 'stretch', md: 'center' }} justifyContent="space-between">
 
@@ -130,7 +130,7 @@ const DailyReport = () => {
                         </Grid>
                     </Stack>
                 </MainCard>
-            )}
+            )} */}
 
             {/* ── Main Content Area ─────────────────────────────────────────────────── */}
             <MainCard content={false}>
