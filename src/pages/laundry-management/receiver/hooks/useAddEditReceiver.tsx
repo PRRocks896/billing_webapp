@@ -113,6 +113,16 @@ const UseAddEditReceiver = () => {
     };
 
     const onSubmit = async (data: LaundryReceiverPayload) => {
+        if (!localStorage.getItem('managerId')) {
+            openSnackbar({
+                open: true,
+                message: "Current Manager not found",
+                variant: 'alert',
+                severity: 'error',
+                alert: { color: 'error' }
+            });
+            return;
+        }
         try {
             startLoading();
             if (data.receiverManagerID && data.receiverManagerID.length === 0) {

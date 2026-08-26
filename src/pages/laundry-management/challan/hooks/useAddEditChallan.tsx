@@ -101,6 +101,15 @@ const UseAddEditChallan = () => {
     }
 
     const onSubmit = async (data: ChallanFormType) => {
+        if (!localStorage.getItem('managerId')) {
+            openSnackbar({
+                open: true,
+                message: "Current Manager not found",
+                variant: 'alert',
+                alert: { color: 'error' }
+            });
+            return;
+        }
         try {
             startLoading();
             let payload: any = {
