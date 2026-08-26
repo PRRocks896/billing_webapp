@@ -259,6 +259,7 @@ const LaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock'
 const AddEditLaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock/addEditStock')));
 const LaundryStockHistory = Loadable(lazy(() => import('pages/laundry-management/stock-history')));
 const BillVerify = Loadable(lazy(() => import('pages/bill-verify')));
+const BillVerifyDetail = Loadable(lazy(() => import('pages/bill-verify-detail')));
 // ==============================|| MAIN ROUTES ||============================== //
 
 import { RoleProvider } from 'pages/user-management/role/context/roleContext';
@@ -291,6 +292,10 @@ const MainRoutes: RouteObject = {
               element: <DashboardFinance />
             }
           ]
+        },
+        {
+          path: 'bill-verify-detail',
+          element: <BillVerifyDetail />
         },
         {
           path: 'bill-verify',

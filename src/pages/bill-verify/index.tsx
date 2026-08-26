@@ -280,19 +280,24 @@ const BillVerify = () => {
             {/* ── Executive KPI Dashboard Cards ───────────────────────────────────── */}
             {hasLoaded && watchedBills.length > 0 && (
                 <>
-                    <Grid container spacing={2.5}>
-                        {/* 1. Total Invoices Card */}
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                    <Grid container spacing={2.5} alignItems="stretch">
+                        {/* 1. Total Bills Card */}
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
                             <MainCard
                                 content={false}
                                 sx={{
                                     p: 2.5,
+                                    width: "100%",
+                                    height: "100%",
                                     bgcolor: alpha(theme.palette.primary.main, 0.04),
                                     borderColor: alpha(theme.palette.primary.main, 0.2),
-                                    borderRadius: 3
+                                    borderRadius: 3,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between"
                                 }}
                             >
-                                <Stack spacing={1.5}>
+                                <Stack spacing={1}>
                                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                                         <Typography variant="body2" color="text.secondary" fontWeight={600}>
                                             Total Bills
@@ -304,37 +309,44 @@ const BillVerify = () => {
                                     <Typography variant="h3" fontWeight={700}>
                                         {stats.totalCount}
                                     </Typography>
-                                    <Stack direction="row" spacing={1} alignItems="center">
+                                </Stack>
+                                <Box sx={{ minHeight: 28, display: "flex", alignItems: "center", mt: 1.5 }}>
+                                    <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="nowrap" sx={{ width: "100%", overflow: "hidden" }}>
                                         <Chip
                                             label={`${stats.verifiedCount} Verified`}
                                             size="small"
                                             color="success"
-                                            sx={{ height: 22, fontSize: "0.75rem", fontWeight: 600 }}
+                                            sx={{ height: 22, fontSize: "0.72rem", fontWeight: 600 }}
                                         />
                                         <Chip
                                             label={`${stats.pendingCount} Pending`}
                                             size="small"
                                             color="warning"
                                             variant="outlined"
-                                            sx={{ height: 22, fontSize: "0.75rem", fontWeight: 600 }}
+                                            sx={{ height: 22, fontSize: "0.72rem", fontWeight: 600 }}
                                         />
                                     </Stack>
-                                </Stack>
+                                </Box>
                             </MainCard>
                         </Grid>
 
                         {/* 2. Total Billed Amount */}
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
                             <MainCard
                                 content={false}
                                 sx={{
                                     p: 2.5,
+                                    width: "100%",
+                                    height: "100%",
                                     bgcolor: alpha(theme.palette.info.main, 0.04),
                                     borderColor: alpha(theme.palette.info.main, 0.2),
-                                    borderRadius: 3
+                                    borderRadius: 3,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between"
                                 }}
                             >
-                                <Stack spacing={1.5}>
+                                <Stack spacing={1}>
                                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                                         <Typography variant="body2" color="text.secondary" fontWeight={600}>
                                             Total Billed Amount
@@ -346,25 +358,32 @@ const BillVerify = () => {
                                     <Typography variant="h3" fontWeight={700} color="info.main">
                                         {formatCurrency(stats.totalGrandTotal)}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary">
-                                        Gross sum of all generated invoices
-                                    </Typography>
                                 </Stack>
+                                <Box sx={{ minHeight: 28, display: "flex", alignItems: "center", mt: 1.5 }}>
+                                    <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                                        Total sales value (excl. cash)
+                                    </Typography>
+                                </Box>
                             </MainCard>
                         </Grid>
 
                         {/* 3. Statement Received Amount */}
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
                             <MainCard
                                 content={false}
                                 sx={{
                                     p: 2.5,
+                                    width: "100%",
+                                    height: "100%",
                                     bgcolor: alpha(theme.palette.success.main, 0.04),
                                     borderColor: alpha(theme.palette.success.main, 0.2),
-                                    borderRadius: 3
+                                    borderRadius: 3,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between"
                                 }}
                             >
-                                <Stack spacing={1.5}>
+                                <Stack spacing={1}>
                                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                                         <Typography variant="body2" color="text.secondary" fontWeight={600}>
                                             Statement Received
@@ -376,7 +395,9 @@ const BillVerify = () => {
                                     <Typography variant="h3" fontWeight={700} color="success.main">
                                         {formatCurrency(stats.totalStatementAmount)}
                                     </Typography>
-                                    <Stack direction="row" alignItems="center" spacing={1}>
+                                </Stack>
+                                <Box sx={{ minHeight: 28, display: "flex", alignItems: "center", mt: 1.5, width: "100%" }}>
+                                    <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%" }}>
                                         <LinearProgress
                                             variant="determinate"
                                             value={stats.verifiedPercentage}
@@ -387,22 +408,27 @@ const BillVerify = () => {
                                             {stats.verifiedPercentage}%
                                         </Typography>
                                     </Stack>
-                                </Stack>
+                                </Box>
                             </MainCard>
                         </Grid>
 
                         {/* 4. Variance / Discrepancy Card */}
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }} sx={{ display: "flex" }}>
                             <MainCard
                                 content={false}
                                 sx={{
                                     p: 2.5,
+                                    width: "100%",
+                                    height: "100%",
                                     bgcolor: stats.totalVariance === 0 ? alpha(theme.palette.success.main, 0.04) : alpha(theme.palette.error.main, 0.04),
                                     borderColor: stats.totalVariance === 0 ? alpha(theme.palette.success.main, 0.2) : alpha(theme.palette.error.main, 0.2),
-                                    borderRadius: 3
+                                    borderRadius: 3,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between"
                                 }}
                             >
-                                <Stack spacing={1.5}>
+                                <Stack spacing={1}>
                                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                                         <Typography variant="body2" color="text.secondary" fontWeight={600}>
                                             Reconciliation Variance
@@ -422,14 +448,21 @@ const BillVerify = () => {
                                     <Typography variant="h3" fontWeight={700} color={stats.totalVariance === 0 ? "success.main" : "error.main"}>
                                         {stats.totalVariance > 0 ? `+${formatCurrency(stats.totalVariance)}` : formatCurrency(stats.totalVariance)}
                                     </Typography>
-                                    <Typography variant="caption" color={stats.totalVariance === 0 ? "success.dark" : "error.main"} fontWeight={600}>
+                                </Stack>
+                                <Box sx={{ minHeight: 28, display: "flex", alignItems: "center", mt: 1.5 }}>
+                                    <Typography
+                                        variant="caption"
+                                        color={stats.totalVariance === 0 ? "success.dark" : "error.main"}
+                                        fontWeight={600}
+                                        sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                                    >
                                         {stats.totalVariance === 0
                                             ? "✓ Perfect Match (No Variance)"
                                             : stats.totalVariance > 0
-                                                ? `Surplus in received statement`
+                                                ? `+${formatCurrency(stats.totalVariance)} Surplus`
                                                 : `Shortage of ${formatCurrency(Math.abs(stats.totalVariance))}`}
                                     </Typography>
-                                </Stack>
+                                </Box>
                             </MainCard>
                         </Grid>
                     </Grid>
@@ -562,7 +595,7 @@ const BillVerify = () => {
                                         </Select>
                                     </FormControl>
 
-                                    <Button
+                                    {/* <Button
                                         size="small"
                                         variant="outlined"
                                         color="success"
@@ -589,7 +622,7 @@ const BillVerify = () => {
                                         onClick={() => handleVerifyAll(false)}
                                     >
                                         Unverify All
-                                    </Button>
+                                    </Button> */}
                                 </Stack>
                             </Grid>
                         </Grid>
@@ -601,9 +634,9 @@ const BillVerify = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell width={50} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>#</TableCell>
-                                    <TableCell width={160} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Bill No</TableCell>
+                                    <TableCell width={160} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Bill</TableCell>
                                     <TableCell width={200} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Customer</TableCell>
-                                    <TableCell width={180} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Staff & Room</TableCell>
+                                    <TableCell width={180} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Manager & Staff & Room</TableCell>
                                     <TableCell sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Services / Item</TableCell>
                                     <TableCell width={130} sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Payment</TableCell>
                                     <TableCell width={130} align="right" sx={{ fontWeight: 700, bgcolor: "background.paper" }}>Billed Amount</TableCell>
@@ -657,13 +690,8 @@ const BillVerify = () => {
 
                                                 {/* 2. Bill No */}
                                                 <TableCell>
-                                                    <Chip
-                                                        label={bill.billNo || "N/A"}
-                                                        size="small"
-                                                        variant="outlined"
-                                                        color="primary"
-                                                        sx={{ fontWeight: 700, fontSize: "0.8rem" }}
-                                                    />
+                                                    <Typography variant="body2" fontWeight={600}>{bill.billNo}</Typography>
+                                                    <Typography variant="caption" color="text.secondary">{bill.createdAt}</Typography>
                                                 </TableCell>
 
                                                 {/* 3. Customer */}
@@ -672,9 +700,9 @@ const BillVerify = () => {
                                                         <Typography variant="body2" fontWeight={600}>
                                                             {bill.customerName}
                                                         </Typography>
-                                                        <Typography variant="caption" color="text.secondary">
+                                                        {/* <Typography variant="caption" color="text.secondary">
                                                             {bill.customerPhone}
-                                                        </Typography>
+                                                        </Typography> */}
                                                     </Stack>
                                                 </TableCell>
 
@@ -682,10 +710,13 @@ const BillVerify = () => {
                                                 <TableCell>
                                                     <Stack spacing={0.25}>
                                                         <Typography variant="body2" fontWeight={500}>
-                                                            {bill.staffName}
+                                                            {bill.managerName}
                                                         </Typography>
                                                         <Typography variant="caption" color="text.secondary">
                                                             Room: <strong>{bill.roomName}</strong>
+                                                        </Typography>
+                                                        <Typography variant="body2" fontWeight={500}>
+                                                            {bill.staffName}
                                                         </Typography>
                                                     </Stack>
                                                 </TableCell>
@@ -713,7 +744,7 @@ const BillVerify = () => {
                                                 {/* 6. Payment Mode */}
                                                 <TableCell>
                                                     <Chip
-                                                        label={bill.paymentType}
+                                                        label={bill.paymentType.toLowerCase() === 'card' ? `Card (${bill.cardNo})` : bill.paymentType}
                                                         size="small"
                                                         sx={{
                                                             bgcolor: pColor.bg,
@@ -797,12 +828,12 @@ const BillVerify = () => {
                                                 {/* 10. Status & Verify Toggle */}
                                                 <TableCell align="center">
                                                     <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
-                                                        <Switch
+                                                        {/* <Switch
                                                             checked={Boolean(bill.isVerify)}
                                                             onChange={(e) => handleToggleVerify(index, e.target.checked)}
                                                             color="success"
                                                             size="small"
-                                                        />
+                                                        /> */}
                                                         <Typography
                                                             variant="caption"
                                                             fontWeight={700}

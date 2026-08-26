@@ -452,6 +452,14 @@ const menuItems: { items: NavItemType[] } = {
           icon: Ticket
         },
         {
+          id: 'bill-verify-detail',
+          title: 'Bill Verify Detail',
+          type: 'item',
+          url: '/bill-verify-detail',
+          breadcrumbs: false,
+          icon: Ticket
+        },
+        {
           id: 'bill',
           title: 'Bill',
           type: 'item',

@@ -13,9 +13,11 @@ import { openSnackbar } from "api/snackbar";
 export interface BillVerifyItem {
     mappedId: number;
     billNo: string;
+    cardNo: string;
     customerName: string;
     customerPhone: string;
     staffName: string;
+    managerName: string;
     roomName: string;
     paymentType: string;
     paymentID: number;
@@ -245,7 +247,13 @@ const UseBillVerify = () => {
             }
 
             if (data && Array.isArray(data)) {
-                const formattedBills: BillVerifyItem[] = data.map((item: any) => {
+                // Filter out Cash payment bills completely (only verify bank/online/UPI/Card statements)
+                const nonCashData = data.filter((item: any) => {
+                    const paymentName = (item?.px_payment_type?.name || '').toLowerCase().trim();
+                    return paymentName !== 'cash' && !paymentName.includes('cash');
+                });
+
+                const formattedBills: BillVerifyItem[] = nonCashData.map((item: any) => {
                     const grandTotalNum = parseFloat(item?.grandTotal || '0');
                     const isVerified = Boolean(item?.isVerify);
                     const statementAmount = item?.statementReceiveAmount !== null && item?.statementReceiveAmount !== undefined
@@ -255,9 +263,11 @@ const UseBillVerify = () => {
                     return {
                         mappedId: item?.id,
                         billNo: item?.billNo || '',
+                        cardNo: item?.cardNo || '',
                         customerName: item?.px_customer?.name || 'Walk-in Customer',
                         customerPhone: item?.px_customer?.phoneNumber || 'N/A',
-                        staffName: item?.px_staff?.name || item?.px_staff?.nickName || 'N/A',
+                        managerName: item?.managerData?.map((item: any) => item.nickName).join(','),
+                        staffName: item?.px_staff?.nickName || 'N/A',
                         roomName: item?.px_room?.roomName || item?.roomNo || 'N/A',
                         paymentType: item?.px_payment_type?.name || 'Unknown',
                         paymentID: item?.paymentID,
@@ -267,7 +277,7 @@ const UseBillVerify = () => {
                         detail: item?.detail || [],
                         isVerify: isVerified,
                         statementReceiveAmount: statementAmount,
-                        createdAt: item?.createdAt
+                        createdAt: moment(item?.createdAt).format('DD-MMM-YYYY hh:mm A')
                     };
                 });
 
@@ -275,7 +285,7 @@ const UseBillVerify = () => {
                 setHasLoaded(true);
                 openSnackbar({
                     open: true,
-                    message: `Loaded ${formattedBills.length} billing records successfully.`,
+                    message: `Loaded ${formattedBills.length} online/statement billing records successfully.`,
                     variant: 'alert',
                     severity: 'success',
                     alert: { color: 'success' }
@@ -313,9 +323,15 @@ const UseBillVerify = () => {
 
     const handleStatementAmountChange = (index: number, value: string | number | null) => {
         const parsed = value === '' || value === null ? null : Number(value);
+        const grandTotal = Number(watchedBills[index]?.grandTotal ?? 0);
+
         setValue(`bills.${index}.statementReceiveAmount`, parsed, { shouldDirty: true, shouldValidate: true });
-        if (parsed !== null && parsed > 0 && !watchedBills[index]?.isVerify) {
+
+        // If statement amount matches grandTotal, mark as verified; otherwise mark isVerify as false
+        if (parsed !== null && parsed === grandTotal) {
             setValue(`bills.${index}.isVerify`, true, { shouldDirty: true, shouldValidate: true });
+        } else {
+            setValue(`bills.${index}.isVerify`, false, { shouldDirty: true, shouldValidate: true });
         }
     };
 

@@ -36,3 +36,7 @@ export const getSalaryBranchWiseReport = async (body: any) => {
 export const getAuditorStaffDetailReport = async (body: any, fileName: string) => {
     return await getxlsx(`api/staff/auditor-staff-details-fetch`, body, fileName);
 }
+
+export const getBillDetailVerifyStatementReport = async (body: any, fileName: string) => {
+    return await getxlsx('/api/report/bill-details-verify-statement', body, fileName, true);
+}
