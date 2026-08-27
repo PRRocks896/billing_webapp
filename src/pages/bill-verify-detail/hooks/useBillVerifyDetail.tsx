@@ -223,7 +223,7 @@ const UseBillVerifyDetail = () => {
                     page: targetPage + 1,
                     rows: targetRows,
                     sortBy: 'createdAt',
-                    descending: true
+                    descending: false
                 }
             };
 
