@@ -212,12 +212,12 @@ const DailyReport = Loadable(lazy(() => import('pages/daily-report')));
 const AddEditDailyReport = Loadable(lazy(() => import('pages/daily-report/component/addEditDailyReport')));
 const LaundryItem = Loadable(lazy(() => import('pages/laundry-management/item')));
 const AddEditLaundryItem = Loadable(lazy(() => import('pages/laundry-management/item/component/addEditItem')));
-const LaundryWasher = Loadable(lazy(() => import('pages/laundry-management/washer')));
-const AddEditLaundryWasher = Loadable(lazy(() => import('pages/laundry-management/washer/addEditWasher')));
-const LaundryManagement = Loadable(lazy(() => import('pages/laundry-management/management')));
-const AddEditLaundryManagement = Loadable(lazy(() => import('pages/laundry-management/management/addEditManagement')));
-const LaundryReceiver = Loadable(lazy(() => import('pages/laundry-management/receiver')));
-const AddEditLaundryReceiver = Loadable(lazy(() => import('pages/laundry-management/receiver/addEditReceiver')));
+const LaundryVendor = Loadable(lazy(() => import('pages/laundry-management/vendor')));
+const AddEditLaundryVendor = Loadable(lazy(() => import('pages/laundry-management/vendor/addEditVendor')));
+const LaundryChallan = Loadable(lazy(() => import('pages/laundry-management/challan')));
+const AddEditLaundryChallan = Loadable(lazy(() => import('pages/laundry-management/challan/addEditChallan')));
+const LaundryReturn = Loadable(lazy(() => import('pages/laundry-management/return')));
+const AddEditLaundryReturn = Loadable(lazy(() => import('pages/laundry-management/return/addEditReturn')));
 const LaundryReport = Loadable(lazy(() => import('pages/report/laundry-report')));
 const CompanyStaffSalaryReport = Loadable(lazy(() => import('pages/report/company-staff-salary-report')));
 const StaffReport = Loadable(lazy(() => import('pages/report/staff-report')));
@@ -258,6 +258,8 @@ const BookingService = Loadable(lazy(() => import('pages/booking-service')));
 const LaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock')));
 const AddEditLaundryStock = Loadable(lazy(() => import('pages/laundry-management/stock/addEditStock')));
 const LaundryStockHistory = Loadable(lazy(() => import('pages/laundry-management/stock-history')));
+const BillVerify = Loadable(lazy(() => import('pages/bill-verify')));
+const BillVerifyDetail = Loadable(lazy(() => import('pages/bill-verify-detail')));
 // ==============================|| MAIN ROUTES ||============================== //
 
 import { RoleProvider } from 'pages/user-management/role/context/roleContext';
@@ -290,6 +292,14 @@ const MainRoutes: RouteObject = {
               element: <DashboardFinance />
             }
           ]
+        },
+        {
+          path: 'bill-verify-detail',
+          element: <BillVerifyDetail />
+        },
+        {
+          path: 'bill-verify',
+          element: <BillVerify />
         },
         {
           path: 'contact-us',
@@ -629,12 +639,12 @@ const MainRoutes: RouteObject = {
           children: [
             {
               path: '',
-              element: <DailyReport />
-            },
-            {
-              path: ':mode',
               element: <AddEditDailyReport />
             },
+            // {
+            //   path: ':mode',
+            //   element: <AddEditDailyReport />
+            // },
             {
               path: ':mode/:id',
               element: <AddEditDailyReport />
@@ -666,19 +676,19 @@ const MainRoutes: RouteObject = {
               element: <LaundryReport />
             },
             {
-              path: 'laundry-receiver',
+              path: 'laundry-return',
               children: [
                 {
                   path: '',
-                  element: <AddEditLaundryReceiver />
+                  element: <LaundryReturn />
                 },
                 {
                   path: ':mode',
-                  element: <AddEditLaundryReceiver />
+                  element: <AddEditLaundryReturn />
                 },
                 {
                   path: ':mode/:id',
-                  element: <AddEditLaundryReceiver />
+                  element: <AddEditLaundryReturn />
                 }
               ]
             },
@@ -709,19 +719,19 @@ const MainRoutes: RouteObject = {
               ]
             },
             {
-              path: 'laundry-management',
+              path: 'laundry-challan',
               children: [
                 {
                   path: '',
-                  element: <LaundryManagement />
+                  element: <LaundryChallan />
                 },
                 {
                   path: ':mode',
-                  element: <AddEditLaundryManagement />
+                  element: <AddEditLaundryChallan />
                 },
                 {
                   path: ':mode/:id',
-                  element: <AddEditLaundryManagement />
+                  element: <AddEditLaundryChallan />
                 }
               ]
             },
@@ -743,19 +753,19 @@ const MainRoutes: RouteObject = {
               ]
             },
             {
-              path: 'laundry-washer',
+              path: 'laundry-vendor',
               children: [
                 {
                   path: '',
-                  element: <LaundryWasher />
+                  element: <LaundryVendor />
                 },
                 {
                   path: ':mode',
-                  element: <AddEditLaundryWasher />
+                  element: <AddEditLaundryVendor />
                 },
                 {
                   path: ':mode/:id',
-                  element: <AddEditLaundryWasher />
+                  element: <AddEditLaundryVendor />
                 }
               ]
             }

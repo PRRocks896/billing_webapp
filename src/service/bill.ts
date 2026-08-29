@@ -53,3 +53,7 @@ export const validateGiftCard = async (codeNumber: string) => {
 export const redeemGiftCard = async (payload: any) => {
     return await post(REDEEM_GIFT_CARD_API, payload);
 }
+
+export const bulkVerifyBills = async (payload: { bills: Array<{ id: number; isVerify: boolean; statementReceiveAmount: number | null }>; updatedBy?: number }) => {
+    return await post(`${CREATE_BILL_API}/bulk-verify`, payload);
+};

@@ -187,6 +187,12 @@ export const STOCK = "api/stock";
 
 export const LAUNDRYRECEIVER = "api/laundry-receiver";
 
+export const LAUNDRYVENDOR = "api/laundry-vendor";
+
+export const LAUNDRYCHALLAN = "api/laundry-challan";
+
+export const LAUNDRYRETURN = "api/laundry-return";
+
 export const PAYMENTBANK = "api/payment-banks";
 
 export const WEBSETTING = "api/v1/settings";
