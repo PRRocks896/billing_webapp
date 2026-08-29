@@ -22,8 +22,8 @@ export default function AuthGuard({ children }: GuardProps) {
   }, [user]);
 
   useEffect(() => {
-    if (isPendingDailyReport && location.pathname !== "/daily-report") {
-      navigate('/daily-report', { replace: true });
+    if (isPendingDailyReport && location.pathname !== "/daily-report/add") {
+      navigate('/daily-report/add', { replace: true });
     }
   }, [isPendingDailyReport, location.pathname, navigate]);
 
