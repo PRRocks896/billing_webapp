@@ -12,7 +12,6 @@ import {
     Card,
     CardContent,
     Chip,
-    FormControl,
 } from "@mui/material";
 import moment from "moment";
 
@@ -179,14 +178,6 @@ const DateSelectionBlock = ({ value, onChange, label, color = "primary" }: any) 
 const SalesReport = () => {
     const theme = useTheme();
     const {
-        dailyReportRights,
-        dailyReportDateRange,
-        setDailyReportDateRange,
-        dailyBranchList,
-        selectedDailyReportBranch,
-        setSelectedDailyReportBranch,
-        fetchDailyReportData,
-
         isAdmin,
         dateRange,
         gstDateRange,
@@ -518,62 +509,6 @@ const SalesReport = () => {
                                         </Button>
                                     </Grid>
                                 }
-                            </Grid>
-                        </ReportModule>
-                    </Grid>
-                }
-                {dailyReportRights.view &&
-                    <Grid size={{ xs: 12 }}>
-                        <ReportModule>
-                            <SectionHeader
-                                theme={theme}
-                                icon={InfoCircle}
-                                title="Export Daily Reports"
-                                subtitle="Generate branch summaries"
-                            />
-                            <Grid container spacing={3} alignItems="flex-end">
-                                <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-                                    <FormControl fullWidth>
-                                        <TextField
-                                            type="date"
-                                            label="Select Date"
-                                            value={dailyReportDateRange}
-                                            onChange={(e) => setDailyReportDateRange(e.target.value)}
-                                            InputLabelProps={{ shrink: true }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid size={{ xs: 12, sm: 4, md: 5 }}>
-                                    <Autocomplete
-                                        freeSolo
-                                        fullWidth
-                                        id="branchID"
-                                        getOptionLabel={(option) => option.lastName || option.branchName || ''}
-                                        options={dailyBranchList || []}
-                                        onChange={(_event, value) => setSelectedDailyReportBranch(value || null)}
-                                        renderOption={(props, option) => (
-                                            <li {...props} key={option.id}>
-                                                {option.lastName || option.branchName}
-                                            </li>
-                                        )}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Select Branch" />
-                                        )}
-                                    />
-                                </Grid>
-                                <Grid size={{ xs: 12, sm: 4, md: 'auto' }}>
-                                    {dailyReportRights.download &&
-                                        <Button
-                                            fullWidth
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={fetchDailyReportData}
-                                            sx={{ minWidth: 120, height: 50, px: 3, boxShadow: 'none' }}
-                                        >
-                                            Export PDF
-                                        </Button>
-                                    }
-                                </Grid>
                             </Grid>
                         </ReportModule>
                     </Grid>

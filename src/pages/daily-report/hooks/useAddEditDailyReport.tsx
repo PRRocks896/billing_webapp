@@ -8,8 +8,7 @@ import {
     createDailyReport,
     updateDailyReport,
     getDailyReportById,
-    getDailyReportByPayload,
-    getLastRecordDetailReport
+    getDailyReportByPayload
 } from "service/dailyReport";
 import { getBranch } from "service/user";
 import moment from "moment";
@@ -18,7 +17,6 @@ export type DailyReportFormValue = {
     userID: number | null;
     dailyReportDate: Date | string;
     managerName: string;
-    managerId: string;
     totalStaffPresent: number;
     totalCustomer: number;
     totalMemberGuest: number;
@@ -52,7 +50,6 @@ const defaultValues: DailyReportFormValue = {
     userID: null,
     dailyReportDate: moment(new Date()).format('yyyy-MM-DD'),
     managerName: localStorage.getItem("managerName") ?? "",
-    managerId: localStorage.getItem("managerId") ?? "",
     totalStaffPresent: 0,
     totalCustomer: 0,
     totalMemberGuest: 0,
@@ -107,7 +104,7 @@ const UseAddEditDailyReport = () => {
     } = useForm<DailyReportFormValue>({
         defaultValues: {
             ...defaultValues,
-            // userID: user?.id,
+            userID: user?.id,
             managerName: localStorage.getItem("managerName") ?? ""
         },
         mode: 'onChange',
@@ -181,77 +178,42 @@ const UseAddEditDailyReport = () => {
     };
 
     const fetchPreviousDateEntry = async () => {
-        // try {
-        //     startLoading();
-        //     const { success, message, data }: any = await getDailyReportByPayload({
-        //         isActive: true,
-        //         isDeleted: false,
-        //         userID: isAdmin ? getValues('userID') : user?.id,
-        //         dailyReportDate: moment(new Date(getValues('dailyReportDate'))).format('yyyy-MM-DD')
-        //     });
-        //     if (success) {
-        //         setPreviousDateReport(data);
-        //         setIsOpeningBalanceDisable(true);
-        //         setValue('openBalance', data.nextDayCash);
-        //     } else {
-        //         setPreviousDateReport(null);
-        //         setIsOpeningBalanceDisable(false);
-        //         setValue('openBalance', '');
-        //         openSnackbar({
-        //             open: true,
-        //             message: message,
-        //             variant: 'alert',
-        //             severity: 'error',
-        //             alert: {
-        //                 color: 'error'
-        //             }
-        //         })
-        //     }
-        // } catch (error: any) {
-        //     openSnackbar({
-        //         open: true,
-        //         message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
-        //         variant: 'alert',
-        //         severity: 'error',
-        //         alert: {
-        //             color: 'error'
-        //         }
-        //     })
-        // } finally {
-        //     stopLoading();
-        // }
         try {
             startLoading();
-            const { success, data, message }: any = await getLastRecordDetailReport({ userID: isAdmin ? getValues('userID') : user?.id });
-
-            if (!success) {
+            const { success, message, data }: any = await getDailyReportByPayload({
+                isActive: true,
+                isDeleted: false,
+                userID: isAdmin ? getValues('userID') : user?.id,
+                dailyReportDate: moment(new Date(getValues('dailyReportDate'))).format('yyyy-MM-DD')
+            });
+            if (success) {
+                setPreviousDateReport(data);
+                setIsOpeningBalanceDisable(true);
+                setValue('openBalance', data.nextDayCash);
+            } else {
+                setPreviousDateReport(null);
+                setIsOpeningBalanceDisable(false);
+                setValue('openBalance', '');
                 openSnackbar({
                     open: true,
-                    message: message || 'Something went wrong',
+                    message: message,
                     variant: 'alert',
                     severity: 'error',
-                    alert: { color: 'error' }
-                });
-            }
-            if (data && data.managerList && Array.isArray(data.managerList) && data.managerList.length) {
-                setValue('managerId', data.managerList.map((v: any) => v.id).join(","));
-                setValue('managerName', data.managerList.map((v: any) => v.nickName).join(","));
-            } else {
-                setValue('managerId', localStorage.getItem('managerId') || '');
-                setValue('managerName', localStorage.getItem('managerName') || '');
-            }
-            if (data && data.dailyReportDate) {
-                const currentDate = moment(data.dailyReportDate).add(1, 'days').format('YYYY-MM-DD');
-                setValue('dailyReportDate', currentDate);
+                    alert: {
+                        color: 'error'
+                    }
+                })
             }
         } catch (error: any) {
             openSnackbar({
                 open: true,
-                message: error?.message || (error as Error).message || 'Something went wrong',
+                message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
                 variant: 'alert',
                 severity: 'error',
-                alert: { color: 'error' }
-            });
+                alert: {
+                    color: 'error'
+                }
+            })
         } finally {
             stopLoading();
         }
@@ -348,7 +310,6 @@ const UseAddEditDailyReport = () => {
             // Prepare the payload by converting all numeric string fields back to numbers
             const payload: any = {
                 ...data,
-                userID: isAdmin ? data.userID : user?.id,
                 // Attendance Counts
                 totalStaffPresent: Number(data.totalStaffPresent || 0),
                 totalCustomer: Number(data.totalCustomer || 0),
@@ -401,11 +362,9 @@ const UseAddEditDailyReport = () => {
                     })
             };
 
-            delete payload['managerId'];
-
             const { success, message }: any = id
                 ? await updateDailyReport({ ...payload, updatedBy: user?.id, managerName: editManagerId?.join(',') }, Number(id))
-                : await createDailyReport({ ...payload, createdBy: user?.id, managerName: isAdmin ? data.managerId : localStorage.getItem('managerId') });
+                : await createDailyReport({ ...payload, createdBy: user?.id, managerName: localStorage.getItem('managerId') });
 
             if (!success) {
                 openSnackbar({
@@ -425,7 +384,6 @@ const UseAddEditDailyReport = () => {
                 alert: { color: 'success' }
             });
             fetchLoginUser();
-            fetchPreviousDateEntry();
             navigate(isAdmin ? '/daily-report' : '/dashboard');
 
         } catch (error: any) {
@@ -514,47 +472,10 @@ const UseAddEditDailyReport = () => {
     }, [isAdmin]);
 
     useEffect(() => {
-        if ((isAdmin && getValues('userID')) || (!isAdmin && user && user.id)) {
-            // (async () => {
-            //     try {
-            //         startLoading();
-            //         const { success, data, message }: any = await getLastRecordDetailReport({ userID: isAdmin ? getValues('userID') : user?.id });
-
-            //         if (!success) {
-            //             openSnackbar({
-            //                 open: true,
-            //                 message: message || 'Something went wrong',
-            //                 variant: 'alert',
-            //                 severity: 'error',
-            //                 alert: { color: 'error' }
-            //             });
-            //         }
-            //         if (data && data.managerList && Array.isArray(data.managerList) && data.managerList.length) {
-            //             setValue('managerId', data.managerList.map((v: any) => v.id).join(","));
-            //             setValue('managerName', data.managerList.map((v: any) => v.nickName).join(","));
-            //         } else {
-            //             setValue('managerId', localStorage.getItem('managerId') || '');
-            //             setValue('managerName', localStorage.getItem('managerName') || '');
-            //         }
-            //         if (data && data.dailyReportDate) {
-            //             const currentDate = moment(data.dailyReportDate).add(1, 'days').format('YYYY-MM-DD');
-            //             setValue('dailyReportDate', currentDate);
-            //         }
-            //     } catch (error: any) {
-            //         openSnackbar({
-            //             open: true,
-            //             message: error?.message || (error as Error).message || 'Something went wrong',
-            //             variant: 'alert',
-            //             severity: 'error',
-            //             alert: { color: 'error' }
-            //         });
-            //     } finally {
-            //         stopLoading();
-            //     }
-            // })();
+        if (user && user.id) {
             fetchPreviousDateEntry();
         }
-    }, [isAdmin, user, watch('userID')]);
+    }, [user]);
 
     useEffect(() => {
         if (mode === 'edit' && id) {

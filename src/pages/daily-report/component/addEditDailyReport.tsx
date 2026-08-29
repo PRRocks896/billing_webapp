@@ -162,7 +162,7 @@ const AddEditDailyReport = () => {
                                                     value={branchList?.find((branch: any) => branch.id === value) || null}
                                                     onChange={(_, val) => {
                                                         onChange(val?.id);
-                                                        // fetchPreviousDateEntry();
+                                                        fetchPreviousDateEntry();
                                                     }}
                                                     onBlur={onBlur}
                                                     renderInput={(params) => (
@@ -189,7 +189,6 @@ const AddEditDailyReport = () => {
                                         render={({ field: { value, onChange, onBlur }, fieldState: { error } }) => (
                                             <TextField
                                                 fullWidth
-                                                disabled
                                                 label="Report Date"
                                                 type='date'
                                                 error={!!error}

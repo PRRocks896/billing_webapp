@@ -60,7 +60,3 @@ export const getMonthSale = async (payload: any) => {
 export const getDailyDetailReport = async (payload: any) => {
     return await post(`${DAILYREPORT}/daily-report-details`, payload);
 }
-
-export const getLastRecordDetailReport = async (payload: any) => {
-    return await post(`${DAILYREPORT}/last-record`, payload);
-}

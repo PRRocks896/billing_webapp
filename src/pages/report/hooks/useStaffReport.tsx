@@ -13,12 +13,11 @@ import {
 } from "service/report";
 import { getCompanyList } from "service/company";
 import { getPaymentTypeList } from "service/payment-type";
-import { getBranch, getUserList } from "service/user";
+import { getUserList } from "service/user";
 import { getStaffList } from "service/staff";
 import useAuth from "hooks/useAuth";
 import { generateSlug, listPayload } from "utils/helper";
 import { openSnackbar } from "api/snackbar";
-import { downloadDailyReport } from "service/dailyReport";
 
 // --- Constants ---
 const SERVICE_LIST = [
@@ -63,11 +62,6 @@ const useStaffReport = () => {
     const [gstDateRange, setGstDateRange] = useState<[Date, Date]>(DEFAULT_DATE_RANGE);
     const [managerDateRange, setManagerDateRange] = useState<[Date, Date]>(DEFAULT_DATE_RANGE);
     const [auditorDateRange, setAuditorDateRange] = useState<[Date, Date]>(DEFAULT_DATE_RANGE);
-    const [dailyReportDateRange, setDailyReportDateRange] = useState(moment(new Date()).format('yyyy-MM-DD'));
-
-    // Daily Report States
-    const [selectedDailyReportBranch, setSelectedDailyReportBranch] = useState<any>(null);
-    const [dailyBranchList, setDailyBranchList] = useState<any[]>([]);
 
     // Selection States
     const [company, setCompany] = useState<any[]>([]);
@@ -131,8 +125,6 @@ const useStaffReport = () => {
         });
         return result;
     }, [accessSectionRights, SECTIONLISTFORSTAFF]);
-
-    const dailyReportRights = accessSectionRights('export_daily_reports');
 
     // --- Request Wrapper ---
     const wrapRequest = useCallback(async (requestFn: () => Promise<any>, errorMsg = "Something went wrong") => {
@@ -248,34 +240,6 @@ const useStaffReport = () => {
             }
         });
     }, [wrapRequest, selectedAttUser]);
-
-    const fetchDailyReportBranch = useCallback(async () => {
-        await wrapRequest(async () => {
-            const body = { isActive: true, isDeleted: false };
-            const { success, message, data }: any = await getBranch(body);
-            if (!success) {
-                openSnackbar({
-                    open: true,
-                    message: message,
-                    variant: 'alert',
-                    severity: 'error',
-                    alert: {
-                        color: 'error'
-                    }
-                });
-                return;
-            }
-            if (data && data && Array.isArray(data) && data.length > 0) {
-                setDailyBranchList(data.filter((item: any) => {
-                    if (item && item.px_role && item.px_role.name && !['admin', 'super admin'].includes(item.px_role.name.toLowerCase())) {
-                        return item;
-                    }
-                }))
-            } else {
-                setDailyBranchList([]);
-            }
-        })
-    }, [wrapRequest, user]);
 
     // --- Report Fetchers ---
     const fetchManagerReportData = useCallback(async () => {
@@ -406,17 +370,6 @@ const useStaffReport = () => {
         });
     }, [wrapRequest, selectedAuditorPayment, auditorSelectedCompany, auditorDateRange]);
 
-    const fetchDailyReportData = useCallback(async () => {
-        await wrapRequest(async () => {
-            const payload = {
-                userID: selectedDailyReportBranch.id,
-                startDate: moment(dailyReportDateRange).format('yyyy-MM-DD'),
-                endDate: moment(dailyReportDateRange).format('yyyy-MM-DD'),
-            };
-            await downloadDailyReport(payload, `Green_Day_Spa_${selectedDailyReportBranch?.label}_${moment(dailyReportDateRange).format('DD_MM_yyyy')}.pdf`);
-        });
-    }, [wrapRequest, selectedDailyReportBranch, dailyReportDateRange]);
-
     // --- Event Handlers ---
     const handleAuditorDateChange = useCallback((value: any) => setAuditorDateRange(value), []);
     const handleManagerDateChange = useCallback((value: any) => setManagerDateRange(value), []);
@@ -433,17 +386,9 @@ const useStaffReport = () => {
         fetchPaymentType();
         fetchManager();
         fetchAttUserList();
-        fetchDailyReportBranch();
-    }, [user, fetchBranch, fetchPaymentType, fetchManager, fetchAttUserList, fetchDailyReportBranch]);
+    }, [user, fetchBranch, fetchPaymentType, fetchManager, fetchAttUserList]);
 
     return {
-        dailyReportRights,
-        dailyReportDateRange,
-        setDailyReportDateRange,
-        dailyBranchList,
-        selectedDailyReportBranch,
-        setSelectedDailyReportBranch,
-        fetchDailyReportData,
         attUserList,
         selectedAttUser,
         selectedGstPayment,

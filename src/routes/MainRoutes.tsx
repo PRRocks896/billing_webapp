@@ -639,12 +639,12 @@ const MainRoutes: RouteObject = {
           children: [
             {
               path: '',
+              element: <DailyReport />
+            },
+            {
+              path: ':mode',
               element: <AddEditDailyReport />
             },
-            // {
-            //   path: ':mode',
-            //   element: <AddEditDailyReport />
-            // },
             {
               path: ':mode/:id',
               element: <AddEditDailyReport />
