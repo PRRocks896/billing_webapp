@@ -548,7 +548,7 @@ const UseBillVerify = () => {
     }, [selectedCompany, fetchCity]);
 
     useEffect(() => {
-        if (isAdmin && user?.companyID) {
+        if (isAdmin || user?.companyID) {
             fetchCompany();
         } else if (!isAdmin && user?.id) {
             setSelectedBranch(user.id);

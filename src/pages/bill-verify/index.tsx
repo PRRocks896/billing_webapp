@@ -205,59 +205,53 @@ const BillVerify = () => {
                     </Grid>
 
                     {/* Company (Admin only) */}
-                    {isAdmin && (
-                        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-                            <Autocomplete
-                                fullWidth
-                                size="small"
-                                options={companyOptions}
-                                getOptionLabel={(option) => option.companyName || ""}
-                                value={companyOptions.find((option: any) => option.id === selectedCompany) || null}
-                                onChange={(_, newValue) => setSelectedCompany(newValue?.id || null)}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Company" placeholder="Select Company" />
-                                )}
-                            />
-                        </Grid>
-                    )}
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                        <Autocomplete
+                            fullWidth
+                            size="small"
+                            options={companyOptions}
+                            getOptionLabel={(option) => option.companyName || ""}
+                            value={companyOptions.find((option: any) => option.id === selectedCompany) || null}
+                            onChange={(_, newValue) => setSelectedCompany(newValue?.id || null)}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Company" placeholder="Select Company" />
+                            )}
+                        />
+                    </Grid>
 
                     {/* City (Admin only, when company selected) */}
-                    {isAdmin && (
-                        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-                            <Autocomplete
-                                fullWidth
-                                size="small"
-                                options={cityOptions}
-                                disabled={!selectedCompany}
-                                getOptionLabel={(option: any) => option?.name || ""}
-                                isOptionEqualToValue={(option: any, value: any) => option.id === value?.id}
-                                value={cityOptions?.find((option: any) => option.id === selectedCity) || null}
-                                onChange={(_, newValue) => setSelectedCity(newValue?.id || null)}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="City" placeholder={selectedCompany ? "Select City" : "Select Company first"} />
-                                )}
-                            />
-                        </Grid>
-                    )}
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                        <Autocomplete
+                            fullWidth
+                            size="small"
+                            options={cityOptions}
+                            disabled={!selectedCompany}
+                            getOptionLabel={(option: any) => option?.name || ""}
+                            isOptionEqualToValue={(option: any, value: any) => option.id === value?.id}
+                            value={cityOptions?.find((option: any) => option.id === selectedCity) || null}
+                            onChange={(_, newValue) => setSelectedCity(newValue?.id || null)}
+                            renderInput={(params) => (
+                                <TextField {...params} label="City" placeholder={selectedCompany ? "Select City" : "Select Company first"} />
+                            )}
+                        />
+                    </Grid>
 
                     {/* Branch */}
-                    {isAdmin ? (
-                        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
-                            <Autocomplete
-                                fullWidth
-                                size="small"
-                                options={branchOptions}
-                                disabled={!selectedCity}
-                                getOptionLabel={(option: any) => option?.lastName || option?.branchName || option?.firstName || ""}
-                                isOptionEqualToValue={(option: any, value: any) => option.id === value}
-                                value={branchOptions?.find((option: any) => option.id === selectedBranch) || null}
-                                onChange={(_, newValue) => setSelectedBranch(newValue?.id || null)}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Branch" placeholder={selectedCity ? "Select Branch" : "Select City first"} />
-                                )}
-                            />
-                        </Grid>
-                    ) : null}
+                    <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+                        <Autocomplete
+                            fullWidth
+                            size="small"
+                            options={branchOptions}
+                            disabled={!selectedCity}
+                            getOptionLabel={(option: any) => option?.lastName || option?.branchName || option?.firstName || ""}
+                            isOptionEqualToValue={(option: any, value: any) => option.id === value}
+                            value={branchOptions?.find((option: any) => option.id === selectedBranch) || null}
+                            onChange={(_, newValue) => setSelectedBranch(newValue?.id || null)}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Branch" placeholder={selectedCity ? "Select Branch" : "Select City first"} />
+                            )}
+                        />
+                    </Grid>
 
                     {/* Get Bills Button */}
                     <Grid size={{ xs: 12, sm: 6, md: isAdmin ? 2 : 3.5 }}>
