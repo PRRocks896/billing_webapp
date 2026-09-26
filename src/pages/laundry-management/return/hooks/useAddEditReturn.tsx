@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { openSnackbar } from "api/snackbar";
 import useAuth from "hooks/useAuth";
 import { lookupChallanCode } from "service/laundry-challan";
-import { createLaundryReturn } from "service/laundry-return";
+import { createLaundryReturn, getLaundryReturnById } from "service/laundry-return";
 import moment from "moment";
 
 export type ReturnFormType = {
@@ -29,7 +29,9 @@ const defaultValues: ReturnFormType = {
 
 const UseAddEditReturn = () => {
     const navigate = useNavigate();
+    const { mode, id } = useParams();
     const { startLoading, stopLoading, user } = useAuth();
+    const isView = useMemo(() => mode === 'view', [mode]);
 
     const [challanCode, setChallanCode] = useState<string>("");
     const [challanDetails, setChallanDetails] = useState<any>(null);
@@ -52,7 +54,50 @@ const UseAddEditReturn = () => {
 
     const handleBack = () => navigate("/laundry-management/laundry-return");
 
+    const fetchReturnById = async (returnId: number) => {
+        try {
+            startLoading();
+            const { success, message, data }: any = await getLaundryReturnById(returnId);
+            if (!success || !data) {
+                openSnackbar({ open: true, message: message || 'Record not found', variant: 'alert', severity: 'error', alert: { color: 'error' } });
+                handleBack();
+                return;
+            }
+
+            const mappedItems = (data.items || []).map((ri: any) => ({
+                id: ri.id,
+                givenQty: ri.px_challan_item?.givenQty || 0,
+                receivedQty: ri.receivedQty || 0,
+                damagedQty: ri.damagedQty || 0,
+                price: ri.px_challan_item?.price || 0,
+                px_laundry_item: ri.px_challan_item?.px_laundry_item,
+            }));
+
+            setChallanCode(data.px_challan?.challanCode || "");
+            setChallanDetails({
+                ...data.px_challan,
+                returnDate: data.returnDate,
+                note: data.note,
+                managerData: data.managerData || [],
+                items: mappedItems,
+            });
+            setValue("challanId", data.challanId || data.px_challan?.id || null);
+        } catch (error: any) {
+            openSnackbar({ open: true, message: error?.message || 'Something went wrong', variant: 'alert', severity: 'error', alert: { color: 'error' } });
+            handleBack();
+        } finally {
+            stopLoading();
+        }
+    };
+
+    useEffect(() => {
+        if (isView && id) {
+            fetchReturnById(Number(id));
+        }
+    }, [isView, id]);
+
     const searchChallan = async () => {
+        if (isView) return;
         if (!challanCode) {
             openSnackbar({ open: true, message: "Please enter a Challan Code", variant: 'alert', severity: 'error', alert: { color: 'error' } });
             return;
@@ -102,6 +147,7 @@ const UseAddEditReturn = () => {
     }
 
     const onSubmit = async (data: ReturnFormType) => {
+        if (isView) return;
         if (!data.challanId || data.items.length === 0) {
             openSnackbar({ open: true, message: "No items to return", variant: 'alert', severity: 'error', alert: { color: 'error' } });
             return;
@@ -149,6 +195,7 @@ const UseAddEditReturn = () => {
     }
 
     return {
+        isView,
         challanCode,
         setChallanCode,
         searchChallan,

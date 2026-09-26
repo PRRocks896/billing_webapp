@@ -122,13 +122,42 @@ const UseReturn = () => {
                 renderCell: (row) => row?.px_challan?.px_vendor?.laundryName || '-'
             },
             {
-                id: 'totalReceivedQty',
-                label: "Received",
+                id: 'totalSentQty',
+                label: "Sent Item",
                 align: "left",
-                numeric: false,
+                numeric: true,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row) => row?.items?.reduce((acc: number, item: any) => acc + (item?.px_challan_item?.givenQty || 0), 0)
+            },
+            {
+                id: 'totalReceivedQty',
+                label: "Received Item",
+                align: "left",
+                numeric: true,
                 disablePadding: false,
                 isSortable: true,
                 renderCell: (row) => row?.items?.reduce((acc: number, item: any) => acc + (item?.receivedQty || 0), 0)
+            },
+            {
+                id: 'PendingQty',
+                label: "Pending Item",
+                align: 'left',
+                numeric: true,
+                disablePadding: false,
+                isSortable: false,
+                renderCell: (row) => {
+                    const totalSend = row?.items?.reduce((acc: number, item: any) => acc + (item?.px_challan_item?.givenQty || 0), 0);
+                    const totalReceived = row?.items?.reduce((acc: number, item: any) => acc + (item?.receivedQty || 0), 0);
+                    const pending = totalSend - totalReceived;
+                    return (
+                        <Box sx={{
+                            color: pending > 0 ? 'error.main' : 'text.primary'
+                        }}>
+                            {pending}
+                        </Box>
+                    )
+                }
             },
             {
                 id: 'totalDamagedQty',

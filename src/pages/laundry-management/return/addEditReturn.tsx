@@ -60,6 +60,7 @@ const InfoRow = ({ icon, label, value }: { icon: React.ReactNode, label: string,
 const AddEditReturn = () => {
     const theme = useTheme();
     const {
+        isView,
         challanCode,
         setChallanCode,
         searchChallan,
@@ -73,17 +74,22 @@ const AddEditReturn = () => {
         watch
     } = UseAddEditReturn();
 
+    const managerNames = (challanDetails?.managerData || [])
+        .map((m: any) => m?.name || m?.nickName || m?.value)
+        .filter(Boolean)
+        .join(', ');
+
     // Derived summary values from challanDetails
     const allItems = challanDetails?.items || [];
     const totalSent = allItems.reduce((acc: number, i: any) => acc + (i.givenQty || 0), 0);
     const totalReceived = allItems.reduce((acc: number, i: any) => acc + (i.receivedQty || 0), 0);
     const totalDamaged = allItems.reduce((acc: number, i: any) => acc + (i.damagedQty || 0), 0);
-    const totalPending = allItems.reduce((acc: number, i: any) => acc + (i.pendingQty || 0), 0);
+    const totalPending = totalSent - totalReceived;
     const overallProgress = totalSent > 0 ? ((totalReceived + totalDamaged) / totalSent) * 100 : 0;
     const totalAmount = allItems.reduce((acc: number, i: any) => acc + ((i.price || 0) * (i.givenQty || 0)), 0);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={isView ? (e) => e.preventDefault() : handleSubmit(onSubmit)}>
             <MainCard content={false} sx={{ overflow: 'visible', border: `1px solid ${theme.palette.divider}`, borderRadius: 3 }}>
                 {/* ── Hero Header ──────────────────────────────────────── */}
                 <Box
@@ -117,10 +123,12 @@ const AddEditReturn = () => {
                         </Box>
                         <Box>
                             <Typography variant="h3" fontWeight={800} sx={{ letterSpacing: '-0.5px' }}>
-                                Receive Items
+                                {isView ? 'Return Details' : 'Receive Items'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                                Enter a Challan Code to load pending items and record received quantities.
+                                {isView
+                                    ? `${challanCode || challanDetails?.challanCode || '-'}${challanDetails?.returnDate ? ` · ${moment(challanDetails.returnDate).format('DD MMM YYYY')}` : ''}`
+                                    : 'Enter a Challan Code to load pending items and record received quantities.'}
                             </Typography>
                         </Box>
                     </Stack>
@@ -143,42 +151,45 @@ const AddEditReturn = () => {
 
                 <Box sx={{ p: { xs: 2.5, md: 4 } }}>
                     <Grid container spacing={4}>
-                        {/* ── Section 1: Search Challan ─────────────────── */}
-                        <Grid size={{ xs: 12, md: 8 }}>
-                            <Stack direction="row" spacing={2} alignItems="flex-start">
-                                <TextField
-                                    fullWidth
-                                    label="Challan Code"
-                                    placeholder="e.g. LC000001"
-                                    value={challanCode}
-                                    onChange={(e) => setChallanCode(e.target.value.toUpperCase())}
-                                    onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            searchChallan();
-                                        }
-                                    }}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start"><SearchNormal size={20} color={theme.palette.text.disabled} /></InputAdornment>
-                                    }}
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': { borderRadius: 2 }
-                                    }}
-                                />
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    onClick={searchChallan}
-                                    disabled={!challanCode}
-                                    sx={{ py: 1.8, px: 4, borderRadius: 2 }}
-                                >
-                                    Search
-                                </Button>
-                            </Stack>
-                        </Grid>
+                        {!isView && (
+                            <>
+                                <Grid size={{ xs: 12, md: 8 }}>
+                                    <Stack direction="row" spacing={2} alignItems="flex-start">
+                                        <TextField
+                                            fullWidth
+                                            label="Challan Code"
+                                            placeholder="e.g. LC000001"
+                                            value={challanCode}
+                                            onChange={(e) => setChallanCode(e.target.value.toUpperCase())}
+                                            onKeyPress={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                    searchChallan();
+                                                }
+                                            }}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start"><SearchNormal size={20} color={theme.palette.text.disabled} /></InputAdornment>
+                                            }}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': { borderRadius: 2 }
+                                            }}
+                                        />
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            onClick={searchChallan}
+                                            disabled={!challanCode}
+                                            sx={{ py: 1.8, px: 4, borderRadius: 2 }}
+                                        >
+                                            Search
+                                        </Button>
+                                    </Stack>
+                                </Grid>
 
-                        <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>
+                                <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>
+                            </>
+                        )}
 
                         {/* ═══════════════════════════════════════════════════════════════════
                             CHALLAN FOUND: Show detailed information
@@ -209,46 +220,49 @@ const AddEditReturn = () => {
                                             <StatusChip status={challanDetails.status} />
                                         </Stack>
 
-                                        {/* Overall Progress Bar */}
-                                        <Box sx={{ mb: 2.5 }}>
-                                            <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
-                                                <Typography variant="caption" color="text.secondary">Overall Return Progress</Typography>
-                                                <Typography variant="caption" fontWeight={700}>{Math.round(overallProgress)}%</Typography>
-                                            </Stack>
-                                            <LinearProgress
-                                                variant="determinate"
-                                                value={overallProgress}
-                                                color={overallProgress >= 100 ? "success" : overallProgress > 0 ? "warning" : "primary"}
-                                                sx={{ height: 8, borderRadius: 4, bgcolor: alpha(theme.palette.primary.main, 0.08) }}
-                                            />
-                                        </Box>
+                                        {!isView && (
+                                            <Box sx={{ mb: 2.5 }}>
+                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+                                                    <Typography variant="caption" color="text.secondary">Overall Return Progress</Typography>
+                                                    <Typography variant="caption" fontWeight={700}>{Math.round(overallProgress)}%</Typography>
+                                                </Stack>
+                                                <LinearProgress
+                                                    variant="determinate"
+                                                    value={overallProgress}
+                                                    color={overallProgress >= 100 ? "success" : overallProgress > 0 ? "warning" : "primary"}
+                                                    sx={{ height: 8, borderRadius: 4, bgcolor: alpha(theme.palette.primary.main, 0.08) }}
+                                                />
+                                            </Box>
+                                        )}
 
                                         {/* Stats Row */}
                                         <Grid container spacing={2}>
-                                            <Grid size={{ xs: 6, sm: 3 }}>
+                                            <Grid size={{ xs: 6, sm: isView ? 4 : 3 }}>
                                                 <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'background.paper', textAlign: 'center' }}>
                                                     <Typography variant="h4" fontWeight={800} color="primary.main">{totalSent}</Typography>
                                                     <Typography variant="caption" color="text.secondary">Total Sent</Typography>
                                                 </Box>
                                             </Grid>
-                                            <Grid size={{ xs: 6, sm: 3 }}>
+                                            <Grid size={{ xs: 6, sm: isView ? 4 : 3 }}>
                                                 <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'background.paper', textAlign: 'center' }}>
                                                     <Typography variant="h4" fontWeight={800} color="success.main">{totalReceived}</Typography>
                                                     <Typography variant="caption" color="text.secondary">Received</Typography>
                                                 </Box>
                                             </Grid>
-                                            <Grid size={{ xs: 6, sm: 3 }}>
+                                            <Grid size={{ xs: 6, sm: isView ? 4 : 3 }}>
                                                 <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'background.paper', textAlign: 'center' }}>
                                                     <Typography variant="h4" fontWeight={800} color="error.main">{totalDamaged}</Typography>
                                                     <Typography variant="caption" color="text.secondary">Damaged</Typography>
                                                 </Box>
                                             </Grid>
-                                            <Grid size={{ xs: 6, sm: 3 }}>
-                                                <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'background.paper', textAlign: 'center' }}>
-                                                    <Typography variant="h4" fontWeight={800} color="warning.main">{totalPending}</Typography>
-                                                    <Typography variant="caption" color="text.secondary">Pending</Typography>
-                                                </Box>
-                                            </Grid>
+                                            {isView && (
+                                                <Grid size={{ xs: 6, sm: 3 }}>
+                                                    <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'background.paper', textAlign: 'center' }}>
+                                                        <Typography variant="h4" fontWeight={800} color="warning.main">{totalPending}</Typography>
+                                                        <Typography variant="caption" color="text.secondary">Pending</Typography>
+                                                    </Box>
+                                                </Grid>
+                                            )}
                                         </Grid>
                                     </Box>
                                 </Grid>
@@ -291,21 +305,42 @@ const AddEditReturn = () => {
                                             <Typography variant="h6" fontWeight={700}>Challan Details</Typography>
                                         </Stack>
                                         <Divider sx={{ mb: 1.5 }} />
+                                        {isView && (
+                                            <InfoRow
+                                                icon={<Calendar size={16} color={theme.palette.text.disabled} />}
+                                                label="Return Date"
+                                                value={challanDetails.returnDate ? moment(challanDetails.returnDate).format('DD MMM YYYY') : '-'}
+                                            />
+                                        )}
                                         <InfoRow
                                             icon={<Calendar size={16} color={theme.palette.text.disabled} />}
                                             label="Given Date"
-                                            value={moment(challanDetails.givenDate).format('DD MMM YYYY')}
+                                            value={challanDetails.givenDate ? moment(challanDetails.givenDate).format('DD MMM YYYY') : '-'}
                                         />
                                         <InfoRow
                                             icon={<Clock size={16} color={theme.palette.text.disabled} />}
                                             label="Created"
-                                            value={moment(challanDetails.createdAt).format('DD MMM YYYY, hh:mm A')}
+                                            value={challanDetails.createdAt ? moment(challanDetails.createdAt).format('DD MMM YYYY, hh:mm A') : '-'}
                                         />
                                         <InfoRow
                                             icon={<Building size={16} color={theme.palette.text.disabled} />}
                                             label="Branch"
                                             value={challanDetails.px_user?.branchName}
                                         />
+                                        {isView && (
+                                            <InfoRow
+                                                icon={<User size={16} color={theme.palette.text.disabled} />}
+                                                label="Received by"
+                                                value={managerNames || '-'}
+                                            />
+                                        )}
+                                        {isView && challanDetails.note && (
+                                            <InfoRow
+                                                icon={<InfoCircle size={16} color={theme.palette.text.disabled} />}
+                                                label="Note"
+                                                value={challanDetails.note}
+                                            />
+                                        )}
                                         <InfoRow
                                             icon={<Money4 size={16} color={theme.palette.text.disabled} />}
                                             label="Total Amount"
@@ -318,7 +353,7 @@ const AddEditReturn = () => {
                                 <Grid size={{ xs: 12 }}>
                                     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                                         <Box1 size={22} color={theme.palette.primary.main} variant="Bulk" />
-                                        <Typography variant="h6" fontWeight={700}>All Challan Items</Typography>
+                                        <Typography variant="h6" fontWeight={700}>{isView ? 'Returned Items' : 'All Challan Items'}</Typography>
                                     </Stack>
                                     <TableContainer sx={{ borderRadius: 2, border: `1px solid ${theme.palette.divider}` }}>
                                         <Table size="small">
@@ -328,10 +363,10 @@ const AddEditReturn = () => {
                                                     <TableCell align="center" sx={{ fontWeight: 700 }}>Sent</TableCell>
                                                     <TableCell align="center" sx={{ fontWeight: 700 }}>Received</TableCell>
                                                     <TableCell align="center" sx={{ fontWeight: 700 }}>Damaged</TableCell>
-                                                    <TableCell align="center" sx={{ fontWeight: 700 }}>Pending</TableCell>
+                                                    {!isView && <TableCell align="center" sx={{ fontWeight: 700 }}>Pending</TableCell>}
                                                     <TableCell align="center" sx={{ fontWeight: 700 }}>Price/pc</TableCell>
-                                                    <TableCell align="center" sx={{ fontWeight: 700 }}>Status</TableCell>
-                                                    <TableCell align="center" sx={{ fontWeight: 700 }}>Progress</TableCell>
+                                                    {!isView && <TableCell align="center" sx={{ fontWeight: 700 }}>Status</TableCell>}
+                                                    {!isView && <TableCell align="center" sx={{ fontWeight: 700 }}>Progress</TableCell>}
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
@@ -349,19 +384,23 @@ const AddEditReturn = () => {
                                                             <TableCell align="center">
                                                                 <Typography color={item.damagedQty > 0 ? "error.main" : "text.secondary"} fontWeight={600}>{item.damagedQty}</Typography>
                                                             </TableCell>
-                                                            <TableCell align="center">
-                                                                <Typography color={item.pendingQty > 0 ? "warning.main" : "text.secondary"} fontWeight={600}>{item.pendingQty}</Typography>
-                                                            </TableCell>
+                                                            {!isView && (
+                                                                <TableCell align="center">
+                                                                    <Typography color={item.pendingQty > 0 ? "warning.main" : "text.secondary"} fontWeight={600}>{item.pendingQty}</Typography>
+                                                                </TableCell>
+                                                            )}
                                                             <TableCell align="center">₹{item.price || 0}</TableCell>
-                                                            <TableCell align="center"><StatusChip status={item.status} /></TableCell>
-                                                            <TableCell align="center" sx={{ minWidth: 100 }}>
-                                                                <LinearProgress
-                                                                    variant="determinate"
-                                                                    value={itemProgress}
-                                                                    color={itemProgress >= 100 ? "success" : "warning"}
-                                                                    sx={{ height: 6, borderRadius: 3 }}
-                                                                />
-                                                            </TableCell>
+                                                            {!isView && <TableCell align="center"><StatusChip status={item.status} /></TableCell>}
+                                                            {!isView && (
+                                                                <TableCell align="center" sx={{ minWidth: 100 }}>
+                                                                    <LinearProgress
+                                                                        variant="determinate"
+                                                                        value={itemProgress}
+                                                                        color={itemProgress >= 100 ? "success" : "warning"}
+                                                                        sx={{ height: 6, borderRadius: 3 }}
+                                                                    />
+                                                                </TableCell>
+                                                            )}
                                                         </TableRow>
                                                     );
                                                 })}
@@ -371,7 +410,7 @@ const AddEditReturn = () => {
                                 </Grid>
 
                                 {/* ── Previous Returns History ──────────────────── */}
-                                {challanDetails.returns && challanDetails.returns.length > 0 && (
+                                {!isView && challanDetails.returns && challanDetails.returns.length > 0 && (
                                     <Grid size={{ xs: 12 }}>
                                         <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                                             <Clock size={22} color={theme.palette.secondary.main} variant="Bulk" />
@@ -434,9 +473,10 @@ const AddEditReturn = () => {
                                     </Grid>
                                 )}
 
-                                <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>
+                                {!isView && <Grid size={{ xs: 12 }}><Divider sx={{ borderStyle: 'dashed' }} /></Grid>}
 
                                 {/* ── Pending Items Form (Receive Now) ──────────── */}
+                                {!isView && (
                                 <Grid size={{ xs: 12 }}>
                                     <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 3 }}>
                                         <Import size={24} color={theme.palette.primary.main} variant="Bulk" />
@@ -538,6 +578,7 @@ const AddEditReturn = () => {
                                         </Stack>
                                     )}
                                 </Grid>
+                                )}
                             </>
                         )}
                     </Grid>
@@ -556,36 +597,54 @@ const AddEditReturn = () => {
                         gap: 2,
                     }}
                 >
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleBack}
-                        sx={{
-                            minWidth: 120,
-                            borderRadius: '12px',
-                            py: 1.25,
-                            order: { xs: 2, sm: 1 }
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={isSubmitting || !challanDetails || fields.length === 0}
-                        sx={{
-                            minWidth: 180,
-                            borderRadius: '12px',
-                            py: 1.25,
-                            order: { xs: 1, sm: 2 },
-                            boxShadow: `0 8px 16px ${alpha(theme.palette.primary.main, 0.25)}`,
-                            '&:hover': {
-                                boxShadow: `0 12px 20px ${alpha(theme.palette.primary.main, 0.35)}`,
-                            }
-                        }}
-                    >
-                        {isSubmitting ? "Processing..." : "Submit Received Items"}
-                    </Button>
+                    {isView ? (
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={handleBack}
+                            startIcon={<ArrowLeft size={18} />}
+                            sx={{
+                                minWidth: 120,
+                                borderRadius: '12px',
+                                py: 1.25,
+                            }}
+                        >
+                            Back to List
+                        </Button>
+                    ) : (
+                        <>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={handleBack}
+                                sx={{
+                                    minWidth: 120,
+                                    borderRadius: '12px',
+                                    py: 1.25,
+                                    order: { xs: 2, sm: 1 }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                disabled={isSubmitting || !challanDetails || fields.length === 0}
+                                sx={{
+                                    minWidth: 180,
+                                    borderRadius: '12px',
+                                    py: 1.25,
+                                    order: { xs: 1, sm: 2 },
+                                    boxShadow: `0 8px 16px ${alpha(theme.palette.primary.main, 0.25)}`,
+                                    '&:hover': {
+                                        boxShadow: `0 12px 20px ${alpha(theme.palette.primary.main, 0.35)}`,
+                                    }
+                                }}
+                            >
+                                {isSubmitting ? "Processing..." : "Submit Received Items"}
+                            </Button>
+                        </>
+                    )}
                 </Box>
             </MainCard>
         </form>

@@ -39,7 +39,7 @@ export const checkIsAuthenticated = () => {
 };
 
 export const doUpperCase = (value: string) => {
-    return value.trim().replace(/\s+/g, ' ').toUpperCase()
+    return value.trim().toUpperCase()
 }
 
 export const listPayload = (
