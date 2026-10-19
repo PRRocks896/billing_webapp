@@ -38,7 +38,7 @@ export const deleteDailyReport = async (id: number) => {
 };
 
 export const getSalesExpenseReport = async (payload: any) => {
-    return await post(`${DAILYREPORT}/sales-expense`, payload);
+    return await post(`${DAILYREPORT}/sales-analysis`, payload);
 }
 
 export const getLowSalesBranchReport = async (payload: any) => {
@@ -59,4 +59,8 @@ export const getMonthSale = async (payload: any) => {
 
 export const getDailyDetailReport = async (payload: any) => {
     return await post(`${DAILYREPORT}/daily-report-details`, payload);
+}
+
+export const getBranchSaleReport = async (payload: any) => {
+    return await post(`${REPORT_LIST_API}/chart-sales-reports-month`, payload)
 }
