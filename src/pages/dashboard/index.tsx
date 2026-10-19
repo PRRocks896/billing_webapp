@@ -36,6 +36,7 @@ import Dot from 'components/@extended/Dot';
 import PieChart from 'components/chart/pieChart';
 import { Autocomplete, TextField } from '@mui/material';
 import DailyReport from './component/dailyReport';
+import BranchSales from './component/branchSales';
 
 const Dashboard = () => {
     const theme = useTheme();
@@ -153,6 +154,12 @@ const Dashboard = () => {
                     <Box>
                         <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Monthly Sales Analysis</Typography>
                         <MonthlySale companyID={selectedCompanyId} />
+                    </Box>
+                }
+                {dashboardSectionRights['branch_sales_analysis'] && dashboardSectionRights['branch_sales_analysis']['view'] &&
+                    <Box>
+                        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>Branch Sales Analysis</Typography>
+                        <BranchSales />
                     </Box>
                 }
                 {dashboardSectionRights['low_sales_analysis'] && dashboardSectionRights['low_sales_analysis']['view'] &&

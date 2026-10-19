@@ -30,7 +30,8 @@ const DASHBOARD = [
     'low_sales_analysis',
     'reference_by',
     'repeat_customer',
-    'daily_report_analysis'
+    'daily_report_analysis',
+    'branch_sales_analysis'
 ]
 
 const getDateRange = (value: number) => {
