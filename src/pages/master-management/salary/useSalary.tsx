@@ -4,7 +4,7 @@ import moment from "moment";
 import { createSalary, validateIfscCode } from "service/salary";
 import { getBranch } from "service/user";
 import { getCompanyList } from "service/company";
-import { getSalaryBranchWiseReport } from "service/report";
+import { getAttendanceStaffReport, getSalaryBranchWiseReport } from "service/report";
 import useAuth from "hooks/useAuth";
 import { useLocation } from "react-router-dom";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -26,6 +26,7 @@ export type SalaryFormType = {
         salary: string,
         staffId: string,
         staffName: string,
+        originalName: string,
         tax: string,
         weekOff: string,
         workingDays: number,
@@ -80,6 +81,8 @@ const UseSalary = () => {
     const [branchList, setBranchList] = useState<any[]>([]);
     const [companyList, setCompanyList] = useState<any[]>([]);
     const [staffList, setStaffList] = useState<any[]>([]);
+    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [pdfTitle, setPdfTitle] = useState('');
 
     const {
         control,
@@ -218,6 +221,47 @@ const UseSalary = () => {
         } finally {
             stopLoading();
         }
+    }
+
+    const fetchStaffAttendanceReportData = async (staffDetail: any) => {
+        try {
+            startLoading();
+            const response: any = await getAttendanceStaffReport({
+                year: year,
+                month: month,
+                branchID: selectedBranch,
+                staffID: staffDetail.staffID
+            }, '');
+            const blob = response?.data;
+            if (!(blob instanceof Blob) || blob.size === 0) {
+                openSnackbar({
+                    open: true,
+                    message: "Failed to load attendance report",
+                    variant: 'alert',
+                    severity: 'error',
+                    alert: { color: 'error' }
+                });
+                return;
+            }
+            const pdfBlob = blob.type === 'application/pdf' ? blob : new Blob([blob], { type: 'application/pdf' });
+            setPdfTitle(`Attendance Report - ${staffDetail.staffName || ''}`);
+            setPdfUrl(URL.createObjectURL(pdfBlob));
+        } catch (error: any) {
+            openSnackbar({
+                open: true,
+                message: error?.message || 'Something went wrong during submission',
+                variant: 'alert',
+                severity: 'error',
+                alert: { color: 'error' }
+            });
+        } finally {
+            stopLoading();
+        }
+    }
+
+    const closePdfModal = () => {
+        if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+        setPdfUrl(null);
     }
 
     const handleValidateIfscCode = async (value: string) => {
@@ -403,6 +447,9 @@ const UseSalary = () => {
     return {
         year,
         month,
+        pdfUrl,
+        pdfTitle,
+        closePdfModal,
         fields,
         rights,
         control,
@@ -425,6 +472,7 @@ const UseSalary = () => {
         setSelectedCompany,
         handleValidateIfscCode,
         handleLeaveCalculation,
+        fetchStaffAttendanceReportData,
         handleCheckAdvanceMoreThenSalary,
     }
 }

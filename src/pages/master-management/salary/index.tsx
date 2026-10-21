@@ -24,6 +24,9 @@ import {
     Switch,
     FormHelperText,
     IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
 } from '@mui/material';
 
 // project components
@@ -38,6 +41,7 @@ import {
     Calendar,
     SearchNormal1,
     Refresh,
+    CloseCircle,
     DocumentText,
 } from 'iconsax-reactjs';
 
@@ -48,6 +52,9 @@ const Salary = () => {
     const {
         year,
         month,
+        pdfUrl,
+        pdfTitle,
+        closePdfModal,
         fields,
         control,
         branchList,
@@ -64,6 +71,7 @@ const Salary = () => {
         setSelectedBranch,
         setSelectedCompany,
         handleValidateIfscCode,
+        fetchStaffAttendanceReportData,
     } = useSalary();
 
     return (
@@ -219,6 +227,10 @@ const Salary = () => {
                                                 }}
                                             >
                                                 {item.staffName}
+                                                ({item?.originalName})
+                                                <IconButton onClick={() => fetchStaffAttendanceReportData(item)} size="small" sx={{ ml: 1, color: 'primary.main' }}>
+                                                    <DocumentText size={16} />
+                                                </IconButton>
                                             </TableCell>
                                             <TableCell align="center">
                                                 <Controller
@@ -412,6 +424,24 @@ const Salary = () => {
                     </Box>
                 </Stack>
             </form>
+
+            <Dialog open={!!pdfUrl} onClose={closePdfModal} fullWidth maxWidth="lg">
+                <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    {pdfTitle}
+                    <IconButton aria-label="close" onClick={closePdfModal} size="small">
+                        <CloseCircle size={22} />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers sx={{ p: 0, height: '80vh' }}>
+                    {pdfUrl && (
+                        <iframe
+                            src={pdfUrl}
+                            title={pdfTitle}
+                            style={{ width: '100%', height: '100%', border: 'none' }}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </Stack>
     );
 };
