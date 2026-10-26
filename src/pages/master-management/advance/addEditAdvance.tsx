@@ -216,7 +216,7 @@ const AddEditAdvance = () => {
                                                     <Autocomplete
                                                         fullWidth
                                                         options={staffOption || []}
-                                                        getOptionLabel={(option) => option.nickName || ''}
+                                                        getOptionLabel={(option) => `${option.nickName} (${option.name})` || ''}
                                                         isOptionEqualToValue={(option, value) => option?.id === value}
                                                         value={staffOption?.find((option) => option.id === field.value) || null}
                                                         onChange={(_event, value) => field.onChange(value?.id || null)}

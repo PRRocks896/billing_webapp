@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import moment from 'moment';
 import { Controller } from 'react-hook-form';
 
 // material-ui
@@ -43,9 +45,10 @@ import {
     Refresh,
     CloseCircle,
     DocumentText,
+    Eye,
 } from 'iconsax-reactjs';
 
-import useSalary from "./useSalary";
+import useSalary, { SalaryFormType } from "./useSalary";
 
 const Salary = () => {
     const theme = useTheme();
@@ -73,6 +76,8 @@ const Salary = () => {
         handleValidateIfscCode,
         fetchStaffAttendanceReportData,
     } = useSalary();
+
+    const [advanceStaff, setAdvanceStaff] = useState<SalaryFormType['staff'][number] | null>(null);
 
     return (
         <Stack spacing={4}>
@@ -200,7 +205,7 @@ const Salary = () => {
                                         <TableCell align="right">Base Salary</TableCell>
                                         <TableCell sx={{ minWidth: 120 }}>Expense Cut</TableCell>
                                         <TableCell align="right">Advance Taken</TableCell>
-                                        <TableCell sx={{ minWidth: 120 }}>Advance Given</TableCell>
+                                        <TableCell sx={{ minWidth: 120 }}>Advance Cut</TableCell>
                                         <TableCell align="right">Leave Cut</TableCell>
                                         <TableCell align="right">Sub Salary</TableCell>
                                         <TableCell sx={{ minWidth: 100 }}>Tax</TableCell>
@@ -305,7 +310,14 @@ const Salary = () => {
                                                     )}
                                                 />
                                             </TableCell>
-                                            <TableCell align="right" sx={{ color: 'error.main' }}>₹{item.takenAdvance || 0}</TableCell>
+                                            <TableCell align="right" sx={{ color: 'error.main' }}>
+                                                ₹{item.totalAdvance || 0}
+                                                {item && Number(item.totalAdvance) > 0 ? (
+                                                    <IconButton onClick={() => setAdvanceStaff(item)} size="small" sx={{ ml: 1, color: 'primary.main' }}>
+                                                        <Eye size={16} />
+                                                    </IconButton>
+                                                ) : null}
+                                            </TableCell>
                                             <TableCell>
                                                 <Controller
                                                     name={`staff.${index}.advance`}
@@ -322,7 +334,16 @@ const Salary = () => {
                                                 />
                                             </TableCell>
                                             <TableCell align="right" sx={{ color: 'secondary.main' }}>₹{item.leaveCut || 0}</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: 600 }}>₹{item.subSalary || 0}</TableCell>
+                                            <TableCell align="right" sx={{ fontWeight: 600 }}>
+                                                <Controller
+                                                    name={`staff.${index}.subSalary`}
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Typography variant="subtitle2" fontWeight={800}>₹{field.value || 0}</Typography>
+                                                    )}
+                                                />
+                                                {/* ₹{item.subSalary || 0} */}
+                                            </TableCell>
                                             <TableCell>
                                                 <Controller
                                                     name={`staff.${index}.tax`}
@@ -424,6 +445,37 @@ const Salary = () => {
                     </Box>
                 </Stack>
             </form>
+
+            <Dialog open={!!advanceStaff} onClose={() => setAdvanceStaff(null)} fullWidth maxWidth="xs">
+                <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    Advance Taken - {advanceStaff?.staffName}
+                    <IconButton aria-label="close" onClick={() => setAdvanceStaff(null)} size="small">
+                        <CloseCircle size={22} />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    {advanceStaff?.takingAdvance?.length ? (
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Date</TableCell>
+                                    <TableCell align="right">Amount</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {advanceStaff.takingAdvance.map((adv, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell>{adv.date ? moment(adv.date).format('DD/MM/YYYY') : '-'}</TableCell>
+                                        <TableCell align="right">₹{adv.amount}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    ) : (
+                        <Typography variant="body2" color="text.secondary" align="center">No advance taken</Typography>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             <Dialog open={!!pdfUrl} onClose={closePdfModal} fullWidth maxWidth="lg">
                 <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

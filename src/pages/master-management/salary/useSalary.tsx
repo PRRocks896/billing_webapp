@@ -27,6 +27,11 @@ export type SalaryFormType = {
         staffId: string,
         staffName: string,
         originalName: string,
+        totalAdvance: number | null,
+        takingAdvance: {
+            amount: string,
+            date: string
+        }[],
         tax: string,
         weekOff: string,
         workingDays: number,
@@ -98,7 +103,7 @@ const UseSalary = () => {
 
     const {
         fields,
-        append,
+        replace,
         remove
     } = useFieldArray({
         name: 'staff',
@@ -159,16 +164,16 @@ const UseSalary = () => {
             }
             if (data && Array.isArray(data) && data.length > 0) {
                 setStaffList(data);
-                data.forEach((item, index) => {
-                    append({
-                        ...item,
-                        index: index,
-                        expense: '0',
-                        advance: '0',
-                        isLeft: false,
-                        isPaid: false
-                    })
-                })
+                replace(data.map((item, index) => ({
+                    ...item,
+                    advance: item.totalAdvance || 0,
+                    index: index,
+                    expense: '0',
+                    isLeft: false,
+                    isPaid: false
+                })));
+                // staffList state is not updated yet, so pass the fresh data
+                data.forEach((_, index) => handleCalculation(index, data));
             }
         } catch (error: any) {
             openSnackbar({
@@ -369,8 +374,8 @@ const UseSalary = () => {
         }));
     }
 
-    const handleCalculation = (index: number) => {
-        const selectedStaff = staffList.find((staff) => staff.staffID === getValues(`staff.${index}.staffID`));
+    const handleCalculation = (index: number, list: any[] = staffList) => {
+        const selectedStaff = list.find((staff) => staff.staffID === getValues(`staff.${index}.staffID`));
         if (selectedStaff) {
             // if (selectedStaff && selectedStaff.subSalary) {
             const editableStaffRecord = getValues(`staff.${index}`);
@@ -383,8 +388,11 @@ const UseSalary = () => {
             setValue(`staff.${index}.subSalary`, showTwoDecimal(subSalary));
 
             const expense = parseFloat(getValues(`staff.${index}.expense`)) || 0;
+            console.log('expense:', expense);
             const advance = showTwoDecimal(getValues(`staff.${index}.advance`) || 0);
+            console.log('advance:', advance);
             const total = subSalary - expense - advance;
+            console.log('total:', total);
             setValue(`staff.${index}.subSalary`, showTwoDecimal(total));
             handlePayableSalary(index);
         }
