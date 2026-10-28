@@ -215,7 +215,7 @@ const UseStaff = () => {
             startLoading();
             const body: any = {
                 staffID: attendanceStaff?.id,
-                date: moment(dateTime).format('YYYY-MM-DD'),
+                date: moment(dateTime).format('DD-MM-YYYY'),
                 time: moment(dateTime).format('HH:mm:ss'),
                 createdBy: branchID,
             };
