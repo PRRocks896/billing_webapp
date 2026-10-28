@@ -42,6 +42,9 @@ export const GET_SINGLE_STAFF_API = "api/staff/";
 export const UPDATE_STAFF_API = "api/staff/";
 export const DELETE_STAFF_API = "api/staff/";
 
+// attendance apis
+export const CREATE_ATTENDANCE_API = "api/attendance";
+
 // face recognition apis
 export const FACE_REGISTER_API = "api/face/register";
 export const FACE_VERIFY_API = "api/face/verify";

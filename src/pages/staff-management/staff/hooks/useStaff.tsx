@@ -5,19 +5,22 @@ import useAuth from "hooks/useAuth";
 import { ROWS } from "utils/constant";
 import { deleteStaff, getStaffList, updateStaff, findStaff } from "service/staff";
 import { getBranch } from "service/user";
+import { createAttendance } from "service/attendance";
+import moment from "moment";
 import { openSnackbar } from "api/snackbar";
 import { HeadCell, ArrangementOrder } from "types/table";
 import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import { Chip } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import { Edit, Trash, Eye } from "iconsax-reactjs";
+import Tooltip from "@mui/material/Tooltip";
+import { Edit, Trash, Eye, CalendarTick } from "iconsax-reactjs";
 
 const UseStaff = () => {
 
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { isAdmin, user, accessRights, startLoading, stopLoading } = useAuth();
+    const { isAdmin, user, accessRights, accessSectionRights, startLoading, stopLoading } = useAuth();
     const rights = accessRights(pathname);
 
     const [list, setList] = useState<any[]>([]);
@@ -32,10 +35,14 @@ const UseStaff = () => {
     })
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<number>(-1);
+    const [isAttendanceVisible, setIsAttendanceVisible] = useState<boolean>(false);
+    const [attendanceStaff, setAttendanceStaff] = useState<any>(null);
     const [searchText, setSearchText] = useState<string>("");
     const [order, setOrder] = useState<ArrangementOrder>('desc');
     const [orderBy, setOrderBy] = useState<string>('createdAt');
 
+    const markAttendanceRights = useMemo(() => accessSectionRights('mark_attendance'), [accessSectionRights, user]);
+    
     const handleAdd = () => navigate("/staff/add");
 
     const handleEdit = (id: number) => navigate(`/staff/edit/${id}`);
@@ -51,6 +58,16 @@ const UseStaff = () => {
 
     const closeConfirmModal = () => {
         setIsVisible(false);
+    };
+
+    const handleMarkAttendance = (row: any) => {
+        setAttendanceStaff(row);
+        setIsAttendanceVisible(true);
+    };
+
+    const closeAttendanceModal = () => {
+        setIsAttendanceVisible(false);
+        setAttendanceStaff(null);
     };
 
     const fetch = useCallback(async () => {
@@ -190,6 +207,51 @@ const UseStaff = () => {
         } finally {
             stopLoading();
             setIsVisible(false);
+        }
+    }
+
+    const onAttendanceSubmit = async ({ branchID, dateTime }: { branchID: number | null; dateTime: Date }) => {
+        try {
+            startLoading();
+            const body: any = {
+                staffID: attendanceStaff?.id,
+                date: moment(dateTime).format('YYYY-MM-DD'),
+                time: moment(dateTime).format('HH:mm:ss'),
+                createdBy: branchID,
+            };
+            const { success, message }: any = await createAttendance(body);
+            if (success) {
+                closeAttendanceModal();
+                openSnackbar({
+                    open: true,
+                    message: message || 'Attendance Marked Successfully',
+                    variant: 'alert',
+                    alert: {
+                        color: 'success'
+                    }
+                })
+            } else {
+                openSnackbar({
+                    open: true,
+                    message: message || 'Something went wrong',
+                    variant: 'alert',
+                    severity: 'error',
+                    alert: {
+                        color: 'error'
+                    }
+                })
+            }
+        } catch (error: any) {
+            openSnackbar({
+                open: true,
+                message: error?.message || error?.messageCode || (error as Error).message || 'Something went wrong',
+                variant: 'alert',
+                alert: {
+                    color: 'error'
+                }
+            })
+        } finally {
+            stopLoading();
         }
     }
 
@@ -334,7 +396,8 @@ const UseStaff = () => {
                 renderCell: (row: any) => {
                     const title = row.isKyc ? 'KYC Done' : 'KYC Pending';
                     if (isAdmin || rights.delete) {
-                        return <Chip
+                        return <>
+                        <Chip
                             variant="filled"
                             size="medium"
                             clickable={row.isKyc ? false : true}
@@ -342,6 +405,7 @@ const UseStaff = () => {
                             color={row.isKyc ? 'success' : 'error'}
                             onClick={() => !row.isKyc ? handleRekyc(row.id) : null}
                         />
+                        </>
                     } else {
                         return <Chip
                             variant="filled"
@@ -365,6 +429,13 @@ const UseStaff = () => {
                                 <IconButton onClick={() => handleView(row.id)}>
                                     <Eye />
                                 </IconButton>
+                            }
+                            {(isAdmin || markAttendanceRights.view) &&
+                                <Tooltip title="Mark Attendance">
+                                    <IconButton onClick={() => handleMarkAttendance(row)}>
+                                        <CalendarTick />
+                                    </IconButton>
+                                </Tooltip>
                             }
                             {rights.edit &&
                                 <IconButton onClick={() => handleEdit(row.id)}>
@@ -473,7 +544,7 @@ const UseStaff = () => {
             )
         }
         return col;
-    }, [rights, isAdmin])
+    }, [rights, markAttendanceRights, isAdmin])
 
     return {
         isAdmin,
@@ -495,7 +566,11 @@ const UseStaff = () => {
         handleAdd,
         searchHandler,
         onDeleteHandler,
-        closeConfirmModal
+        closeConfirmModal,
+        isAttendanceVisible,
+        attendanceStaff,
+        closeAttendanceModal,
+        onAttendanceSubmit
     }
 }
 

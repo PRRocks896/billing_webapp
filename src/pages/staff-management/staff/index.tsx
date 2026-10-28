@@ -8,6 +8,7 @@ import { Profile2User, UserSquare } from "iconsax-reactjs";
 import Stack from "@mui/material/Stack";
 import MainCard from "components/MainCard";
 
+import MarkAttendanceModal from "./component/markAttendanceModal";
 import UseStaff from "./hooks/useStaff";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -36,7 +37,11 @@ const Staff = () => {
         handleAdd,
         searchHandler,
         onDeleteHandler,
-        closeConfirmModal
+        closeConfirmModal,
+        isAttendanceVisible,
+        attendanceStaff,
+        closeAttendanceModal,
+        onAttendanceSubmit
     } = UseStaff();
 
     const title = "Staff";
@@ -140,6 +145,12 @@ const Staff = () => {
                     />
                 )
             }
+            <MarkAttendanceModal
+                isOpen={isAttendanceVisible}
+                staff={attendanceStaff}
+                onClose={closeAttendanceModal}
+                onSubmit={onAttendanceSubmit}
+            />
         </Stack >
     );
 };
