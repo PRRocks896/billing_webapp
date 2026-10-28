@@ -160,6 +160,7 @@ const UseAddEditStaff = () => {
                 setValue("bankBranch", (data?.data?.detail?.BRANCH || data?.detail?.BRANCH || ''))
                 setIfscVerified(true);
                 clearErrors('ifscCode');
+                clearErrors('bankBranch');
                 return true;
             } else {
                 setIfscVerified(false);
@@ -243,7 +244,10 @@ const UseAddEditStaff = () => {
             startLoading();
             let payload: any = {
                 ...data,
-                phoneNumber: Number(data.phoneNumber)
+                phoneNumber: Number(data.phoneNumber),
+                // handleSubmit passes a values snapshot taken before the async IFSC
+                // validation ran, so read the bankBranch it set via setValue
+                bankBranch: getValues('bankBranch')
             };
             delete payload['reEnterAccountNumber'];
             if (mode && mode === 'edit' && id) {
@@ -278,7 +282,7 @@ const UseAddEditStaff = () => {
             // } else {
             //     delete payload.motherIdPhoto;
             // }
-
+            
             const { success, message }: any = mode && mode === 'edit' && id ? await updateStaff(payload, Number(id)) : await createStaff(payload);
             if (success) {
                 openSnackbar({

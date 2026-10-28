@@ -1097,7 +1097,23 @@ const AddEditStaff = () => {
                                                         )}
                                                     />
                                                 </Grid>
-                                                <Grid size={{ xs: 12, sm: 8 }}></Grid>
+                                                <Grid size={{ xs: 12, sm: 8 }}>
+                                                    <Controller
+                                                        name="nickName"
+                                                        control={control}
+                                                        rules={{ required: "Display Name is required" }}
+                                                        render={({ field, fieldState: { error } }) => (
+                                                            <TextField
+                                                                {...field}
+                                                                fullWidth
+                                                                label="Display / Nick Name"
+                                                                error={!!error}
+                                                                helperText={error?.message}
+                                                                InputProps={{ startAdornment: <InputAdornment position="start"><ShieldTick size={18} color={theme.palette.text.disabled} /></InputAdornment> }}
+                                                            />
+                                                        )}
+                                                    />
+                                                </Grid>
                                                 <Grid size={{ xs: 12, sm: 4 }}>
                                                     <Controller
                                                         name="accountNumber"
