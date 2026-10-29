@@ -203,8 +203,7 @@ const MembershipPlan = Loadable(lazy(() => import('pages/master-management/membe
 const AddEditMembershipPlan = Loadable(lazy(() => import('pages/master-management/membership-plan/component/addEditMembershipPlan')));
 const Staff = Loadable(lazy(() => import('pages/staff-management/staff')));
 const AddEditStaff = Loadable(lazy(() => import('pages/staff-management/staff/component/addEditStaff')));
-const FaceRegister = Loadable(lazy(() => import('pages/staff-management/face-recognition/FaceRegister')));
-const FaceAttendance = Loadable(lazy(() => import('pages/staff-management/face-recognition/FaceAttendance')));
+const FaceRecognition = Loadable(lazy(() => import('pages/staff-management/face-recognition')));
 const Bill = Loadable(lazy(() => import('pages/bill')));
 const AddEditBill = Loadable(lazy(() => import('pages/bill/component/addEditBill')));
 const Membership = Loadable(lazy(() => import('pages/membership')));
@@ -950,12 +949,14 @@ const MainRoutes: RouteObject = {
           ]
         },
         {
-          path: 'face-register',
-          element: <FaceRegister />
+          // Register + attendance live on one page. The old /face-register URL is kept
+          // so bookmarks and role permissions that reference it keep working.
+          path: 'face-attendance',
+          element: <FaceRecognition />
         },
         {
-          path: 'face-attendance',
-          element: <FaceAttendance />
+          path: 'face-register',
+          element: <FaceRecognition />
         },
         {
           path: 'redeem-booking',
