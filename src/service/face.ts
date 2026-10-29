@@ -12,11 +12,12 @@ export const registerFace = async (body: { staffId: number; descriptor: number[]
 
 export const verifyFace = async (body: {
   descriptor: number[];
+  staffId?: number; // when given the face must match this staff (1:1), otherwise 1:N
   userID?: number;
   latitude: string;
   longitude: string;
-  date?: string;
-  time?: string;
+  date?: string; // DD-MM-YYYY
+  time?: string; // HH:mm:ss
 }) => {
   return await post(FACE_VERIFY_API, body);
 };

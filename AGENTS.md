@@ -19,7 +19,7 @@ Guidance for AI coding agents working in this web app. See [README.md](README.md
 - **UI:** reuse `DynamicTable`, `SearchContainer`, `CustomDailogBox`, `OtpModal`, `MainCard`. Dialog forms follow `components/OtpModal.tsx` and
   `staff/component/markAttendanceModal.tsx` (title row with close icon, Divider, content, outlined Cancel + contained Submit).
 - **Imports:** absolute from `src` (`import x from 'components/...'`). Icons from `iconsax-reactjs`.
-- **Dates:** use `moment`. Check which format the endpoint expects (`YYYY-MM-DD` for face/manual attendance).
+- **Dates:** use `moment`. Check which format the endpoint expects (attendance rows use `DD-MM-YYYY`, for manual and face punches alike).
 - **Forms:** new forms use react-hook-form (`Controller`), as in `useAddEditStaff.tsx`. Note `handleSubmit` passes a snapshot of values taken
   before async `validate` rules finish; read values set during validation with `getValues()` in the submit handler.
 

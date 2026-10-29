@@ -27,7 +27,11 @@ export async function loadModels(): Promise<void> {
     ]);
     modelsLoaded = true;
     console.log('[faceApi] ✅ All models loaded');
-  })();
+  })().catch((err) => {
+    // Forget the failed attempt so a retry can load the models again
+    loadingPromise = null;
+    throw err;
+  });
 
   return loadingPromise;
 }
@@ -128,6 +132,44 @@ export async function detectEAR(
   const avgEAR = (leftEAR + rightEAR) / 2.0;
 
   return { ear: avgEAR };
+}
+
+export interface EyeBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/**
+ * Detects a face and returns its EAR plus a box around each eye (video pixel coordinates).
+ * The 68-point landmark model hardly reacts to eyelid movement, so blinks are detected
+ * from the pixels inside these boxes instead (see face-recognition/component/eyeSampler.ts).
+ */
+export async function detectEyes(
+  mediaEl: HTMLVideoElement | HTMLCanvasElement,
+  options?: { minConfidence?: number }
+): Promise<{ ear: number | null; boxes: EyeBox[] }> {
+  const detection = await faceapi
+    .detectSingleFace(mediaEl, new faceapi.SsdMobilenetv1Options({ minConfidence: options?.minConfidence ?? 0.5 }))
+    .withFaceLandmarks();
+
+  if (!detection) return { ear: null, boxes: [] };
+
+  const eyes = [detection.landmarks.getLeftEye(), detection.landmarks.getRightEye()];
+  const boxes = eyes.map((pts) => {
+    const xs = pts.map((p) => p.x);
+    const ys = pts.map((p) => p.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const cx = (minX + maxX) / 2;
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const w = (maxX - minX) * 1.3;
+    const h = w * 0.5;
+    return { x: cx - w / 2, y: cy - h / 2, w, h };
+  });
+
+  return { ear: (getEAR(eyes[0]) + getEAR(eyes[1])) / 2, boxes };
 }
 
 /**

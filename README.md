@@ -60,8 +60,10 @@ Imports are absolute from `src` (e.g. `import useAuth from 'hooks/useAuth'`), vi
   `isAdmin` is true for the roles `admin` / `super admin`; `isBranch` for `branch`. Branch users only see their own branch data.
 - **Lists:** a page calls its `service/*` list function with `{ where, pagination }` and renders `DynamicTable` with `Column` definitions
   from the page hook.
-- **Face attendance:** `pages/staff-management/face-recognition` computes 128-d descriptors in the browser with face-api.js
-  (models in `public/models`) and posts them to `/api/face/register` and `/api/face/verify`.
+- **Face recognition:** one page, `pages/staff-management/face-recognition` (menu "Face Recognition", `/face-attendance`;
+  `/face-register` serves the same page). It lists staff; the row button is "Register Face" until a face is registered, then
+  "Mark Attendance". Both open `FaceCaptureDialog`: blink liveness, then 128-d face-api.js descriptors (models in
+  `public/models`) are posted to `/api/face/register` or `/api/face/verify` (with `staffId`, so the face must match that staff).
 - **Manual attendance:** the staff list has a per-row "Mark Attendance" button that opens `markAttendanceModal.tsx` and posts to `/api/attendance`.
 
 ## Adding a feature (typical)

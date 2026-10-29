@@ -39,12 +39,12 @@ axiosServices.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response.status === 401 && !window.location.href.includes('/login')) {
+    if (error.response?.status === 401 && !window.location.href.includes('/login')) {
       // redirectWithBasePath('/maintenance/500');
       redirectWithBasePath('/');
       removeStorageToken();
     }
-    if (error.response.status === 404) {
+    if (error.response?.status === 404) {
       // openSnackbar({
       //   open: true,
       //   message: error.response.statusText || error.response.data.message || 'Not Found',
