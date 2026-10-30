@@ -134,42 +134,27 @@ export async function detectEAR(
   return { ear: avgEAR };
 }
 
-export interface EyeBox {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
 /**
- * Detects a face and returns its EAR plus a box around each eye (video pixel coordinates).
- * The 68-point landmark model hardly reacts to eyelid movement, so blinks are detected
- * from the pixels inside these boxes instead (see face-recognition/component/eyeSampler.ts).
+ * Detects a face and returns its head yaw, plus the 128-d descriptor when asked.
+ * yaw = (noseX - jawMidX) / jawWidth on the un-mirrored image: > 0 means the person
+ * turned to THEIR left, < 0 to their right. A flat photo keeps this ratio constant
+ * however it is moved, which is what the head-turn liveness check relies on.
  */
-export async function detectEyes(
+export async function detectPose(
   mediaEl: HTMLVideoElement | HTMLCanvasElement,
-  options?: { minConfidence?: number }
-): Promise<{ ear: number | null; boxes: EyeBox[] }> {
-  const detection = await faceapi
-    .detectSingleFace(mediaEl, new faceapi.SsdMobilenetv1Options({ minConfidence: options?.minConfidence ?? 0.5 }))
-    .withFaceLandmarks();
+  options?: { minConfidence?: number; withDescriptor?: boolean }
+): Promise<{ yaw: number | null; descriptor?: number[] }> {
+  const detectionOptions = new faceapi.SsdMobilenetv1Options({ minConfidence: options?.minConfidence ?? 0.55 });
+  const task = faceapi.detectSingleFace(mediaEl, detectionOptions).withFaceLandmarks();
+  const detection = options?.withDescriptor ? await task.withFaceDescriptor() : await task;
+  if (!detection) return { yaw: null };
 
-  if (!detection) return { ear: null, boxes: [] };
-
-  const eyes = [detection.landmarks.getLeftEye(), detection.landmarks.getRightEye()];
-  const boxes = eyes.map((pts) => {
-    const xs = pts.map((p) => p.x);
-    const ys = pts.map((p) => p.y);
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    const cx = (minX + maxX) / 2;
-    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
-    const w = (maxX - minX) * 1.3;
-    const h = w * 0.5;
-    return { x: cx - w / 2, y: cy - h / 2, w, h };
-  });
-
-  return { ear: (getEAR(eyes[0]) + getEAR(eyes[1])) / 2, boxes };
+  const pts = detection.landmarks.positions;
+  const jawWidth = pts[16].x - pts[0].x;
+  if (jawWidth <= 0) return { yaw: null };
+  const yaw = (pts[30].x - (pts[0].x + pts[16].x) / 2) / jawWidth;
+  const descriptor = 'descriptor' in detection ? Array.from((detection as any).descriptor as Float32Array) : undefined;
+  return { yaw, descriptor };
 }
 
 /**

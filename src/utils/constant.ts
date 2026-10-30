@@ -48,6 +48,7 @@ export const CREATE_ATTENDANCE_API = "api/attendance";
 // face recognition apis
 export const FACE_REGISTER_API = "api/face/register";
 export const FACE_VERIFY_API = "api/face/verify";
+export const FACE_LIVENESS_START_API = "api/face/liveness/start";
 export const FACE_CACHE_STATS_API = "api/face/cache-stats";
 export const FACE_REFRESH_CACHE_API = "api/face/refresh-cache";
 

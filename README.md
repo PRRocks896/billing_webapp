@@ -62,8 +62,10 @@ Imports are absolute from `src` (e.g. `import useAuth from 'hooks/useAuth'`), vi
   from the page hook.
 - **Face recognition:** one page, `pages/staff-management/face-recognition` (menu "Face Recognition", `/face-attendance`;
   `/face-register` serves the same page). It lists staff; the row button is "Register Face" until a face is registered, then
-  "Mark Attendance". Both open `FaceCaptureDialog`: blink liveness, then 128-d face-api.js descriptors (models in
-  `public/models`) are posted to `/api/face/register` or `/api/face/verify` (with `staffId`, so the face must match that staff).
+  "Mark Attendance". Both open `FaceCaptureDialog`: a random head-turn liveness challenge (`/api/face/liveness/start`, then
+  `component/livenessChallenge.ts`), then 128-d face-api.js descriptors (models in `public/models`) are posted to
+  `/api/face/register` or `/api/face/verify` (with `staffId`, so the face must match that staff) together with the
+  `challengeId` and yaw proof, which the server checks and consumes (`api/admin/face/liveness.service.js` in the backend).
 - **Manual attendance:** the staff list has a per-row "Mark Attendance" button that opens `markAttendanceModal.tsx` and posts to `/api/attendance`.
 
 ## Adding a feature (typical)

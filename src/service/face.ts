@@ -1,16 +1,27 @@
 import {
   FACE_REGISTER_API,
   FACE_VERIFY_API,
+  FACE_LIVENESS_START_API,
   FACE_CACHE_STATS_API,
   FACE_REFRESH_CACHE_API
 } from '../utils/constant';
 import { post, get } from '../utils/axios';
 
-export const registerFace = async (body: { staffId: number; descriptor: number[] }) => {
+export interface LivenessProof {
+  challengeId: string;
+  livenessProof: { yaw: number[] };
+}
+
+/** Ask the server for a random head-turn challenge (required by register / verify). */
+export const startFaceLiveness = async () => {
+  return await post(FACE_LIVENESS_START_API, {});
+};
+
+export const registerFace = async (body: { staffId: number; descriptor: number[] } & LivenessProof) => {
   return await post(FACE_REGISTER_API, body);
 };
 
-export const verifyFace = async (body: {
+export const verifyFace = async (body: LivenessProof & {
   descriptor: number[];
   staffId?: number; // when given the face must match this staff (1:1), otherwise 1:N
   userID?: number;

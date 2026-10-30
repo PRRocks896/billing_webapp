@@ -15,10 +15,9 @@ import {
 } from '@mui/material';
 import { CloseCircle, TickCircle, Warning2 } from 'iconsax-reactjs';
 import moment from 'moment';
-import { detectDescriptor, detectEyes, EyeBox, loadModels } from 'utils/faceApi';
-import { registerFace, verifyFace } from 'service/face';
-import { BlinkOptions, createBlinkDetector } from './blinkDetector';
-import { createEyeSampler } from './eyeSampler';
+import { detectDescriptor, detectPose, loadModels } from 'utils/faceApi';
+import { registerFace, startFaceLiveness, verifyFace } from 'service/face';
+import { ChallengeStep, createChallengeTracker, TurnDirection } from './livenessChallenge';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export type FaceMode = 'register' | 'attendance';
@@ -44,7 +43,7 @@ interface FaceCaptureDialogProps {
 type Phase =
   | 'init' // loading models + starting camera
   | 'checklist' // register only: eyewear confirmation
-  | 'liveness' // waiting for a blink
+  | 'liveness' // head-turn challenge
   | 'capturing' // sampling descriptors
   | 'review' // register only: preview before saving
   | 'saving' // register request in flight
@@ -54,12 +53,11 @@ type Phase =
   | 'failed'
   | 'error'; // models / camera could not start
 
-const LIVENESS_TIMEOUT_MS = 20000;
+const LIVENESS_TIMEOUT_MS = 15000;
+const CENTRE_YAW = 0.1; // |yaw| below this is "facing the camera" (same value the challenge uses)
 const REGISTER_SAMPLES = 3; // descriptors averaged for a stable enrolment
 const MAX_SAMPLE_SPREAD = 0.45; // samples further apart than this are not the same steady face
 const AUTO_CLOSE_MS = 2200;
-// Pixel-contrast values (luminance std-dev, 0-255 scale) sampled at the display frame rate
-const PIXEL_BLINK: BlinkOptions = { window: 45, minSamples: 15, minOpen: 3, minDrop: 3 };
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -111,6 +109,7 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
   const runIdRef = useRef(0); // bumping this aborts any scan loop in flight
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const descriptorRef = useRef<number[] | null>(null);
+  const livenessRef = useRef<{ challengeId: string; yaw: number[] } | null>(null); // proof sent with the request
   const locationRef = useRef(location);
   locationRef.current = location;
   // Always call the parent's latest callbacks, even from a scan started earlier
@@ -174,70 +173,43 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
 
   // ── Scan pipeline ───────────────────────────────────────────────────────────
   /**
-   * Wait for one blink. Resolves 'ok' | 'timeout' | 'aborted'.
-   *
-   * Two loops run together: face detection (slow, a few times a second) only keeps the
-   * eye boxes up to date, while a requestAnimationFrame loop samples the pixels inside
-   * those boxes at the display rate, so a 100-200ms blink is not missed.
+   * Head-turn liveness: look straight, turn towards `direction`, look straight again.
+   * A photo cannot do this. Also grabs one descriptor while facing the camera so the
+   * face captured afterwards can be checked to be the same person.
    */
-  const waitForBlink = useCallback(async (alive: () => boolean) => {
-    const pixelBlink = createBlinkDetector(PIXEL_BLINK);
-    const earBlink = createBlinkDetector(); // secondary signal, rarely moves with this landmark model
-    const sampleEyes = createEyeSampler();
+  const runChallenge = useCallback(async (direction: TurnDirection, alive: () => boolean) => {
+    const tracker = createChallengeTracker(direction);
     const startedAt = Date.now();
-    let boxes: EyeBox[] = [];
-    let blinked = false;
-    let rafId = 0;
-    let lastHintAt = 0;
-
-    const showHint = () => {
-      const openness = Math.round(Math.min(Math.max(pixelBlink.level(), 0), 1.2) * 100);
-      const slow = Date.now() - startedAt > 8000;
-      setHint(
-        `${slow ? 'Blink slowly, a little firmly, while looking at the camera' : 'Face detected — blink once to confirm you are live'} (eye openness ${openness}%)`
-      );
+    const side = direction === 'left' ? 'LEFT' : 'RIGHT';
+    const instructions: Record<ChallengeStep, string> = {
+      centre: 'Step 1 of 3 — look straight at the camera',
+      turn: `Step 2 of 3 — slowly turn your head to your ${side}`,
+      return: 'Step 3 of 3 — now look straight at the camera again',
+      done: 'Liveness confirmed'
     };
+    let startDescriptor: number[] | null = null;
+    setHint(instructions.centre);
 
-    const tick = () => {
-      if (!alive() || blinked) return;
-      const video = videoRef.current;
-      if (video && boxes.length) {
-        const value = sampleEyes(video, boxes);
-        if (value !== null && pixelBlink.push(value)) blinked = true;
-        const now = Date.now();
-        if (now - lastHintAt > 100) {
-          lastHintAt = now;
-          showHint();
+    while (alive() && tracker.step() !== 'done' && Date.now() - startedAt <= LIVENESS_TIMEOUT_MS) {
+      try {
+        const { yaw, descriptor } = await detectPose(videoRef.current!, { withDescriptor: !startDescriptor });
+        if (!alive()) break;
+        if (yaw === null) {
+          setHint('No face detected — please look straight at the camera');
+        } else {
+          if (descriptor && !startDescriptor && Math.abs(yaw) < CENTRE_YAW) startDescriptor = descriptor;
+          setHint(instructions[tracker.push(yaw)]);
         }
+      } catch {
+        /* transient detection error, keep going */
       }
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-
-    try {
-      while (alive() && !blinked && Date.now() - startedAt <= LIVENESS_TIMEOUT_MS) {
-        try {
-          const { ear, boxes: found } = await detectEyes(videoRef.current!, { minConfidence: 0.55 });
-          if (!alive()) break;
-          if (ear === null) {
-            boxes = [];
-            pixelBlink.reset();
-            earBlink.reset();
-            setHint('No face detected — please look straight at the camera');
-          } else {
-            boxes = found;
-            if (earBlink.push(ear)) blinked = true;
-          }
-        } catch {
-          /* transient detection error, keep going */
-        }
-        await sleep(30);
-      }
-    } finally {
-      cancelAnimationFrame(rafId);
+      await sleep(30);
     }
-    if (blinked) return 'ok';
-    return alive() ? 'timeout' : 'aborted';
+    if (tracker.step() === 'done' && startDescriptor) {
+      return { status: 'ok' as const, yaw: tracker.proof(), startDescriptor };
+    }
+    if (!alive()) return { status: 'aborted' as const };
+    return { status: 'timeout' as const };
   }, []);
 
   /** Sample `count` descriptors from the live video and average them. */
@@ -294,17 +266,30 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
     const alive = () => runIdRef.current === runId;
 
     descriptorRef.current = null;
+    livenessRef.current = null;
     setPreviewSrc(null);
     setMessage('');
     setResult(null);
     setPhase('liveness');
-    setHint('Look at the camera and blink once');
+    setHint('Preparing the liveness check…');
 
-    const live = await waitForBlink(alive);
-    if (!alive()) return;
-    if (live === 'timeout') {
-      return finish('failed', 'Liveness check failed — no blink detected. Please try again.');
+    let challenge: { challengeId: string; direction: TurnDirection };
+    try {
+      const res: any = await startFaceLiveness();
+      if (!res?.success || !res.data?.challengeId) throw res;
+      challenge = res.data;
+    } catch (err: any) {
+      if (alive()) finish('failed', errorText(err, 'Could not start the liveness check. Please try again.'));
+      return;
     }
+    if (!alive()) return;
+
+    const live = await runChallenge(challenge.direction, alive);
+    if (live.status === 'aborted' || !alive()) return;
+    if (live.status === 'timeout') {
+      return finish('failed', 'Liveness check failed — please look straight, then turn your head as asked. Try again.');
+    }
+    livenessRef.current = { challengeId: challenge.challengeId, yaw: live.yaw };
 
     setPhase('capturing');
     setHint('Hold still…');
@@ -320,6 +305,10 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
     if (sample.status === 'error') {
       return finish('failed', sample.error);
     }
+    // The face scanned now must be the one that did the head turn
+    if (distance(sample.descriptor, live.startDescriptor) > MAX_SAMPLE_SPREAD) {
+      return finish('failed', 'The face changed during the liveness check. Please try again.');
+    }
 
     if (isRegister) {
       descriptorRef.current = sample.descriptor;
@@ -333,6 +322,8 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
     try {
       const res: any = await verifyFace({
         descriptor: sample.descriptor,
+        challengeId: livenessRef.current!.challengeId,
+        livenessProof: { yaw: livenessRef.current!.yaw },
         staffId: staff.id,
         userID: staff.userID,
         latitude: `${locationRef.current?.latitude ?? 0}`,
@@ -354,15 +345,21 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
       if (err?.data?.matched) finish('rejected', errorText(err, 'Attendance could not be recorded'));
       else finish('failed', errorText(err, 'Verification failed. Please try again.'));
     }
-  }, [finish, isRegister, sampleFace, scheduleClose, staff.id, staff.userID, takeSnapshot, waitForBlink]);
+  }, [finish, isRegister, runChallenge, sampleFace, scheduleClose, staff.id, staff.userID, takeSnapshot]);
 
   const saveRegistration = useCallback(async () => {
-    if (!descriptorRef.current || phase !== 'review') return;
+    if (!descriptorRef.current || !livenessRef.current || phase !== 'review') return;
     setPhase('saving');
     try {
-      const res: any = await registerFace({ staffId: staff.id, descriptor: descriptorRef.current });
+      const res: any = await registerFace({
+        staffId: staff.id,
+        descriptor: descriptorRef.current,
+        challengeId: livenessRef.current.challengeId,
+        livenessProof: { yaw: livenessRef.current.yaw }
+      });
       if (!res?.success) throw res;
       descriptorRef.current = null;
+      livenessRef.current = null;
       finish('success');
       onDoneRef.current();
       scheduleClose();
