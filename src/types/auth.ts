@@ -86,6 +86,7 @@ type UserProfile = {
   "reviewUrl": string,
   "isWebLogin": boolean,
   "isAppLogin": boolean,
+  "isMobileWebLogin": boolean,
   "roomID": string | null,
   "isPendingDailyReport": boolean,
   "isLastDailyReportAdded": boolean,

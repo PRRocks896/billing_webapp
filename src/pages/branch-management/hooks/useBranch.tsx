@@ -291,6 +291,24 @@ const UseBranch = () => {
                 }
             },
             {
+                id: 'isMobileWebLogin',
+                label: 'Mobile Web Login',
+                align: 'left',
+                numeric: false,
+                disablePadding: false,
+                isSortable: true,
+                renderCell: (row) => {
+                    return (
+                        <Box>
+                            <Switch
+                                checked={row.isMobileWebLogin}
+                                onChange={() => onStatusChange(row.id, { isMobileWebLogin: !row.isMobileWebLogin })}
+                            />
+                        </Box>
+                    )
+                }
+            },
+            {
                 id: 'isWebDisplay',
                 label: 'Web Display',
                 align: 'left',
