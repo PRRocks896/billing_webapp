@@ -36,10 +36,9 @@ const UseFaceRecognition = () => {
       where: { searchText, isDeleted: false },
       pagination: { page: page + 1, rows, sortBy: orderBy, descending: order === 'desc' }
     };
-    if (!isAdmin) {
+    if (!isAdmin && searchText.length === 0) {
       payload.where.userID = user?.id;
     }
-
     try {
       startLoading();
       const { success, message, data }: any = await getStaffList(payload);

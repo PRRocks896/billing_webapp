@@ -13,6 +13,7 @@ import Notistack from 'components/third-party/Notistack';
 import Metrics from 'metrics';
 import NoConnection from 'pages/maintenance/error/NoConnection';
 import ReloadPrompt from 'components/ReloadPrompt';
+import InstallPrompt from 'components/InstallPrompt';
 
 // auth-provider
 import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
@@ -42,6 +43,7 @@ export default function App() {
                 </Notistack>
                 {!isOnline && <NoConnection />}
                 <ReloadPrompt />
+                <InstallPrompt />
               </>
             </AuthProvider>
           </ScrollTop>
