@@ -34,6 +34,7 @@ interface FaceCaptureDialogProps {
   open: boolean;
   mode: FaceMode;
   staff: FaceStaff | null;
+  user: any | null;
   location: { latitude: number; longitude: number } | null;
   onClose: () => void;
   /** Called after a registration / attendance was saved so the list can refresh */
@@ -71,7 +72,7 @@ const errorText = (err: any, fallback: string) => err?.data?.reason || err?.mess
 // The body is only mounted while open so every opening starts from a clean state
 // and the camera is always released on close.
 const FaceCaptureDialog: React.FC<FaceCaptureDialogProps> = (props) => {
-  const { open, mode, staff, onClose } = props;
+  const { open, mode, staff, user, onClose } = props;
   const [busy, setBusy] = useState(false);
 
   const handleClose = () => {
@@ -89,15 +90,16 @@ const FaceCaptureDialog: React.FC<FaceCaptureDialogProps> = (props) => {
           </Typography>
         )}
       </DialogTitle>
-      {open && staff && <FaceCaptureBody {...props} staff={staff} onBusyChange={setBusy} />}
+      {open && staff && <FaceCaptureBody {...props} staff={staff} onBusyChange={setBusy} user={user} />}
     </Dialog>
   );
 };
 
 // ─── Dialog body ──────────────────────────────────────────────────────────────
-const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onBusyChange: (busy: boolean) => void }> = ({
+const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; user: any; onBusyChange: (busy: boolean) => void }> = ({
   mode,
   staff,
+  user,
   location,
   onClose,
   onDone,
@@ -325,7 +327,7 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
         challengeId: livenessRef.current!.challengeId,
         livenessProof: { yaw: livenessRef.current!.yaw },
         staffId: staff.id,
-        userID: staff.userID,
+        userID: user?.id,
         latitude: `${locationRef.current?.latitude ?? 0}`,
         longitude: `${locationRef.current?.longitude ?? 0}`,
         date: now.format('DD-MM-YYYY'),
@@ -345,7 +347,7 @@ const FaceCaptureBody: React.FC<FaceCaptureDialogProps & { staff: FaceStaff; onB
       if (err?.data?.matched) finish('rejected', errorText(err, 'Attendance could not be recorded'));
       else finish('failed', errorText(err, 'Verification failed. Please try again.'));
     }
-  }, [finish, isRegister, runChallenge, sampleFace, scheduleClose, staff.id, staff.userID, takeSnapshot]);
+  }, [finish, isRegister, runChallenge, sampleFace, scheduleClose, staff.id, staff.userID, user, takeSnapshot]);
 
   const saveRegistration = useCallback(async () => {
     if (!descriptorRef.current || !livenessRef.current || phase !== 'review') return;
