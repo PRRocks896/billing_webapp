@@ -15,6 +15,7 @@ const FaceRecognition = () => {
     list,
     page,
     rows,
+    user,
     Column,
     totalCount,
     order,
@@ -73,6 +74,7 @@ const FaceRecognition = () => {
         open={!!dialog}
         mode={dialog?.mode ?? 'attendance'}
         staff={dialog?.staff ?? null}
+        user={user ?? null}
         location={location}
         onClose={closeDialog}
         onDone={fetch}

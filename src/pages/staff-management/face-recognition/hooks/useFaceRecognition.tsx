@@ -33,7 +33,7 @@ const UseFaceRecognition = () => {
 
   const fetch = useCallback(async () => {
     const payload: any = {
-      where: { searchText, isDeleted: false },
+      where: { searchText, isActive: true, isDeleted: false },
       pagination: { page: page + 1, rows, sortBy: orderBy, descending: order === 'desc' }
     };
     if (!isAdmin && searchText.length === 0) {
@@ -163,7 +163,7 @@ const UseFaceRecognition = () => {
               <Tooltip title={inactive ? 'Staff is inactive' : ''}>
                 <span>{button}</span>
               </Tooltip>
-              {registered && (
+              {registered && isAdmin && (
                 <Tooltip title="Register face again">
                   <span>
                     <IconButton disabled={inactive} onClick={() => openDialog('register', row)}>
@@ -187,6 +187,7 @@ const UseFaceRecognition = () => {
     list,
     page,
     rows,
+    user,
     Column,
     totalCount,
     order,
