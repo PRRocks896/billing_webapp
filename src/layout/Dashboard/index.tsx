@@ -73,7 +73,19 @@ export default function MainLayout() {
         <Header />
         {!isHorizontal ? <Drawer /> : <HorizontalBar />}
 
-        <Box component="main" sx={{ width: `calc(100% - ${DRAWER_WIDTH}px)`, flexGrow: 1, p: { xs: 1, sm: 3 } }}>
+        <Box
+          component="main"
+          sx={{
+            width: `calc(100% - ${DRAWER_WIDTH}px)`,
+            flexGrow: 1,
+            minWidth: 0, // lets wide children (tables) scroll inside their container instead of widening the page
+            p: { xs: 1, sm: 3 },
+            // notch / home-indicator safe areas (0 on devices without them)
+            pl: { xs: 'calc(8px + env(safe-area-inset-left, 0px))', sm: 'calc(24px + env(safe-area-inset-left, 0px))' },
+            pr: { xs: 'calc(8px + env(safe-area-inset-right, 0px))', sm: 'calc(24px + env(safe-area-inset-right, 0px))' },
+            pb: { xs: 'calc(8px + env(safe-area-inset-bottom, 0px))', sm: 'calc(24px + env(safe-area-inset-bottom, 0px))' }
+          }}
+        >
           <Toolbar sx={{ mt: isHorizontal ? 8 : 'inherit', mb: isHorizontal ? 2 : 'inherit' }} />
           <Container
             maxWidth={container && !downXL ? 'xl' : false}

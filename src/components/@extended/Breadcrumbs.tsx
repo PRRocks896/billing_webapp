@@ -155,8 +155,8 @@ export default function Breadcrumbs({
           border={card}
           sx={
             card === false
-              ? { mb: 3, bgcolor: 'transparent', borderRadius: 0, overflow: 'visible', boxShadow: 'none', ...sx }
-              : { mb: 3, ...sx }
+              ? { mb: { xs: 2, sm: 3 }, bgcolor: 'transparent', borderRadius: 0, overflow: 'visible', boxShadow: 'none', ...sx }
+              : { mb: { xs: 2, sm: 3 }, ...sx }
           }
           {...others}
           content={card}
@@ -168,7 +168,8 @@ export default function Breadcrumbs({
             spacing={0.5}
             sx={{ justifyContent: rightAlign ? 'space-between' : 'flex-start', alignItems: rightAlign ? 'center' : 'flex-start' }}
           >
-            <Grid>
+            {/* phones: the page title already says where you are, so the trail is hidden while a title is shown */}
+            <Grid sx={title ? { display: { xs: 'none', sm: 'block' } } : undefined}>
               <MuiBreadcrumbs aria-label="breadcrumb" maxItems={maxItems || 8} separator={separatorIcon}>
                 <Typography
                   component={Link}
@@ -192,7 +193,7 @@ export default function Breadcrumbs({
             </Grid>
             <Activity mode={title && titleBottom ? 'visible' : 'hidden'}>
               <Grid sx={{ mt: card === false ? 0 : 1 }}>
-                <Typography variant="h2" sx={{ fontWeight: 700 }}>
+                <Typography variant="h2" sx={{ fontWeight: 700, fontSize: { xs: '1.5rem', sm: '1.875rem' } }}>
                   <SafeFormattedMessage id={main.title} />
                 </Typography>
               </Grid>
@@ -276,8 +277,8 @@ export default function Breadcrumbs({
           border={card}
           sx={
             card === false
-              ? { mb: 3, bgcolor: 'transparent', borderRadius: 0, overflow: 'visible', boxShadow: 'none', ...sx }
-              : { mb: 3, ...sx }
+              ? { mb: { xs: 2, sm: 3 }, bgcolor: 'transparent', borderRadius: 0, overflow: 'visible', boxShadow: 'none', ...sx }
+              : { mb: { xs: 2, sm: 3 }, ...sx }
           }
           {...others}
           content={card}
@@ -291,15 +292,15 @@ export default function Breadcrumbs({
           >
             <Activity mode={title && !titleBottom ? 'visible' : 'hidden'}>
               <Grid>
-                <Typography variant="h2" sx={{ fontWeight: 700 }}>
+                <Typography variant="h2" sx={{ fontWeight: 700, fontSize: { xs: '1.5rem', sm: '1.875rem' } }}>
                   <SafeFormattedMessage id={custom ? heading : item?.title} />
                 </Typography>
               </Grid>
             </Activity>
-            <Grid>{tempContent}</Grid>
+            <Grid sx={title ? { display: { xs: 'none', sm: 'block' } } : undefined}>{tempContent}</Grid>
             <Activity mode={title && titleBottom ? 'visible' : 'hidden'}>
               <Grid sx={{ mt: card === false ? 0 : 1 }}>
-                <Typography variant="h2" sx={{ fontWeight: 700 }}>
+                <Typography variant="h2" sx={{ fontWeight: 700, fontSize: { xs: '1.5rem', sm: '1.875rem' } }}>
                   <SafeFormattedMessage id={custom ? heading : item?.title} />
                 </Typography>
               </Grid>

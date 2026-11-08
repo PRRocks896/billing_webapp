@@ -12,6 +12,7 @@ export default function ListItemButton(theme: Theme) {
           borderRadius: 8,
           marginTop: 2,
           marginBottom: 2,
+          '@media (pointer: coarse)': { minHeight: 44 }, // touch target
           '&.Mui-selected': {
             color: theme.vars.palette.primary.main,
             '& .MuiListItemIcon-root': {

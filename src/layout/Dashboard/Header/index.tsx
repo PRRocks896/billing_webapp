@@ -70,6 +70,8 @@ export default function Header() {
       ...theme.applyStyles('dark', { bgcolor: withAlpha(theme.vars.palette.background.default, 0.8) }),
       backdropFilter: 'blur(8px)',
       zIndex: 1200,
+      pl: 'env(safe-area-inset-left, 0px)',
+      pr: 'env(safe-area-inset-right, 0px)',
       width: isHorizontal
         ? '100%'
         : { xs: '100%', lg: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : `calc(100% - ${MINI_DRAWER_WIDTH}px)` }

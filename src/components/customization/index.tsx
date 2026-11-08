@@ -67,6 +67,7 @@ export default function Customization() {
           borderTopRightRadius: '4px',
           borderBottomRightRadius: '4px',
           top: '80%',
+          display: { xs: 'none', sm: 'inline-flex' }, // hidden on phones, where the floating tab overlaps content
           position: 'fixed',
           right: 0,
           zIndex: 1200,
