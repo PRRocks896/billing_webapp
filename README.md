@@ -74,6 +74,12 @@ Imports are absolute from `src` (e.g. `import useAuth from 'hooks/useAuth'`), vi
 3. Register a lazy route in `src/routes/MainRoutes.tsx` and a menu entry in `src/menu-items/`.
 4. Make sure the backend module exists and the role has rights for the route path.
 
+## Responsive layout
+The admin UI is usable on phones and tablets (branch staff on tablets, owners on phones). Breakpoints are xs 0 / sm 600 / md 900 / lg 1200 / xl 1440.
+Wide lists switch to cards below 600px via `DynamicTable mobileLayout="cards"`, filters collapse with `FilterBar`, form dialogs go full-screen on phones and
+add/edit forms get a sticky Cancel/Save bar. Touch-only sizing (44px targets, 16px inputs) uses `@media (pointer: coarse)` so desktop is unchanged.
+Conventions and the QA checklist: `AGENTS.md` (Responsive UI) and `docs/responsive-checklist.md`.
+
 ## Known caveats
 - `.env` and `.env.qa` are tracked by git (only `dist` is ignored). Do not put real secrets in them.
 - The package name and several folders (`admin-panel`, `apps`, `components-overview`, `widget`...) are leftovers from the template and are not part of the billing product.
