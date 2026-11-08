@@ -77,7 +77,7 @@ export default function ComponentsOverrides(theme: Theme) {
     Checkbox(theme),
     Chip(theme),
     DatePicker(),
-    Dialog(),
+    Dialog(theme),
     DialogContentText(theme),
     DialogTitle(),
     Drawer(),

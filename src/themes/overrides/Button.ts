@@ -193,19 +193,22 @@ export default function Button(theme: Theme) {
           '& svg': {
             width: 16,
             height: 16
-          }
+          },
+          '@media (pointer: coarse)': { minHeight: 44 } // touch target
         },
         sizeMedium: {
           '& svg': {
             width: 18,
             height: 18
-          }
+          },
+          '@media (pointer: coarse)': { minHeight: 44 } // touch target
         },
         sizeLarge: {
           '& svg': {
             width: 20,
             height: 20
-          }
+          },
+          '@media (pointer: coarse)': { minHeight: 44 } // touch target
         },
         loading: {
           pointerEvents: 'none !important',

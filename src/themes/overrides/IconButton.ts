@@ -33,7 +33,8 @@ export default function IconButton(theme: Theme) {
           '& svg': {
             width: 20,
             height: 20
-          }
+          },
+          '@media (pointer: coarse)': { width: 44, height: 44 } // touch target
         },
         sizeSmall: {
           width: theme.spacing(3.75),
@@ -42,7 +43,8 @@ export default function IconButton(theme: Theme) {
           '& svg': {
             width: 16,
             height: 16
-          }
+          },
+          '@media (pointer: coarse)': { width: 44, height: 44 } // touch target
         }
       }
     }

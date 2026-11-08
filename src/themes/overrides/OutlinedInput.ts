@@ -42,7 +42,8 @@ export default function OutlinedInput(theme: Theme) {
     MuiOutlinedInput: {
       styleOverrides: {
         input: {
-          padding: 14
+          padding: 14,
+          '@media (pointer: coarse)': { fontSize: '1rem' } // >=16px prevents iOS zoom on focus
         },
         notchedOutline: {
           borderColor: theme.vars.palette.secondary[400],
@@ -58,7 +59,8 @@ export default function OutlinedInput(theme: Theme) {
           }
         },
         inputSizeSmall: {
-          padding: '10px 10px 10px 12px'
+          padding: '10px 10px 10px 12px',
+          '@media (pointer: coarse)': { fontSize: '1rem' }
         },
         inputMultiline: {
           padding: 0

@@ -73,7 +73,8 @@ export default function PaginationItem(theme: Theme) {
             outlineOffset: 2
           },
           marginTop: '4px',
-          marginBottom: '4px'
+          marginBottom: '4px',
+          '@media (pointer: coarse)': { minWidth: 44, height: 44, borderRadius: 22 } // touch target
         },
         text: {
           '&.Mui-selected': {

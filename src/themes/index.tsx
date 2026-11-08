@@ -37,10 +37,10 @@ export default function ThemeCustomization({ children }: ThemeCustomizationProps
       breakpoints: {
         values: {
           xs: 0,
-          sm: 768,
-          md: 1024,
-          lg: 1266,
-          xl: 1440
+          sm: 600, // phones below, tablets (portrait) from here
+          md: 900, // tablets (landscape) from here
+          lg: 1200, // desktop: permanent sidebar from here
+          xl: 1440 // kept at 1440 (not MUI's 1536) so existing xl rules and the full-sidebar threshold are unchanged on 1440px laptops
         }
       },
       direction: themeDirection,
