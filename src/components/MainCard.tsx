@@ -13,7 +13,7 @@ import Highlighter from 'components/third-party/Highlighter';
 import useConfig from 'hooks/useConfig';
 
 // header style
-const headerSX = { p: 2.5, '& .MuiCardHeader-action': { m: '0px auto', alignSelf: 'center' } };
+const headerSX = { p: { xs: 2, sm: 2.5 }, '& .MuiCardHeader-action': { m: '0px auto', alignSelf: 'center' } };
 
 export interface MainCardProps {
   border?: boolean;

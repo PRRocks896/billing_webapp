@@ -33,6 +33,11 @@ export type HeadCell = {
   sortable?: boolean;
   align?: 'left' | 'right' | 'inherit' | 'center' | 'justify' | undefined;
   renderCell?: (row: any) => React.ReactNode;
+  /**
+   * Role in the phone card layout of DynamicTable (`mobileLayout="cards"`): `primary` = card title, `secondary` = label/value row,
+   * `hidden` = omitted, `actions` = bottom action row. Default: first column is the title and a column with id `actions` is the action row.
+   */
+  mobile?: 'primary' | 'secondary' | 'hidden' | 'actions';
 };
 
 export type TableDataApiResponse = {

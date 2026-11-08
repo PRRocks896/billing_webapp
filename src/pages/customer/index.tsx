@@ -74,6 +74,7 @@ const Customer = () => {
                         handleRequestSort={handleRequestSort}
                         handleChangePage={(_, newPage) => setPage(newPage)}
                         handleChangeRowsPerPage={(e) => setRows(Number(e.target.value))}
+                        mobileLayout="cards"
                     />
                 </Box>
             </MainCard>

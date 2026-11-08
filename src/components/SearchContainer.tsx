@@ -24,7 +24,7 @@ const SearchContainer = ({ isSearchable, searchText, buttonTitle, handleSearchTe
                     <OutlinedInput
                         size='small'
                         id="header-search"
-                        sx={{ width: '100%', maxWidth: 350 }}
+                        sx={{ width: '100%', maxWidth: { xs: '100%', sm: 350 } }}
                         placeholder="Search"
                         startAdornment={
                             <InputAdornment position="start">
@@ -36,9 +36,9 @@ const SearchContainer = ({ isSearchable, searchText, buttonTitle, handleSearchTe
                     />
                 )}
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }} sx={{ textAlign: 'right' }}>
+            <Grid size={{ xs: 12, sm: 6 }} sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
                 {buttonTitle && (
-                    <Button variant="contained" startIcon={<Add />} onClick={handleBtn}>
+                    <Button variant="contained" startIcon={<Add />} onClick={handleBtn} sx={{ width: { xs: '100%', sm: 'auto' } }}>
                         {buttonTitle}
                     </Button>
                 )}

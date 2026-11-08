@@ -73,7 +73,7 @@ export default function ComponentsOverrides(theme: Theme) {
     Button(theme),
     ButtonBase(theme),
     ButtonGroup(),
-    CardContent(),
+    CardContent(theme),
     Checkbox(theme),
     Chip(theme),
     DatePicker(),
