@@ -383,7 +383,7 @@ const AddEditReceiver = () => {
                         bgcolor: alpha(theme.palette.secondary.main, 0.02),
                         borderTop: `1px solid ${theme.palette.divider}`,
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-between', flexWrap: 'wrap',
                         alignItems: 'center',
                     }}
                 >
@@ -392,7 +392,7 @@ const AddEditReceiver = () => {
                         color="secondary"
                         onClick={handleBack}
                         startIcon={<Status size={18} style={{ transform: 'rotate(180deg)' }} />}
-                        sx={{ borderRadius: '10px' }}
+                        sx={{ borderRadius: '10px', whiteSpace: 'nowrap', flexShrink: 0 }}
                     >
                         Back to List
                     </Button>

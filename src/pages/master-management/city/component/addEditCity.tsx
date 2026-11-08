@@ -58,7 +58,7 @@ const AddEditCity = () => {
                         borderBottom: `1px solid ${theme.palette.divider}`,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-between', flexWrap: 'wrap',
                         gap: 2,
                     }}
                 >
@@ -91,7 +91,7 @@ const AddEditCity = () => {
                         color="secondary"
                         onClick={handleBack}
                         startIcon={<ArrowLeft size={16} />}
-                        sx={{ borderRadius: 2 }}
+                        sx={{ borderRadius: 2, whiteSpace: 'nowrap', flexShrink: 0 }}
                     >
                         Back to List
                     </Button>

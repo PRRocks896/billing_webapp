@@ -39,6 +39,7 @@ import {
 
 import useAddEditHomePage from "./hooks/useAddEditHomePage";
 
+import { formActionsSx } from 'components/formActionsSx';
 const AddEditHomePage = () => {
     const theme = useTheme();
     const {
@@ -53,7 +54,7 @@ const AddEditHomePage = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <MainCard content={false} sx={{ overflow: 'visible', border: `1px solid ${theme.palette.divider}`, maxWidth: 1400, margin: '0 auto' }}>
+            <MainCard content={false} sx={{ overflow: 'visible', border: `1px solid ${theme.palette.divider}`, width: '100%', maxWidth: 1400, margin: '0 auto' }}>
                 {/* ── Integrated Hero Header ───────────────────────────────── */}
                 <Box
                     sx={{
@@ -63,7 +64,7 @@ const AddEditHomePage = () => {
                         borderBottom: `1px solid ${theme.palette.divider}`,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-between', flexWrap: 'wrap',
                         gap: 2,
                     }}
                 >
@@ -96,7 +97,7 @@ const AddEditHomePage = () => {
                         color="secondary"
                         onClick={handleBack}
                         startIcon={<ArrowLeft size={18} />}
-                        sx={{ borderRadius: '10px', height: 42, px: 2 }}
+                        sx={{ borderRadius: '10px', height: 42, px: 2, whiteSpace: 'nowrap', flexShrink: 0 }}
                     >
                         Back to List
                     </Button>
@@ -290,15 +291,7 @@ const AddEditHomePage = () => {
 
                 {/* ── Footer Actions ───────────────────────────────────── */}
                 <Box
-                    sx={{
-                        p: 3,
-                        bgcolor: alpha(theme.palette.secondary.main, 0.02),
-                        borderTop: `1px solid ${theme.palette.divider}`,
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        gap: 2,
-                        borderRadius: '0 0 16px 16px'
-                    }}
+                    sx={formActionsSx(theme)}
                 >
                     <Button
                         variant="outlined"

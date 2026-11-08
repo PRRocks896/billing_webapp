@@ -125,7 +125,7 @@ const OtpModal = ({
                         sx={{
                             direction: "ltr",
                             "& input": {
-                                width: "45px !important",
+                                width: "min(45px, 10vw) !important",
                                 height: "45px",
                                 fontSize: "1.25rem",
                                 fontWeight: 600,

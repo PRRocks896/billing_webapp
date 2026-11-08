@@ -166,7 +166,7 @@ const AddEditStaff = () => {
                             color="secondary"
                             onClick={handleBack}
                             startIcon={<ArrowLeft size={16} />}
-                            sx={{ borderRadius: '10px', px: 2 }}
+                            sx={{ borderRadius: '10px', px: 2, whiteSpace: 'nowrap', flexShrink: 0 }}
                         >
                             Back to List
                         </Button>

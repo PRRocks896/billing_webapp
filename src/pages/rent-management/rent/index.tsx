@@ -65,6 +65,7 @@ const Rent = () => {
 
                 <Box sx={{ width: '100%', overflowX: 'auto' }}>
                     <DynamicTable
+                        mobileLayout="cards"
                         title=""
                         data={list}
                         columns={Column}

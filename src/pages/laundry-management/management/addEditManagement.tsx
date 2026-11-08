@@ -60,7 +60,7 @@ const AddEditManagement = () => {
                         display: 'flex',
                         flexDirection: { xs: 'column', sm: 'row' },
                         alignItems: { xs: 'flex-start', sm: 'center' },
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-between', flexWrap: 'wrap',
                         gap: 3,
                     }}
                 >

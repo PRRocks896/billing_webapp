@@ -300,7 +300,8 @@ const Rights = () => {
 
                         {/* Rights Table */}
                         {hasModules && (
-                            <Box sx={{ mt: 3, border: `1px solid ${theme.palette.divider}`, borderRadius: 2, overflow: 'hidden', maxHeight: 520, overflowY: 'auto' }}>
+                            <Box sx={{ mt: 3, border: `1px solid ${theme.palette.divider}`, borderRadius: 2, overflow: 'auto', maxHeight: 520 }}>
+<Box sx={{ minWidth: 560 }}>
 
                                 {/* Table Header — sticky so it stays visible while scrolling */}
                                 <Box
@@ -442,6 +443,7 @@ const Rights = () => {
                                         </Box>
                                     );
                                 })}
+</Box>
                             </Box>
                         )}
 
