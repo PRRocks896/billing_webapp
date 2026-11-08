@@ -16,6 +16,10 @@ export default function InputLabel(theme: Theme) {
         },
         outlined: {
           lineHeight: '0.8em',
+          // the label clips its own descenders (g, y, p) at this line-height: extend the box downward, text position unchanged
+          '&:not(.MuiInputLabel-shrink)': {
+            paddingBottom: '0.25em'
+          },
           '&.MuiInputLabel-sizeSmall': {
             lineHeight: '1em'
           },
