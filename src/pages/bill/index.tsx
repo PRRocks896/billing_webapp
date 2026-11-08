@@ -7,8 +7,9 @@ import SearchContainer from "components/SearchContainer";
 import DynamicTable from "components/DynamicTable";
 import CustomDailogBox from "components/CustomDailogBox";
 import MainCard from "components/MainCard";
+import FilterBar from "components/FilterBar";
 import Grid from "@mui/material/Grid";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -48,6 +49,10 @@ const Bill = () => {
 
     const title = "Bill"
 
+    // number of applied filters, shown on the phone "Filters" button
+    const [filterDate, filterUser] = useWatch({ control, name: ['date', 'selectedUser'] });
+    const activeFilters = [filterDate, filterUser].filter(Boolean).length;
+
     return (
         <Stack spacing={3}>
             {/* ── Page Header ───────────────────────────────────────────────────────── */}
@@ -68,6 +73,7 @@ const Bill = () => {
             {/* ── Admin Filters Area ─────────────────────────────────────────────────── */}
             {isAdmin && (
                 <form onSubmit={billNoMappingForm.handleSubmit(onSubmit)}>
+                    <FilterBar title="Bill No Mapping">
                     <MainCard title="Bill No Mapping" border={false} shadow="0 2px 14px 0 rgb(32 40 45 / 8%)">
                         <Typography variant="body2" color="error" sx={{ mb: 2 }}>
                             This will change the sequence of bill no so do change wisely
@@ -177,9 +183,11 @@ const Bill = () => {
                             </Grid>
                         </Grid>
                     </MainCard>
+                    </FilterBar>
                 </form>
             )}
             {isAdmin && (
+                <FilterBar activeCount={activeFilters}>
                 <MainCard title="Filters" border={false} shadow="0 2px 14px 0 rgb(32 40 45 / 8%)">
                     <Grid container spacing={3} alignItems="center">
                         <Grid size={{ xs: 12, sm: 4 }}>
@@ -239,6 +247,7 @@ const Bill = () => {
                         </Grid>
                     </Grid>
                 </MainCard>
+                </FilterBar>
             )}
 
             {/* ── Main Content Area ─────────────────────────────────────────────────── */}
@@ -265,6 +274,7 @@ const Bill = () => {
                         handleRequestSort={handleRequestSort}
                         handleChangePage={(_, newPage) => setPage(newPage)}
                         handleChangeRowsPerPage={(e) => setRows(Number(e.target.value))}
+                        mobileLayout="cards"
                     />
                 </Box>
             </MainCard>

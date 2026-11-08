@@ -18,6 +18,7 @@ import moment from 'moment';
 import { detectDescriptor, detectPose, loadModels } from 'utils/faceApi';
 import { registerFace, startFaceLiveness, verifyFace } from 'service/face';
 import { ChallengeStep, createChallengeTracker, TurnDirection } from './livenessChallenge';
+import useResponsiveDialog from 'hooks/useResponsiveDialog';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export type FaceMode = 'register' | 'attendance';
@@ -73,6 +74,7 @@ const errorText = (err: any, fallback: string) => err?.data?.reason || err?.mess
 // and the camera is always released on close.
 const FaceCaptureDialog: React.FC<FaceCaptureDialogProps> = (props) => {
   const { open, mode, staff, user, onClose } = props;
+  const { fullScreen } = useResponsiveDialog();
   const [busy, setBusy] = useState(false);
 
   const handleClose = () => {
@@ -80,7 +82,7 @@ const FaceCaptureDialog: React.FC<FaceCaptureDialogProps> = (props) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 3 } }}>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth fullScreen={fullScreen} PaperProps={{ sx: { borderRadius: fullScreen ? 0 : 3 } }}>
       <DialogTitle sx={{ fontWeight: 700 }}>
         {mode === 'register' ? 'Register Face' : 'Face Attendance'}
         {staff && (

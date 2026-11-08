@@ -723,6 +723,7 @@ const AddEditBill = () => {
                                         fullWidth
                                         startIcon={<Printer size={18} />}
                                         disabled={isSubmitting}
+                                        sx={{ display: { xs: 'none', lg: 'inline-flex' } }} // below lg the sticky bar at the bottom carries Print
                                     >
                                         {isSubmitting ? 'Generating...' : 'Print Bill'}
                                     </Button>
@@ -742,6 +743,50 @@ const AddEditBill = () => {
                     </Grid>
 
                 </Grid>
+
+                {/* Below lg the summary stacks under the long form, so keep the total and Print within reach at the bottom */}
+                <Box sx={{ display: { xs: 'block', lg: 'none' }, position: 'sticky', bottom: 0, zIndex: 1100, mt: 2 }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        spacing={2}
+                        sx={{
+                            p: 1.5,
+                            pb: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+                            bgcolor: 'background.paper',
+                            border: 1,
+                            borderColor: 'divider',
+                            borderRadius: 2,
+                            boxShadow: 3
+                        }}
+                    >
+                        <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="caption" color="text.secondary">
+                                Grand Total
+                            </Typography>
+                            <Controller
+                                name="grandTotal"
+                                control={control}
+                                render={({ field: { value } }) => (
+                                    <Typography variant="h5" fontWeight={700} color="primary.main" noWrap>
+                                        {value ? `₹ ${value}/-` : '₹ 0.00'}
+                                    </Typography>
+                                )}
+                            />
+                        </Box>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            size="large"
+                            startIcon={<Printer size={18} />}
+                            disabled={isSubmitting}
+                            sx={{ flexShrink: 0 }}
+                        >
+                            {isSubmitting ? 'Generating...' : 'Print Bill'}
+                        </Button>
+                    </Stack>
+                </Box>
                 {/* View Detail Modal */}
                 <ViewDetailModal
                     title="Payment Detail"

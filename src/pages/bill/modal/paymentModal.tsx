@@ -15,6 +15,7 @@ import Alert from "@mui/material/Alert";
 import InputAdornment from "@mui/material/InputAdornment";
 import { CloseCircle, Receipt21, Money, Card, Moneys } from "iconsax-reactjs";
 import usePaymentModal, { PaymentDetailItem } from "pages/bill/hooks/usePaymentModal";
+import useResponsiveDialog from "hooks/useResponsiveDialog";
 
 // ─── Payment Row ─────────────────────────────────────────────────────────────────
 const PaymentRow = ({
@@ -101,6 +102,7 @@ type PaymentModalProps = {
 
 // ─── Component ────────────────────────────────────────────────────────────────────
 const PaymentModal = ({ open, grandTotal, onClose, onConfirm }: PaymentModalProps) => {
+    const { fullScreen } = useResponsiveDialog();
     const {
         paymentDetail,
         totalEntered,
@@ -120,7 +122,8 @@ const PaymentModal = ({ open, grandTotal, onClose, onConfirm }: PaymentModalProp
             onClose={handleClose}
             maxWidth="sm"
             fullWidth
-            PaperProps={{ sx: { borderRadius: 2 } }}
+            fullScreen={fullScreen}
+            PaperProps={{ sx: { borderRadius: fullScreen ? 0 : 2 } }}
         >
             {/* ── Header ─────────────────────────────────────────────────── */}
             <DialogTitle sx={{ p: 0 }}>

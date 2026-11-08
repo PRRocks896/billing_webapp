@@ -22,6 +22,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller } from "react-hook-form";
 import { PHONE_REGEX } from "utils/constant";
 import useAddCustomerModal from "pages/customer/hooks/useAddCustomerModal";
+import useResponsiveDialog from "hooks/useResponsiveDialog";
 
 // ─── Props ──────────────────────────────────────────────────────────────────────
 type AddCustomerModalProps = {
@@ -32,6 +33,7 @@ type AddCustomerModalProps = {
 
 // ─── Component ──────────────────────────────────────────────────────────────────
 const AddCustomerModal = ({ open, onClose, onSuccess }: AddCustomerModalProps) => {
+    const { fullScreen } = useResponsiveDialog();
     const {
         control,
         isSubmitting,
@@ -47,7 +49,8 @@ const AddCustomerModal = ({ open, onClose, onSuccess }: AddCustomerModalProps) =
             onClose={handleClose}
             maxWidth="sm"
             fullWidth
-            PaperProps={{ sx: { borderRadius: 2 } }}
+            fullScreen={fullScreen}
+            PaperProps={{ sx: { borderRadius: fullScreen ? 0 : 2 } }}
         >
             {/* ── Header ─────────────────────────────────────────────────── */}
             <DialogTitle sx={{ p: 0 }}>
