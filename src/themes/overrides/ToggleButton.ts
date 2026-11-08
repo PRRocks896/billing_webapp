@@ -16,6 +16,10 @@ export default function ToggleButton(theme: Theme) {
             borderColor: theme.vars.palette.divider,
             color: theme.vars.palette.text.disabled
           },
+          // touch-only: comfortable tap target (desktop mouse sizing unchanged)
+          '@media (pointer: coarse)': {
+            minHeight: 44
+          },
           '&:focus-visible': {
             outline: `2px solid ${theme.vars.palette.secondary.dark}`,
             outlineOffset: 2

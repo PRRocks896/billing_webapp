@@ -163,6 +163,7 @@ const Salary = () => {
                                 fullWidth
                                 variant="contained"
                                 onClick={searchList}
+                                aria-label="Search salary list"
                                 sx={{ height: 40, borderRadius: 2 }}
                             >
                                 <SearchNormal1 size={18} variant="Bold" />

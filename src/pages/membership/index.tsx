@@ -275,7 +275,7 @@ const Membership = () => {
                                 />
                             </Box>
 
-                            <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                                 <Button
                                     size="large"
                                     variant="contained"

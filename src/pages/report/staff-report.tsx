@@ -148,7 +148,7 @@ const StaffReport = () => {
     } = useStaffReport();
 
     return (
-        <Box sx={{ maxWidth: 1600, margin: '0 auto', pb: 8 }}>
+        <Box sx={{ width: '100%', maxWidth: 1600, margin: '0 auto', pb: 8 }}>
             {/* ── Hero Header ──────────────────────────────────────── */}
             <MainCard content={false} sx={{ mb: 4, borderRadius: 4, overflow: 'hidden', border: 'none', boxShadow: theme.customShadows?.z1 }}>
                 <Box
