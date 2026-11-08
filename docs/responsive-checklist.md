@@ -21,7 +21,7 @@ Use Chrome DevTools device mode and at least one real phone and one real tablet.
 | Desktop | 1280 x 800 | lg |
 | Desktop wide | 1440 x 900 | lg |
 
-Current theme breakpoints (before Phase 1): sm 768, md 1024, lg 1266, xl 1440. Target: sm 600, md 900, lg 1200, xl 1536.
+Theme breakpoints before Phase 1 were sm 768, md 1024, lg 1266, xl 1440. Now: sm 600, md 900, lg 1200, xl 1440 (xl kept so existing `xl` rules are unchanged).
 
 ## Key pages
 Login/OTP, Dashboard, Bill list, Add/Edit bill (+ payment modal), Customer list (+ add customer), Staff list, Add/Edit staff,
