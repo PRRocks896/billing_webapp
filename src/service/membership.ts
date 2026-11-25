@@ -30,3 +30,7 @@ export const deleteMembership = async (id: number) => {
 export const addExtraHours = async (payload: any) => {
     return await post(`${MEMBERSHIP}/extra-hours-otp`, payload);
 }
+
+export const addPastMembership = async (payload: any) => {
+    return await post(`${MEMBERSHIP}/past-membership`, payload);
+}

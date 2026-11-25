@@ -114,6 +114,13 @@ const menuItems: { items: NavItemType[] } = {
               breadcrumbs: false
             },
             {
+              id: 'past-membership',
+              title: 'Past Membership',
+              type: 'item',
+              url: '/past-membership',
+              breadcrumbs: false
+            },
+            {
               id: 'membership-plan',
               title: 'Membership Plan',
               type: 'item',

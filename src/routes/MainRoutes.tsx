@@ -259,6 +259,7 @@ const AddEditLaundryStock = Loadable(lazy(() => import('pages/laundry-management
 const LaundryStockHistory = Loadable(lazy(() => import('pages/laundry-management/stock-history')));
 const BillVerify = Loadable(lazy(() => import('pages/bill-verify')));
 const BillVerifyDetail = Loadable(lazy(() => import('pages/bill-verify-detail')));
+const AddPastMembership = Loadable(lazy(() => import('pages/membership/addPastMembership')));
 // ==============================|| MAIN ROUTES ||============================== //
 
 import { RoleProvider } from 'pages/user-management/role/context/roleContext';
@@ -999,6 +1000,15 @@ const MainRoutes: RouteObject = {
             {
               path: '',
               element: <Membership />
+            }
+          ]
+        },
+        {
+          path: 'past-membership',
+          children: [
+            {
+              path: '',
+              element: <AddPastMembership />
             }
           ]
         },
